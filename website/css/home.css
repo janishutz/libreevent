@@ -1,0 +1,28 @@
+/*
+*				myevent - home.css
+*
+*	Created by Janis Hutz 03/05/2023, Licensed under the GPL V3 License
+*			https://janishutz.com, development@janishutz.com
+*
+*
+*/
+
+/*
+    This is the feature overview on the main page
+*/
+.feature-overview {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+}
+
+.feature {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    width: 40%;
+    padding: 2%;
+}
