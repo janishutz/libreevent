@@ -30,6 +30,7 @@ body {
     */
     background-color: white;
     display: flex;
+    text-align: center;
     flex-direction: column;
     align-items: center;
     justify-content: center;
@@ -47,19 +48,43 @@ body {
     width: 90%;
     padding: 2%;
     margin: 3%;
-    background-color: rgba(255, 255, 255, 0.644);
+    background-color: rgba(142, 156, 237, 0.644);
     border-radius: 0px 0px 50px 50px;
-    margin-top: 0%;
+    margin-top: 0;
 }
 
 .button {
     background-color: rgb(24, 43, 61);
     color: white;
     text-decoration: none;
-    padding: 5%;
-    padding-bottom: 3%;
-    padding-top: 3%;
+    padding: 40px;
+    padding-bottom: 20px;
+    padding-top: 20px;
     border-radius: 30px;
     cursor: pointer;
     margin: 1.5%;
+}
+
+#nav {
+    position: relative;
+    z-index: 1;
+    height: 25vh;
+}
+
+@media only screen and (min-width: 999px) {
+    #nav {
+        height: 15vh;
+    }
+
+    .content, .title-wrapper {
+        width: 70%;
+        padding: 5%;
+        margin: 10%;
+        margin-top: 0;
+    }
+
+    .title-wrapper {
+        margin-top: 3%;
+        margin-bottom: 0;
+    }
 }

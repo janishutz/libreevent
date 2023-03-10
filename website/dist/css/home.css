@@ -19,10 +19,24 @@
 }
 
 .feature {
+    text-align: center;
     display: inline-flex;
     justify-content: center;
     align-items: center;
     flex-direction: column;
-    width: 40%;
+    width: 100%;
     padding: 2%;
+}
+
+
+.image {
+    width: 40%;
+    height: auto;
+    margin: 3%;
+}
+
+@media only screen and (min-width: 999px) {
+    .feature {
+        width: 40%;
+    }
 }

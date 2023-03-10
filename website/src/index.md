@@ -1,0 +1,2 @@
+# myevent - documentation
+Welcome to the myevent documentation! Here you may learn how to set up a myevent-server instance, how to configure it and how to install plugins. You may also learn how to develop your own plugin and what you need to know if you want to contribute to the project.

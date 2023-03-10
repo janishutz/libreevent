@@ -5,8 +5,8 @@ The main website's pages are written in HTML & CSS whilst the doc pages are auto
 ## Links in the md files in [src/](src/)
 Please note that you are required to use either a link relative to the root folder with double forward slash (example: *//server/app.js*), to the website root with a single forward slash (example: */download*) or a full link (example: *https://myevent.janishutz.com/docs*). If you do not follow these patterns, the website won't build or the links will not work correctly. NOTE: Don't be confused if the root folder links don't work in the Markdown, as they use specific syntax for the build script.
 
-## Folder structure and file naming
-Please create an *index.md* file inside of a folder such that, when the website is compiled, the *.html* file extension disappears.
+## Folder structure, file naming and file structure
+Please note that the filename that is used for the md file is used to create a folder that contains an *index.html* so the *.html* file extension disappears. The build script uses the first level 1 title (marked with \# in md) as the page title and also for the navigation menu, so please choose the title appropriately and don't let it exceed 50 characters!
 
 ## Modifying the files in [dist/](dist/)
 You may modify all the files in the [dist/](dist/) directory except the files in [dist/docs/](dist/docs/).

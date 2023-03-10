@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 /*
 *				myevent - index.js
 *
@@ -9,4 +10,14 @@
 
 $( document ).ready( function () {
     $( '#nav' ).load( '/nav.html' );
+
+    $( '.button' ).mouseenter( function () { 
+        $( this ).stop();
+        $( this ).animate( { 'border-radius': '5px', 'background-color': 'rgb(60, 85, 140)' }, 200 );
+    } );
+
+    $( '.button' ).mouseleave( function () { 
+        $( this ).stop();
+        $( this ).animate( { 'border-radius': '30px', 'background-color': 'rgb(24, 43, 61)' }, 400 );
+    } );
 } );
