@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>myevent</title>
+        <!-- We are using inline styling to simplify the removal of this page -->
+        <style>
+            body {
+                background-color: rgb(202, 223, 255);
+                font-family: sans-serif;
+            }
+
+            .content, .lang {
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+            }
+
+            .logo {
+                margin: 2%;
+                height: 50vh;
+            }
+
+            .lang {
+                background-color: white;
+                padding: 2%;
+                margin: 3%;
+                margin-bottom: 0;
+                border-radius: 50px;
+            }
+
+            .button {
+                text-decoration: none;
+                color: white;
+                background-color: blue;
+                padding: 30px;
+                border-radius: 30px;
+                transition: 0.4s;
+            }
+
+            .button:hover {
+                transition: ease-in-out 0.2s;
+                background-color: darkblue;
+                border-radius: 5px;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="content">
+            <img src="/assets/logo.png" alt="myevent-logo" class="logo">
+            <div class="lang" id="en">
+                <h1>Welcome to myevent!</h1>
+                <p>Thank you for installing and using myevent! Let's get started by setting it up! First plan of action is to log in to the admin panel where you can replace this page here with your own landing page!</p>
+                <a href="/admin/login" class="button">To the admin panel</a>
+            </div>
+        </div>
+    </body>
+</html>

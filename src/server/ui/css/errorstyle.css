@@ -1,0 +1,54 @@
+/*
+*				myevent - errorstyle.css
+*
+*	Created by Janis Hutz 03/11/2023, Licensed under the GPL V3 License
+*			https://janishutz.com, development@janishutz.com
+*
+*
+*/
+
+html {
+    height: 98%;
+}
+
+body {
+    background-color: lightgray;
+    font-family: monospace;
+    height: 100%;
+}
+
+.content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    height: 100%;
+    width: 100%;
+}
+
+.code {
+    font-size: 20vw;
+    margin: 0;
+    padding: 0;
+}
+
+.message {
+    font-size: 1.5vw;
+}
+
+.button {
+    text-decoration: none;
+    background-color: gray;
+    font-style: italic;
+    font-size: 1vw;
+    color: white;
+    padding: 20px;
+    border-radius: 30px;
+    transition: 1s;
+}
+
+.button:hover {
+    transition: ease-in-out 0.2s;
+    background-color: black;
+    border-radius: 5px;
+}
