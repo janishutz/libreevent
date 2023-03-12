@@ -25,6 +25,7 @@
             }
 
             .lang {
+                display: none;
                 background-color: white;
                 padding: 2%;
                 margin: 3%;
@@ -33,12 +34,13 @@
             }
 
             .button {
+                cursor: pointer;
                 text-decoration: none;
                 color: white;
                 background-color: blue;
                 padding: 30px;
                 border-radius: 30px;
-                transition: 0.4s;
+                transition: 1s;
             }
 
             .button:hover {
@@ -46,16 +48,30 @@
                 background-color: darkblue;
                 border-radius: 5px;
             }
+
+            .presented {
+                display: flex;
+            }
         </style>
     </head>
     <body>
         <div class="content">
             <img src="/assets/logo.png" alt="myevent-logo" class="logo">
-            <div class="lang" id="en">
+            <div class="lang presented" id="en">
                 <h1>Welcome to myevent!</h1>
                 <p>Thank you for installing and using myevent! Let's get started by setting it up! First plan of action is to log in to the admin panel where you can replace this page here with your own landing page!</p>
                 <a href="/admin/login" class="button">To the admin panel</a>
             </div>
+            <div class="lang" id="de">
+                <h1>Willkommen zu myevent!</h1>
+                <p>Vielen Dank für die Installation und Nutzung von myevent! Beginnen wir mit dem Aufsetzen! Der erste Schritt ist, sich ins Admin-Panel einzuloggen um die Seite hier mit deiner eigenen Seite zu ersetzen!</p>
+                <a href="/admin/login" class="button">Zum Admin-Panel</a>
+            </div>
         </div>
+        <script>
+            function switchPresented ( n ) {
+                
+            }
+        </script>
     </body>
 </html>

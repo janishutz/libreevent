@@ -4,15 +4,79 @@
         <meta charset="UTF-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>login :: myevent - admin panel</title>
+        <title>Login :: myevent - admin panel</title>
+        <style>
+            body {
+                background-color: rgb(202, 223, 255);
+                font-family: sans-serif;
+                font-size: calc(12pt + 0.35vw);
+            }
+
+            .content {
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+            }
+
+            .login-app {
+                border-radius: 50px;
+                margin-top: 2%;
+                background-color: white;
+                width: 60%;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+            }
+
+            .form {
+                width: 80%;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                margin-top: 4%;
+                margin-bottom: 4%;
+            }
+
+            .button {
+                text-decoration: none;
+                color: white;
+                background-color: blue;
+                padding: 15px;
+                border-radius: 30px;
+                transition: 1s;
+                cursor: pointer;
+            }
+
+            .button:hover {
+                transition: ease-in-out 0.2s;
+                background-color: darkblue;
+                border-radius: 5px;
+            }
+
+            .input {
+                padding: 1%;
+                width: 80%;
+                margin-bottom: 3%;
+                border-radius: 10px;
+            }
+        </style>
     </head>
     <body>
         <div class="content">
-            <img src="/assets/logo.png" alt="myevent-logo" class="logo">
-            <div class="lang" id="en">
-                <h1>Welcome to myevent!</h1>
-                <p>Thank you for installing and using myevent! Let's get started by setting it up! First plan of action is to log in to the admin panel where you can replace this page here with your own landing page!</p>
-                <a href="/admin/login" class="button">To the admin panel</a>
+            <a href="https://myevent.janishutz.com"><img src="/assets/logo.png" alt="myevent-logo" style="height: 35vh;"></a>
+            <div class="login-app">
+                <h1>Login</h1>
+                <footer>myevent - admin panel</footer>
+                <form action="/admin/auth" method="post" class="form">
+                    <label for="mail">Email address</label><br>
+                    <input type="email" id="mail" name="mail" required class="input"><br>
+                    <label for="pwd">Password</label><br>
+                    <input type="password" id="pwd" name="pwd" required class="input"><br>
+                    <input type="submit" value="Log in" class="button">
+                </form>
             </div>
         </div>
     </body>
