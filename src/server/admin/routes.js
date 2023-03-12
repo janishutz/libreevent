@@ -13,8 +13,13 @@ module.exports = ( app, settings ) => {
     app.get( '/admin/login', ( request, response ) => {
         response.sendFile( path.join( __dirname + '/ui/login.html' ) );
     } );
-
     
+    /* 
+        main admin panel access route. Will serve an html file
+        that uses vue.js in its SPA form to make the admin panel
+        more responsive. Same technology is also used in the purchasing
+        system itself.
+    */
     app.get( '/admin', ( request, response ) => {
         if ( request.session.loggedIn ) {
             if ( settings[ 'init' ] ) {
