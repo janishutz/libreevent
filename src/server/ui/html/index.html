@@ -5,6 +5,8 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>myevent</title>
+        <script defer src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+        <script defer src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.3/jquery-ui.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
         <!-- We are using inline styling to simplify the removal of this page -->
         <style>
             body {
@@ -59,19 +61,30 @@
             <img src="/assets/logo.png" alt="myevent-logo" class="logo">
             <div class="lang presented" id="en">
                 <h1>Welcome to myevent!</h1>
-                <p>Thank you for installing and using myevent! Let's get started by setting it up! First plan of action is to log in to the admin panel where you can replace this page here with your own landing page!</p>
+                <!-- <p>Thank you for installing and using myevent! Let's get started by setting it up! First plan of action is to log in to the admin panel where you can replace this page here with your own landing page!</p> -->
                 <a href="/admin/login" class="button">To the admin panel</a>
             </div>
             <div class="lang" id="de">
                 <h1>Willkommen zu myevent!</h1>
-                <p>Vielen Dank für die Installation und Nutzung von myevent! Beginnen wir mit dem Aufsetzen! Der erste Schritt ist, sich ins Admin-Panel einzuloggen um die Seite hier mit deiner eigenen Seite zu ersetzen!</p>
-                <a href="/admin/login" class="button">Zum Admin-Panel</a>
+                <!-- <p>Vielen Dank für die Installation und Nutzung von myevent! Beginnen wir mit dem Aufsetzen! Der erste Schritt ist, sich ins Admin-Panel einzuloggen um die Seite hier mit deiner eigenen Seite zu ersetzen!</p> -->
+                <a href="/admin/login?lang=de" class="button">Zum Admin-Panel</a>
             </div>
         </div>
         <script>
-            function switchPresented ( n ) {
-                
+            let lang = [ 'en', 'de' ];
+            let pos = 0;
+            function switchPresented () {
+                console.log( 'updating' );
+                $( `#${ lang[ pos ] }` ).removeClass( 'presented' );
+                if ( pos + 2 > lang.length ) {
+                    pos = 0;
+                } else {
+                    pos += 1;
+                }
+                $( `#${ lang[ pos ] }` ).addClass( 'presented' );
             }
+
+            setInterval( switchPresented, 5000 );
         </script>
     </body>
 </html>

@@ -27,16 +27,19 @@
         </div>
         <script>
             $( document ).ready( function () {
+                if ( window.location.pathname.slice( 1, window.location.pathname.length - 1 ) != '' ) {
+                    $( '#' + window.location.pathname.slice( 1, window.location.pathname.length - 1 ) ).animate( { "color":"rgba(184, 214, 240, 1)", "background-color":"rgba(0, 0, 175, 1)" }, 200 );
+                };
                 $('.navitem' ).mouseenter( function () {
-                    if ( window.location.pathname.slice( 1, window.location.pathname.length ) == this.id ) {} else {
+                    if ( window.location.pathname.slice( 1, window.location.pathname.length - 1 ) == this.id ) {} else {
                         $( this ).stop();
                         $( this ).animate( { "color":"rgba(184, 214, 240, 1)", "background-color":"rgba(0, 0, 175, 1)" }, 200 );
                     };
                 });
                 $( '.navitem' ).mouseleave( function () {
-                    if ( window.location.pathname.slice( 1, window.location.pathname.length ) == this.id ) {} else {
+                    if ( window.location.pathname.slice( 1, window.location.pathname.length - 1 ) == this.id ) {} else {
                         $( this ).stop();
-                        $( this ).animate( { "color":"black", "background-color":"rgba(0, 0, 0, 0)" }, 200 );
+                        $( this ).animate( { "color":"black", "background-color":"rgba(0, 0, 0, 0)" }, 600 );
                     };
                 } );
             } );

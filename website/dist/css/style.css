@@ -63,6 +63,13 @@ body {
     border-radius: 30px;
     cursor: pointer;
     margin: 1.5%;
+    transition: 1s;
+}
+
+.button:hover {
+    transition: 0.2s;
+    border-radius: 5px;
+    background-color: rgb(60, 85, 140);
 }
 
 #nav {
