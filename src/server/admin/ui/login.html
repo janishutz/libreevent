@@ -62,10 +62,36 @@
                 margin-bottom: 3%;
                 border-radius: 10px;
             }
+
+            .top-bar {
+                width: 100%;
+                display: flex;
+                align-items: end;
+                justify-content: end;
+            }
+
+            .selector {
+                background-color: lightblue;
+                border-radius: 20px;
+                padding: 0.5%;
+                border-style: solid;
+                border-color: blue;
+            }
         </style>
     </head>
     <body>
         <div class="content">
+            <div class="top-bar">
+                <select name="lang" id="lang" class="selector">
+                    <option value="en">English</option>
+                    <option value="de">Deutsch</option>
+                </select>
+                <select name="theme" id="theme" class="selector">
+                    <option value="system">System theme</option>
+                    <option value="light">Light</option>
+                    <option value="dark">Dark</option>
+                </select>
+            </div>
             <a href="https://myevent.janishutz.com"><img src="/assets/logo.png" alt="myevent-logo" style="height: 35vh;"></a>
             <div class="login-app">
                 <h1>Login</h1>
