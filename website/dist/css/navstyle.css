@@ -10,61 +10,66 @@
 /*
     Default rules that are set for mobile interfaces
 */
+.nav-wrapper {
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.85);
+    position: fixed;
+    display: block;
+    z-index: 2;
+    width: 100%;
+    top: 0;
+    bottom: 0;
+    left: 1;
+    right: 1;
+}
+
 .nav-container {
     width: 100%;
     height: 100%;
-    background-color: blue;
-}
-
-.toggle-wrapper {
-    display: inline-flex;
-    height: 100%;
-    width: 80%;
-    align-items: center;
-    justify-content: flex-end;
-}
-
-
-/* Logo image and logo link (aka logo-container)*/
-.logo-container {
-    margin: 0.5%;
-    height: 80%;
-    display: inline-block;
-    width: fit-content;
-}
-
-.mobile-wrapper {
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100%;
-    width: 100%;
+    flex-direction: column;
+}
+
+.menuActive {
+    overflow: hidden;
+}
+
+
+
+/* Logo image and logo link (aka logo-container)*/
+.logo-container-small {
+    margin-left: 5%;
+    margin-right: auto;
 }
 
 .logo {
     display: block;
-    width: auto;
-    height: 100%;
+    width: 60vw;
+    height: auto;
+    margin: 0;
 }
+
+.logo-small {
+    display: block;
+    width: auto;
+    height: 12vh;
+    margin: 0;
+}
+
 
 .listtoggle {
     text-decoration: none;
-    color: black;
+    color: rgb(168, 212, 253);
     font-size: 5vh;
-    margin-right: 7%;
     cursor: pointer;
+    margin-right: 5%;
+    position: relative;
+    z-index: 3;
 }
 
-.active {
-    color: rgba(184, 214, 240, 1);
-}
-
-/* Nav menu holder (contains the flex nav menu and has to exist because of jQuery */
-.nav-menu {
-    background-color: rgba(245, 245, 245, 0.9);
-    display: none;
-    width: 100%;
-}
 
 /* This is the list actually containing the menu items */
 .nav-list {
@@ -78,62 +83,38 @@
 .navitem {
     text-decoration: none;
     text-align: center;
-    color: black;
-    font-size: 1.3rem;
-    padding-top: 2%;
-    padding-bottom: 2%;
-    width: 100%;
+    color: rgb(107, 107, 107);;
+    font-size: 1.4rem;
+    width: fit-content;
+    padding: 2%;
 }
-/*
-.navitem:hover {
-    background-color: rgba(184, 214, 240, 1);
-}*/
 
+.inactive {
+    transition: 1s;
+    color: white;
+    font-size: 1.3rem;
+}
 
-/* 
-    Media queries to optimise for desktop
-*/
+.inactive:hover {
+    font-size: 1.6rem;
+    color: rgb(107, 107, 107);
+    transition: 0.4s;
+}
+
+/* ~ --> all next & + --> next */
+.shaded {
+    color: rgb(107, 107, 107);
+    transition: 0.3s;
+}
+
 @media only screen and (min-width: 999px) {
-    /* Top navigation bar container */
     .nav-container {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-    }
-
-    /* div containing the nav-menu unordered list */
-    .nav-wrapper {
-        height: 100%;
-        width: 80%;
-        margin: auto;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-    }
-
-    .listtoggle, .toggle-wrapper {
-        display: none;
-    }
-
-    .nav-menu {
-        display: flex;
-        background-color: rgba(0, 0, 0, 0);
-    }
-
-    .nav-list {
         flex-direction: row;
     }
 
-    .mobile-wrapper {
-        width: fit-content;
-        margin-left: 3%;
-    }
-
-    .navitem {
-        font-size: 0.9rem;
-        width: fit-content;
-        padding: 1%;
-        padding-left: 2%;
-        padding-right: 2%
+    .logo {
+        width: auto;
+        height: 70vh;
+        margin-left: 10%;
     }
 }

@@ -8,15 +8,13 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta charset="utf-8">
         <meta name="description" content="Looking for a free and open source event management solution you can host yourself? myevent is a project that does exactly that.">
-        <script defer src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
-        <script defer src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.3/jquery-ui.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-        <script defer src="/js/index.js"></script>
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/dark.min.css">
         <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
         <script>hljs.highlightAll();</script>
     </head>
     <body>
         <div id="nav"></div>
+        <div id="backToTop" onclick="backToTop();"></div>
         <div class="title-wrapper">
             <h1>myevent</h1>
             <footer>Free & Open Source self-hosted event management solution</footer>
@@ -60,5 +58,29 @@
             </div>
         </div>
         <div id="footer"></div>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.3/jquery-ui.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+        <script>
+            let btn = document.getElementById( 'backToTop' );
+            $( document ).ready( function () {
+                $( '#nav' ).load( '/nav.html' );
+            } );
+
+            function backToTop () {
+                if ( document.body.scrollTop > 500 || document.documentElement.scrollTop > 500 ) {
+                    window.scrollTo( { top: 0, behavior: 'smooth' } );
+                }
+            }
+
+            window.onscroll = function () {
+                if ( document.body.scrollTop > 500 || document.documentElement.scrollTop > 500 ) {
+                    btn.style.opacity = '1';
+                    btn.style.cursor = 'pointer';
+                } else {
+                    btn.style.opacity = '0';
+                    btn.style.cursor = 'default';
+                }
+            };
+        </script>
     </body>
 </html>
