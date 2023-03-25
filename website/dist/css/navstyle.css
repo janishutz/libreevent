@@ -37,8 +37,6 @@
     overflow: hidden;
 }
 
-
-
 /* Logo image and logo link (aka logo-container)*/
 .logo-container-small {
     margin-left: 5%;
@@ -68,6 +66,13 @@
     margin-right: 5%;
     position: relative;
     z-index: 3;
+    transition: 0.8s;
+}
+
+.listtoggle:hover {
+    color: rgb(29, 69, 105);
+    transition: 0.4s;
+    font-size: 6vh;
 }
 
 
