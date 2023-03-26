@@ -6,7 +6,6 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Login :: myevent - admin panel</title>
         <link rel="stylesheet" href="/admin/css/loginstyle.css">
-        <script defer src="/admin/loginLangPack"></script>
     </head>
     <body>
         <div class="content">
@@ -15,7 +14,7 @@
                     <option value="en">English</option>
                     <option value="de">Deutsch</option>
                 </select>
-                <select name="theme" id="theme" class="selector" onchange="toggleTheme();">
+                <select name="theme" id="theme" class="selector" onchange="toggleTheme()">
                     <option value="system">System theme</option>
                     <option value="light">Light</option>
                     <option value="dark">Dark</option>
@@ -23,14 +22,14 @@
             </div>
             <a href="https://myevent.janishutz.com"><img src="/assets/logo.png" alt="myevent-logo" style="height: 35vh;"></a>
             <div class="login-app">
-                <h1>Login</h1>
+                <h1>Setup</h1>
                 <footer>myevent - admin panel</footer>
                 <form action="/admin/auth" method="post" class="form">
-                    <label for="mail" id="mailLabel">Email address</label><br>
+                    <label for="mail">Email address</label><br>
                     <input type="email" id="mail" name="mail" required class="input"><br>
-                    <label for="pwd" id="pwdLabel">Password</label><br>
+                    <label for="pwd">Password</label><br>
                     <input type="password" id="pwd" name="pwd" required class="input"><br>
-                    <input type="submit" value="Log in" class="button" id="login">
+                    <input type="submit" value="Log in" class="button">
                 </form>
             </div>
         </div>
