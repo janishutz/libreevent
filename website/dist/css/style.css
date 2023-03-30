@@ -21,8 +21,10 @@ body {
 }
 
 .dev {
-    background-color: red;
+    background-color: rgb(182, 69, 69, 0.9);
+    padding: 10px;
     text-align: center;
+    border-radius: 50px;
 }
 
 /* 

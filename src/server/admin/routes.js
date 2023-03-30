@@ -49,6 +49,11 @@ module.exports = ( app, settings ) => {
         } );
     } );
     
+    app.get( '/admin/logout', ( request, response ) => {
+        request.session.loggedIn = false;
+        response.send( 'logged out' );
+    } );
+
     /* 
         main admin panel access route. Will serve an html file
         that uses vue.js in its SPA form to make the admin panel
@@ -60,8 +65,16 @@ module.exports = ( app, settings ) => {
             if ( settings[ 'init' ] ) {
                 response.sendFile( path.join( __dirname + '/ui/panel.html' ) );
             } else {
-                response.sendFile( path.join( __dirname + '/ui/setup.html' ) );
+                response.sendFile( path.join( __dirname + '/ui/welcome.html' ) );
             }
+        } else {
+            response.redirect( '/admin/login' );
+        }
+    } );
+
+    app.get( '/admin/setup', ( request, response ) => {
+        if ( request.session.loggedIn ) {
+            response.sendFile( path.join( __dirname + '/ui/setup.html' ) );
         } else {
             response.redirect( '/admin/login' );
         }
