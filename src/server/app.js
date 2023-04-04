@@ -23,6 +23,7 @@ const root = process.env.ROOT || '/order';
 
 const settings = fs.readFileSync( path.join( __dirname + '/config.json' ) );
 
+
 // initialise express with middlewares
 app.use( expressSession( {
     secret: 'gaoevgoawefgo083tq2rfvöfaf0p8',

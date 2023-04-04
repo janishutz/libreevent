@@ -4,8 +4,9 @@
         <meta charset="UTF-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Login :: myevent - admin panel</title>
+        <title>Setup :: myevent - admin panel</title>
         <link rel="stylesheet" href="/admin/css/loginstyle.css">
+        <link rel="stylesheet" href="/admin/css/setupstyle.css">
     </head>
     <body>
         <div class="content">
@@ -20,17 +21,17 @@
                     <option value="dark">Dark</option>
                 </select>
             </div>
-            <a href="https://myevent.janishutz.com"><img src="/assets/logo.png" alt="myevent-logo" style="height: 35vh;"></a>
-            <div class="login-app">
-                <h1>Setup</h1>
-                <footer>myevent - admin panel</footer>
-                <form action="/admin/auth" method="post" class="form">
-                    <label for="mail">Email address</label><br>
-                    <input type="email" id="mail" name="mail" required class="input"><br>
-                    <label for="pwd">Password</label><br>
-                    <input type="password" id="pwd" name="pwd" required class="input"><br>
-                    <input type="submit" value="Log in" class="button">
-                </form>
+            <div class="setup-app">
+                <div class="setup-page">
+                    <h1>Setup</h1>
+                    <form action="/admin/auth" method="post" class="form">
+                        <label for="mail">Email address</label><br>
+                        <input type="email" id="mail" name="mail" required class="input"><br>
+                        <label for="pwd">Password</label><br>
+                        <input type="password" id="pwd" name="pwd" required class="input"><br>
+                        <input type="submit" value="Log in" class="button">
+                    </form>
+                </div>
             </div>
         </div>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
