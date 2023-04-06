@@ -88,6 +88,12 @@ body {
     align-items: center;
 }
 
+#footer {
+    height: 50vh;
+    width: 100%;
+    background-color: white;
+}
+
 #backToTop {
     border-radius: 500px;
     border-width: 1px;
