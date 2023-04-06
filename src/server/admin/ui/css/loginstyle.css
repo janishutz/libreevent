@@ -2,16 +2,18 @@
     --background-color: rgb(202, 223, 255);
     --secondary-background: white;
     --primary-color: black;
+    --primary-inverse: white;
     --secondary-color: blue;
     --secondary-hover: darkblue;
 }
 
 :root.dark {
     --background-color: rgb(42, 44, 56);
-        --secondary-background: rgb(19, 20, 32);
-        --primary-color: white;
-        --secondary-color: rgb(94, 94, 226);
-        --secondary-hover: rgb(155, 155, 255);
+    --secondary-background: rgb(19, 20, 32);
+    --primary-color: white;
+    --primary-inverse: black;
+    --secondary-color: rgb(94, 94, 226);
+    --secondary-hover: rgb(155, 155, 255);
 }
 
 @media ( prefers-color-scheme: dark ) {
@@ -61,7 +63,7 @@ body {
 
 .button {
     text-decoration: none;
-    color: var(--primary-color);
+    color: white;
     background-color: var(--secondary-color);
     padding: 15px;
     border-radius: 30px;
@@ -71,6 +73,7 @@ body {
 
 .button:hover {
     transition: ease-in-out 0.2s;
+    color: var(--primary-inverse);
     background-color: var(--secondary-hover);
     border-radius: 5px;
 }
