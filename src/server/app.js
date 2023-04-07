@@ -16,7 +16,6 @@ const bodyParser = require( 'body-parser' );
 const cookieParser = require( 'cookie-parser' );
 const favicon = require( 'serve-favicon' );
 const http = require( 'http' );
-const serveStatic = require( 'serve-static' );
 
 // const env = process.env.PROD || false;
 
@@ -35,44 +34,11 @@ app.use( expressSession( {
 app.use( bodyParser.urlencoded( { extended: false } ) );
 app.use( bodyParser.json() );
 app.use( cookieParser() );
-app.use( favicon( path.join( __dirname + '/ui/assets/logo.png' ) ) );
-app.use( serveStatic( __dirname + '/admin/ui/modules' ) );
+// app.use( favicon( path.join( __dirname + '/ui/assets/logo.png' ) ) );
+app.use( express.static( 'ui' ) );
 
-require( './admin/routes.js' )( app, settings ); // admin route
+// require( './admin/routes.js' )( app, settings ); // admin route
 
-if ( settings[ 'init' ] ) {
-    if ( root !== '/' ) {
-        app.get( '/', ( request, response ) => {
-            let lang = request.query.lang || 'en';
-            response.sendFile( path.join( __dirname + '/ui/html/' + lang + '/index.html' ) );
-        } );
-    }
-} else {
-    app.get( '/', ( request, response ) => {
-        response.sendFile( path.join( __dirname + '/ui/html/index.html' ) );
-    } );
-}
-
-
-// Assets route for logo, etc
-app.get( '/assets/:file', ( request, response ) => {
-    response.sendFile( path.join( __dirname + '/ui/assets/' + request.params.file ) );
-} );
-
-
-
-// CSS route for all user-facing CSS files
-app.get( '/css/:file', ( request, response ) => {
-    response.sendFile( path.join( __dirname + '/ui/css/' + request.params.file ) );
-} );
-
-
-
-// create 404 handler
-// eslint-disable-next-line no-unused-vars
-app.use( ( request, response, next ) => {
-    response.sendFile( path.join( __dirname + '/ui/html/en/errorResponses/404.html' ) );
-} );
 
 const PORT = process.env.PORT || 8080;
 http.createServer( app ).listen( PORT );
