@@ -16,12 +16,13 @@ const bodyParser = require( 'body-parser' );
 const cookieParser = require( 'cookie-parser' );
 const favicon = require( 'serve-favicon' );
 const http = require( 'http' );
+const serveStatic = require( 'serve-static' );
 
 // const env = process.env.PROD || false;
 
 const root = process.env.ROOT || '/order';
 
-const settings = fs.readFileSync( path.join( __dirname + '/config.json' ) );
+const settings = JSON.parse( fs.readFileSync( path.join( __dirname + '/config.json' ) ) );
 
 
 // initialise express with middlewares
@@ -35,6 +36,7 @@ app.use( bodyParser.urlencoded( { extended: false } ) );
 app.use( bodyParser.json() );
 app.use( cookieParser() );
 app.use( favicon( path.join( __dirname + '/ui/assets/logo.png' ) ) );
+app.use( serveStatic( __dirname + '/admin/ui/modules' ) );
 
 require( './admin/routes.js' )( app, settings ); // admin route
 

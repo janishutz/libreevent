@@ -1,2 +1,2 @@
 # How it works
-This page gives you a somewhat detailed overview on how the system operates. Note that this page is not made with user-legibility in mind, as this page is oriented to give possible contributors an introduction to the project to help them getting started.
+This page gives you a somewhat detailed overview on how the system operates. Note that this page is not made with user-legibility in mind, as this page is oriented to give possible contributors an introduction to the project to help them getting started. Therefore we expect you to have quite decent understanding of the underlying programming languages and concepts.

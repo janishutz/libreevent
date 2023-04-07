@@ -9,7 +9,7 @@
 
 const path = require( 'path' );
 const pwdmanager = require( './pwdmanager.js' );
-
+const fs = require( 'fs' );
 
 module.exports = ( app, settings ) => {
     /* 
@@ -25,6 +25,12 @@ module.exports = ( app, settings ) => {
 
     app.get( '/admin/loginLangPack', ( request, response ) => {
         response.sendFile( path.join( __dirname + '/ui/js/loginLangPack.js' ) );
+    } );
+
+    app.get( '/admin/js/:file', ( request, response ) => {
+        if ( request.session.loggedIn ) {
+            response.sendFile( path.join( __dirname + '/ui/js/' + request.params.file ) );
+        }
     } );
 
     app.get( '/admin/css/:file', ( request, response ) => {
@@ -69,6 +75,17 @@ module.exports = ( app, settings ) => {
             }
         } else {
             response.redirect( '/admin/login' );
+        }
+    } );
+
+
+    /* 
+        Send admin panel modules to UI as UI uses Vue.js Router
+    */
+    app.get( '/admin/panel/modules', ( request, response ) => {
+        let panelModules = { 'home': fs.readFileSync( path.join( __dirname + '/ui/panel/home.html' ) ).toString() };
+        if ( request.session.loggedIn ) {
+            response.send( panelModules );
         }
     } );
 
