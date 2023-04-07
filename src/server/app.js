@@ -11,17 +11,13 @@ const express = require( 'express' );
 let app = express();
 const path = require( 'path' );
 const expressSession = require( 'express-session' );
-const fs = require( 'fs' );
 const bodyParser = require( 'body-parser' );
 const cookieParser = require( 'cookie-parser' );
-const favicon = require( 'serve-favicon' );
 const http = require( 'http' );
 
 // const env = process.env.PROD || false;
 
-const root = process.env.ROOT || '/order';
-
-const settings = JSON.parse( fs.readFileSync( path.join( __dirname + '/config.json' ) ) );
+// const settings = JSON.parse( fs.readFileSync( path.join( __dirname + '/config.json' ) ) );
 
 
 // initialise express with middlewares
@@ -35,10 +31,12 @@ app.use( bodyParser.urlencoded( { extended: false } ) );
 app.use( bodyParser.json() );
 app.use( cookieParser() );
 // app.use( favicon( path.join( __dirname + '/ui/assets/logo.png' ) ) );
-app.use( express.static( 'ui' ) );
+app.use( express.static( '../webapp/dist' ) );
 
 // require( './admin/routes.js' )( app, settings ); // admin route
-
+app.use( ( request, response ) => {
+    response.sendFile( path.join( __dirname + '/../webapp/dist/index.html' ) );
+} );
 
 const PORT = process.env.PORT || 8080;
 http.createServer( app ).listen( PORT );
