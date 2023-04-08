@@ -40,22 +40,22 @@ const routes = [
     {
         path: '/admin',
         name: 'admin',
-        component: () => import( '../views/HomeView.vue' ),
+        component: () => import( '../views/admin/AdminView.vue' ),
         meta: {
             title: 'Admin - myevent'
         },
         children: [
             {
-                path: 'settings',
-                name: 'adminSettings',
-                component: () => import( '../views/AdminLoginView.vue' ),
+                path: '',
+                name: 'adminMain',
+                component: () => import( '../views/admin/HomeView.vue' ),
                 meta: {
-                    title: 'Admin - myevent'
+                    title: 'Home :: Admin - myevent'
                 }
             },
             {
-                path: '',
-                name: 'adminMain',
+                path: 'settings',
+                name: 'adminSettings',
                 component: () => import( '../views/AdminLoginView.vue' ),
                 meta: {
                     title: 'Admin - myevent'

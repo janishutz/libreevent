@@ -1,0 +1,99 @@
+<template>
+    <div class="admin-wrapper">
+        <div class="top-bar">
+            <h1>Admin panel</h1>
+        </div>
+        <nav class="side-nav">
+            <router-link to="/admin" class="admin-menu">Home</router-link>
+            <router-link to="/admin/admin-accounts" class="admin-menu">Admin Accounts</router-link>
+            <router-link to="/admin/pages" class="admin-menu">Pages</router-link>
+            <router-link to="/admin/events" class="admin-menu">Events</router-link>
+            <router-link to="/admin/plugins" class="admin-menu">Plugins</router-link>
+            <router-link to="/admin/settings" class="admin-menu">Settings</router-link>
+        </nav>
+        <div class="main-view">
+            <router-view v-slot="{ Component, route }">
+                <transition :name="route.meta.transition || 'fade'" mode="out-in">
+                    <component :is="Component" />
+                </transition>
+            </router-view>
+        </div>
+    </div>
+</template>
+
+<style scoped>
+    .admin-wrapper {
+        display: grid;
+        grid-template-areas:
+        'sidebar top top top'
+        'sidebar main main main'
+        'sidebar main main main'
+        'sidebar main main main'
+        'sidebar main main main'
+        'sidebar main main main'
+        'sidebar main main main'
+        'sidebar main main main'
+        'sidebar main main main';
+        height: 100%;
+    }
+
+    .top-bar {
+        grid-area: top;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100%;
+    }
+
+    .main-view {
+        grid-area: main;
+        height: 100%;
+        min-height: 80vh;
+    }
+
+    .side-nav {
+        grid-area: sidebar;
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        padding: 0;
+        margin: 0;
+        background-color: rgb(30, 30, 82);
+        justify-content: center;
+    }
+
+    .admin-menu {
+        padding: 4% 0%;
+        width: 100%;
+        background-color: rgba( 0, 0, 0, 0 );
+        color: white;
+        text-decoration: none;
+        transition: 1s;
+    }
+
+    nav a.router-link-exact-active {
+        background-color: #4380a8;
+    }
+
+    .admin-menu:hover {
+        background-color: #4380a8;
+        transition: 0.4s;
+    }
+
+</style>
+
+<script>
+    export default {
+        data () {
+            return {
+                formData: {}
+            }
+        },
+        methods: {
+            setup () {
+                
+            }
+        }
+    };
+</script>
+
