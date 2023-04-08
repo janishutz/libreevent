@@ -1,24 +1,7 @@
 <template>
     <div class="order">
-        <h1>Order tickets</h1>
-        <div class="order-app">
-            <ul>
-                <li>
-                    <router-link to="/tickets/details" class="ticket">
-                        <div class="ticket-name">
-                            <h3>Event name</h3>
-                            <p>Event description</p>
-                        </div>
-                        <div class="ticket-info">
-                            <p>Free seats / max seats</p>
-                            <p>Date & time of event</p>
-                            <h4>Starting at CHF 20.00</h4>
-                        </div>
-                        <img src="../assets/logo.png" alt="event logo" class="ticket-logo">
-                    </router-link>
-                </li>
-            </ul>
-        </div>
+        <h1>Purchase</h1>
+        <h3>Please choose a payment option</h3>
     </div>
 </template>
 

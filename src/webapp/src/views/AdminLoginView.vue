@@ -1,11 +1,11 @@
 <template>
     <div class="login">
         <div class="login-app">
-            <h1>Log into your account</h1>
+            <h1>Log into your admin account</h1>
             <form>
-                <label for="username">Username</label><br>
-                <input type="text" v-model="formData[ 'username' ]" name="username" id="username" required><br><br>
-                <label for="username">Password</label><br>
+                <label for="mail">Email address</label><br>
+                <input type="email" v-model="formData[ 'mail' ]" name="mail" id="mail" required><br><br>
+                <label for="password">Password</label><br>
                 <input type="text" v-model="formData[ 'password' ]" name="password" id="password" required>
             </form>
             <button @click="login();" class="button">Log in</button>

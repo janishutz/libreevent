@@ -34,8 +34,34 @@ const routes = [
         name: 'adminLogin',
         component: () => import( '../views/AdminLoginView.vue' ),
         meta: {
-            title: 'Admin - myevent'
+            title: 'Login :: Admin - myevent'
         }
+    },
+    {
+        path: '/admin',
+        name: 'admin',
+        component: () => import( '../views/HomeView.vue' ),
+        meta: {
+            title: 'Admin - myevent'
+        },
+        children: [
+            {
+                path: 'settings',
+                name: 'adminSettings',
+                component: () => import( '../views/AdminLoginView.vue' ),
+                meta: {
+                    title: 'Admin - myevent'
+                }
+            },
+            {
+                path: '',
+                name: 'adminMain',
+                component: () => import( '../views/AdminLoginView.vue' ),
+                meta: {
+                    title: 'Admin - myevent'
+                }
+            },
+        ]
     },
     {
         path: '/signup',
@@ -43,6 +69,33 @@ const routes = [
         component: () => import( '../views/SignupView.vue' ),
         meta: {
             title: 'Signup - myevent'
+        }
+    },
+    {
+        path: '/tickets/details',
+        name: 'ticketDetails',
+        component: () => import( '../views/TicketsDetailsView.vue' ),
+        meta: {
+            title: 'Details - myevent',
+            transition: 'scale'
+        }
+    },
+    {
+        path: '/cart',
+        name: 'cart',
+        component: () => import( '../views/CartView.vue' ),
+        meta: {
+            title: 'Cart - myevent',
+            transition: 'scale'
+        }
+    },
+    {
+        path: '/purchase',
+        name: 'purchase',
+        component: () => import( '@/views/PurchaseView.vue' ),
+        meta: {
+            title: 'Purchase - myevent',
+            transition: 'scale'
         }
     }
 ]
@@ -56,6 +109,15 @@ const router = createRouter( {
 
 router.afterEach( ( to, from ) => {
     document.title = to.meta.title ? to.meta.title : 'default title';
+} );
+
+let disallowed = [ 'admin', 'adminMain' ];
+let isAuthenticated = true;
+
+router.beforeEach( ( to, from ) => {
+    if ( disallowed.includes( to.name ) && !isAuthenticated ) {
+        return { name: 'adminLogin' };
+    }
 } );
 
 export default router;
