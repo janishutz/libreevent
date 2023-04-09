@@ -41,8 +41,8 @@
         align-items: center;
         justify-content: center;
         text-decoration: none;
-        color: black;
-        border-color: black;
+        color: var( --primary-color );
+        border-color: var( --primary-color );
         border-width: 1px;
         height: fit-content;
         border-style: solid;
@@ -51,7 +51,7 @@
     }
 
     .ticket:hover {
-        background-color: rgb(165, 165, 165);
+        background-color: var( --hover-color );
         transition: 0.4s;
     }
 

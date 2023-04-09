@@ -58,7 +58,7 @@
         height: 100%;
         padding: 0;
         margin: 0;
-        background-color: rgb(30, 30, 82);
+        background-color: var( --accent-background );
         justify-content: center;
     }
 
@@ -72,11 +72,11 @@
     }
 
     nav a.router-link-exact-active {
-        background-color: #4380a8;
+        background-color: var( --accent-background-hover );
     }
 
     .admin-menu:hover {
-        background-color: #4380a8;
+        background-color: var( --accent-background-hover );
         transition: 0.4s;
     }
 

@@ -42,7 +42,7 @@
     }
 
     .login-app {
-        background-color: white;
+        background-color: var( --background-color );
         width: 40%;
         height: 50%;
         display: flex;

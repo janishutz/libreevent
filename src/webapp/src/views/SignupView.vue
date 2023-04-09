@@ -50,6 +50,8 @@
         background-color: white;
         width: 40%;
         height: 50%;
+        min-height: fit-content;
+        min-width: fit-content;
         display: flex;
         flex-direction: column;
         align-items: center;

@@ -2,7 +2,7 @@
     <div class="order">
         <h1>Cart</h1>
         <h3>Your tickets</h3>
-        <ul>
+        <ul v-for="ticket in tickets">
             <li>Ticket</li>
         </ul>
         <router-link to="/purchase">Purchase now</router-link>
@@ -28,8 +28,8 @@
         align-items: center;
         justify-content: center;
         text-decoration: none;
-        color: black;
-        border-color: black;
+        color: var( --primary-color );
+        border-color: var( --primary-color );
         border-width: 1px;
         height: fit-content;
         border-style: solid;
@@ -38,7 +38,7 @@
     }
 
     .ticket:hover {
-        background-color: rgb(165, 165, 165);
+        background-color: var( --hover-color );
         transition: 0.4s;
     }
 
@@ -57,3 +57,18 @@
         margin-right: auto
     }
 </style>
+
+<script>
+    export default {
+        data() {
+            return {
+                tickets: {}
+            }
+        },
+        methods: {
+            loadCart () {
+                sessionStorage.getItem( 'selectedSeats' );
+            }
+        },
+    }
+</script>

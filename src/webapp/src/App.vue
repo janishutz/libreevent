@@ -13,12 +13,46 @@
 </template>
 
 <style>
+:root, :root.light {
+    --primary-color: #2c3e50;
+    --accent-background: rgb(30, 30, 82);
+    --secondary-color: white;
+    --background-color: white;
+    --accent-color: #42b983;
+    --hover-color: rgb(165, 165, 165);
+    --accent-background-hover: #4380a8;
+    --overlay-color: rgba(37, 37, 37, 0.575);
+}
+
+:root.dark {
+    --primary-color: white;
+    --accent-background: rgb(100, 100, 190);
+    --secondary-color: black;
+    --background-color: rgb(32, 32, 32);
+    --accent-color: #42b983;
+    --hover-color: rgb(165, 165, 165);
+    --accent-background-hover: #4380a8;
+}
+
+@media ( prefers-color-scheme: dark ) {
+    :root {
+        --primary-color: white;
+        --accent-background: rgb(100, 100, 190);
+        --secondary-color: black;
+        --background-color: rgb(32, 32, 32);
+        --accent-color: #42b983;
+        --hover-color: rgb(165, 165, 165);
+        --accent-background-hover: #4380a8;
+    }
+}
+
 html,
 body {
     width: 100%;
     height: 100%;
     margin: 0;
     padding: 0;
+    background-color: var( --background-color );
 }
 
 #app {
@@ -26,7 +60,7 @@ body {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-align: center;
-    color: #2c3e50;
+    color: var( --primary-color );
     height: 100%;
     display: flex;
     flex-direction: column;
@@ -38,7 +72,7 @@ nav {
 
 nav a {
     font-weight: bold;
-    color: #2c3e50;
+    color: var( --primary-color );
 }
 
 nav a.router-link-exact-active {

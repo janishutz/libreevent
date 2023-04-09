@@ -1,5 +1,5 @@
 <template>
-    <initial formData="formData"></initial>
+    <initial :formData="formData"></initial>
 </template>
 
 <script>

@@ -5,13 +5,13 @@
             <h3>{{ eventInfo.date }}</h3>
             <h3>{{ eventInfo.location }}</h3>
             <h3>Selected tickets</h3>
-            <table>
+            <table class="price-table">
                 <tr v-for="ticket in selectedSeats">
-                    <td>{{ seating[ ticket[ 1 ] ][ 'content' ][ ticket[ 0 ] ][ 'name' ] }}</td>
+                    <td>{{ seating[ ticket[ 1 ] ][ 'content' ][ ticket[ 0 ] ][ 'name' ] }} ({{ eventInfo[ 'ageGroups' ][ ticket[ 2 ] ][ 'name' ] }})</td>
                     <td>{{ eventInfo[ 'currency' ] }} {{ eventInfo[ 'categories' ][ seating[ ticket[ 1 ] ][ 'content' ][ ticket[ 0 ] ][ 'category' ] ][ 'price' ][ ticket[ 2 ] ] }}</td>
                 </tr>
             </table>
-            <h3>Total</h3>
+            <h3>Total: {{ eventInfo[ 'currency' ] }} {{ total }}</h3>
             <router-link to="/cart">To cart</router-link>
         </div>
         <div class="seatingPlan">
@@ -63,7 +63,7 @@
                         <span class="material-symbols-outlined close-button" @click="closePlaceNotAvailablePopup()">close</span>
                     </div>
                     <div class="popup-content-wrapper">
-                        <h3>One or more seat(s) you have previously selected are/is no longer available!</h3>
+                        <h3>One or more seat(s) you have previously selected is/are no longer available!</h3>
                         <p>Please select another one!</p>
                         <button class="button" @click="closePlaceNotAvailablePopup()">Ok</button>
                     </div>
@@ -84,9 +84,10 @@ export default {
     data () {
         return {
             seating: { 'r1': { 'name': 'Row 1', 'id': 'r1', 'content':{ 'S1':{ 'name': 'Seat 1', 'id': 'S1', 'available': true, 'selected': false, 'category':'1' } } }, 'r2': { 'name': 'Row 2', 'id': 'r2', 'content':{ 'S1':{ 'name': 'S1', 'id': 'S1', 'available': true, 'selected': false, 'category':'2' } } } },
-            eventInfo: { 'name': 'TestEvent', 'location': 'TestLocation', 'date': 'TestDate', 'RoomName': 'TestRoom', 'currency': 'CHF', 'categories': { '1': { 'price': { '1':25, '2':35 }, 'bg': 'black', 'fg': 'white' }, '2': { 'price': { '1':15, '2':20 }, 'bg': 'green', 'fg': 'white' } }, 'ageGroups': { '1':{ 'id': 1, 'name':'Child', 'age':'0 - 15.99' }, '2':{ 'id': 2, 'name': 'Adult', 'age': null } }, 'stage': true },
+            eventInfo: { 'name': 'TestEvent', 'location': 'TestLocation', 'date': 'TestDate', 'RoomName': 'TestRoom', 'currency': 'CHF', 'categories': { '1': { 'price': { '1':25, '2':35 }, 'bg': 'black', 'fg': 'white', 'name': 'Category 1' }, '2': { 'price': { '1':15, '2':20 }, 'bg': 'green', 'fg': 'white', 'name': 'Category 1' } }, 'ageGroups': { '1':{ 'id': 1, 'name':'Child', 'age':'0 - 15.99' }, '2':{ 'id': 2, 'name': 'Adult', 'age': null } }, 'ageGroupCount':2, 'stage': true },
             selectedSeats: {},
-            pricingCurrentlySelected: {}
+            pricingCurrentlySelected: {},
+            total: 0,
         }
     },
     methods: {
@@ -116,12 +117,20 @@ export default {
             sessionStorage.setItem( 'selectedSeats', JSON.stringify( data ) );
             
             this.selectedSeats = data;
+            this.sumUp();
         },
         sumUp () {
             let data = {};
             if ( sessionStorage.getItem( 'selectedSeats' ) ) {
                 data = JSON.parse( sessionStorage.getItem( 'selectedSeats' ) );
             }
+
+            let price = 0;
+            for ( let i in data ) {
+                price += this.eventInfo[ 'categories' ][ this.seating[ data[ i ][ 1 ] ][ 'content' ][ data[ i ][ 0 ] ][ 'category' ] ][ 'price' ][ data[ i ][ 2 ] ];
+            }
+
+            this.total = price;
         },
         closePlaceNotAvailablePopup () {
             $( '#placeNotAvailable' ).hide( 300 );
@@ -148,8 +157,13 @@ export default {
                 sessionStorage.setItem( 'arrayIndex', index );
                 sessionStorage.setItem( 'selectedSeats', JSON.stringify( data ) );
                 this.selectedSeats = data;
+                this.sumUp();
             } else {
-                $( '#overlay' ).show( 200 );
+                if ( this.eventInfo.ageGroupCount > 1 ) {
+                    $( '#overlay' ).show( 200 );
+                } else {
+                    this.storeSeat( '1' );
+                }
             }
 
             this.pricingCurrentlySelected = this.eventInfo[ 'categories' ][ this.seating[ rowID ][ 'content' ][ placeID ][ 'category' ] ][ 'price' ];
@@ -177,6 +191,7 @@ export default {
             sessionStorage.setItem( 'selectedSeats', JSON.stringify( data ) );
             this.selectedSeats = data;
             $( '#overlay' ).hide( 200 );
+            this.sumUp();
         }
     },
     created() {
@@ -203,8 +218,8 @@ export default {
 
     .sidebar {
         grid-area: sidebar;
-        background-color: rgb(30, 30, 82);
-        color: white;
+        background-color: var( --accent-background );
+        color: var( --secondary-color );
         overflow: scroll;
     }
 
@@ -222,7 +237,7 @@ export default {
     }
 
     .occupied {
-        background-color: rgb(177, 177, 177);
+        background-color: var( --hover-color );
         padding: 0.4%;
     }
 
@@ -233,7 +248,7 @@ export default {
         left: 0;
         right: 0;
         bottom: 0;
-        background-color: rgba(37, 37, 37, 0.575);
+        background-color: var( --overlay-color );
         height: 100%;
         width: 100%;
     }
@@ -248,7 +263,7 @@ export default {
     }
 
     .popup-content {
-        background-color: white;
+        background-color: var( --background-color );
         height: 60%;
         width: 50%;
         display: flex;
@@ -283,7 +298,7 @@ export default {
         list-style: none;
         padding: 7px 15px;
         border-radius: 10px;
-        border-color: black;
+        border-color: var( --primary-color );
         border-style: solid;
         border-width: 1px;
         margin: 3px 0px;
@@ -291,7 +306,7 @@ export default {
     }
 
     .stage {
-        border-color: black;
+        border-color: var( --primary-color );
         border-style: solid;
         width: 80%;
         height: 7%;
@@ -302,8 +317,8 @@ export default {
     }
 
     .button {
-        background-color: rgb(38, 38, 68);
-        color: white;
+        background-color: var( --accent-background );
+        color: var( --secondary-color );
         font-weight: bold;
         font-size: 110%;
         border-radius: 20px;
@@ -313,8 +328,12 @@ export default {
     }
 
     .button:hover {
-        background-color: rgb(74, 74, 138);
+        background-color: var( --accent-background-hover );
         transition: 0.3s;
         cursor: pointer;
+    }
+
+    .price-table {
+        width: 100%;
     }
 </style>
