@@ -4,7 +4,7 @@
         <div class="order-app">
             <ul>
                 <li>
-                    <router-link to="/tickets/details" class="ticket">
+                    <router-link to="/tickets/details" class="ticket" @click="setActiveTicket( 'test' );">
                         <div class="ticket-name">
                             <h3>Event name</h3>
                             <p>Event description</p>
@@ -70,3 +70,14 @@
         margin-right: auto
     }
 </style>
+
+<script>
+    export default {
+        name: 'OrderView',
+        methods: {
+            setActiveTicket ( id ) {
+                sessionStorage.setItem( 'selectedTicket', id );
+            }
+        }
+    };
+</script>

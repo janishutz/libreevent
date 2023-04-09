@@ -54,6 +54,38 @@ const routes = [
                 }
             },
             {
+                path: 'admin-accounts',
+                name: 'adminAccounts',
+                component: () => import( '../views/AdminLoginView.vue' ),
+                meta: {
+                    title: 'Accounts :: Admin - myevent'
+                }
+            },
+            {
+                path: 'pages',
+                name: 'adminPages',
+                component: () => import( '../views/AdminLoginView.vue' ),
+                meta: {
+                    title: 'Pages :: Admin - myevent'
+                }
+            },
+            {
+                path: 'events',
+                name: 'adminEvents',
+                component: () => import( '../views/AdminLoginView.vue' ),
+                meta: {
+                    title: 'Events :: Admin - myevent'
+                }
+            },
+            {
+                path: 'plugins',
+                name: 'adminPlugins',
+                component: () => import( '../views/AdminLoginView.vue' ),
+                meta: {
+                    title: 'Plugins :: Admin - myevent'
+                }
+            },
+            {
                 path: 'settings',
                 name: 'adminSettings',
                 component: () => import( '../views/AdminLoginView.vue' ),
@@ -103,20 +135,28 @@ const routes = [
 const router = createRouter( {
     history: createWebHistory( process.env.BASE_URL ),
     routes,
-    
 } );
 
 
 router.afterEach( ( to, from ) => {
-    document.title = to.meta.title ? to.meta.title : 'default title';
+    document.title = to.meta.title ? to.meta.title : 'myevent';
 } );
 
-let disallowed = [ 'admin', 'adminMain' ];
-let isAuthenticated = true;
+/* 
+    TODO: Get auth status from server on reload
+*/
+
+let AdminPages = [ 'admin', 'adminMain' ];
+let isAdminAuthenticated = true;
+
+let UserAccountPages = [ 'account' ];
+let isUserAuthenticated = true;
 
 router.beforeEach( ( to, from ) => {
-    if ( disallowed.includes( to.name ) && !isAuthenticated ) {
+    if ( AdminPages.includes( to.name ) && !isAdminAuthenticated ) {
         return { name: 'adminLogin' };
+    } else if ( UserAccountPages.includes( to.name ) && !isUserAuthenticated ) {
+        return { name: 'login' };
     }
 } );
 

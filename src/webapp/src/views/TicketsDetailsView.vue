@@ -18,6 +18,11 @@
         name: 'TicketsDetailsView',
         components: {
             seatplan
+        },
+        created () {
+            if ( !sessionStorage.getItem( 'selectedTicket' ) ) {
+                this.$router.push( '/tickets' );
+            }
         }
     };
 </script>
