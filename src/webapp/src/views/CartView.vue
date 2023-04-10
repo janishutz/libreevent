@@ -3,7 +3,7 @@
         <h1>Cart</h1>
         <h3>Your tickets</h3>
         <ul v-for="ticket in tickets">
-            <li>Ticket</li>
+            <li>{{ ticket }}</li>
         </ul>
         <router-link to="/purchase">Purchase now</router-link>
     </div>
@@ -67,7 +67,7 @@
         },
         methods: {
             loadCart () {
-                sessionStorage.getItem( 'selectedSeats' );
+                sessionStorage.getItem( 'cart' );
             }
         },
     }
