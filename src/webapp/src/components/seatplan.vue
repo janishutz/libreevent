@@ -5,14 +5,17 @@
             <h3>{{ eventInfo.date }}</h3>
             <h3>{{ eventInfo.location }}</h3>
             <h3>Selected tickets</h3>
-            <table class="price-table">
-                <tr v-for="ticket in selectedSeats">
-                    <td>{{ seating[ ticket[ 1 ] ][ 'content' ][ ticket[ 0 ] ][ 'name' ] }} ({{ eventInfo[ 'ageGroups' ][ ticket[ 2 ] ][ 'name' ] }})</td>
-                    <td>{{ eventInfo[ 'currency' ] }} {{ eventInfo[ 'categories' ][ seating[ ticket[ 1 ] ][ 'content' ][ ticket[ 0 ] ][ 'category' ] ][ 'price' ][ ticket[ 2 ] ] }}</td>
+            <table class="price-table" v-for="event in selectedSeats">
+                <tr>
+                    <h4>{{ event.name }}</h4>
+                </tr>
+                <tr v-for="ticket in event.selectedSeats">
+                    <td>{{ seating[ ticket[ 'row' ] ][ 'content' ][ ticket[ 'seat' ] ][ 'name' ] }} ({{ eventInfo[ 'ageGroups' ][ ticket[ 'categoryID' ] ][ 'name' ] }})</td>
+                    <td>{{ eventInfo[ 'currency' ] }} {{ ticket[ 'price' ] }}</td>
                 </tr>
             </table>
             <h3>Total: {{ eventInfo[ 'currency' ] }} {{ total }}</h3>
-            <button @click="addToCart()">Add to cart</button>
+            <router-link to="/cart">To cart</router-link>
         </div>
         <div class="seatingPlan">
             <h3>Seating plan</h3>
@@ -74,8 +77,6 @@
 </template>
 
 <script>
-let index = sessionStorage.getItem( 'arrayIndex' ) ? parseInt( sessionStorage.getItem( 'arrayIndex' ) ) : 0;
-
 export default {
     name: 'noseatplan',
     props: {
@@ -95,12 +96,18 @@ export default {
             /* 
                 This function is called whenever the data on the webpage is to be reloaded
             */
-            let data = sessionStorage.getItem( this.ticketID ?? 'default' ) ? JSON.parse( sessionStorage.getItem( this.ticketID ?? 'default' ) ) : {};
+           
+            // load data from cart and set up cart if not available
+            let cart = sessionStorage.getItem( 'cart' ) ? JSON.parse( sessionStorage.getItem( 'cart' ) ) : {};
+            cart[ this.ticketID ?? 'default' ] = cart[ this.ticketID ?? 'default' ] ? cart[ this.ticketID ?? 'default' ] : { 'name': this.eventInfo.name, 'date': this.eventInfo.date, 'location': this.eventInfo.location, 'currency': this.eventInfo.currency };
+            cart[ this.ticketID ?? 'default' ][ 'selectedSeats' ] = cart[ this.ticketID ?? 'default' ][ 'selectedSeats' ] ? cart[ this.ticketID ?? 'default' ][ 'selectedSeats' ] : {};
 
+            let data = cart[ this.ticketID ?? 'default' ][ 'selectedSeats' ] ? cart[ this.ticketID ?? 'default' ][ 'selectedSeats' ] : {};
+            
             let showError = false
             for ( let i in data ) {
-                if ( this.seating[ data[ i ][ 1 ] ][ 'content' ][ data[ i ][ 0 ] ][ 'available' ] ) {
-                    this.seating[ data[ i ][ 1 ] ][ 'content' ][ data[ i ][ 0 ] ][ 'selected' ] = true;
+                if ( this.seating[ data[ i ][ 'row' ] ][ 'content' ][ data[ i ][ 'seat' ] ][ 'available' ] ) {
+                    this.seating[ data[ i ][ 'row' ] ][ 'content' ][ data[ i ][ 'seat' ] ][ 'selected' ] = true;
                 } else {
                     showError = true;
                     delete data[ i ];
@@ -114,18 +121,21 @@ export default {
                 }, 500 );
             }
 
-            sessionStorage.setItem( this.ticketID ?? 'default', JSON.stringify( data ) );
-            
-            this.selectedSeats = data;
+            cart[ this.ticketID ?? 'default' ][ 'selectedSeats' ] = data;
+            sessionStorage.setItem( 'cart', JSON.stringify( cart ) );
+
+            this.selectedSeats = cart;
             this.sumUp();
         },
         sumUp () {
             // This function calculates the total price of the tickets for this event.
-            let data = sessionStorage.getItem( this.ticketID ?? 'default' ) ? JSON.parse( sessionStorage.getItem( this.ticketID ?? 'default' ) ) : {};
+            let cart = sessionStorage.getItem( 'cart' ) ? JSON.parse( sessionStorage.getItem( 'cart' ) ) : {};
 
             let price = 0;
-            for ( let i in data ) {
-                price += this.eventInfo[ 'categories' ][ this.seating[ data[ i ][ 1 ] ][ 'content' ][ data[ i ][ 0 ] ][ 'category' ] ][ 'price' ][ data[ i ][ 2 ] ];
+            for ( let i in cart ) {
+                for ( let entry in cart[ i ][ 'selectedSeats' ] ) {
+                    price += parseInt( cart[ i ][ 'selectedSeats' ][ entry ][ 'price' ] );
+                }
             }
 
             this.total = price;
@@ -139,12 +149,16 @@ export default {
                 been selected.
             */
             sessionStorage.setItem( 'tempStorage', JSON.stringify( { 1:[ placeID, rowID ] } ) );
-            let data = sessionStorage.getItem( this.ticketID ?? 'default' ) ? JSON.parse( sessionStorage.getItem( this.ticketID ?? 'default' ) ) : {};
+            let cart = sessionStorage.getItem( 'cart' ) ? JSON.parse( sessionStorage.getItem( 'cart' ) ) : {};
+            cart[ this.ticketID ?? 'default' ] = cart[ this.ticketID ?? 'default' ] ? cart[ this.ticketID ?? 'default' ] : {};
+            cart[ this.ticketID ?? 'default' ][ 'selectedSeats' ] = cart[ this.ticketID ?? 'default' ][ 'selectedSeats' ] ? cart[ this.ticketID ?? 'default' ][ 'selectedSeats' ] : {};
             
+            let data = cart[ this.ticketID ?? 'default' ][ 'selectedSeats' ] ? cart[ this.ticketID ?? 'default' ][ 'selectedSeats' ] : {};
+
             let isDeleting = false;
                         
             for ( let i in data ) {
-                if ( data[ i ][ 0 ] == placeID && data[ i ][ 1 ] == rowID ) {
+                if ( data[ i ][ 'seat' ] == placeID && data[ i ][ 'row' ] == rowID ) {
                     delete data[ i ];
                     isDeleting = true;
                 }
@@ -153,9 +167,9 @@ export default {
             this.seating[ rowID ][ 'content' ][ placeID ][ 'selected' ] = !isDeleting;
             
             if ( isDeleting ) {
-                sessionStorage.setItem( 'arrayIndex', index );
-                sessionStorage.setItem( this.ticketID ?? 'default', JSON.stringify( data ) );
-                this.selectedSeats = data;
+                cart[ this.ticketID ?? 'default' ][ 'selectedSeats' ] = data;
+                sessionStorage.setItem( 'cart', JSON.stringify( cart ) );
+                this.selectedSeats = cart;
                 this.sumUp();
             } else {
                 if ( this.eventInfo.ageGroupCount > 1 ) {
@@ -177,39 +191,26 @@ export default {
             /* 
                 This function stores a ticket into the event's selected seat sessionStorage.
             */
-            let data = sessionStorage.getItem( this.ticketID ?? 'default' ) ? JSON.parse( sessionStorage.getItem( this.ticketID ?? 'default' ) ) : {};
+
+            let cart = sessionStorage.getItem( 'cart' ) ? JSON.parse( sessionStorage.getItem( 'cart' ) ) : {};
+            cart[ this.ticketID ?? 'default' ] = cart[ this.ticketID ?? 'default' ] ? cart[ this.ticketID ?? 'default' ] : { 'name': this.eventInfo.name, 'date': this.eventInfo.date, 'location': this.eventInfo.location, 'currency': this.eventInfo.currency };
+            cart[ this.ticketID ?? 'default' ][ 'selectedSeats' ] = cart[ this.ticketID ?? 'default' ][ 'selectedSeats' ] ? cart[ this.ticketID ?? 'default' ][ 'selectedSeats' ] : {};
+
+            let data = cart[ this.ticketID ?? 'default' ][ 'selectedSeats' ] ? cart[ this.ticketID ?? 'default' ][ 'selectedSeats' ] : {};
 
             let seat = JSON.parse( sessionStorage.getItem( 'tempStorage' ) );
+
+            let ticket = this.seating[ seat[ 1 ][ 1 ] ][ 'content' ][ seat[ 1 ][ 0 ] ]
+            let ticketData = { 'name': ticket[ 'name' ], 'categoryID': ticketOption, 'category': this.eventInfo[ 'categories' ][ ticket[ 'category' ] ], 'price': this.eventInfo[ 'categories' ][ this.seating[ seat[ 1 ][ 1 ] ][ 'content' ][ seat[ 1 ][ 0 ] ][ 'category' ] ][ 'price' ][ ticketOption ], 'row':seat[ 1 ][ 1 ], 'seat':seat[ 1 ][ 0 ], 'ageGroup': this.eventInfo[ 'ageGroups' ][ ticketOption ][ 'name' ] };
+            data[ String( seat[ 1 ][ 1 ] ) + String( seat[ 1 ][ 0 ] ) ] = ticketData;
+
+            cart[ this.ticketID ?? 'default' ][ 'selectedSeats' ] = data;
             
-            sessionStorage.setItem( this.ticketID ?? 'default', JSON.stringify( data ) );
-            this.selectedSeats = data;
-
-            data[ index ] = [ seat[ 1 ][ 0 ], seat[ 1 ][ 1 ], String( ticketOption ) ];
-            index += 1;
-
-            sessionStorage.setItem( 'arrayIndex', index );
-            sessionStorage.setItem( this.ticketID ?? 'default', JSON.stringify( data ) );
-            this.selectedSeats = data;
+            sessionStorage.setItem( 'cart', JSON.stringify( cart ) );
+            this.selectedSeats = cart;
             $( '#overlay' ).hide( 200 );
             this.sumUp();
         },
-        addToCart () {
-            let cart = sessionStorage.getItem( 'cart' ) ? JSON.parse( sessionStorage.getItem( 'cart' ) ) : {};
-            let data = sessionStorage.getItem( this.ticketID ?? 'default' ) ? JSON.parse( sessionStorage.getItem( this.ticketID ?? 'default' ) ) : {};
-
-            cart[ this.ticketID ?? 'default' ] = { 'name': this.eventInfo.name, 'date': this.eventInfo.date, 'location': this.eventInfo.location, 'currency': this.eventInfo.currency };
-            for ( let seat in data ) {
-                let ticket = this.seating[ data[ seat ][ 1 ] ][ 'content' ][ data[ seat ][ 0 ] ]
-                let ticketData = { 'name': ticket[ 'name' ], 'categoryID': ticket[ 'category' ], 'category': this.eventInfo[ 'categories' ][ ticket[ 'category' ] ], 'price': this.eventInfo[ 'categories' ][ this.seating[ data[ seat ][ 1 ] ][ 'content' ][ data[ seat ][ 0 ] ][ 'category' ] ][ 'price' ][ data[ seat ][ 2 ] ] };
-                console.log( ticketData );
-                cart[ this.ticketID ?? 'default' ][ String( data[ seat ][ 1 ] ) + String( data[ seat ][ 0 ] ) ] = ticketData;
-            }
-            cart[ this.ticketID ?? 'default' ][ 'total' ] = this.total;
-
-            sessionStorage.setItem( 'cart', JSON.stringify( cart ) );
-
-            // Sever call to reserve the tickets.
-        }
     },
     created() {
         this.loadPreviouslySelected();

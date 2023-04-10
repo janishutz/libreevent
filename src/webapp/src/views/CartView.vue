@@ -1,9 +1,13 @@
 <template>
-    <div class="order">
+    <div class="cart">
         <h1>Cart</h1>
         <h3>Your tickets</h3>
-        <ul v-for="ticket in tickets">
-            <li>{{ ticket }}</li>
+        <ul v-for="event in tickets" class="cart-list">
+            <li>{{ event.name }}
+                <ul v-for="ticket in event.selectedSeats">
+                    <li>{{ ticket.name }} ({{ ticket.category.name }}, {{ ticket.ageGroup }}) {{ event.currency }} {{ ticket.price }}</li>
+                </ul>
+            </li>
         </ul>
         <router-link to="/purchase">Purchase now</router-link>
     </div>
@@ -18,7 +22,7 @@
         justify-content: center;
     }
 
-    ul {
+    .cart-list {
         list-style: none;
         width: 80%;
     }
@@ -67,8 +71,11 @@
         },
         methods: {
             loadCart () {
-                sessionStorage.getItem( 'cart' );
+                this.tickets = JSON.parse( sessionStorage.getItem( 'cart' ) );
             }
         },
+        created () {
+            this.loadCart();
+        }
     }
 </script>
