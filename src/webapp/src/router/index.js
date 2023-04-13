@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
+import { useUserStore } from '@/stores/userStore';
 
 /* 
     This is the Vue.js router file. Here, all valid routes are defined.
@@ -42,7 +43,8 @@ const routes = [
         name: 'admin',
         component: () => import( '../views/admin/AdminView.vue' ),
         meta: {
-            title: 'Admin - myevent'
+            title: 'Admin - myevent',
+            adminAuthRequired: true,
         },
         children: [
             {
@@ -50,7 +52,8 @@ const routes = [
                 name: 'adminMain',
                 component: () => import( '../views/admin/HomeView.vue' ),
                 meta: {
-                    title: 'Home :: Admin - myevent'
+                    title: 'Home :: Admin - myevent',
+                    adminAuthRequired: true,
                 }
             },
             {
@@ -58,7 +61,8 @@ const routes = [
                 name: 'adminAccounts',
                 component: () => import( '../views/AdminLoginView.vue' ),
                 meta: {
-                    title: 'Accounts :: Admin - myevent'
+                    title: 'Accounts :: Admin - myevent',
+                    adminAuthRequired: true,
                 }
             },
             {
@@ -66,7 +70,8 @@ const routes = [
                 name: 'adminPages',
                 component: () => import( '../views/AdminLoginView.vue' ),
                 meta: {
-                    title: 'Pages :: Admin - myevent'
+                    title: 'Pages :: Admin - myevent',
+                    adminAuthRequired: true,
                 }
             },
             {
@@ -74,7 +79,8 @@ const routes = [
                 name: 'adminEvents',
                 component: () => import( '../views/AdminLoginView.vue' ),
                 meta: {
-                    title: 'Events :: Admin - myevent'
+                    title: 'Events :: Admin - myevent',
+                    adminAuthRequired: true,
                 }
             },
             {
@@ -82,7 +88,8 @@ const routes = [
                 name: 'adminPlugins',
                 component: () => import( '../views/AdminLoginView.vue' ),
                 meta: {
-                    title: 'Plugins :: Admin - myevent'
+                    title: 'Plugins :: Admin - myevent',
+                    adminAuthRequired: true,
                 }
             },
             {
@@ -90,7 +97,8 @@ const routes = [
                 name: 'adminSettings',
                 component: () => import( '../views/AdminLoginView.vue' ),
                 meta: {
-                    title: 'Admin - myevent'
+                    title: 'Admin - myevent',
+                    adminAuthRequired: true,
                 }
             },
         ]
@@ -126,8 +134,17 @@ const routes = [
         name: 'purchase',
         component: () => import( '@/views/PurchaseView.vue' ),
         meta: {
-            title: 'Purchase - myevent',
+            title: 'Pay - myevent',
             transition: 'scale'
+        }
+    },
+    {
+        path: '/pay',
+        name: 'pay',
+        component: () => import( '@/views/PaymentView.vue' ),
+        meta: {
+            title: 'Pay - myevent',
+            transition: 'scale',
         }
     }
 ]
@@ -147,16 +164,24 @@ router.afterEach( ( to, from ) => {
 */
 
 let AdminPages = [ 'admin', 'adminMain' ];
-let isAdminAuthenticated = true;
 
 let UserAccountPages = [ 'account' ];
-let isUserAuthenticated = true;
+
+let authRequired = false;
 
 router.beforeEach( ( to, from ) => {
-    if ( AdminPages.includes( to.name ) && !isAdminAuthenticated ) {
+    let userStore = useUserStore();
+    let isUserAuthenticated = userStore.getUserAuthenticated;
+    let isAdminAuthenticated = userStore.getAdminAuthenticated;
+
+    if ( to.meta.adminAuthRequired && !isAdminAuthenticated ) {
         return { name: 'adminLogin' };
     } else if ( UserAccountPages.includes( to.name ) && !isUserAuthenticated ) {
         return { name: 'login' };
+    } else if ( !isUserAuthenticated && to.name === 'purchase' && authRequired ) {
+        return { name: 'login' };
+    } else if ( !isUserAuthenticated && to.name === 'pay' ) {
+        return { name: 'purchase' };
     }
 } );
 

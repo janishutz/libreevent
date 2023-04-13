@@ -14,17 +14,22 @@
 </template>
 
 <style scoped>
-    .order-app {
+    .cart {
         text-align: justify;
         width: 100%;
         display: flex;
+        flex-direction: column;
         align-items: center;
         justify-content: center;
     }
 
     .cart-list {
+        width: 50%;
+    }
+    
+    ul {
         list-style: none;
-        width: 80%;
+        text-align: justify;
     }
 
     .ticket {

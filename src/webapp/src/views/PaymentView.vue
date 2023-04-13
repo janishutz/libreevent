@@ -1,21 +1,12 @@
 <template>
-    <div class="purchase">
+    <div class="order">
         <h1>Purchase</h1>
-        <h3>Personal information</h3>
-        <div class="purchase-app">
-            <form>
-                <div v-if="!isAuthenticated">
-                    <label for="email">Email address *</label><br>
-                    <input type="email" name="email" id="email" required v-model="formData.email">
-                </div>
-            </form>
-        </div>
-
+        <h3>Please choose a payment option</h3>
     </div>
 </template>
 
 <style scoped>
-    .purchase-app {
+    .order-app {
         text-align: justify;
         width: 100%;
         display: flex;
@@ -62,16 +53,3 @@
         margin-right: auto
     }
 </style>
-
-<script>
-export default {
-    name: 'PurchaseView',
-    data () {
-        return {
-            settings: { 'accountRequired':true },
-            isAuthenticated: false,
-            formData: {}
-        }
-    }
-};
-</script>

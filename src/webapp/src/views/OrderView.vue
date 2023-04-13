@@ -2,19 +2,19 @@
     <div class="order">
         <h1>Order tickets</h1>
         <div class="order-app">
-            <ul>
+            <ul v-for="event in events">
                 <li>
                     <router-link to="/tickets/details" class="ticket" @click="setActiveTicket( 'test' );">
                         <div class="ticket-name">
-                            <h3>Event name</h3>
-                            <p>Event description</p>
+                            <h3>{{ event.name }}</h3>
+                            <p>{{ event.description }}</p>
                         </div>
                         <div class="ticket-info">
-                            <p>Free seats / max seats</p>
-                            <p>Date & time of event</p>
-                            <h4>Starting at CHF 20.00</h4>
+                            <p>Free seats: {{ event.freeSeats }} / {{ event.maxSeats }}</p>
+                            <p>{{ event.location }}, {{ event.date }}</p>
+                            <h4>Starting at {{ event.currency }} {{ event.startingPrice }}</h4>
                         </div>
-                        <img src="../assets/logo.png" alt="event logo" class="ticket-logo">
+                        <img :src="require( '@/assets/' + event.logo )" alt="event logo" class="ticket-logo">
                     </router-link>
                 </li>
             </ul>
@@ -63,6 +63,7 @@
 
     .ticket-name {
         margin-right: auto;
+        max-width: 35%;
     }
 
     .ticket-info {
@@ -77,6 +78,11 @@
         methods: {
             setActiveTicket ( id ) {
                 sessionStorage.setItem( 'selectedTicket', id );
+            }
+        },
+        data () {
+            return {
+                events: { 'test':{ 'name': 'TestEvent', 'description': 'This is a description for the TestEvent to test multiline support and proper positioning of the Fields', 'freeSeats': 2, 'maxSeats': 2, 'date':'TestDate', 'startingPrice':15, 'location': 'TestLocation', 'eventID': 'test', 'currency': 'CHF', 'logo': 'logo.png' } }
             }
         }
     };
