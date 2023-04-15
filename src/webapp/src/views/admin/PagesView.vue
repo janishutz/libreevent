@@ -1,10 +1,12 @@
 <template>
-    <initial></initial>
+    <div>
+        <h2>Pages</h2>
+        <p>Welcome to the admin panel!</p>
+        <div class="bigButtons"></div>
+    </div>
 </template>
 
 <script>
-    import initial from '@/components/initial.vue';
-
     export default {
         data () {
             return {
@@ -15,9 +17,6 @@
             setup () {
                 
             }
-        },
-        components: {
-            initial
         }
     };
 </script>

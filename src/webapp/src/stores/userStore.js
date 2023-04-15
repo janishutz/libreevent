@@ -1,7 +1,7 @@
 import { defineStore } from "pinia";
 
 export const useUserStore = defineStore ( 'user', {
-    state: () => ( { 'isUserAuth': false, 'isAdminAuth': false } ),
+    state: () => ( { 'isUserAuth': false, 'isAdminAuth': true, 'userPermissions': {} } ),
     getters: {
         getUserAuthenticated: ( state ) => state.isUserAuth,
         getAdminAuthenticated: ( state ) => state.isAdminAuth,

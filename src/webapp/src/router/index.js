@@ -39,6 +39,15 @@ const routes = [
         }
     },
     {
+        path: '/setup',
+        name: 'setup',
+        component: () => import( '../views/SetupView.vue' ),
+        meta: {
+            title: 'Login :: Admin - myevent',
+            requiresSetupKey: true,
+        }
+    },
+    {
         path: '/admin',
         name: 'admin',
         component: () => import( '../views/admin/AdminView.vue' ),
@@ -59,16 +68,17 @@ const routes = [
             {
                 path: 'admin-accounts',
                 name: 'adminAccounts',
-                component: () => import( '../views/AdminLoginView.vue' ),
+                component: () => import( '../views/admin/AccountView.vue' ),
                 meta: {
                     title: 'Accounts :: Admin - myevent',
                     adminAuthRequired: true,
+                    permissions: 'root'
                 }
             },
             {
                 path: 'pages',
                 name: 'adminPages',
-                component: () => import( '../views/AdminLoginView.vue' ),
+                component: () => import( '../views/admin/PagesView.vue' ),
                 meta: {
                     title: 'Pages :: Admin - myevent',
                     adminAuthRequired: true,
@@ -77,7 +87,7 @@ const routes = [
             {
                 path: 'events',
                 name: 'adminEvents',
-                component: () => import( '../views/AdminLoginView.vue' ),
+                component: () => import( '../views/admin/EventsView.vue' ),
                 meta: {
                     title: 'Events :: Admin - myevent',
                     adminAuthRequired: true,
@@ -86,7 +96,7 @@ const routes = [
             {
                 path: 'plugins',
                 name: 'adminPlugins',
-                component: () => import( '../views/AdminLoginView.vue' ),
+                component: () => import( '../views/admin/PluginsView.vue' ),
                 meta: {
                     title: 'Plugins :: Admin - myevent',
                     adminAuthRequired: true,
@@ -95,7 +105,7 @@ const routes = [
             {
                 path: 'settings',
                 name: 'adminSettings',
-                component: () => import( '../views/AdminLoginView.vue' ),
+                component: () => import( '../views/admin/SettingsView.vue' ),
                 meta: {
                     title: 'Admin - myevent',
                     adminAuthRequired: true,
@@ -176,6 +186,8 @@ router.beforeEach( ( to, from ) => {
 
     if ( to.meta.adminAuthRequired && !isAdminAuthenticated ) {
         return { name: 'adminLogin' };
+    } else if ( to.name === 'adminLogin' && isAdminAuthenticated ) {
+        return { name: 'admin' };
     } else if ( UserAccountPages.includes( to.name ) && !isUserAuthenticated ) {
         return { name: 'login' };
     } else if ( !isUserAuthenticated && to.name === 'purchase' && authRequired ) {

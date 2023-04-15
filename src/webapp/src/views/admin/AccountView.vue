@@ -1,10 +1,12 @@
 <template>
-    <initial></initial>
+    <div>
+        <h2>Admin Accounts</h2>
+        <p>Here you can change everything regarding admin accounts. You may create, modify or delete admin accounts.</p>
+        <div class="bigButtons"></div>
+    </div>
 </template>
 
 <script>
-    import initial from '@/components/initial.vue';
-
     export default {
         data () {
             return {
@@ -15,9 +17,6 @@
             setup () {
                 
             }
-        },
-        components: {
-            initial
         }
     };
 </script>

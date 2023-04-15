@@ -22,7 +22,7 @@
         },
         methods: {
             login () {
-                
+                this.$router.push( '/admin' );
             }
         },
     }
@@ -55,5 +55,11 @@
     .button {
         padding: 5px 10px;
         margin-top: 2%;
+    }
+</style>
+
+<style>
+    nav {
+        display: block;
     }
 </style>

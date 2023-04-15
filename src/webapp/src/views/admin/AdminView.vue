@@ -10,6 +10,7 @@
             <router-link to="/admin/events" class="admin-menu">Events</router-link>
             <router-link to="/admin/plugins" class="admin-menu">Plugins</router-link>
             <router-link to="/admin/settings" class="admin-menu">Settings</router-link>
+            <router-link to="/admin/login" class="admin-menu" @click="logout()">Logout</router-link>
         </nav>
         <div class="main-view">
             <router-view v-slot="{ Component, route }">
@@ -49,6 +50,7 @@
         grid-area: main;
         height: 100%;
         min-height: 80vh;
+        overflow: scroll;
     }
 
     .side-nav {
@@ -60,6 +62,7 @@
         margin: 0;
         background-color: var( --accent-background );
         justify-content: center;
+        overflow: scroll;
     }
 
     .admin-menu {
@@ -82,16 +85,28 @@
 
 </style>
 
+<style>
+    nav {
+        display: none;
+    }
+</style>
+
 <script>
+    import { useUserStore } from '@/stores/userStore';
+    import { mapStores } from 'pinia';
+
     export default {
         data () {
             return {
                 formData: {}
             }
         },
+        computed: {
+            ...mapStores( useUserStore )
+        },
         methods: {
-            setup () {
-                
+            logout () {
+                this.userStore.setAdminAuth( false );
             }
         }
     };

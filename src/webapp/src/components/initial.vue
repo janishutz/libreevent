@@ -15,8 +15,10 @@
 
 <script>
     export default {
-        props: {
-            formData: Object
+        data() {
+            return {
+                formData: {},
+            }
         },
         methods: {
             setup () {
