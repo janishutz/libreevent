@@ -1,7 +1,7 @@
 <template>
     <div class="order">
         <h1>Order tickets</h1>
-        <div class="order-app">
+        <div class="order-app" v-if="events">
             <ul v-for="event in events">
                 <li>
                     <router-link to="/tickets/details" class="ticket" @click="setActiveTicket( 'test' );">
@@ -18,6 +18,9 @@
                     </router-link>
                 </li>
             </ul>
+        </div>
+        <div class="order-app" v-else>
+            No future events are available!
         </div>
     </div>
 </template>

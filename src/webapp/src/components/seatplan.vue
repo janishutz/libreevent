@@ -29,10 +29,10 @@
                         </td>
                         <td v-for="place in row.content">
                             <div :class="place.category" class="active" v-if="place.available" @click="selectSeat( place.id, row.id )">
-                                <div v-if="place.selected">
+                                <div v-if="place.selected" :title="row.name + ', ' + place.name + ' is currently selected, click to deselect'">
                                     <span class="material-symbols-outlined">done</span>
                                 </div>
-                                <div v-else>
+                                <div v-else :title="row.name + ', ' + place.name + ' is not currently selected, click to select'">
                                     <span class="material-symbols-outlined">living</span>
                                 </div>
                             </div>
@@ -85,7 +85,7 @@ export default {
     data () {
         return {
             seating: { 'r1': { 'name': 'Row 1', 'id': 'r1', 'content':{ 'S1':{ 'name': 'Seat 1', 'id': 'S1', 'available': true, 'selected': false, 'category':'1' } } }, 'r2': { 'name': 'Row 2', 'id': 'r2', 'content':{ 'S1':{ 'name': 'S1', 'id': 'S1', 'available': true, 'selected': false, 'category':'2' } } } },
-            eventInfo: { 'name': 'TestEvent', 'location': 'TestLocation', 'date': 'TestDate', 'RoomName': 'TestRoom', 'currency': 'CHF', 'categories': { '1': { 'price': { '1':25, '2':35 }, 'bg': 'black', 'fg': 'white', 'name': 'Category 1' }, '2': { 'price': { '1':15, '2':20 }, 'bg': 'green', 'fg': 'white', 'name': 'Category 1' } }, 'ageGroups': { '1':{ 'id': 1, 'name':'Child', 'age':'0 - 15.99' }, '2':{ 'id': 2, 'name': 'Adult', 'age': null } }, 'ageGroupCount':2, 'stage': true },
+            eventInfo: { 'name': 'TestEvent', 'location': 'TestLocation', 'date': 'TestDate', 'RoomName': 'TestRoom', 'currency': 'CHF', 'categories': { '1': { 'price': { '1':25, '2':35 }, 'bg': 'black', 'fg': 'white', 'name': 'Category 1' }, '2': { 'price': { '1':15, '2':20 }, 'bg': 'green', 'fg': 'white', 'name': 'Category 2' } }, 'ageGroups': { '1':{ 'id': 1, 'name':'Child', 'age':'0 - 15.99' }, '2':{ 'id': 2, 'name': 'Adult', 'age': null } }, 'ageGroupCount':2, 'stage': true },
             selectedSeats: {},
             pricingCurrentlySelected: {},
             total: 0,
@@ -138,7 +138,16 @@ export default {
                 }
             }
 
+            let back = {};
+
+            back[ 'total' ] = price;
+            back[ 'currency' ] = this.eventInfo.currency;
+
+            sessionStorage.setItem( 'backend', JSON.stringify( back ) );
+
             this.total = price;
+            
+            sessionStorage.setItem( 'cart', JSON.stringify( cart ) );
         },
         closePlaceNotAvailablePopup () {
             $( '#placeNotAvailable' ).hide( 300 );
@@ -187,7 +196,7 @@ export default {
             let seat = JSON.parse( sessionStorage.getItem( 'tempStorage' ) );
             this.seating[ seat[ 1 ][ 1 ] ][ 'content' ][ seat[ 1 ][ 0 ] ][ 'selected' ] = false;
         },
-        storeSeat( ticketOption ) {   
+        storeSeat( ticketOption ) {
             /* 
                 This function stores a ticket into the event's selected seat sessionStorage.
             */
@@ -200,15 +209,16 @@ export default {
 
             let seat = JSON.parse( sessionStorage.getItem( 'tempStorage' ) );
 
-            let ticket = this.seating[ seat[ 1 ][ 1 ] ][ 'content' ][ seat[ 1 ][ 0 ] ]
+            let ticket = this.seating[ seat[ 1 ][ 1 ] ][ 'content' ][ seat[ 1 ][ 0 ] ];
             let ticketData = { 'name': ticket[ 'name' ], 'categoryID': ticketOption, 'category': this.eventInfo[ 'categories' ][ ticket[ 'category' ] ], 'price': this.eventInfo[ 'categories' ][ this.seating[ seat[ 1 ][ 1 ] ][ 'content' ][ seat[ 1 ][ 0 ] ][ 'category' ] ][ 'price' ][ ticketOption ], 'row':seat[ 1 ][ 1 ], 'seat':seat[ 1 ][ 0 ], 'ageGroup': this.eventInfo[ 'ageGroups' ][ ticketOption ][ 'name' ] };
             data[ String( seat[ 1 ][ 1 ] ) + String( seat[ 1 ][ 0 ] ) ] = ticketData;
 
             cart[ this.ticketID ?? 'default' ][ 'selectedSeats' ] = data;
+
             
             sessionStorage.setItem( 'cart', JSON.stringify( cart ) );
-            this.selectedSeats = cart;
             $( '#overlay' ).hide( 200 );
+            this.selectedSeats = cart;
             this.sumUp();
         },
     },

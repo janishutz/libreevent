@@ -45,7 +45,36 @@ const routes = [
         meta: {
             title: 'Login :: Admin - myevent',
             requiresSetupKey: true,
-        }
+        },
+        children: [
+            {
+                path: '',
+                name: 'setupStart',
+                component: () => import( '../views/setup/SetupStartView.vue' ),
+                meta: {
+                    title: 'Start :: Setup - myevent',
+                    adminAuthRequired: true,
+                }
+            },
+            {
+                path: 'root',
+                name: 'setupRoot',
+                component: () => import( '../views/setup/SetupRootView.vue' ),
+                meta: {
+                    title: 'Root account :: Setup - myevent',
+                    adminAuthRequired: true,
+                }
+            },
+            {
+                path: 'page',
+                name: 'setupPage',
+                component: () => import( '../views/setup/SetupPageView.vue' ),
+                meta: {
+                    title: 'Landing page :: Setup - myevent',
+                    adminAuthRequired: true,
+                }
+            },
+        ]
     },
     {
         path: '/admin',
@@ -131,6 +160,15 @@ const routes = [
         }
     },
     {
+        path: '/tickets/order',
+        name: 'ticketOrder',
+        component: () => import( '../views/TicketsOrderingView.vue' ),
+        meta: {
+            title: 'Order ticket - myevent',
+            transition: 'scale'
+        }
+    },
+    {
         path: '/cart',
         name: 'cart',
         component: () => import( '../views/CartView.vue' ),
@@ -156,7 +194,12 @@ const routes = [
             title: 'Pay - myevent',
             transition: 'scale',
         }
-    }
+    },
+    { 
+        path: '/:pathMatch(.*)*', 
+        name: 'NotFound', 
+        component: () => import( '@/views/404.vue')
+    },
 ]
 
 const router = createRouter( {

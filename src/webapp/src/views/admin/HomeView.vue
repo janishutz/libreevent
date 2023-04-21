@@ -8,7 +8,7 @@
             <router-link to="/admin/events" class="bigButton">Events</router-link>
             <router-link to="/admin/events" class="bigButton">Plugins</router-link>
             <router-link to="/admin/events" class="bigButton">Settings</router-link>
-            <a href="https://myevent.janishutz.com/docs" class="bigButton" target="_blank">Documentation</a>
+            <a href="https://myevent.janishutz.com/docs/admin-panel" class="bigButton" target="_blank">Documentation</a>
         </div>
     </div>
 </template>

@@ -43,8 +43,9 @@
 
     .login-app {
         background-color: var( --background-color );
-        width: 40%;
-        height: 50%;
+        min-height: fit-content;
+        min-height: fit-content;
+        padding: 5% 20%;
         display: flex;
         flex-direction: column;
         align-items: center;
