@@ -1,7 +1,7 @@
 <template>
     <div>
-        <h3>Setting up payment methods</h3>
-        <p>You may choose all of the below payment methods, but we recommend to only select one payment gateway for simplicity. Recommended: Either Stripe or Adyen. See the comparison of the different payment methods <a href="https://myevent.janishutz.com/docs/payments">here</a></p>
+        <h3>Setting up TOS (optional)</h3>
+        <p>You may choose all of the below payment methods, but we recommend to only select one payment gateway for simplicity. Recommended: Either Stripe or Adyen. See the comparison of the different payment methods <a href="https://myevent.janishutz.com/docs/payments" target="_blank">here</a></p>
         <p>You may find more infos about this part <a href="https://myevent.janishutz.com/docs/setup/setup#payment-methods" target="_blank">here</a></p>
         <button @click="submit()">Continue</button>
     </div>
@@ -22,8 +22,8 @@
         },
         methods: {
             submit () {
-                this.backendStore.addVisitedSetupPages( 'events', true );
-                this.$router.push( '/setup/events' );
+                this.backendStore.addVisitedSetupPages( 'complete', true );
+                this.$router.push( '/setup/complete' );
             }
         },
     };

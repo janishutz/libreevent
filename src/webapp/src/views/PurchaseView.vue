@@ -3,14 +3,15 @@
         <h1>Purchase</h1>
         <h3>Personal information</h3>
         <div class="purchase-app">
-            <form>
-                <div v-if="!isAuthenticated">
+            <div v-if="!isAuthenticated">
+                <form>
                     <label for="email">Email address *</label><br>
                     <input type="email" name="email" id="email" required v-model="formData.email">
-                </div>
-            </form>
+                </form>
+                <router-link to="/login">Log in with an existing account</router-link>
+            </div>
+            <div v-else></div>
         </div>
-
     </div>
 </template>
 

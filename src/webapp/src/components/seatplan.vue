@@ -78,7 +78,7 @@
 
 <script>
 export default {
-    name: 'noseatplan',
+    name: 'seatplan',
     props: {
         ticketID: String
     },

@@ -22,6 +22,7 @@
     --hover-color: rgb(165, 165, 165);
     --accent-background-hover: #4380a8;
     --overlay-color: rgba(37, 37, 37, 0.575);
+    --inactive-color: rgb(100, 100, 100);
 }
 
 :root.dark {
@@ -32,6 +33,7 @@
     --accent-color: #42b983;
     --hover-color: rgb(165, 165, 165);
     --accent-background-hover: #4380a8;
+    --inactive-color: rgb(190, 190, 190);
 }
 
 @media ( prefers-color-scheme: dark ) {
@@ -43,6 +45,7 @@
         --accent-color: #42b983;
         --hover-color: rgb(165, 165, 165);
         --accent-background-hover: #4380a8;
+        --inactive-color: rgb(190, 190, 190);
     }
 }
 

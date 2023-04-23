@@ -23,14 +23,21 @@
 </template>
 
 <script>
+    import { useBackendStore } from '@/stores/backendStore';
+    import { mapStores } from 'pinia';
+
     export default {
         data () {
             return {
                 formData: {}
             }
         },
+        computed: {
+            ...mapStores( useBackendStore )
+        },
         methods: {
             submit () {
+                this.backendStore.addVisitedSetupPages( 'page', true );
                 this.$router.push( 'page' );
             }
         },

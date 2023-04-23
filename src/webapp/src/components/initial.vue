@@ -22,7 +22,7 @@
         },
         methods: {
             setup () {
-                
+                this.$router.push( '/setup' );
             }
         },
     }

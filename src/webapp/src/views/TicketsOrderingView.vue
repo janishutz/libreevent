@@ -1,7 +1,8 @@
 <template>
     <div class="details">
         <!-- Load correct component depending on what the event's config is -->
-        <seatplan ticketID="haoag"></seatplan>
+        <seatplan ticketID="haoag" v-if="hasSeatplan"></seatplan>
+        <noseatplan ticketID="haoag" v-else></noseatplan>
     </div>
 </template>
 
@@ -13,11 +14,18 @@
 
 <script>
     import seatplan from '@/components/seatplan.vue';
+    import noseatplan from '@/components/noseatplan.vue';
 
     export default {
         name: 'TicketsDetailsView',
         components: {
-            seatplan
+            seatplan,
+            noseatplan
+        },
+        data() {
+            return {
+                hasSeatplan: true,
+            }
         },
         created () {
             if ( !sessionStorage.getItem( 'selectedTicket' ) ) {
