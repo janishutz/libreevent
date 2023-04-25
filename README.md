@@ -4,7 +4,7 @@
 </div>
 
 <div id="badges" align="center">
-[![current release](https://img.shields.io/github/release/simplePCBuilding/myevent.svg)](https://github.com/simplePCBuilding/myevent/releases)
+<img src="https://img.shields.io/github/release/simplePCBuilding/myevent.svg>
 ![license](https://img.shields.io/github/license/VSCodium/vscodium.svg)
 </div>
 
