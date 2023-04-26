@@ -23,7 +23,7 @@ Visit our [website](https://myevent.janishutz.com)
 - any CPU from the last 10 years
 - Any operating system that can run node.js
 
-# Contributing
+# Contributing
 If you want to contribute to this project, please read more [here](https://myevent.janishutz.com/docs/contributing). Until the end of October 2023, no contributions can be accepted into master. 
 
 # Supporting the project
