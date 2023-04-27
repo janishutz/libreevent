@@ -12,3 +12,6 @@
 
 # ignore node_modules (can be rebuilt with npm i --> shrinks repo size)
 node_modules
+
+# ignore dist folder (this repo only contains source code!)
+/dist
