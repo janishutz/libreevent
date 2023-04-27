@@ -7,50 +7,24 @@
 *
 */
 
-const path = require( 'path' );
 const pwdmanager = require( './pwdmanager.js' );
-const fs = require( 'fs' );
 
 module.exports = ( app, settings ) => {
     /* 
-        Static routes for files like login screen, css, js and assets. Js and assets require login
+        Admin login route that checks the password
     */
-    app.get( '/admin/login', ( request, response ) => {
-        if ( request.session.loggedIn ) {
-            response.redirect( '/admin' );
-        } else {
-            response.sendFile( path.join( __dirname + '/ui/login.html' ) );
-        }
-    } );
-
-    app.get( '/admin/loginLangPack', ( request, response ) => {
-        response.sendFile( path.join( __dirname + '/ui/js/loginLangPack.js' ) );
-    } );
-
-    app.get( '/admin/js/:file', ( request, response ) => {
-        if ( request.session.loggedIn ) {
-            response.sendFile( path.join( __dirname + '/ui/js/' + request.params.file ) );
-        }
-    } );
-
-    app.get( '/admin/css/:file', ( request, response ) => {
-        response.sendFile( path.join( __dirname + '/ui/css/' + request.params.file ) );
-    } );
-
-    /* 
-        Admin login route that checks the password and, if enabled in settings, redirects to 2fa page or directly to admin panel
-    */
+   
     app.post( '/admin/auth', ( request, response ) => {
         pwdmanager.checkpassword( request.body.mail, request.body.pwd ).then( data => {
             if ( data ) {
                 if ( settings.twoFA ) {
-                    response.sendFile( path.join( __dirname + '../admin/ui/2fa.html' ) );
+                    response.send( '2fa' );
                 } else {
                     request.session.loggedIn = true;
-                    response.redirect( '/admin' );
+                    response.send( 'ok' );
                 }
             } else {
-                response.send( 'Password wrong' );
+                response.send( 'pwErr' );
             }
         } );
     } );
@@ -60,40 +34,7 @@ module.exports = ( app, settings ) => {
         response.send( 'logged out' );
     } );
 
-    /* 
-        main admin panel access route. Will serve an html file
-        that uses vue.js in its SPA form to make the admin panel
-        more responsive. Same technology is also used in the purchasing
-        system itself.
-    */
-    app.get( '/admin', ( request, response ) => {
-        if ( request.session.loggedIn ) {
-            if ( settings[ 'init' ] ) {
-                response.sendFile( path.join( __dirname + '/ui/panel.html' ) );
-            } else {
-                response.sendFile( path.join( __dirname + '/ui/welcome.html' ) );
-            }
-        } else {
-            response.redirect( '/admin/login' );
-        }
-    } );
-
-
-    /* 
-        Send admin panel modules to UI as UI uses Vue.js Router
-    */
-    app.get( '/admin/panel/modules', ( request, response ) => {
-        let panelModules = { 'home': fs.readFileSync( path.join( __dirname + '/ui/panel/home.html' ) ).toString() };
-        if ( request.session.loggedIn ) {
-            response.send( panelModules );
-        }
-    } );
-
-    app.get( '/admin/setup', ( request, response ) => {
-        if ( request.session.loggedIn ) {
-            response.sendFile( path.join( __dirname + '/ui/setup.html' ) );
-        } else {
-            response.redirect( '/admin/login' );
-        }
+    app.get( '/admin/getLoginStatus', ( request, response ) => {
+        response.send( request.session.loggedIn );
     } );
 };
