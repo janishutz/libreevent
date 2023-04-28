@@ -8,7 +8,7 @@
     <img src="https://img.shields.io/github/license/simplePCBuilding/myevent.svg">
     <img src="https://img.shields.io/github/repo-size/simplePCBuilding/myevent.svg">
     <img src="https://img.shields.io/tokei/lines/github/simplePCBuilding/myevent">
-    <img src="https://img.shields.io/github/issues-pr-raw/github/simplePCBuilding/myevent">
+    <img src="https://img.shields.io/github/issues-pr-raw/simplePCBuilding/myevent">
     <img src="https://img.shields.io/github/languages/top/simplePCBuilding/myevent">
     <img src="https://img.shields.io/github/directory-file-count/simplePCBuilding/myevent.svg">
     <img src="https://img.shields.io/github/package-json/v/simplePCBuilding/myevent.svg">
