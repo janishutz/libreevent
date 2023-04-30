@@ -10,7 +10,7 @@
             <router-link to="/admin/events" class="admin-menu">Events</router-link>
             <router-link to="/admin/plugins" class="admin-menu">Plugins</router-link>
             <router-link to="/admin/settings" class="admin-menu">Settings</router-link>
-            <router-link to="/admin/login" class="admin-menu" @click="logout()">Logout</router-link>
+            <button to="/admin/login" class="admin-menu" @click="logout()">Logout</button>
         </nav>
         <div class="main-view">
             <router-view v-slot="{ Component, route }">
@@ -69,9 +69,14 @@
         padding: 4% 0%;
         width: 100%;
         background-color: rgba( 0, 0, 0, 0 );
-        color: white;
+        color: var( --secondary-color );
+        cursor: pointer;
+        font-family: Avenir, Helvetica, Arial, sans-serif;
+        font-weight: bold;
         text-decoration: none;
         transition: 1s;
+        font-size: 100%;
+        border-style: none;
     }
 
     nav a.router-link-exact-active {
@@ -106,7 +111,12 @@
         },
         methods: {
             logout () {
-                this.userStore.setAdminAuth( false );
+                if ( confirm( 'Do you really want to log out?' ) ) {
+                    fetch( '/admin/logout' ).then( _ => {
+                        this.userStore.setAdminAuth( false );
+                        this.$router.push( '/admin/login' );
+                    } );
+                }
             }
         }
     };

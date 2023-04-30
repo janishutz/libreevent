@@ -22,16 +22,6 @@ const router = createRouter( {
 router.afterEach( ( to, from ) => {
     document.title = to.meta.title ? to.meta.title : 'myevent';
 } );
-
-let doSetup = true;
-
-if ( doSetup ) {
-    import( '@/router/setupRoutes' ).then( data => {
-        router.addRoute( data.default );
-        router.replace( window.location.pathname );
-    } );
-}
-
 let UserAccountPages = [ 'account' ];
 
 let authRequired = false;
@@ -57,5 +47,17 @@ router.beforeEach( ( to, from ) => {
         return { name: 'setupStart' };
     }
 } );
+
+let doSetup = true;
+
+if ( doSetup ) {
+    import( '@/router/setupRoutes' ).then( data => {
+        router.addRoute( data.default );
+        setTimeout( function () {
+            router.replace( window.location.pathname );
+        }, 300 );
+    } );
+}
+
 
 export default router;

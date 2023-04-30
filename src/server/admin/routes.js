@@ -20,7 +20,7 @@ module.exports = ( app, settings ) => {
                 if ( settings.twoFA ) {
                     response.send( '2fa' );
                 } else {
-                    request.session.loggedIn = true;
+                    request.session.loggedInAdmin = true;
                     response.send( 'ok' );
                 }
             } else {
@@ -28,13 +28,18 @@ module.exports = ( app, settings ) => {
             }
         } );
     } );
+
+    app.get( '/test/login', ( request, response ) => {
+        request.session.loggedInAdmin = true;
+        response.send( 'Logged in' );
+    } );
     
     app.get( '/admin/logout', ( request, response ) => {
-        request.session.loggedIn = false;
+        request.session.loggedInAdmin = false;
         response.send( 'logged out' );
     } );
 
-    app.get( '/admin/getLoginStatus', ( request, response ) => {
-        response.send( request.session.loggedIn );
+    app.get( '/api/getAuth', ( request, response ) => {
+        response.send( { 'admin': request.session.loggedInAdmin ? true : false, 'user': request.session.loggedInUser ? true : false } );
     } );
 };
