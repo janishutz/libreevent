@@ -1,8 +1,8 @@
 <template>
     <div class="details">
         <!-- Load correct component depending on what the event's config is -->
-        <seatplan ticketID="haoag" v-if="hasSeatplan"></seatplan>
-        <noseatplan ticketID="haoag" v-else></noseatplan>
+        <seatplan :ticketID="eventID" v-if="hasSeatplan"></seatplan>
+        <noseatplan :ticketID="eventID" v-else></noseatplan>
     </div>
 </template>
 
@@ -25,11 +25,16 @@
         data() {
             return {
                 hasSeatplan: true,
+                eventID: '',
             }
         },
         created () {
             if ( !sessionStorage.getItem( 'selectedTicket' ) ) {
                 this.$router.push( '/tickets' );
+            }
+            this.eventID = sessionStorage.getItem( 'selectedTicket' );
+            if ( this.eventID == 'test' ) {
+                this.hasSeatplan = false;
             }
         }
     };

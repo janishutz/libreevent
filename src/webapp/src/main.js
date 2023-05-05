@@ -23,7 +23,7 @@ if ( prod ) {
         } );
     } );
 } else {
-    userStore.setUserAuth( true );
+    // userStore.setUserAuth( true );
     app.use( router );
     app.mount( '#app' );
 }

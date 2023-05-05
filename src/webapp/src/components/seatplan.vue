@@ -6,11 +6,11 @@
             <h3>{{ eventInfo.location }}</h3>
             <h3>Selected tickets</h3>
             <table class="price-table" v-for="event in selectedSeats">
-                <tr>
+                <tr v-if="Object.keys( event.selectedSeats ).length">
                     <h4>{{ event.name }}</h4>
                 </tr>
                 <tr v-for="ticket in event.selectedSeats">
-                    <td>{{ seating[ ticket[ 'row' ] ][ 'content' ][ ticket[ 'seat' ] ][ 'name' ] }} ({{ eventInfo[ 'ageGroups' ][ ticket[ 'categoryID' ] ][ 'name' ] }})</td>
+                    <td>{{ ticket.name }} ({{ ticket.ageGroup }})</td>
                     <td>{{ eventInfo[ 'currency' ] }} {{ ticket[ 'price' ] }}</td>
                 </tr>
             </table>
@@ -85,7 +85,7 @@ export default {
     data () {
         return {
             seating: { 'r1': { 'name': 'Row 1', 'id': 'r1', 'content':{ 'S1':{ 'name': 'Seat 1', 'id': 'S1', 'available': true, 'selected': false, 'category':'1' } } }, 'r2': { 'name': 'Row 2', 'id': 'r2', 'content':{ 'S1':{ 'name': 'S1', 'id': 'S1', 'available': true, 'selected': false, 'category':'2' } } } },
-            eventInfo: { 'name': 'TestEvent', 'location': 'TestLocation', 'date': 'TestDate', 'RoomName': 'TestRoom', 'currency': 'CHF', 'categories': { '1': { 'price': { '1':25, '2':35 }, 'bg': 'black', 'fg': 'white', 'name': 'Category 1' }, '2': { 'price': { '1':15, '2':20 }, 'bg': 'green', 'fg': 'white', 'name': 'Category 2' } }, 'ageGroups': { '1':{ 'id': 1, 'name':'Child', 'age':'0 - 15.99' }, '2':{ 'id': 2, 'name': 'Adult', 'age': null } }, 'ageGroupCount':2, 'stage': true },
+            eventInfo: { 'name': 'TestEvent2', 'location': 'TestLocation2', 'date': 'TestDate2', 'RoomName': 'TestRoom2', 'currency': 'CHF', 'categories': { '1': { 'price': { '1':25, '2':35 }, 'bg': 'black', 'fg': 'white', 'name': 'Category 1' }, '2': { 'price': { '1':15, '2':20 }, 'bg': 'green', 'fg': 'white', 'name': 'Category 2' } }, 'ageGroups': { '1':{ 'id': 1, 'name':'Child', 'age':'0 - 15.99' }, '2':{ 'id': 2, 'name': 'Adult', 'age': null } }, 'ageGroupCount': 2, 'stage': true, 'maxTickets': 2 },
             selectedSeats: {},
             pricingCurrentlySelected: {},
             total: 0,
@@ -96,12 +96,12 @@ export default {
             /* 
                 This function is called whenever the data on the webpage is to be reloaded
             */
-           
+            
             // load data from cart and set up cart if not available
             let cart = sessionStorage.getItem( 'cart' ) ? JSON.parse( sessionStorage.getItem( 'cart' ) ) : {};
             cart[ this.ticketID ?? 'default' ] = cart[ this.ticketID ?? 'default' ] ? cart[ this.ticketID ?? 'default' ] : { 'name': this.eventInfo.name, 'date': this.eventInfo.date, 'location': this.eventInfo.location, 'currency': this.eventInfo.currency };
             cart[ this.ticketID ?? 'default' ][ 'selectedSeats' ] = cart[ this.ticketID ?? 'default' ][ 'selectedSeats' ] ? cart[ this.ticketID ?? 'default' ][ 'selectedSeats' ] : {};
-
+            
             let data = cart[ this.ticketID ?? 'default' ][ 'selectedSeats' ] ? cart[ this.ticketID ?? 'default' ][ 'selectedSeats' ] : {};
             
             let showError = false
@@ -113,7 +113,7 @@ export default {
                     delete data[ i ];
                 }
             }
-
+            
             if ( showError ) {
                 setTimeout( function () {
                     $( '#placeNotAvailable' ).show( 200 );
@@ -121,33 +121,45 @@ export default {
                 }, 500 );
             }
 
-            cart[ this.ticketID ?? 'default' ][ 'selectedSeats' ] = data;
-            sessionStorage.setItem( 'cart', JSON.stringify( cart ) );
-
+            // check if no ticket selected and prevent writing if no ticket
+            // selected to not show too many events
+            let isEmpty = sessionStorage.getItem( 'selectedTicket' ) ? false : true;
+            
+            if ( !isEmpty ) {
+                cart[ this.ticketID ?? 'default' ][ 'selectedSeats' ] = data;
+                sessionStorage.setItem( 'cart', JSON.stringify( cart ) );
+            }
+            
             this.selectedSeats = cart;
             this.sumUp();
         },
         sumUp () {
             // This function calculates the total price of the tickets for this event.
             let cart = sessionStorage.getItem( 'cart' ) ? JSON.parse( sessionStorage.getItem( 'cart' ) ) : {};
-
+            
             let price = 0;
             for ( let i in cart ) {
                 for ( let entry in cart[ i ][ 'selectedSeats' ] ) {
                     price += parseInt( cart[ i ][ 'selectedSeats' ][ entry ][ 'price' ] );
                 }
             }
-
+            
             let back = {};
 
             back[ 'total' ] = price;
             back[ 'currency' ] = this.eventInfo.currency;
 
-            sessionStorage.setItem( 'backend', JSON.stringify( back ) );
-
             this.total = price;
             
-            sessionStorage.setItem( 'cart', JSON.stringify( cart ) );
+
+            // check if no ticket selected and prevent writing if no ticket
+            // selected to not show too many events
+            let isEmpty = sessionStorage.getItem( 'selectedTicket' ) ? false : true;
+
+            if ( !isEmpty ) {
+                sessionStorage.setItem( 'backend', JSON.stringify( back ) );            
+                sessionStorage.setItem( 'cart', JSON.stringify( cart ) );
+            }
         },
         closePlaceNotAvailablePopup () {
             $( '#placeNotAvailable' ).hide( 300 );

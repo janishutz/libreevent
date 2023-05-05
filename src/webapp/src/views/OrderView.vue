@@ -4,7 +4,7 @@
         <div class="order-app" v-if="events">
             <ul v-for="event in events">
                 <li>
-                    <router-link to="/tickets/details" class="ticket" @click="setActiveTicket( 'test' );">
+                    <router-link to="/tickets/details" class="ticket" @click="setActiveTicket( event.eventID );">
                         <div class="ticket-name">
                             <h3>{{ event.name }}</h3>
                             <p>{{ event.description }}</p>
@@ -32,6 +32,7 @@
         display: flex;
         align-items: center;
         justify-content: center;
+        flex-direction: column;
     }
 
     ul {
@@ -85,7 +86,7 @@
         },
         data () {
             return {
-                events: { 'test':{ 'name': 'TestEvent', 'description': 'This is a description for the TestEvent to test multiline support and proper positioning of the Fields', 'freeSeats': 2, 'maxSeats': 2, 'date':'TestDate', 'startingPrice':15, 'location': 'TestLocation', 'eventID': 'test', 'currency': 'CHF', 'logo': 'logo.png' } }
+                events: { 'test':{ 'name': 'TestEvent', 'description': 'This is a description for the TestEvent to test multiline support and proper positioning of the Fields', 'freeSeats': 2, 'maxSeats': 2, 'date':'TestDate', 'startingPrice':15, 'location': 'TestLocation', 'eventID': 'test', 'currency': 'CHF', 'logo': 'logo.png' }, 'test2':{ 'name': 'TestEvent2', 'description': 'This is a description for the TestEvent to test multiline support and proper positioning of the Fields', 'freeSeats': 2, 'maxSeats': 2, 'date':'TestDate', 'startingPrice':15, 'location': 'TestLocation', 'eventID': 'test2', 'currency': 'CHF', 'logo': 'logo.png' } }
             }
         }
     };

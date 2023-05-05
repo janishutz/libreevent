@@ -15,15 +15,23 @@
 </template>
 
 <script>
+    import { useUserStore } from '@/stores/userStore';
+    import { mapStores } from 'pinia';
+
     export default {
         data () {
             return {
                 formData: {}
             }
         },
+        computed: {
+            ...mapStores( useUserStore )
+        },
         methods: {
             login () {
-
+                this.userStore.setUserAuth( true );
+                this.$router.push( sessionStorage.getItem( 'redirect' ) ? sessionStorage.getItem( 'redirect' ) : '/account' );
+                sessionStorage.removeItem( 'redirect' );
             }
         },
     }

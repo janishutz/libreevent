@@ -22,6 +22,7 @@ const router = createRouter( {
 router.afterEach( ( to, from ) => {
     document.title = to.meta.title ? to.meta.title : 'myevent';
 } );
+
 let UserAccountPages = [ 'account' ];
 
 let authRequired = false;

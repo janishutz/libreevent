@@ -35,6 +35,7 @@
     --accent-color: #42b983;
     --hover-color: rgb(83, 83, 83);
     --accent-background-hover: #4380a8;
+    --overlay-color: rgba(104, 104, 104, 0.575);
     --inactive-color: rgb(190, 190, 190);
     --highlight-backdrop: rgb(85, 63, 207);
 }
@@ -48,6 +49,7 @@
         --accent-color: #42b983;
         --hover-color: rgb(83, 83, 83);
         --accent-background-hover: #4380a8;
+        --overlay-color: rgba(104, 104, 104, 0.575);
         --inactive-color: rgb(190, 190, 190);
         --highlight-backdrop: rgb(85, 63, 207);
     }

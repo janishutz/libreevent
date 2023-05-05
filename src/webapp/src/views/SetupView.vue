@@ -1,7 +1,6 @@
 <template>
     <div>
-        <h1>Setup</h1>
-        <nav>
+        <nav class="setup-nav">
             <router-link to="/setup">Start</router-link> | 
             <router-link to="/setup/root" v-if="backendStore.getVisitedSetupPages[ 'root' ]">Root account</router-link>
             <a v-else class="inactive">Root account</a> | 
@@ -16,6 +15,7 @@
             <router-link to="/setup/complete" v-if="backendStore.getVisitedSetupPages[ 'complete' ]">Complete</router-link>
             <a v-else class="inactive">Complete</a>
         </nav>
+        <h1>Setup</h1>
         <div class="main-view">
             <router-view v-slot="{ Component, route }">
                 <transition :name="route.meta.transition || 'scale'" mode="out-in">
@@ -51,4 +51,14 @@
         color: var( --inactive-color );
         cursor: not-allowed;
     }
+
+    .setup-nav {
+        display: block;
+    }
+</style>
+
+<style>
+nav {
+    display: none;
+}
 </style>
