@@ -6,7 +6,7 @@
             <h3>{{ eventInfo.location }}</h3>
             <h3>Selected tickets</h3>
             <table class="price-table" v-for="event in selectedSeats">
-                <tr>
+                <tr v-if="Object.keys( event.selectedSeats ).length">
                     <h4>{{ event.name }}</h4>
                 </tr>
                 <tr v-for="ticket in event.selectedSeats">
@@ -20,7 +20,7 @@
         <div class="seatingPlan">
             <h3>Available tickets</h3>
             <div v-for="ticket in tickets">
-                {{ ticket.name }} ({{ eventInfo[ 'categories' ][ ticket.category ][ 'name' ] }}) - Starting at {{ eventInfo.currency }} {{ eventInfo.categories[ ticket.category ][ 'price' ][ '1' ] }}
+                {{ ticket.name }} ({{ eventInfo[ 'categories' ][ ticket.category ][ 'name' ] }}) - {{ eventInfo.currency }} {{ eventInfo.categories[ ticket.category ][ 'price' ][ '1' ] }} <span class="material-symbols-outlined">add</span> Selected <span class="material-symbols-outlined">remove</span>
             </div>
         </div>
         <div class="overlay" id="placeNotAvailable">
@@ -122,7 +122,6 @@ export default {
             let isEmpty = sessionStorage.getItem( 'selectedTicket' ) ? false : true;
 
             if ( !isEmpty ) {
-                console.log( 'writing' );
                 sessionStorage.setItem( 'backend', JSON.stringify( back ) );            
                 sessionStorage.setItem( 'cart', JSON.stringify( cart ) );
             }
