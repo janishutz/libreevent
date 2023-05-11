@@ -91,4 +91,13 @@ export default [
         name: 'NotFound', 
         component: () => import( '@/views/404.vue')
     },
+    {
+        path: '/admin/seatplan',
+        name: 'adminSeatplanEditor',
+        component: () => import( '@/views/admin/events/EditorView.vue' ),
+        meta: {
+            title: 'Seatplan Editor :: Admin - myevent',
+            adminAuthRequired: true,
+        }
+    },
 ]
