@@ -17,10 +17,17 @@
             <h3>Total: {{ eventInfo[ 'currency' ] }} {{ total }}</h3>
             <router-link to="/cart">To cart</router-link>
         </div>
-        <div class="seatingPlan">
+        <div class="noseatplan">
             <h3>Available tickets</h3>
-            <div v-for="ticket in tickets">
-                {{ ticket.name }} ({{ eventInfo[ 'categories' ][ ticket.category ][ 'name' ] }}) - {{ eventInfo.currency }} {{ eventInfo.categories[ ticket.category ][ 'price' ][ '1' ] }} <span class="material-symbols-outlined">add</span> Selected <span class="material-symbols-outlined">remove</span>
+            <div class="wrapper">
+                <div v-for="ticket in tickets">
+                    {{ eventInfo[ 'categories' ][ ticket.category ][ 'name' ] }}<br>
+                    <div v-for="ticketOption in eventInfo[ 'ageGroups' ]" class="ticket">
+                        <div>
+                            {{ ticketOption.name }} <div style="display: inline" v-if="ticketOption.age">({{ ticketOption.age }})</div> {{ eventInfo.currency }} {{ eventInfo[ 'categories' ][ ticket.category ][ 'price' ][ ticketOption.id ] }} <span class="material-symbols-outlined">add</span> Selected <span class="material-symbols-outlined">remove</span>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
         <div class="overlay" id="placeNotAvailable">
@@ -49,7 +56,7 @@ export default {
     data () {
         return {
             tickets: { 'ticket1': { 'name': 'Ticket 1', 'id': 'ticket1', 'category': 1 }, 'ticket2': { 'name': 'Ticket 2', 'id': 'ticket2', 'category': 2 } },
-            eventInfo: { 'name': 'TestEvent', 'location': 'TestLocation', 'date': 'TestDate', 'RoomName': 'TestRoom', 'currency': 'CHF', 'categories': { '1': { 'price': { '1':25, '2':35 }, 'bg': 'black', 'fg': 'white', 'name': 'Category 1' }, '2': { 'price': { '1':15, '2':20 }, 'bg': 'green', 'fg': 'white', 'name': 'Category 2' } }, 'ageGroups': { '1':{ 'id': 1, 'name':'Child', 'age':'0 - 15.99' }, '2':{ 'id': 2, 'name': 'Adult', 'age': null } }, 'ageGroupCount':2, 'stage': true },
+            eventInfo: { 'name': 'TestEvent', 'location': 'TestLocation', 'date': 'TestDate', 'RoomName': 'TestRoom', 'currency': 'CHF', 'categories': { '1': { 'price': { '1':25, '2':35 }, 'bg': 'black', 'fg': 'white', 'name': 'Category 1' }, '2': { 'price': { '1':15, '2':20 }, 'bg': 'green', 'fg': 'white', 'name': 'Category 2' } }, 'ageGroups': { '1':{ 'id': 1, 'name':'Child', 'age':'0 - 15.99 years' }, '2':{ 'id': 2, 'name': 'Adult', 'age': null } }, 'ageGroupCount':2, 'stage': true },
             selectedSeats: {},
             pricingCurrentlySelected: {},
             total: 0,
@@ -228,7 +235,7 @@ export default {
         overflow: scroll;
     }
 
-    .seatingPlan {
+    .noseatplan {
         grid-area: main;
         display: flex;
         flex-direction: column;
@@ -237,13 +244,21 @@ export default {
         overflow: scroll;
     }
 
-    .active {
-        cursor: pointer;
+    .wrapper {
+        width: 30%;
+        display: flex;
+        flex-direction: column;
+        align-items: justify;
+        justify-content: justify;
+        text-align: justify;
     }
 
-    .occupied {
-        background-color: var( --hover-color );
-        padding: 0.4%;
+    .ticket {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
     }
 
     .overlay {
@@ -297,28 +312,6 @@ export default {
         cursor: pointer;
         margin-right: 3vh;
         margin-top: 3vh;
-    }
-
-    .option {
-        list-style: none;
-        padding: 7px 15px;
-        border-radius: 10px;
-        border-color: var( --primary-color );
-        border-style: solid;
-        border-width: 1px;
-        margin: 3px 0px;
-        cursor: pointer;
-    }
-
-    .stage {
-        border-color: var( --primary-color );
-        border-style: solid;
-        width: 80%;
-        height: 7%;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
     }
 
     .button {

@@ -56,7 +56,7 @@ if ( doSetup ) {
         router.addRoute( data.default );
         setTimeout( function () {
             router.replace( window.location.pathname );
-        }, 300 );
+        }, 200 );
     } );
 }
 

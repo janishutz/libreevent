@@ -1,8 +1,12 @@
 <template>
     <div>
-        <h2>Events</h2>
-        <p>Welcome to the admin panel!</p>
-        <div class="bigButtons"></div>
+        <div class="main-view">
+            <router-view v-slot="{ Component, route }">
+                <transition :name="route.meta.transition || 'fade'" mode="out-in">
+                    <component :is="Component" />
+                </transition>
+            </router-view>
+        </div>
     </div>
 </template>
 

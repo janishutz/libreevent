@@ -42,7 +42,18 @@ export default {
             meta: {
                 title: 'Events :: Admin - myevent',
                 adminAuthRequired: true,
-            }
+            },
+            children: [
+                {
+                    path: 'seatplan',
+                    name: 'adminSeatplanEditor',
+                    component: () => import( '@/views/admin/events/EditorView.vue' ),
+                    meta: {
+                        title: 'Seatplan Editor :: Admin - myevent',
+                        adminAuthRequired: true,
+                    }
+                },
+            ]
         },
         {
             path: 'plugins',
