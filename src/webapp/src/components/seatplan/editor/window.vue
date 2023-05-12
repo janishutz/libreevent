@@ -5,7 +5,7 @@
                 v-model:active="draggable.active" :draggable="draggable.draggable" :resizable="draggable.resizable" :parent="true" @activated="print('activated')"
                 @deactivated="disableEditMode()" @drag-start="print('drag-start')" @resize-start="print('resize-start')"
                 @dragging="print('dragging')" @resizing="print('resizing')" @drag-end="print('drag-end')"
-                @resize-end="print('resize-end')" @contextmenu="(e) => { e.preventDefault(); print('context') }" @dblclick="enableEditMode( draggable.id )">
+                @resize-end="print('resize-end')" @contextmenu="(e) => { e.preventDefault(); print('context') }" @dblclick="enableEditMode( draggable.id )" class="draggable-box">
                 <p v-if="draggable.draggable">This is a test example</p>
                 <textarea @keydown.esc="disableEditMode()" value="This is a test example" v-else/>
             </Vue3DraggableResizable>
@@ -52,6 +52,16 @@
     .parent {
         width: 100%;
         height: 80vh;
+        position: relative;
         border: black 1px solid;
+        user-select: none;
+        -moz-user-select: none;
+        -webkit-user-select: none;
+        overflow: scroll;
+    }
+
+    .draggable-box {
+        border: black 2px solid;
+        cursor: all-scroll;
     }
 </style>
