@@ -1,3 +1,12 @@
+/*
+*				myevent - index.js
+*
+*	Created by Janis Hutz 05/12/2023, Licensed under the GPL V3 License
+*			https://janishutz.com, development@janishutz.com
+*
+*
+*/
+
 import { createRouter, createWebHistory } from 'vue-router'
 import { useUserStore } from '@/stores/userStore';
 import { useBackendStore } from '@/stores/backendStore';

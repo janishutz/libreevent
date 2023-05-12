@@ -1,3 +1,12 @@
+/*
+*				myevent - adminRoutes.js
+*
+*	Created by Janis Hutz 05/12/2023, Licensed under the GPL V3 License
+*			https://janishutz.com, development@janishutz.com
+*
+*
+*/
+
 export default {
     path: '/admin',
     name: 'admin',

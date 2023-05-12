@@ -1,4 +1,19 @@
+/*
+*				myevent - mainRoutes.js
+*
+*	Created by Janis Hutz 05/12/2023, Licensed under the GPL V3 License
+*			https://janishutz.com, development@janishutz.com
+*
+*
+*/
+
 import HomeView from '../views/HomeView.vue';
+
+/* 
+    This file contains all the routes for all pages accessible to a normal
+    user. It also includes some pages that require sign in.
+*/
+
 
 export default [
     {
