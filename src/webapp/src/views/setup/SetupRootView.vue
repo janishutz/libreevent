@@ -1,3 +1,12 @@
+<!--
+*				myevent - SetupRootView.vue
+*
+*	Created by Janis Hutz 05/14/2023, Licensed under the GPL V3 License
+*			https://janishutz.com, development@janishutz.com
+*
+*
+-->
+
 <template>
     <div>
         <h3>Setting up the root account</h3>

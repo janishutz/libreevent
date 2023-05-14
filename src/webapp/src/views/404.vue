@@ -1,3 +1,12 @@
+<!--
+*				myevent - 404.vue
+*
+*	Created by Janis Hutz 05/14/2023, Licensed under the GPL V3 License
+*			https://janishutz.com, development@janishutz.com
+*
+*
+-->
+
 <template>
     <div class="notFound">
         <h1 class="code">404</h1>
