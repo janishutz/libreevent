@@ -1,21 +1,21 @@
 {
-  "name": "myevent-website",
+  "name": "libreevent-website",
   "version": "1.0.0",
-  "description": "The website of myevent",
+  "description": "The website of libreevent",
   "main": "build.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/simplePCBuilding/myevent.git"
+    "url": "git+https://github.com/simplePCBuilding/libreevent.git"
   },
   "author": "Janis Hutz",
   "license": "GPL-3.0-or-later",
   "bugs": {
-    "url": "https://github.com/simplePCBuilding/myevent/issues"
+    "url": "https://github.com/simplePCBuilding/libreevent/issues"
   },
-  "homepage": "https://myevent.janishutz.com",
+  "homepage": "https://libreevent.janishutz.com",
   "dependencies": {
     "markdown-it": "^13.0.1",
     "prompt-sync": "^4.2.0"
