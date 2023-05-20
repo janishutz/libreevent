@@ -45,6 +45,9 @@
                 draggables: { 1: { 'x': 100, 'y':100, 'h': 100, 'w': 250, 'active': false, 'draggable': true, 'resizable': true, 'id': 1 } },
                 available: { 'redo': false, 'undo': false },
                 selectedObject: {},
+                scaleFactor: 1,
+                sizePoll: null,
+                prevSize: { 'h': window.innerHeight, 'w': window.innerWidth },
             }
         },
         methods: {
@@ -59,16 +62,6 @@
             */
             runHook () {
                 let self = this;
-
-                if ( sessionStorage.getItem( 'seatplan' ) ) {
-                    this.draggables = JSON.parse( sessionStorage.getItem( 'seatplan' ) );
-                }
-
-                for ( let element in this.draggables ) {
-                    if ( this.draggables[ element ].active ) {
-                        this.activateComponent( element );
-                    }
-                }
 
                 /* 
                     Keybinds:
@@ -96,10 +89,12 @@
                     }
                 };
 
+                this.loadSeatplan();
+
                 // TODO: build Zoom function (including touch gesture support)
 
                 if ( !sessionStorage.getItem( 'seatplan-history' ) ) {
-                    sessionStorage.setItem( 'seatplan-history', JSON.stringify( { '1': this.draggables } ) );
+                    sessionStorage.setItem( 'seatplan-history', JSON.stringify( { '1': this.scaleDown( this.draggables ) } ) );
                 }
 
                 let history = sessionStorage.getItem( 'seatplan-history' ) ? JSON.parse( sessionStorage.getItem( 'seatplan-history' ) ) : {};
@@ -115,6 +110,64 @@
 
                 let supportedBrowser = [];
                 // TODO: Add warning for untested browsers & suboptimal window sizes!
+            },
+            eventHandler ( e ) {
+                if ( this.prevSize.h != window.innerHeight || this.prevSize.w != window.innerWidth ) {
+                    this.prevSize = { 'h': window.innerHeight, 'w': window.innerWidth };
+                    this.loadSeatplan();
+                }
+            },
+            loadSeatplan () {
+                /* 
+                    Calculate scale factor (this adds support for differently sized screens)
+                    900px is the "default" height
+                */
+                let height = $( document ).height() * 0.8;
+                this.scaleFactor = height / 900;
+                /* 
+                    Load seatplan
+                */
+                // TODO: load from server
+                if ( sessionStorage.getItem( 'seatplan' ) ) {
+                    this.draggables = this.scaleUp( JSON.parse( sessionStorage.getItem( 'seatplan' ) ) );
+                }
+
+
+                for ( let element in this.draggables ) {
+                    if ( this.draggables[ element ].active ) {
+                        this.activateComponent( element );
+                    }
+                }
+            },
+            scaleDown ( valueArray ) {
+                const allowedAttributes = [ 'w', 'h', 'x', 'y' ]
+                let returnArray = {};
+                for ( let entry in valueArray ) {
+                    returnArray[ entry ] = {};
+                    for ( let attributes in valueArray[ entry ] ) {
+                        if ( allowedAttributes.includes( attributes ) ) {
+                            returnArray[ entry ][ attributes ] = valueArray[ entry ][ attributes ] / this.scaleFactor;
+                        } else {
+                            returnArray[ entry ][ attributes ] = valueArray[ entry ][ attributes ];
+                        }
+                    }
+                }
+                return returnArray;
+            },
+            scaleUp ( valueArray ) {
+                const allowedAttributes = [ 'w', 'h', 'x', 'y' ]
+                let returnArray = {};
+                for ( let entry in valueArray ) {
+                    returnArray[ entry ] = {};
+                    for ( let attributes in valueArray[ entry ] ) {
+                        if ( allowedAttributes.includes( attributes ) ) {
+                            returnArray[ entry ][ attributes ] = valueArray[ entry ][ attributes ] * this.scaleFactor;
+                        } else {
+                            returnArray[ entry ][ attributes ] = valueArray[ entry ][ attributes ];
+                        }
+                    }
+                }
+                return returnArray;
             },
             activateComponent ( id ) {
                 this.active = id;
@@ -132,7 +185,7 @@
                 
                 count = parseInt( Object.keys( history ).length + 1 );
                 sessionStorage.setItem( 'historyPos', count );
-                history[ count ] = this.draggables;
+                history[ count ] = this.scaleDown( this.draggables );
                 sessionStorage.setItem( 'seatplan-history',  JSON.stringify( history ) );
 
                 if ( parseInt( sessionStorage.getItem( 'historyPos' ) ) > 1 ) {
@@ -145,7 +198,7 @@
                 if ( action === 'undo' ) {
                     if ( parseInt( sessionStorage.getItem( 'historyPos' ) ) > 1 ) {
                         sessionStorage.setItem( 'historyPos', parseInt( sessionStorage.getItem( 'historyPos' ) ) - 1 );
-                        this.draggables = JSON.parse( sessionStorage.getItem( 'seatplan-history' ) )[ sessionStorage.getItem( 'historyPos' ) ];
+                        this.draggables = this.scaleUp( JSON.parse( sessionStorage.getItem( 'seatplan-history' ) )[ sessionStorage.getItem( 'historyPos' ) ] );
                         this.available.redo = true;
                         if ( parseInt( sessionStorage.getItem( 'historyPos' ) ) < 2 ) {
                             this.available.undo = false;
@@ -156,7 +209,7 @@
                 } else if ( action === 'redo' ) {
                     if ( parseInt( Object.keys( JSON.parse( sessionStorage.getItem( 'seatplan-history' ) ) ).length ) > parseInt( sessionStorage.getItem( 'historyPos' ) ) ) {
                         sessionStorage.setItem( 'historyPos', parseInt( sessionStorage.getItem( 'historyPos' ) ) + 1 );
-                        this.draggables = JSON.parse( sessionStorage.getItem( 'seatplan-history' ) )[ sessionStorage.getItem( 'historyPos' ) ];
+                        this.draggables = this.scaleUp( JSON.parse( sessionStorage.getItem( 'seatplan-history' ) )[ sessionStorage.getItem( 'historyPos' ) ] );
                         this.available.undo = true;
                         if ( parseInt( Object.keys( JSON.parse( sessionStorage.getItem( 'seatplan-history' ) ) ).length ) < parseInt( sessionStorage.getItem( 'historyPos' ) ) + 1 ) {
                             this.available.redo = false;
@@ -167,7 +220,7 @@
                 }
             },
             save () {
-                sessionStorage.setItem( 'seatplan', JSON.stringify( this.draggables ) );
+                sessionStorage.setItem( 'seatplan', JSON.stringify( this.scaleDown( this.draggables ) ) );
             },
             addNewElement () {
                 this.draggables[ Object.keys( this.draggables ).length + 1 ] = { 'x': 100, 'y':100, 'h': 100, 'w': 250, 'active': false, 'draggable': true, 'resizable': true, 'id': Object.keys( this.draggables ).length + 1 };
@@ -187,13 +240,17 @@
         },
         created () {
             this.runHook();
+            this.sizePoll = setInterval( this.eventHandler, 250 );
+        },
+        unmounted() {
+            clearInterval( this.sizePoll );
         }
     }
 </script>
 
 <style scoped>
     .parent {
-        width: 99.8%;
+        aspect-ratio: 16 / 9;
         height: 80vh;
         position: relative;
         border: black 1px solid;
