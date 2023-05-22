@@ -9,7 +9,7 @@
 
 <template>
     <div id="window">
-        <properties class="properties" v-model:posSize="selectedObject" @updated="handleUpdate"></properties>
+        <properties class="properties" v-model:posSize="selectedObject" @updated="handleUpdate" :scale-factor="scaleFactor"></properties>
         <div class="parent">
             <Vue3DraggableResizable v-for="draggable in draggables" :initW="draggable.w" :initH="draggable.h" v-model:x="draggable.x" v-model:y="draggable.y" v-model:w="draggable.w" v-model:h="draggable.h"
                 v-model:active="draggable.active" :draggable="draggable.draggable" :resizable="draggable.resizable" :parent="true" @activated="activateComponent( draggable.id );"
