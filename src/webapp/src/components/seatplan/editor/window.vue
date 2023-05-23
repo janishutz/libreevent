@@ -11,11 +11,13 @@
     <div id="window">
         <properties class="properties" v-model:posSize="selectedObject" @updated="handleUpdate" :scale-factor="scaleFactor"></properties>
         <div class="parent">
-            <Vue3DraggableResizable v-for="draggable in draggables" :initW="draggable.w" :initH="draggable.h" v-model:x="draggable.x" v-model:y="draggable.y" v-model:w="draggable.w" v-model:h="draggable.h"
-                v-model:active="draggable.active" :draggable="draggable.draggable" :resizable="draggable.resizable" :parent="true" @activated="activateComponent( draggable.id );"
-                @drag-end="saveHistory();" @resize-end="saveHistory();" @contextmenu="( e ) => { e.preventDefault(); }" class="draggable-box">
-                <p v-if="draggable.draggable">This is a test example</p>
-            </Vue3DraggableResizable>
+            <div class="content-parent">
+                <Vue3DraggableResizable v-for="draggable in draggables" :initW="draggable.w" :initH="draggable.h" v-model:x="draggable.x" v-model:y="draggable.y" v-model:w="draggable.w" v-model:h="draggable.h"
+                    v-model:active="draggable.active" :draggable="draggable.draggable" :resizable="draggable.resizable" :parent="true" @activated="activateComponent( draggable.id );"
+                    @drag-end="saveHistory();" @resize-end="saveHistory();" @contextmenu="( e ) => { e.preventDefault(); }" class="draggable-box">
+                    <circularSeatplanComponent :scale-factor="scaleFactor" :w="draggable.w" :h="draggable.h"></circularSeatplanComponent>
+                </Vue3DraggableResizable>
+            </div>
         </div>
         <div>
             <button v-if="available.undo" @click="historyOp( 'undo' )">Undo</button>
@@ -31,13 +33,15 @@
 <script>
     import Vue3DraggableResizable from 'vue3-draggable-resizable';
     import properties from '@/components/seatplan/editor/properties.vue';
+    import circularSeatplanComponent from '@/components/seatplan/seatplanComponents/seats/circular.vue';
     import 'vue3-draggable-resizable/dist/Vue3DraggableResizable.css';
 
     export default {
         'name': 'window',
         components: { 
             Vue3DraggableResizable,
-            properties
+            properties,
+            circularSeatplanComponent,
         },
         data() {
             return {
@@ -251,7 +255,8 @@
 <style scoped>
     .parent {
         aspect-ratio: 16 / 9;
-        height: 80vh;
+        height: 90vh;
+        left: 10%;
         position: relative;
         border: black 1px solid;
         user-select: none;
@@ -261,7 +266,7 @@
     }
 
     .draggable-box {
-        border: black 2px solid;
+        border: black 1px solid;
         cursor: all-scroll;
     }
 
@@ -278,5 +283,10 @@
         height: 75vh;
         top: 10vh;
         left: 79vw;
+    }
+
+    .content-parent {
+        aspect-ratio: 16 / 9;
+        height: 3000px;
     }
 </style>

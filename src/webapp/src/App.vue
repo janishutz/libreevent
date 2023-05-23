@@ -34,6 +34,7 @@
     --overlay-color: rgba(37, 37, 37, 0.575);
     --inactive-color: rgb(100, 100, 100);
     --highlight-backdrop: rgb(143, 134, 192);
+    --PI: 3.14159265358979;
 }
 
 :root.dark {
