@@ -31,6 +31,11 @@
                 <td><div v-if="!isEditing.h" @dblclick="activateEditing( 'h' )">{{ posSize.h }}px</div>
                     <input v-else type="number" min="20" v-model="internal.w" @focusout="resubmit( 'h' )"></td>
             </tr>
+            <tr>
+                <td>Origin:</td>
+                <td><div v-if="!isEditing.origin" @dblclick="activateEditing( 'origin' )">{{ posSize.origin }}</div>
+                    <input v-else type="number" min="20" v-model="internal.origin" @focusout="resubmit( 'origin' )"></td>
+            </tr>
         </table>
     </div>
 </template>
@@ -41,7 +46,7 @@ export default {
     props: {
         posSize: {
             type: Object,
-            "default": { 'x': 100, 'y': 100, 'w': 200, 'h': 100 }
+            "default": { 'x': 100, 'y': 100, 'w': 200, 'h': 100, 'origin': 1 }
         },
         scaleFactor: {
             type: Number,
@@ -65,6 +70,11 @@ export default {
             console.log( 'ok' );
             this.isEditing[ option ] = false;
             this.$emit( 'updated', this.internal )
+        }
+    },
+    watch: {
+        posSize() {
+            console.log( 'posSize changed' );
         }
     }
 }

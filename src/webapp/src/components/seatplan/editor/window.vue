@@ -15,7 +15,7 @@
                 <Vue3DraggableResizable v-for="draggable in draggables" :initW="draggable.w" :initH="draggable.h" v-model:x="draggable.x" v-model:y="draggable.y" v-model:w="draggable.w" v-model:h="draggable.h"
                     v-model:active="draggable.active" :draggable="draggable.draggable" :resizable="draggable.resizable" :parent="true" @activated="activateComponent( draggable.id );"
                     @drag-end="saveHistory();" @resize-end="saveHistory();" @contextmenu="( e ) => { e.preventDefault(); }" class="draggable-box">
-                    <circularSeatplanComponent :scale-factor="scaleFactor" :w="draggable.w" :h="draggable.h"></circularSeatplanComponent>
+                    <circularSeatplanComponent :scale-factor="scaleFactor" :w="draggable.w" :h="draggable.h" :origin="draggable.origin"></circularSeatplanComponent>
                 </Vue3DraggableResizable>
             </div>
         </div>
@@ -46,7 +46,7 @@
         data() {
             return {
                 active: 0,
-                draggables: { 1: { 'x': 100, 'y':100, 'h': 100, 'w': 250, 'active': false, 'draggable': true, 'resizable': true, 'id': 1 } },
+                draggables: { 1: { 'x': 100, 'y':100, 'h': 100, 'w': 250, 'active': false, 'draggable': true, 'resizable': true, 'id': 1, 'origin': 1, 'categories': { 1: 0 } } },
                 available: { 'redo': false, 'undo': false },
                 selectedObject: {},
                 scaleFactor: 1,
@@ -150,7 +150,7 @@
                     returnArray[ entry ] = {};
                     for ( let attributes in valueArray[ entry ] ) {
                         if ( allowedAttributes.includes( attributes ) ) {
-                            returnArray[ entry ][ attributes ] = valueArray[ entry ][ attributes ] / this.scaleFactor;
+                            returnArray[ entry ][ attributes ] = Math.round( valueArray[ entry ][ attributes ] / this.scaleFactor );
                         } else {
                             returnArray[ entry ][ attributes ] = valueArray[ entry ][ attributes ];
                         }
@@ -165,7 +165,7 @@
                     returnArray[ entry ] = {};
                     for ( let attributes in valueArray[ entry ] ) {
                         if ( allowedAttributes.includes( attributes ) ) {
-                            returnArray[ entry ][ attributes ] = valueArray[ entry ][ attributes ] * this.scaleFactor;
+                            returnArray[ entry ][ attributes ] = Math.round( valueArray[ entry ][ attributes ] * this.scaleFactor );
                         } else {
                             returnArray[ entry ][ attributes ] = valueArray[ entry ][ attributes ];
                         }
@@ -174,6 +174,7 @@
                 return returnArray;
             },
             activateComponent ( id ) {
+                console.log( id );
                 this.active = id;
                 this.selectedObject = this.draggables[ this.active ];
             },
@@ -227,7 +228,7 @@
                 sessionStorage.setItem( 'seatplan', JSON.stringify( this.scaleDown( this.draggables ) ) );
             },
             addNewElement () {
-                this.draggables[ Object.keys( this.draggables ).length + 1 ] = { 'x': 100, 'y':100, 'h': 100, 'w': 250, 'active': false, 'draggable': true, 'resizable': true, 'id': Object.keys( this.draggables ).length + 1 };
+                this.draggables[ Object.keys( this.draggables ).length + 1 ] = { 'x': 100, 'y':100, 'h': 100, 'w': 250, 'active': false, 'draggable': true, 'resizable': true, 'id': Object.keys( this.draggables ).length + 1, 'origin': 1, 'categories': { 1: 0 } };
                 this.saveHistory();
             },
             deleteSelected () {
@@ -240,6 +241,7 @@
             handleUpdate ( value ) {
                 this.draggables[ this.active ] = value;
                 this.selectedObject = value;
+                this.saveHistory();
             }
         },
         created () {
@@ -255,8 +257,9 @@
 <style scoped>
     .parent {
         aspect-ratio: 16 / 9;
-        height: 90vh;
-        left: 10%;
+        max-height: 90vh;
+        max-width: 90vw;
+        left: 5%;
         position: relative;
         border: black 1px solid;
         user-select: none;
