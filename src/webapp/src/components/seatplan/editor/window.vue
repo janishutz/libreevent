@@ -9,13 +9,15 @@
 
 <template>
     <div id="window">
-        <properties class="properties" v-model:posSize="selectedObject" @updated="handleUpdate" :scale-factor="scaleFactor"></properties>
+        <properties class="properties" v-model:draggables="draggables" @updated="handleUpdate" :scale-factor="scaleFactor" :active="active"></properties>
         <div class="parent">
             <div class="content-parent">
                 <Vue3DraggableResizable v-for="draggable in draggables" :initW="draggable.w" :initH="draggable.h" v-model:x="draggable.x" v-model:y="draggable.y" v-model:w="draggable.w" v-model:h="draggable.h"
                     v-model:active="draggable.active" :draggable="draggable.draggable" :resizable="draggable.resizable" :parent="true" @activated="activateComponent( draggable.id );"
                     @drag-end="saveHistory();" @resize-end="saveHistory();" @contextmenu="( e ) => { e.preventDefault(); }" class="draggable-box">
-                    <circularSeatplanComponent :scale-factor="scaleFactor" :w="draggable.w" :h="draggable.h" :origin="draggable.origin"></circularSeatplanComponent>
+                    <circularSeatplanComponent v-if="draggable.shape == 'circular' && draggable.kind == 'seat'" :scale-factor="scaleFactor" :w="draggable.w" :h="draggable.h" :origin="draggable.origin"></circularSeatplanComponent>
+                    <trapezoidSeatplanComponent v-if="draggable.shape == 'trapezoid' && draggable.kind == 'seat'" :scale-factor="scaleFactor" :w="draggable.w" :h="draggable.h" :origin="draggable.origin"></trapezoidSeatplanComponent>
+                    <rectangularSeatplanComponent v-if="draggable.shape == 'rectangular' && draggable.kind == 'seat'" :scale-factor="scaleFactor" :w="draggable.w" :h="draggable.h" :origin="draggable.origin"></rectangularSeatplanComponent>
                 </Vue3DraggableResizable>
             </div>
         </div>
@@ -34,6 +36,8 @@
     import Vue3DraggableResizable from 'vue3-draggable-resizable';
     import properties from '@/components/seatplan/editor/properties.vue';
     import circularSeatplanComponent from '@/components/seatplan/seatplanComponents/seats/circular.vue';
+    import rectangularSeatplanComponent from '@/components/seatplan/seatplanComponents/seats/rectangular.vue';
+    import trapezoidSeatplanComponent from '@/components/seatplan/seatplanComponents/seats/trapezoid.vue';
     import 'vue3-draggable-resizable/dist/Vue3DraggableResizable.css';
 
     export default {
@@ -42,13 +46,14 @@
             Vue3DraggableResizable,
             properties,
             circularSeatplanComponent,
+            rectangularSeatplanComponent,
+            trapezoidSeatplanComponent,
         },
         data() {
             return {
                 active: 0,
-                draggables: { 1: { 'x': 100, 'y':100, 'h': 100, 'w': 250, 'active': false, 'draggable': true, 'resizable': true, 'id': 1, 'origin': 1, 'categories': { 1: 0 } } },
+                draggables: { 1: { 'x': 100, 'y':100, 'h': 100, 'w': 250, 'active': false, 'draggable': true, 'resizable': true, 'id': 1, 'origin': 1, 'categories': { 1: 0 }, 'shape':'rectangular', 'kind': 'seat' } },
                 available: { 'redo': false, 'undo': false },
-                selectedObject: {},
                 scaleFactor: 1,
                 sizePoll: null,
                 prevSize: { 'h': window.innerHeight, 'w': window.innerWidth },
@@ -139,7 +144,7 @@
 
                 for ( let element in this.draggables ) {
                     if ( this.draggables[ element ].active ) {
-                        this.activateComponent( element );
+                        this.draggables[ element ].active = false;
                     }
                 }
             },
@@ -174,9 +179,7 @@
                 return returnArray;
             },
             activateComponent ( id ) {
-                console.log( id );
                 this.active = id;
-                this.selectedObject = this.draggables[ this.active ];
             },
             saveHistory () {
                 let history = sessionStorage.getItem( 'seatplan-history' ) ? JSON.parse( sessionStorage.getItem( 'seatplan-history' ) ) : {};
@@ -228,7 +231,7 @@
                 sessionStorage.setItem( 'seatplan', JSON.stringify( this.scaleDown( this.draggables ) ) );
             },
             addNewElement () {
-                this.draggables[ Object.keys( this.draggables ).length + 1 ] = { 'x': 100, 'y':100, 'h': 100, 'w': 250, 'active': false, 'draggable': true, 'resizable': true, 'id': Object.keys( this.draggables ).length + 1, 'origin': 1, 'categories': { 1: 0 } };
+                this.draggables[ Object.keys( this.draggables ).length + 1 ] = { 'x': 100, 'y':100, 'h': 100, 'w': 250, 'active': false, 'draggable': true, 'resizable': true, 'id': Object.keys( this.draggables ).length + 1, 'origin': 1, 'categories': { 1: 0 }, 'shape':'rectangular', 'kind': 'seat' };
                 this.saveHistory();
             },
             deleteSelected () {
@@ -239,7 +242,7 @@
                 }
             },
             handleUpdate ( value ) {
-                this.draggables[ this.active ] = value;
+                this.draggables = value;
                 this.selectedObject = value;
                 this.saveHistory();
             }
@@ -250,7 +253,7 @@
         },
         unmounted() {
             clearInterval( this.sizePoll );
-        }
+        },
     }
 </script>
 
@@ -269,7 +272,6 @@
     }
 
     .draggable-box {
-        border: black 1px solid;
         cursor: all-scroll;
     }
 
@@ -290,6 +292,6 @@
 
     .content-parent {
         aspect-ratio: 16 / 9;
-        height: 3000px;
+        height: 400%;
     }
 </style>

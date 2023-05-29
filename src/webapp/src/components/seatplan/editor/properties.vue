@@ -10,33 +10,51 @@
 <template>
     <div id="properties">
         <h2>Properties</h2>
-        <table>
+        <table v-if="active">
             <tr>
                 <td>Position X:</td>
-                <td><div v-if="!isEditing.x" @dblclick="activateEditing( 'x' )">{{ posSize.x }}px</div>
-                    <input v-else type="number" min="20" v-model="internal.x" @focusout="resubmit( 'x' )"></td>
+                <td>
+                    <input type="number" min="20" v-model="internal[ active ].x" @focusout="resubmit()">
+                </td>
             </tr>
             <tr>
                 <td>Position Y:</td>
-                <td><div v-if="!isEditing.y" @dblclick="activateEditing( 'y' )">{{ posSize.y }}px</div>
-                    <input v-else type="number" min="20" v-model="internal.y" @focusout="resubmit( 'y' )"></td>
+                <td>
+                    <input type="number" min="20" v-model="internal[ active ].y" @focusout="resubmit()">
+                </td>
             </tr>
             <tr>
                 <td>Width:</td>
-                <td><div v-if="!isEditing.w" @dblclick="activateEditing( 'w' )">{{ posSize.w }}px</div>
-                    <input v-else type="number" min="20" v-model="internal.w" @focusout="resubmit( 'w' )"></td>
+                <td>
+                    <input type="number" min="20" v-model="internal[ active ].w" @focusout="resubmit()">
+                </td>
             </tr>
             <tr>
                 <td>Height:</td>
-                <td><div v-if="!isEditing.h" @dblclick="activateEditing( 'h' )">{{ posSize.h }}px</div>
-                    <input v-else type="number" min="20" v-model="internal.w" @focusout="resubmit( 'h' )"></td>
+                <td>
+                    <input type="number" min="20" v-model="internal[ active ].h" @focusout="resubmit()">
+                </td>
             </tr>
             <tr>
                 <td>Origin:</td>
-                <td><div v-if="!isEditing.origin" @dblclick="activateEditing( 'origin' )">{{ posSize.origin }}</div>
-                    <input v-else type="number" min="20" v-model="internal.origin" @focusout="resubmit( 'origin' )"></td>
+                <td>
+                    <input type="number" min="1" max="4" v-model="internal[ active ].origin" @focusout="resubmit()">
+                </td>
+            </tr>
+            <tr>
+                <td>Shape:</td>
+                <td><select min="20" v-model="internal[ active ].shape" @change="resubmit()">
+                        <option value="rectangular">Rectangular</option>
+                        <option value="trapezoid">Trapezoid</option>
+                        <option value="circular">Circular</option>
+                    </select>
+                </td>
             </tr>
         </table>
+        <div v-else class="no-select">
+            <b>No Object selected</b><br>
+            Please select one to view details here.
+        </div>
     </div>
 </template>
 
@@ -44,38 +62,44 @@
 export default {
     name: 'propertiesSeatplan',
     props: {
-        posSize: {
+        draggables: {
             type: Object,
-            "default": { 'x': 100, 'y': 100, 'w': 200, 'h': 100, 'origin': 1 }
+            "default": {}
         },
         scaleFactor: {
+            type: Number,
+            "default": 1,
+        },
+        active: {
             type: Number,
             "default": 1,
         },
     },
     data () {
         return {
-            isEditing: { 'w':false },
-            internal: { 'x': 100, 'y': 100, 'w': 200, 'h': 100 },
+            internal: {},
         }
     },
     methods: {
-        activateEditing ( option ) {
-            this.isEditing[ option ] = true;
-            for ( let value in this.posSize ) {
-                this.internal[ value ] = this.posSize[ value ];
+        loadInternal () {
+            for ( let value in this.draggables ) {
+                this.internal[ value ] = this.draggables[ value ];
             }
         },
-        resubmit ( option ) {
-            console.log( 'ok' );
-            this.isEditing[ option ] = false;
-            this.$emit( 'updated', this.internal )
+        resubmit () {
+            this.$emit( 'updated', this.internal );
         }
     },
     watch: {
-        posSize() {
-            console.log( 'posSize changed' );
+        draggables ( value ) {
+            this.loadInternal();
+        },
+        active ( value ) {
+            this.loadInternal();
         }
+    },
+    created () {
+        this.loadInternal();
     }
 }
 </script>

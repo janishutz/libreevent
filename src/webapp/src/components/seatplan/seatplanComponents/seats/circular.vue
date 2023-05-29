@@ -10,9 +10,7 @@
 <template>
     <div id="circularSeatplan">
         <div v-for="row in seats">
-            <div v-for="seat in row">
-                <span class="material-symbols-outlined seats" :style="seat.style">living</span>
-            </div>
+            <span class="material-symbols-outlined seats" v-for="seat in row" :style="seat.style">living</span>
         </div>
     </div>
 </template>
@@ -55,7 +53,7 @@ export default {
             // w & h are normalised
             let w = Math.round( this.w / this.scaleFactor );
             let h = Math.round( this.h / this.scaleFactor );
-            const size = 37;
+            const size = 33;
             let count = Math.min( Math.floor( w / size ), Math.floor( h / size  ) );
             this.seats = {};
             for ( let row = 0; row < count; row++ ) {
