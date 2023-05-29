@@ -1,0 +1,136 @@
+/*
+*				libreevent - style.css
+*
+*	Created by Janis Hutz 03/05/2023, Licensed under the GPL V3 License
+*			https://janishutz.com, development@janishutz.com
+*
+*
+*/
+
+html, body {
+    height: 100%;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    font-size: calc(15pt + 0.4vw);
+    font-family: sans-serif;
+}
+
+body {
+    background-color: rgb(168, 212, 253);
+}
+
+.dev {
+    background-color: rgb(182, 69, 69, 0.9);
+    padding: 10px;
+    text-align: center;
+    border-radius: 50px;
+}
+
+/* 
+    This is the title div with a screenshot of the admin portal
+*/
+.title-wrapper {
+    /* 
+        TODO: Replace with image
+    */
+    background-color: white;
+    display: flex;
+    text-align: center;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 90%;
+    padding: 2%;
+    margin: 3%;
+    margin-bottom: 0%;
+    border-radius: 50px;
+}
+
+/*
+    This is the page's main content.
+*/
+.content {
+    width: 90%;
+    padding: 2%;
+    margin: 3%;
+    border-radius: 0px 0px 50px 50px;
+    margin-top: 0;
+}
+
+.button {
+    background-color: rgb(24, 43, 61);
+    color: white;
+    text-decoration: none;
+    padding: 40px;
+    padding-bottom: 20px;
+    padding-top: 20px;
+    border-radius: 30px;
+    cursor: pointer;
+    margin: 1.5%;
+    transition: 1s;
+}
+
+.button:hover {
+    transition: 0.2s;
+    border-radius: 5px;
+    background-color: rgb(60, 85, 140);
+}
+
+#nav {
+    position: sticky;
+    z-index: 1;
+    height: 15vh;
+    width: 100%;
+    background-color: white;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+#footer {
+    height: 50vh;
+    width: 100%;
+    background-color: white;
+}
+
+#backToTop {
+    border-radius: 500px;
+    border-width: 1px;
+    background-color: rgb(34, 72, 143);
+    background-image: url('/assets/up.svg');
+    background-size: cover;
+    width: calc(30px + 0.5vw);
+    height: calc(30px + 0.5vw);
+    padding: 0.2%;
+    float: right;
+    color: white;
+    position: fixed;
+    top: 90%;
+    right: 7%;
+    opacity: 0;
+    cursor: default;
+    transition: 0.5s
+}
+
+#backToTop:hover {
+    background-color: rgb(24, 43, 61);
+    width: calc(35px + 0.5vw);
+    height: calc(35px + 0.5vw);
+    transition: 0.2s;
+}
+
+@media only screen and (min-width: 999px) {
+
+    .content, .title-wrapper {
+        width: 70%;
+        padding: 5%;
+        margin: 10%;
+        margin-top: 0;
+    }
+
+    .title-wrapper {
+        margin-top: 3%;
+        margin-bottom: 0;
+    }
+}

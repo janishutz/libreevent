@@ -1,0 +1,125 @@
+/*
+*				libreevent - navstyle.css
+*
+*	Created by Janis Hutz 03/06/2023, Licensed under the GPL V3 License
+*			https://janishutz.com, development@janishutz.com
+*
+*
+*/
+
+/*
+    Default rules that are set for mobile interfaces
+*/
+.nav-wrapper {
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.85);
+    position: fixed;
+    display: block;
+    z-index: 2;
+    width: 100%;
+    top: 0;
+    bottom: 0;
+    left: 1;
+    right: 1;
+}
+
+.nav-container {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.menuActive {
+    overflow: hidden;
+}
+
+/* Logo image and logo link (aka logo-container)*/
+.logo-container-small {
+    margin-left: 5%;
+    margin-right: auto;
+}
+
+.logo {
+    display: block;
+    width: 60vw;
+    height: auto;
+    margin: 0;
+}
+
+.logo-small {
+    display: block;
+    width: auto;
+    height: 12vh;
+    margin: 0;
+}
+
+
+.listtoggle {
+    text-decoration: none;
+    color: rgb(168, 212, 253);
+    font-size: 5vh;
+    cursor: pointer;
+    margin-right: 5%;
+    position: relative;
+    z-index: 3;
+    transition: 0.8s;
+}
+
+.listtoggle:hover {
+    color: rgb(29, 69, 105);
+    transition: 0.4s;
+    font-size: 6vh;
+}
+
+
+/* This is the list actually containing the menu items */
+.nav-list {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+}
+
+.navitem {
+    text-decoration: none;
+    text-align: center;
+    color: rgb(107, 107, 107);;
+    font-size: 1.4rem;
+    width: fit-content;
+    padding: 2%;
+}
+
+.inactive {
+    transition: 1s;
+    color: white;
+    font-size: 1.3rem;
+}
+
+.inactive:hover {
+    font-size: 1.6rem;
+    color: rgb(107, 107, 107);
+    transition: 0.4s;
+}
+
+/* ~ --> all next & + --> next */
+.shaded {
+    color: rgb(107, 107, 107);
+    transition: 0.3s;
+}
+
+@media only screen and (min-width: 999px) {
+    .nav-container {
+        flex-direction: row;
+    }
+
+    .logo {
+        width: auto;
+        height: 70vh;
+        margin-left: 10%;
+    }
+}

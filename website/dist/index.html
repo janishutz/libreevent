@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>libreevent - Free & Open Source event management solution</title>
+        <link rel="stylesheet" href="/css/style.css">
+        <link rel="stylesheet" href="/css/home.css">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta charset="utf-8">
+        <meta name="description" content="Looking for a free and open source event management solution you can host yourself? libreevent is a project that does exactly that.">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/dark.min.css">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+        <script>hljs.highlightAll();</script>
+    </head>
+    <body>
+        <div id="nav"></div>
+        <div id="backToTop" onclick="backToTop();"></div>
+        <div class="title-wrapper">
+            <h1>libreǝvent</h1>
+            <footer>Free & Open Source self-hosted event management solution</footer>
+        </div>
+        <div class="content">
+            <!-- <h3 class="dev">Website & project not completed yet!</h3> -->
+            <h2>What is libreǝvent?</h2>
+            <p>libreǝvent is a free and fully open source self-hosted event management solution that you can use to sell tickets for your next event. It is written in Node.js, JavaScript, TypeScript, HTML and CSS. It uses Vue.js for the ticket purchasing system and features both an iOS and Android App you can download and use entirely for free. If you like this project, please consider giving it a star on <a href="https://github.com/simplePCBuilding/libreevent">GitHub</a> and donating to help fund development of this project!</p>
+            <div class="image-group">
+                <a href="https://commons.wikimedia.org/wiki/File:Node.js_logo.svg"><img src="/assets/Node.js_logo.svg" class="image"></a>
+                <a href="/about"><img src="/assets/htmlCSSJS.png" class="image"></a>
+            </div>
+            <h2 style="text-align: center; width: 100%; margin-bottom: 0;">Features</h2>
+            <div class="feature-overview">
+                <div class="feature">
+                    <h4>Simple to set up</h4>
+                    <p>This project is simple to set up on your own web-server. Follow our tutorial on how to install it!</p>
+                    <a href="/docs/tutorial" class="button">Tutorial</a>
+                </div>
+                <div class="feature">
+                    <h4>Low system requirements</h4>
+                    <p>This project does not require high-end hardware to run. You may start out with a cheap webhosting account and scale if there's need.</p>
+                    <a href="/docs/systemrequirements" class="button">System requirements</a>
+                </div>
+                <div class="feature">
+                    <h4>Based on a variant of the MEVN tech stack</h4>
+                    <p>This project can (but does not have to) use a MySQL database, it uses express.js for interaction, Vue.js as the front-end framework and Node.js for the server.</p>
+                    <a href="/docs/how-it-works" class="button">How it works</a>
+                </div>
+                <div class="feature">
+                    <h4>Free & Open Source</h4>
+                    <p>You may use this project entirely for free or donate some money to keep it alive! You may also help contributing to the project to make it even better!</p>
+                    <a href="/docs/sponsor" class="button">Donate</a>
+                    <a href="/docs/contributing" class="button">Contributing</a>
+                </div>
+                <div class="feature">
+                    <h4>Plugins</h4>
+                    <p>You may expand the project's capabilities by using plugins or by developing your own plugin.</p>
+                    <a href="/docs/plugins" class="button">Existing plugins</a>
+                    <a href="/docs/contributing/plugins" class="button">Build your own plugin</a>
+                </div>
+            </div>
+        </div>
+        <div id="footer"></div>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.3/jquery-ui.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+        <script>
+            let btn = document.getElementById( 'backToTop' );
+            $( document ).ready( function () {
+                $( '#nav' ).load( '/nav.html' );
+                $( '#footer' ).load( '/footer.html' );
+            } );
+
+            function backToTop () {
+                if ( document.body.scrollTop > 500 || document.documentElement.scrollTop > 500 ) {
+                    window.scrollTo( { top: 0, behavior: 'smooth' } );
+                }
+            }
+
+            window.onscroll = function () {
+                if ( document.body.scrollTop > 500 || document.documentElement.scrollTop > 500 ) {
+                    btn.style.opacity = '1';
+                    btn.style.cursor = 'pointer';
+                } else {
+                    btn.style.opacity = '0';
+                    btn.style.cursor = 'default';
+                }
+            };
+        </script>
+    </body>
+</html>

@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>nav</title>
+        <link rel="stylesheet" href="/css/navstyle.css">
+    </head>
+    <body>
+        <div class="nav-wrapper">
+            <div class="nav-container">
+                <img class="logo" src="/assets/logo.png" alt="logo">
+                <div class="nav-list">
+                    <a class="navitem inactive" id="home" href="/">Home</a>
+                    <a class="navitem inactive" id="docs" href="/docs">Documentation</a>
+                    <a class="navitem inactive" id="download" href="/download">Download</a>
+                    <a class="navitem inactive" id="about" href="/about">About</a>
+                    <a class="navitem inactive" id="gh" href="https://github.com/simplePCBuilding/libreevent" target="_blank" onclick="sessionStorage.setItem( 'menuOpen', String( false ) );">GitHub</a>
+                </div>
+            </div>
+        </div>
+        <a class="logo-container-small" href="/"><img class="logo-small" src="/assets/logo.png" alt="logo"></a>
+        <a class="listtoggle" onclick="toggleMenu();">&#9776</a>
+        <script>
+            let menuOpen = false;
+            $( document ).ready( function () {
+                if ( sessionStorage.getItem( 'menuOpen' ) == 'true' ) {
+                    $( '.nav-wrapper' ).hide( 700 );
+                } else {
+                    $( '.nav-wrapper' ).css( 'display', 'none' );
+                }
+                if ( location.pathname === '/' ) {
+                    $( '#home' ).removeClass( 'inactive' );
+                } else {
+                    $( '#' + location.pathname.slice( 1, location.pathname.length - 1 ) ).removeClass( 'inactive' );
+                }
+                sessionStorage.setItem( 'menuOpen', 'false' );
+            } );
+            function toggleMenu () {
+                menuOpen = !menuOpen;
+                $( '.nav-wrapper' ).toggle( 600 );
+                $( '.logo-small' ).toggle( 600 );
+                $( 'body' ).toggleClass( 'menuActive' );
+                sessionStorage.setItem( 'menuOpen', String( menuOpen ) );
+            };
+        </script>
+    </body>
+</html>

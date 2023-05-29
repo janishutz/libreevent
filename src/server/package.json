@@ -1,0 +1,70 @@
+{
+  "name": "libreevent",
+  "version": "1.0.0",
+  "description": "Free & Open source event management solution",
+  "main": "app.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "devDependencies": {
+    "acorn": "^8.8.2",
+    "buffer-from": "^1.1.2",
+    "camel-case": "^4.1.2",
+    "clean-css": "^5.3.2",
+    "commander": "^9.5.0",
+    "css-b64-images": "^0.2.5",
+    "debug": "^4.3.4",
+    "dot-case": "^3.0.4",
+    "entities": "^4.4.0",
+    "find-up": "^6.3.0",
+    "html-minifier-terser": "^7.1.0",
+    "jju": "^1.4.0",
+    "locate-path": "^7.2.0",
+    "lower-case": "^2.0.2",
+    "minify": "^9.2.0",
+    "ms": "^2.1.2",
+    "no-case": "^3.0.4",
+    "p-limit": "^4.0.0",
+    "p-locate": "^6.0.0",
+    "param-case": "^3.0.4",
+    "pascal-case": "^3.1.2",
+    "path-exists": "^5.0.0",
+    "readjson": "^2.2.2",
+    "relateurl": "^0.2.7",
+    "simport": "^1.2.0",
+    "source-map": "^0.6.1",
+    "source-map-support": "^0.5.21",
+    "terser": "^5.16.5",
+    "try-catch": "^3.0.1",
+    "try-to-catch": "^3.0.1",
+    "tslib": "^2.5.0",
+    "yocto-queue": "^1.0.0"
+  },
+  "dependencies": {
+    "bcrypt": "^5.1.0",
+    "body-parser": "^1.20.2",
+    "cookie-parser": "^1.4.6",
+    "express": "^4.18.2",
+    "express-session": "^1.17.3",
+    "serve-favicon": "^2.5.0",
+    "serve-static": "^1.15.0"
+  },
+  "scripts": {
+    "test": "test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/simplePCBuilding/libreevent.git"
+  },
+  "keywords": [
+    "event",
+    "management",
+    "solution"
+  ],
+  "author": "Janis Hutz",
+  "license": "GPL-3.0-or-later",
+  "bugs": {
+    "url": "https://github.com/simplePCBuilding/libreevent/issues"
+  },
+  "homepage": "https://libreevent.janishutz.com"
+}

@@ -1,0 +1,17 @@
+#
+#				libreevent - .gitignore
+#
+#	Created by Janis Hutz 02/26/2023, Licensed under the GPL V3 License
+#			https://janishutz.com, development@janishutz.com
+#
+#
+
+
+# ignore ALL .log files
+*.log
+
+# ignore node_modules (can be rebuilt with npm i --> shrinks repo size)
+node_modules
+
+# ignore dist folder (this repo only contains source code!)
+/dist

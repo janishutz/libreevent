@@ -1,0 +1,24 @@
+{
+  "name": "libreevent",
+  "version": "1.0.0",
+  "description": "A free and open source event management solution",
+  "main": "/dist/app.js",
+  "scripts": {
+    "test": "npm run test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/simplePCBuilding/libreevent.git"
+  },
+  "keywords": [
+    "eventmanager",
+    "events",
+    "tickets"
+  ],
+  "author": "Janis Hutz",
+  "license": "GPL-3.0-or-later",
+  "bugs": {
+    "url": "https://github.com/simplePCBuilding/libreevent/issues"
+  },
+  "homepage": "https://libreevent.janishutz.com"
+}

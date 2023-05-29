@@ -1,0 +1,42 @@
+/*
+*				libreevent - home.css
+*
+*	Created by Janis Hutz 03/05/2023, Licensed under the GPL V3 License
+*			https://janishutz.com, development@janishutz.com
+*
+*
+*/
+
+/*
+    This is the feature overview on the main page
+*/
+.feature-overview {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+}
+
+.feature {
+    text-align: center;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    width: 100%;
+    padding: 2%;
+}
+
+
+.image {
+    width: 40%;
+    height: auto;
+    margin: 3%;
+}
+
+@media only screen and (min-width: 999px) {
+    .feature {
+        width: 40%;
+    }
+}
