@@ -1,5 +1,5 @@
 /*
-*				myevent - setupRoutes.js
+*				libreevent - setupRoutes.js
 *
 *	Created by Janis Hutz 05/14/2023, Licensed under the GPL V3 License
 *			https://janishutz.com, development@janishutz.com
@@ -12,7 +12,7 @@ export default {
     name: 'setup',
     component: () => import( '../views/SetupView.vue' ),
     meta: {
-        title: 'Login :: Admin - myevent',
+        title: 'Login :: Admin - libreevent',
         adminAuthRequired: true,
     },
     children: [
@@ -21,7 +21,7 @@ export default {
             name: 'setupStart',
             component: () => import( '../views/setup/SetupStartView.vue' ),
             meta: {
-                title: 'Start :: Setup - myevent',
+                title: 'Start :: Setup - libreevent',
                 adminAuthRequired: true,
             }
         },
@@ -30,7 +30,7 @@ export default {
             name: 'setupRoot',
             component: () => import( '../views/setup/SetupRootView.vue' ),
             meta: {
-                title: 'Root account :: Setup - myevent',
+                title: 'Root account :: Setup - libreevent',
                 adminAuthRequired: true,
             }
         },
@@ -39,7 +39,7 @@ export default {
             name: 'setupPage',
             component: () => import( '../views/setup/SetupPageView.vue' ),
             meta: {
-                title: 'Landing page :: Setup - myevent',
+                title: 'Landing page :: Setup - libreevent',
                 adminAuthRequired: true,
             }
         },
@@ -48,7 +48,7 @@ export default {
             name: 'setupPayments',
             component: () => import( '../views/setup/SetupPaymentsView.vue' ),
             meta: {
-                title: 'Payments :: Setup - myevent',
+                title: 'Payments :: Setup - libreevent',
                 adminAuthRequired: true,
             }
         },
@@ -57,7 +57,7 @@ export default {
             name: 'setupEvents',
             component: () => import( '../views/setup/SetupEventsView.vue' ),
             meta: {
-                title: 'Events :: Setup - myevent',
+                title: 'Events :: Setup - libreevent',
                 adminAuthRequired: true,
             }
         },
@@ -66,7 +66,7 @@ export default {
             name: 'setupTOS',
             component: () => import( '../views/setup/SetupTOSView.vue' ),
             meta: {
-                title: 'TOS (Optional) :: Setup - myevent',
+                title: 'TOS (Optional) :: Setup - libreevent',
                 adminAuthRequired: true,
             }
         },
@@ -75,7 +75,7 @@ export default {
             name: 'setupComplete',
             component: () => import( '../views/setup/SetupCompleteView.vue' ),
             meta: {
-                title: 'Setup complete :: Setup - myevent',
+                title: 'Setup complete :: Setup - libreevent',
                 adminAuthRequired: true,
             }
         },

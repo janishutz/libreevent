@@ -1,5 +1,5 @@
 /*
-*				myevent - pwdmanager.js
+*				libreevent - pwdmanager.js
 *
 *	Created by Janis Hutz 03/26/2023, Licensed under the GPL V3 License
 *			https://janishutz.com, development@janishutz.com

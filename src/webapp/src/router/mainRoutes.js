@@ -1,5 +1,5 @@
 /*
-*				myevent - mainRoutes.js
+*				libreevent - mainRoutes.js
 *
 *	Created by Janis Hutz 05/12/2023, Licensed under the GPL V3 License
 *			https://janishutz.com, development@janishutz.com
@@ -21,7 +21,7 @@ export default [
         name: 'home',
         component: HomeView,
         meta: {
-            title: 'Home - myevent'
+            title: 'Home - libreevent'
         }
     },
     {
@@ -29,7 +29,7 @@ export default [
         name: 'tickets',
         component: () => import( '../views/OrderView.vue' ),
         meta: {
-            title: 'Order ticket - myevent'
+            title: 'Order ticket - libreevent'
         }
     },
     {
@@ -37,7 +37,7 @@ export default [
         name: 'login',
         component: () => import( '../views/LoginView.vue' ),
         meta: {
-            title: 'Login - myevent'
+            title: 'Login - libreevent'
         }
     },
     {
@@ -45,7 +45,7 @@ export default [
         name: 'adminLogin',
         component: () => import( '../views/AdminLoginView.vue' ),
         meta: {
-            title: 'Login :: Admin - myevent'
+            title: 'Login :: Admin - libreevent'
         }
     },
     {
@@ -53,7 +53,7 @@ export default [
         name: 'signup',
         component: () => import( '../views/SignupView.vue' ),
         meta: {
-            title: 'Signup - myevent'
+            title: 'Signup - libreevent'
         }
     },
     {
@@ -61,7 +61,7 @@ export default [
         name: 'ticketDetails',
         component: () => import( '../views/TicketsDetailsView.vue' ),
         meta: {
-            title: 'Details - myevent',
+            title: 'Details - libreevent',
             transition: 'scale'
         }
     },
@@ -70,7 +70,7 @@ export default [
         name: 'ticketOrder',
         component: () => import( '../views/TicketsOrderingView.vue' ),
         meta: {
-            title: 'Order ticket - myevent',
+            title: 'Order ticket - libreevent',
             transition: 'scale'
         }
     },
@@ -79,7 +79,7 @@ export default [
         name: 'cart',
         component: () => import( '../views/CartView.vue' ),
         meta: {
-            title: 'Cart - myevent',
+            title: 'Cart - libreevent',
             transition: 'scale'
         }
     },
@@ -88,7 +88,7 @@ export default [
         name: 'purchase',
         component: () => import( '@/views/PurchaseView.vue' ),
         meta: {
-            title: 'Pay - myevent',
+            title: 'Pay - libreevent',
             transition: 'scale'
         }
     },
@@ -97,7 +97,7 @@ export default [
         name: 'pay',
         component: () => import( '@/views/PaymentView.vue' ),
         meta: {
-            title: 'Pay - myevent',
+            title: 'Pay - libreevent',
             transition: 'scale',
         }
     },
@@ -111,7 +111,7 @@ export default [
         name: 'adminSeatplanEditor',
         component: () => import( '@/views/admin/events/EditorView.vue' ),
         meta: {
-            title: 'Seatplan Editor :: Admin - myevent',
+            title: 'Seatplan Editor :: Admin - libreevent',
             adminAuthRequired: true,
         }
     },

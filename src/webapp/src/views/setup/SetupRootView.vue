@@ -1,5 +1,5 @@
 <!--
-*				myevent - SetupRootView.vue
+*				libreevent - SetupRootView.vue
 *
 *	Created by Janis Hutz 05/14/2023, Licensed under the GPL V3 License
 *			https://janishutz.com, development@janishutz.com
@@ -11,7 +11,7 @@
     <div>
         <h3>Setting up the root account</h3>
         <p>The root account is the most powerful account. Therefore, it should only be used if really necessary and should have a strong password. It also always requires Two Factor Authentication for added security. You may log into the root account by typing 'root' into the Email/Username field on the admin login screen.</p>
-        <p>You may find more infos about this part <a href="https://myevent.janishutz.com/docs/setup/setup#root-account" target="_blank">here</a></p>
+        <p>You may find more infos about this part <a href="https://libreevent.janishutz.com/docs/setup/setup#root-account" target="_blank">here</a></p>
         <p>Password requirements:</p>
         <ul style="list-style: none;">
             <li>At least 15 characters long</li>

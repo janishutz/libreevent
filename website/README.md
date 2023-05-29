@@ -3,7 +3,7 @@ The main website's pages are written in HTML & CSS whilst the doc pages are auto
 ** DO NOT MODIFY THE DOC PAGES IN THE [dist/docs/](dist/docs/) DIRECTORY! **
 
 ## Links in the md files in [src/](src/)
-Please note that you are required to use either a link relative to the root folder with double forward slash (example: *//server/app.js*), to the website root with a single forward slash (example: */download*), to the docs root with &/ (example: *&/setup*) or simply /docs/ (example: */docs/setup*), a full link (example: *https://myevent.janishutz.com/docs*) or a relative link (example: *plugins/music*). If you do not follow these patterns, the website won't build or the links will not work correctly. 
+Please note that you are required to use either a link relative to the root folder with double forward slash (example: *//server/app.js*), to the website root with a single forward slash (example: */download*), to the docs root with &/ (example: *&/setup*) or simply /docs/ (example: */docs/setup*), a full link (example: *https://libreevent.janishutz.com/docs*) or a relative link (example: *plugins/music*). If you do not follow these patterns, the website won't build or the links will not work correctly. 
 
 ***NOTE: Don't be confused if the root folder links don't work in the Markdown, as they use specific syntax for the build script.***
 

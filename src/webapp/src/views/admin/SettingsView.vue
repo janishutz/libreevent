@@ -1,5 +1,5 @@
 <!--
-*				myevent - SettingsView.vue
+*				libreevent - SettingsView.vue
 *
 *	Created by Janis Hutz 05/14/2023, Licensed under the GPL V3 License
 *			https://janishutz.com, development@janishutz.com
@@ -10,9 +10,10 @@
 <template>
     <div>
         <h2>Settings</h2>
-        <ul class="settings-toggles">
-            <li class="settings-option" v-for="setting in settings">
-                <div class="info-wrapper" @mouseenter="showInfo( setting.id )" @mouseleave="hideInfo( setting.id )">
+        <!-- TODO: Move to per event settings -->
+        <table class="settings-toggles">
+            <tr class="settings-option" v-for="setting in settings">
+                <td class="info-wrapper" @mouseenter="showInfo( setting.id )" @mouseleave="hideInfo( setting.id )">
                     {{ setting.display }}
                     <span class="material-symbols-outlined info-icon">info</span>
                     <div class="info-box" :id="setting.id">
@@ -20,13 +21,15 @@
                             {{ setting.tooltip }}
                         </div>
                     </div>
-                </div> 
-                <label class="switch">
-                    <input type="checkbox" v-model="setting.value">
-                    <span class="slider round"></span>
-                </label>
-            </li>
-        </ul>
+                </td> 
+                <td>
+                    <label class="switch">
+                        <input type="checkbox" v-model="setting.value">
+                        <span class="slider round"></span>
+                    </label>
+                </td>
+            </tr>
+        </table>
     </div>
 </template>
 
@@ -34,7 +37,22 @@
     export default {
         data () {
             return {
-                settings: { 'guest-purchase': { 'display': 'Allow guest purchase', 'id': 'guest-purchase', 'tooltip':'Allowing guest purchase means that a user does not have to create an account in order for them to be able to make a purchase.', 'value': true } }
+                settings: { 
+                    'guest-purchase': { 
+                        'display': 'Enable guest purchase', 
+                        'id': 'guest-purchase', 
+                        'tooltip':'Allowing guest purchase means that a user does not have to create an account in order for them to be able to make a purchase. Default: On', 
+                        'value': true,
+                        'type': 'toggle'
+                    },
+                    'overbooking': { 
+                        'display': 'Enable overbooking of event', 
+                        'id': 'overbooking', 
+                        'tooltip':'Allow more ticket reservations than you have tickets available. Currently only available for events without seatplans. Default: Off', 
+                        'value': false,
+                        'type': 'toggle'
+                    }
+                }
             }
         },
         methods: {
@@ -51,13 +69,8 @@
 </script>
 
 <style scoped>
-
-.settings-option {
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
-    gap: 10%;
+.settings-toggles {
+    width: 80%;
 }
 
 .info-wrapper {

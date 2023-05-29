@@ -1,5 +1,5 @@
 <!--
-*				myevent - HomeView.vue
+*				libreevent - HomeView.vue
 *
 *	Created by Janis Hutz 05/14/2023, Licensed under the GPL V3 License
 *			https://janishutz.com, development@janishutz.com
@@ -18,7 +18,7 @@
             <router-link to="/admin/events" class="bigButton">Events</router-link>
             <router-link to="/admin/events" class="bigButton">Plugins</router-link>
             <router-link to="/admin/events" class="bigButton">Settings</router-link>
-            <a href="https://myevent.janishutz.com/docs/admin-panel" class="bigButton" target="_blank">Documentation</a>
+            <a href="https://libreevent.janishutz.com/docs/admin-panel" class="bigButton" target="_blank">Documentation</a>
         </div>
     </div>
 </template>

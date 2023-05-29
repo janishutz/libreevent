@@ -1,7 +1,7 @@
 # Settings
 
 ## 2FA
-myevent offers two different 2fa modes: 
+libreevent offers two different 2fa modes: 
 - Standard mode: The user has to click on a link that was sent to him via email. He'll automatically be logged in as soon as the page loads.
 - Enhanced mode: The user has to click on a link that was sent to him via email and then has to confirm it by entering the code that is shown to him on the 2FA page. After that he'll automatically be logged in.
 

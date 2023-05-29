@@ -1,5 +1,5 @@
 /*
-*				myevent - build.js
+*				libreevent - build.js
 *
 *	Created by Janis Hutz 03/09/2023, Licensed under the GPL V3 License
 *			https://janishutz.com, development@janishutz.com

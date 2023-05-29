@@ -1,5 +1,5 @@
 /*
-*				myevent - index.js
+*				libreevent - index.js
 *
 *	Created by Janis Hutz 05/12/2023, Licensed under the GPL V3 License
 *			https://janishutz.com, development@janishutz.com
@@ -29,7 +29,7 @@ const router = createRouter( {
 
 
 router.afterEach( ( to, from ) => {
-    document.title = to.meta.title ? to.meta.title : 'myevent';
+    document.title = to.meta.title ? to.meta.title : 'libreevent';
 } );
 
 let UserAccountPages = [ 'account' ];

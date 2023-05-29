@@ -1,5 +1,5 @@
 # Admin panel
-The admin panel is where you can change basically everything about myevent. Depending on your account's privileges, you may find more or less settings. Only the root account has access to the admin accounts page.
+The admin panel is where you can change basically everything about libreevent. Depending on your account's privileges, you may find more or less settings. Only the root account has access to the admin accounts page.
 
 Here's a list of the pages available when logged in as the root user. All other users have fewer pages enabled.
 - [Admin Accounts](&/admin-panel/admin-accounts)

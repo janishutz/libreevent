@@ -10,7 +10,7 @@ On this page you may add, modify or remove admin accounts. Note that in order fo
 
 
 ### 2FA
-With this checkbox you can choose if this user needs to do two factor authentication, meaning, if the user needs to authorise the login using a link. In the [Settings](&/admin-panel/settings#2fa) you may choose between the two different 2FA modes that myevent offers.
+With this checkbox you can choose if this user needs to do two factor authentication, meaning, if the user needs to authorise the login using a link. In the [Settings](&/admin-panel/settings#2fa) you may choose between the two different 2FA modes that libreevent offers.
 
 
 ## Modifying an account

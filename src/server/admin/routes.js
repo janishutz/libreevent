@@ -1,5 +1,5 @@
 /*
-*				myevent - routes.js (admin)
+*				libreevent - routes.js (admin)
 *
 *	Created by Janis Hutz 03/11/2023, Licensed under the GPL V3 License
 *			https://janishutz.com, development@janishutz.com

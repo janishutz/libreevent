@@ -1,10 +1,10 @@
-# Setup of myevent
-At this point we assume you've completed the initial install of myevent. If not, you may find a guide on how to do it [here](&/setup/getting-started). Let's get started setting up your event management system!
+# Setup of libreevent
+At this point we assume you've completed the initial install of libreevent. If not, you may find a guide on how to do it [here](&/setup/getting-started). Let's get started setting up your event management system!
 
 ## Connecting to the server
-As discussed in the previous part where we installed the system, you can connect to your server simply by opening a web browser and typing your domain name into the address field. After that you should be greeted by the myevent post-install landing page. Once there, you'll need the setup key you defined during the installation. Type it into the field and hit "Start setup".
+As discussed in the previous part where we installed the system, you can connect to your server simply by opening a web browser and typing your domain name into the address field. After that you should be greeted by the libreevent post-install landing page. Once there, you'll need the setup key you defined during the installation. Type it into the field and hit "Start setup".
 
-*Note: This is only available during the setup process of myevent and will afterwards be deactivated to ensure safety of the system.*
+*Note: This is only available during the setup process of libreevent and will afterwards be deactivated to ensure safety of the system.*
 
 ## Root account
 This is the most powerful account in this system. From it you can control EVERY aspect of your system. 
@@ -22,7 +22,7 @@ Special characters  | At least 2 required
 Numbers             | At least 2 required
 Upper / Lower case  | At least 2 upper & 2 lower case letters required
 
-Please avoid using easy to guess combinations like names & birth dates of you or your relatives, zip codes & cities and obvious words like 'password', 'myevent', 'admin', 'root' and your organisation / event's name.
+Please avoid using easy to guess combinations like names & birth dates of you or your relatives, zip codes & cities and obvious words like 'password', 'libreevent', 'admin', 'root' and your organisation / event's name.
 
 After this, the system will email you an email confirmation link using the email you've previously configured in the config.json file during installation.
 
@@ -37,12 +37,12 @@ Now it is time to set up some payment methods. You may find advantages / disadva
 With payment methods sorted, you now have to add an event. For this, you'll need to create tickets by hitting the plus icon. 
 
 ## TOS
-This is an optional step. Here you may add your own terms of services (TOS), next to the ones that are given by myevent itself. Your TOS will be inserted at the top.
+This is an optional step. Here you may add your own terms of services (TOS), next to the ones that are given by libreevent itself. Your TOS will be inserted at the top.
 
 ## Setup complete
 With this, you've completed the setup of the event. We now ask you to restart the node application. You may do this by stopping the process (if logged in via SSH, press Ctrl + C, if you've got a graphical user interface for setting up the node app, it should be self explanatory) and restarting it as described [here](&/setup/installation#starting).
 
 
-**Congratulations! You've now successfully set up your event management solution. You may now log into the admin panel. You can find your admin panel at /admin (example: myevent.janishutz.com/admin, replace myevent.janishutz.com with your own domain).**
+**Congratulations! You've now successfully set up your event management solution. You may now log into the admin panel. You can find your admin panel at /admin (example: libreevent.janishutz.com/admin, replace libreevent.janishutz.com with your own domain).**
 
 *You may find documentation on the admin panel [here](&/admin-panel/)*

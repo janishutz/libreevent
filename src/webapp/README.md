@@ -1,4 +1,4 @@
-# myevent
+# libreevent
 
 ## Project setup
 ```

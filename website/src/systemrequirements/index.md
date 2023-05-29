@@ -1,5 +1,5 @@
 # Systemrequirements
-myevent's system requirements are low, you only need a PC or Server that can run node.js and is able to install npm packages. If the system you are trying to use is unable to download npm packages, you may download the packages on your own system and upload them together with the rest of the server files. How to do that is described in greater detail in the [Getting Started guide](/docs/gettingStarted).
+libreevent's system requirements are low, you only need a PC or Server that can run node.js and is able to install npm packages. If the system you are trying to use is unable to download npm packages, you may download the packages on your own system and upload them together with the rest of the server files. How to do that is described in greater detail in the [Getting Started guide](/docs/gettingStarted).
 
 ## node.js
 Your system needs to be able to run node.js V > 12.0 and must have access to either npm or the downloaded npm packages.

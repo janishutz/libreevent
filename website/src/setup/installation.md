@@ -1,9 +1,9 @@
 # Installation
-Let's begin with setting up myevent! If you are not technically savvy or want somebody else to set it up for you, please contact me [here](https://api.janishutz.com/contact/setup?origin=myevent&campaign=installation-docs). If you want to set it up yourself, read on below!
+Let's begin with setting up libreevent! If you are not technically savvy or want somebody else to set it up for you, please contact me [here](https://api.janishutz.com/contact/setup?origin=libreevent&campaign=installation-docs). If you want to set it up yourself, read on below!
 
 
 # Selecting a webhosting company
-Choosing the right hosting provider is not easy, especially since myevent requires node.js. Therefore, we've listed a few really good options. This website here is hosted by asurahosting. *Note: I may receive a small commission when you buy webhosting using one of the links provided below. This won't affect the price you pay.*
+Choosing the right hosting provider is not easy, especially since libreevent requires node.js. Therefore, we've listed a few really good options. This website here is hosted by asurahosting. *Note: I may receive a small commission when you buy webhosting using one of the links provided below. This won't affect the price you pay.*
 https://clients.asurahosting.com/aff.php?aff=1997
 https://www.novatrend.ch/en/
 https://www.hostinger.com/
@@ -17,7 +17,7 @@ https://www.a2hosting.com/about/affiliate-program/
 https://www.digitalocean.com/go/affiliates
 
 ## Database
-In the database, all the userdata is stored. myevent currently supports two different databases, MySQL and a custom database based on JSON. Which one to choose?
+In the database, all the userdata is stored. libreevent currently supports two different databases, MySQL and a custom database based on JSON. Which one to choose?
 
 Generally MySQL, except:
 - If your organisation is small and does only sell a few tickets at a time, the JSON based database works perfectly fine. 
