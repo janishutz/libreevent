@@ -28,6 +28,7 @@
     --accent-background: rgb(30, 30, 82);
     --secondary-color: white;
     --background-color: white;
+    --popup-color: rgb(224, 224, 224);
     --accent-color: #42b983;
     --hover-color: rgb(165, 165, 165);
     --accent-background-hover: #4380a8;
@@ -42,6 +43,7 @@
     --accent-background: rgb(100, 100, 190);
     --secondary-color: black;
     --background-color: rgb(32, 32, 32);
+    --popup-color: rgb(58, 58, 58);
     --accent-color: #42b983;
     --hover-color: rgb(83, 83, 83);
     --accent-background-hover: #4380a8;
@@ -53,6 +55,7 @@
 @media ( prefers-color-scheme: dark ) {
     :root {
         --primary-color: white;
+        --popup-color: rgb(58, 58, 58);
         --accent-background: rgb(100, 100, 190);
         --secondary-color: black;
         --background-color: rgb(32, 32, 32);

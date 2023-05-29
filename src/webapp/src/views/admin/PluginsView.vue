@@ -10,7 +10,7 @@
 <template>
     <div>
         <h2>Plugins</h2>
-        <p>Welcome to the admin panel!</p>
+        <p>Here you can manage installed plugins and install more</p>
         <div class="bigButtons"></div>
     </div>
 </template>

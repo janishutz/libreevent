@@ -10,6 +10,10 @@
 <template>
     <div>
         <div class="main-view">
+            <h2>Events</h2>
+            <ul>
+                <li v-for="event in events"></li>
+            </ul>
             <router-view v-slot="{ Component, route }">
                 <transition :name="route.meta.transition || 'fade'" mode="out-in">
                     <component :is="Component" />
@@ -23,7 +27,7 @@
     export default {
         data () {
             return {
-                formData: {}
+                events: {},
             }
         },
         methods: {
