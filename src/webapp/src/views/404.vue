@@ -12,7 +12,7 @@
         <h1 class="code">404</h1>
         <h2 class="message">The page you are looking for was not found on the server!</h2>
         <router-link to="/">Return to home page</router-link>
-        <a href="https://libreevent.janishutz.com/docs/errors#404">More information on this error</a>
+        <a href="https://libreevent.janishutz.com/docs/errors#404" target="_blank">More information on this error</a>
     </div>
 </template>
 

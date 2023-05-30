@@ -104,7 +104,11 @@ export default [
     { 
         path: '/:pathMatch(.*)*', 
         name: 'NotFound', 
-        component: () => import( '@/views/404.vue')
+        component: () => import( '@/views/404.vue' ),
+        meta: {
+            title: '404 - Page not found :: libreevent',
+            transition: 'scale',
+        }
     },
     {
         path: '/admin/seatplan',

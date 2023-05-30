@@ -11,8 +11,8 @@
     <div class="order">
         <h1>Order tickets</h1>
         <div class="order-app" v-if="events">
-            <ul v-for="event in events">
-                <li>
+            <ul>
+                <li v-for="event in events">
                     <router-link to="/tickets/details" class="ticket" @click="setActiveTicket( event.eventID );">
                         <div class="ticket-name">
                             <h3>{{ event.name }}</h3>

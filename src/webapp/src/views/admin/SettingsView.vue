@@ -13,12 +13,14 @@
         <!-- TODO: Move to per event settings -->
         <table class="settings-toggles">
             <tr class="settings-option" v-for="setting in settings">
-                <td class="info-wrapper" @mouseenter="showInfo( setting.id )" @mouseleave="hideInfo( setting.id )">
+                <td class="info-wrapper">
                     {{ setting.display }}
-                    <span class="material-symbols-outlined info-icon">info</span>
-                    <div class="info-box" :id="setting.id">
-                        <div class="info-box-container">
-                            {{ setting.tooltip }}
+                    <div class="info-container" @mouseenter="showInfo( setting.id )" @mouseleave="hideInfo( setting.id )">
+                        <span class="material-symbols-outlined info-icon">info</span>
+                        <div class="info-box" :id="setting.id">
+                            <div class="info-box-container">
+                                {{ setting.tooltip }}
+                            </div>
                         </div>
                     </div>
                 </td> 
@@ -76,6 +78,10 @@
 .info-wrapper {
     display: inline;
     position: relative;
+}
+
+.info-container {
+    display: inline;
 }
 
 .info-icon {
