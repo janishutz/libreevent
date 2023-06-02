@@ -9,9 +9,8 @@
 
 <template>
     <div class="details">
-        <h1>Details</h1>
+        <h1>{{ event.name }}</h1>
         <router-link to="/tickets"><span class="material-symbols-outlined" style="font-size: 100%;">arrow_back</span>Back</router-link>
-        <h3>{{ event.name }}</h3>
         <p>{{ event.description }}</p>
         <router-link to="/tickets/order">Order tickets</router-link>
     </div>

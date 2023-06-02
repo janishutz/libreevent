@@ -9,3 +9,6 @@ Here's a list of the pages available when logged in as the root user. All other 
 - [Settings](&/admin-panel/settings)
 
 Additionally, some settings might not be available to all admin accounts on all pages.
+
+*As a general recommendation, we do not encourage logging in as the root user if not strictly necessary, as this can help protect the libreevent installation*.
+

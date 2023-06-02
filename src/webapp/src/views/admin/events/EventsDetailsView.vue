@@ -1,5 +1,5 @@
 <!--
-*				libreevent - SettingsView.vue
+*				libreevent - TicketsDetailsView.vue
 *
 *	Created by Janis Hutz 05/14/2023, Licensed under the GPL V3 License
 *			https://janishutz.com, development@janishutz.com
@@ -8,23 +8,42 @@
 -->
 
 <template>
-    <div>
-        <h2>Settings</h2>
-        <settings v-model:settings="settings"></settings>
+    <div class="details">
+        <h2>{{ event.name }}</h2>
+        <div class="general-settings">
+            <textarea v-model="event.description" class="big-text"></textarea>
+            <input v-model="event.location" class="small-text">
+            <input v-model="event.date" class="small-text" type="date">
+        </div>
+        <div class="ticket-settings"></div>
+        <div class="special-settings"><settings v-model:settings="settings"></settings></div>
     </div>
 </template>
+
+<style scoped>
+    .details {
+        flex-grow: 1;
+    }
+</style>
 
 <script>
     import settings from '@/components/settings/settings.vue';
 
     export default {
-        name: 'adminSettingsView',
+        name: 'TicketsDetailsView',
         components: {
             settings,
         },
-        data () {
+        created () {
+            if ( !sessionStorage.getItem( 'selectedTicket' ) ) {
+                this.$router.push( '/tickets' );
+            }
+            this.eventID = sessionStorage.getItem( 'selectedTicket' );
+        },
+        data() {
             return {
-                settings: { 
+                event: { 'name': 'TestEvent', 'description': 'This is a description for the TestEvent to test multiline support and proper positioning of the Fields', 'freeSeats': 2, 'maxSeats': 2, 'date':'TestDate', 'startingPrice':15, 'location': 'TestLocation', 'eventID': 'test', 'currency': 'CHF', 'logo': 'logo.png' },
+                settings: {
                     'guest-purchase': { 
                         'display': 'Enable guest purchase', 
                         'id': 'guest-purchase', 
@@ -41,6 +60,7 @@
                     }
                 }
             }
-        },
+        }
     };
 </script>
+

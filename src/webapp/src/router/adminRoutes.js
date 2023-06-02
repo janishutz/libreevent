@@ -71,5 +71,14 @@ export default {
                 adminAuthRequired: true,
             }
         },
+        {
+            path: 'events/view',
+            name: 'eventDetails',
+            component: () => import( '../views/admin/events/EventsDetailsView.vue' ),
+            meta: {
+                title: 'Admin - libreevent',
+                adminAuthRequired: true,
+            }
+        },
     ]
 }

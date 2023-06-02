@@ -8,31 +8,89 @@
 -->
 
 <template>
-    <div>
-        <div class="main-view">
-            <h2>Events</h2>
+    <div class="order">
+        <h2>Events</h2>
+        <div class="order-app" v-if="events">
             <ul>
-                <li v-for="event in events"></li>
+                <li v-for="event in events">
+                    <router-link to="/admin/events/view" class="ticket" @click="setActiveTicket( event.eventID );">
+                        <div class="ticket-name">
+                            <h3>{{ event.name }}</h3>
+                            <p>{{ event.description }}</p>
+                        </div>
+                        <img :src="require( '@/assets/' + event.logo )" alt="event logo" class="ticket-logo">
+                    </router-link>
+                </li>
             </ul>
-            <router-view v-slot="{ Component, route }">
-                <transition :name="route.meta.transition || 'fade'" mode="out-in">
-                    <component :is="Component" />
-                </transition>
-            </router-view>
+        </div>
+        <div class="order-app" v-else>
+            No future events are available!
         </div>
     </div>
 </template>
 
+<style scoped>
+    .order-app {
+        text-align: justify;
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+    }
+
+    ul {
+        list-style: none;
+        width: 80%;
+    }
+
+    .ticket {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-decoration: none;
+        color: var( --primary-color );
+        border-color: var( --primary-color );
+        border-width: 1px;
+        height: fit-content;
+        border-style: solid;
+        padding: 10px;
+        transition: 0.4s;
+    }
+
+    .ticket:hover {
+        background-color: var( --hover-color );
+        transition: 0.4s;
+    }
+
+    .ticket-logo {
+        height: 20vh;
+        width: auto;
+        margin-left: auto;
+    }
+
+    .ticket-name {
+        margin-right: auto;
+        max-width: 35%;
+    }
+
+    .ticket-info {
+        margin-left: auto;
+        margin-right: auto
+    }
+</style>
+
 <script>
     export default {
-        data () {
-            return {
-                events: {},
+        name: 'OrderView',
+        methods: {
+            setActiveTicket ( id ) {
+                sessionStorage.setItem( 'selectedTicket', id );
             }
         },
-        methods: {
-            setup () {
-                
+        data () {
+            return {
+                events: { 'test':{ 'name': 'TestEvent', 'description': 'This is a description for the TestEvent to test multiline support and proper positioning of the Fields', 'freeSeats': 2, 'maxSeats': 2, 'date':'TestDate', 'startingPrice':15, 'location': 'TestLocation', 'eventID': 'test', 'currency': 'CHF', 'logo': 'logo.png' }, 'test2':{ 'name': 'TestEvent2', 'description': 'This is a description for the TestEvent to test multiline support and proper positioning of the Fields', 'freeSeats': 2, 'maxSeats': 2, 'date':'TestDate', 'startingPrice':15, 'location': 'TestLocation', 'eventID': 'test2', 'currency': 'CHF', 'logo': 'logo.png' } }
             }
         }
     };
