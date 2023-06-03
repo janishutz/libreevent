@@ -2,7 +2,7 @@
     <div class="home">
         <img alt="Vue logo" src="../assets/logo.png">
         <div>
-            <h1>Welcome to libreevent!</h1>
+            <h1>Welcome to libreǝvent!</h1>
             <p>Let's start the setup by entering the setup key below! You may define a setup key in the config file of libreevent. See <a href="https://libreevent.janishutz.com/docs/setup/setup" target="_blank">here</a> for more instructions</p>
             <form>
                 <label for="key">Your setup key</label><br>

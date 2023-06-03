@@ -10,8 +10,7 @@
 <template>
     <div>
         <h2>Pages</h2>
-        <p>Welcome to the admin panel!</p>
-        <div class="bigButtons"></div>
+        <p>Here you can modify your landing page (the start page of libreǝvent) and other pages</p>
     </div>
 </template>
 

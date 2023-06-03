@@ -26,9 +26,9 @@ export default {
             }
         },
         {
-            path: 'admin-accounts',
-            name: 'adminAccounts',
-            component: () => import( '../views/admin/AccountView.vue' ),
+            path: 'locations',
+            name: 'adminLocations',
+            component: () => import( '../views/admin/LocationsView.vue' ),
             meta: {
                 title: 'Accounts :: Admin - libreevent',
                 adminAuthRequired: true,

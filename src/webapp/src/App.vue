@@ -70,6 +70,7 @@
 
 ::selection {
     background-color: var( --highlight-backdrop );
+    color: var( --secondary-color );
 }
 
 #themeSelector {

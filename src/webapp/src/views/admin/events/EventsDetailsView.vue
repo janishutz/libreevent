@@ -74,6 +74,42 @@
                             'max': 100,
                         }
                     },
+                    'requiredParameter': { 
+                        'display': 'Special requirements', 
+                        'id': 'requiredParameter', 
+                        'tooltip':'Set this parameter to require the user to provide a certain email domain, a special number or special string of characters. Defaults to None', 
+                        'value': 'none',
+                        'type': 'select',
+                        'restrictions': {
+                            'none': { 
+                                'displayName':'None',
+                                'value': 'none'
+                            },
+                            'email': { 
+                                'displayName':'Email domain',
+                                'value': 'email'
+                            },
+                            'numbers': { 
+                                'displayName':'Number sequence',
+                                'value': 'numbers'
+                            },
+                            'string': { 
+                                'displayName':'Text sequence',
+                                'value': 'string'
+                            },
+                        }
+                    },
+                    'requiredParameterValue': { 
+                        'display': 'Maximum ticket count per account', 
+                        'id': 'requiredParameterValue', 
+                        'tooltip':'With this setting you can control how many tickets a person can buy. Defaults to 0, which means do not limit.', 
+                        'value': 0,
+                        'type': 'number',
+                        'restrictions': {
+                            'min': 0,
+                            'max': 100,
+                        }
+                    },
                 }
             }
         }

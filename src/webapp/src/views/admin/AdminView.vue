@@ -15,9 +15,9 @@
         <nav class="side-nav">
             <img src="@/assets/logo.png" alt="libreevent logo" style="width: 80%; margin-left: 10%; margin-bottom: 5%;">
             <router-link to="/admin" class="admin-menu">Home</router-link>
-            <router-link to="/admin/admin-accounts" class="admin-menu">Admin Accounts</router-link>
             <router-link to="/admin/pages" class="admin-menu">Pages</router-link>
             <router-link to="/admin/events" class="admin-menu">Events</router-link>
+            <router-link to="/admin/locations" class="admin-menu">Locations</router-link>
             <router-link to="/admin/plugins" class="admin-menu">Plugins</router-link>
             <router-link to="/admin/settings" class="admin-menu">Settings</router-link>
             <button to="/admin/login" class="admin-menu" @click="logout()">Logout</button>

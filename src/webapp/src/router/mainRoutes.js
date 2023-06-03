@@ -57,6 +57,14 @@ export default [
         }
     },
     {
+        path: '/account',
+        name: 'account',
+        component: () => import( '../views/AccountView.vue' ),
+        meta: {
+            title: 'Account - libreevent'
+        }
+    },
+    {
         path: '/tickets/details',
         name: 'ticketDetails',
         component: () => import( '../views/TicketsDetailsView.vue' ),

@@ -13,9 +13,9 @@
         <h2>Home</h2>
         <p>Welcome to the admin panel!</p>
         <div class="bigButton-container">
-            <router-link to="/admin/admin-accounts" class="bigButton">Admin-accounts</router-link>
             <router-link to="/admin/pages" class="bigButton">Pages</router-link>
             <router-link to="/admin/events" class="bigButton">Events</router-link>
+            <router-link to="/admin/locations" class="bigButton">Locations</router-link>
             <router-link to="/admin/events" class="bigButton">Plugins</router-link>
             <router-link to="/admin/events" class="bigButton">Settings</router-link>
             <a href="https://libreevent.janishutz.com/docs/admin-panel" class="bigButton" target="_blank">Documentation</a>
