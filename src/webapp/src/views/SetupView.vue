@@ -24,7 +24,6 @@
             <router-link to="/setup/complete" v-if="backendStore.getVisitedSetupPages[ 'complete' ]">Complete</router-link>
             <a v-else class="inactive">Complete</a>
         </nav>
-        <h1>Setup</h1>
         <div class="main-view">
             <router-view v-slot="{ Component, route }">
                 <transition :name="route.meta.transition || 'scale'" mode="out-in">

@@ -9,7 +9,7 @@
 
 <template>
     <div>
-        <h3>Setting up the landing page</h3>
+        <h1>Landing page</h1>
         <p>The landing page is the page your customers see when they visit your webpage. You may select a page template <a href="https://libreevent.janishutz.com/docs/homepage/templates">here</a>.</p>
         <p>You may find more infos about this part <a href="https://libreevent.janishutz.com/docs/setup/setup#page-setup" target="_blank">here</a></p>
 
@@ -37,7 +37,7 @@
         },
         methods: {
             submit () {
-                this.backendStore.addVisitedSetupPages( 'payments', true );
+                this.backendStore.addVisitedSetupPages( 'events', true );
                 this.$router.push( '/setup/payments' );
             }
         },

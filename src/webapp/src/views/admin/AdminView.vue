@@ -13,6 +13,7 @@
             <h1>Admin panel</h1>
         </div>
         <nav class="side-nav">
+            <img src="@/assets/logo.png" alt="libreevent logo" style="width: 80%; margin-left: 10%; margin-bottom: 5%;">
             <router-link to="/admin" class="admin-menu">Home</router-link>
             <router-link to="/admin/admin-accounts" class="admin-menu">Admin Accounts</router-link>
             <router-link to="/admin/pages" class="admin-menu">Pages</router-link>
@@ -58,6 +59,7 @@
     .main-view {
         grid-area: main;
         height: 100%;
+        width: 80vw;
         min-height: 80vh;
         overflow: scroll;
     }
@@ -67,6 +69,7 @@
         display: flex;
         flex-direction: column;
         height: 100%;
+        width: 20vw;
         padding: 0;
         margin: 0;
         background-color: var( --accent-background );

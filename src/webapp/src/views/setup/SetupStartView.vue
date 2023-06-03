@@ -9,8 +9,10 @@
 
 <template>
     <div>
-        <h2>Welcome to libreevent!</h2>
+        <img src="@/assets/logo.png" alt="libreevent logo" style="height: 30vh;">
+        <h1>Welcome to libreǝvent!</h1>
         <i style="font-size: small;">All links during setup open in separate tabs</i>
+        <p>Thank you for downloading libreǝvent, the free & open source event management solution. libreǝvent aims to help you save both time and money when hosting events, so you can focus on what really matters.</p>
         <p>Let's start by setting it up. We strongly encourage you to also have a look at the extensive documentation of the setup process <a href="https://libreevent.janishutz.com/docs/setup/setup" target="_blank">here</a></p>
         <router-link to="/setup/root" @click="setup();">Start setup</router-link>
     </div>
@@ -31,7 +33,7 @@
         },
         methods: {
             setup () {
-                this.backendStore.addVisitedSetupPages( 'root', true );
+                this.backendStore.addVisitedSetupPages( 'page', true );
             }
         },
     };

@@ -25,19 +25,26 @@
         data () {
             return {
                 settings: { 
-                    'guest-purchase': { 
-                        'display': 'Enable guest purchase', 
-                        'id': 'guest-purchase', 
-                        'tooltip':'Allowing guest purchase means that a user does not have to create an account in order for them to be able to make a purchase. Default: On', 
-                        'value': true,
-                        'type': 'toggle'
-                    },
-                    'overbooking': { 
-                        'display': 'Enable overbooking of event', 
-                        'id': 'overbooking', 
-                        'tooltip':'Allow more ticket reservations than you have tickets available. Currently only available for events without seatplans. Default: Off', 
-                        'value': false,
-                        'type': 'toggle'
+                    '2fa': { 
+                        'display': 'Require Two-Factor-Authentication of user', 
+                        'id': '2fa', 
+                        'tooltip':'Control whether or not users are required to use Two-Factor-Authentication. Defaults to "User can decide", which is recommended', 
+                        'value': 'always',
+                        'type': 'select',
+                        'restrictions': {
+                            'always': { 
+                                'displayName':'Always require',
+                                'value': 'always'
+                            },
+                            'userDecided': { 
+                                'displayName':'User can decide',
+                                'value': 'userDecided'
+                            },
+                            'never': { 
+                                'displayName':'Disable',
+                                'value': 'never'
+                            },
+                        }
                     }
                 }
             }

@@ -15,8 +15,13 @@
             <input v-model="event.location" class="small-text">
             <input v-model="event.date" class="small-text" type="date">
         </div>
-        <div class="ticket-settings"></div>
-        <div class="special-settings"><settings v-model:settings="settings"></settings></div>
+        <div class="ticket-settings">
+            <h3>Ticket Settings</h3>
+        </div>
+        <div class="special-settings">
+            <h3>Special Settings</h3>
+            <settings v-model:settings="specialSettings"></settings>
+        </div>
     </div>
 </template>
 
@@ -43,7 +48,7 @@
         data() {
             return {
                 event: { 'name': 'TestEvent', 'description': 'This is a description for the TestEvent to test multiline support and proper positioning of the Fields', 'freeSeats': 2, 'maxSeats': 2, 'date':'TestDate', 'startingPrice':15, 'location': 'TestLocation', 'eventID': 'test', 'currency': 'CHF', 'logo': 'logo.png' },
-                settings: {
+                specialSettings: {
                     'guest-purchase': { 
                         'display': 'Enable guest purchase', 
                         'id': 'guest-purchase', 
@@ -57,7 +62,18 @@
                         'tooltip':'Allow more ticket reservations than you have tickets available. Currently only available for events without seatplans. Default: Off', 
                         'value': false,
                         'type': 'toggle'
-                    }
+                    },
+                    'maxTickets': { 
+                        'display': 'Maximum ticket count per account', 
+                        'id': 'maxTickets', 
+                        'tooltip':'With this setting you can control how many tickets a person can buy. Defaults to 0, which means do not limit.', 
+                        'value': 0,
+                        'type': 'number',
+                        'restrictions': {
+                            'min': 0,
+                            'max': 100,
+                        }
+                    },
                 }
             }
         }

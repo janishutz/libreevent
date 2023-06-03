@@ -9,7 +9,7 @@
 
 <template>
     <div>
-        <h3>Setting up the root account</h3>
+        <h1>Root account</h1>
         <p>The root account is the most powerful account. Therefore, it should only be used if really necessary and should have a strong password. It also always requires Two Factor Authentication for added security. You may log into the root account by typing 'root' into the Email/Username field on the admin login screen.</p>
         <p>You may find more infos about this part <a href="https://libreevent.janishutz.com/docs/setup/setup#root-account" target="_blank">here</a></p>
         <p>Password requirements:</p>
@@ -46,7 +46,7 @@
         },
         methods: {
             submit () {
-                this.backendStore.addVisitedSetupPages( 'page', true );
+                this.backendStore.addVisitedSetupPages( 'payments', true );
                 this.$router.push( 'page' );
             }
         },

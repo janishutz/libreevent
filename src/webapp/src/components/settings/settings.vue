@@ -1,5 +1,5 @@
 <!--
-*				libreevent - SettingsView.vue
+*				libreevent - settings.vue
 *
 *	Created by Janis Hutz 05/14/2023, Licensed under the GPL V3 License
 *			https://janishutz.com, development@janishutz.com
@@ -22,11 +22,28 @@
                         </div>
                     </div>
                 </td> 
-                <td>
+                <td v-if="setting.type == 'toggle'">
                     <label class="switch">
                         <input type="checkbox" v-model="setting.value">
                         <span class="slider round"></span>
                     </label>
+                </td>
+                <td v-else-if="setting.type == 'select'">
+                    <select v-model="setting.value">
+                        <option v-for="option in setting.restrictions" :value="option.value">{{ option.displayName }}</option>
+                    </select>
+                </td>
+                <td v-else-if="setting.type == 'number'">
+                    <input type="number" v-model="setting.value" :min="setting.restrictions.min" :max="setting.restrictions.max">
+                </td>
+                <td v-else-if="setting.type == 'text'">
+                    <input type="text" v-model="setting.value">
+                </td>
+                <td v-else-if="setting.type == 'textbox'">
+                    <textarea v-model="setting.value"></textarea>
+                </td>
+                <td v-else-if="setting.type == 'date'">
+                    <input type="date" v-model="setting.value">
                 </td>
             </tr>
         </table>
@@ -58,11 +75,11 @@
 
 .info-wrapper {
     display: inline;
-    position: relative;
 }
 
 .info-container {
     display: inline;
+    position: relative;
 }
 
 .info-icon {
@@ -79,7 +96,7 @@
     background-color: var( --popup-color );
     border-radius: 20px;
     top: 125%;
-    left: -50%
+    right: -9.3vw;
 }
 
 .info-box::before {

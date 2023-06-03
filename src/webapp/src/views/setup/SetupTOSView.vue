@@ -31,7 +31,6 @@
         },
         methods: {
             submit () {
-                this.backendStore.addVisitedSetupPages( 'complete', true );
                 this.$router.push( '/setup/complete' );
             }
         },

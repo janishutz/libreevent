@@ -40,8 +40,8 @@
 
 :root.dark {
     --primary-color: white;
-    --accent-background: rgb(100, 100, 190);
-    --secondary-color: black;
+    --accent-background: rgb(56, 56, 112);
+    --secondary-color: white;
     --background-color: rgb(32, 32, 32);
     --popup-color: rgb(58, 58, 58);
     --accent-color: #42b983;
@@ -56,8 +56,8 @@
     :root {
         --primary-color: white;
         --popup-color: rgb(58, 58, 58);
-        --accent-background: rgb(100, 100, 190);
-        --secondary-color: black;
+        --accent-background: rgb(56, 56, 112);
+        --secondary-color: white;
         --background-color: rgb(32, 32, 32);
         --accent-color: #42b983;
         --hover-color: rgb(83, 83, 83);
