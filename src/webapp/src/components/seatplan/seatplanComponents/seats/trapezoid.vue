@@ -68,11 +68,11 @@ export default {
                     if ( this.origin === 1 ) {
                         this.seats[ row ][ n ] = { 'style': `font-size: ${this.scaleFactor * 200}%; bottom: ${ ( side + 5 ) * this.scaleFactor }px; left: ${ ( row * sideOffset * 2 - side ) * this.scaleFactor }px; rotate: ${ angle }rad` };
                     } else if ( this.origin === 2 ) {
-                        this.seats[ row ][ n ] = { 'style': `font-size: ${this.scaleFactor * 200}%; bottom: ${ ( side + 5 ) * this.scaleFactor }px; right: ${ ( row * size - side ) * this.scaleFactor }px; rotate: ${ Math.PI * 2 - angle }rad` };
+                        this.seats[ row ][ n ] = { 'style': `font-size: ${this.scaleFactor * 200}%; bottom: ${ ( side + 5 ) * this.scaleFactor }px; right: ${ ( row * sideOffset * 2 - side ) * this.scaleFactor }px; rotate: ${ Math.PI * 2 - angle }rad` };
                     } else if ( this.origin === 3 ) {
-                        this.seats[ row ][ n ] = { 'style': `font-size: ${this.scaleFactor * 200}%; top: ${ ( side + 5 ) * this.scaleFactor }px; right: ${ ( row * size - side ) * this.scaleFactor }px; rotate: ${ angle + Math.PI }rad` };
+                        this.seats[ row ][ n ] = { 'style': `font-size: ${this.scaleFactor * 200}%; top: ${ ( side + 5 ) * this.scaleFactor }px; right: ${ ( row * sideOffset * 2 - side ) * this.scaleFactor }px; rotate: ${ angle + Math.PI }rad` };
                     } else if ( this.origin === 4 ) {
-                        this.seats[ row ][ n ] = { 'style': `font-size: ${this.scaleFactor * 200}%; top: ${ ( side + 5 ) * this.scaleFactor }px; left: ${ ( row * size - side ) * this.scaleFactor }px; rotate: ${ Math.PI - angle }rad` };
+                        this.seats[ row ][ n ] = { 'style': `font-size: ${this.scaleFactor * 200}%; top: ${ ( side + 5 ) * this.scaleFactor }px; left: ${ ( row * sideOffset * 2 - side ) * this.scaleFactor }px; rotate: ${ Math.PI - angle }rad` };
                     }
                 }
             }
