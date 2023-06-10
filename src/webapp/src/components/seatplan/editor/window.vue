@@ -13,11 +13,11 @@
         <div class="parent">
             <div class="content-parent">
                 <Vue3DraggableResizable v-for="draggable in draggables" :initW="draggable.w" :initH="draggable.h" v-model:x="draggable.x" v-model:y="draggable.y" v-model:w="draggable.w" v-model:h="draggable.h"
-                    v-model:active="draggable.active" :draggable="draggable.draggable" :resizable="draggable.resizable" :parent="true" @activated="activateComponent( draggable.id );"
+                    v-model:active="draggable.active" v-model:draggable="draggable.draggable" :resizable="draggable.resizable" :parent="true" @activated="activateComponent( draggable.id );"
                     @drag-end="saveHistory();" @resize-end="saveHistory();" @contextmenu="( e ) => { e.preventDefault(); }" class="draggable-box">
-                    <circularSeatplanComponent v-if="draggable.shape == 'circular' && draggable.kind == 'seat'" :scale-factor="scaleFactor" :w="draggable.w" :h="draggable.h" :origin="draggable.origin"></circularSeatplanComponent>
-                    <trapezoidSeatplanComponent v-if="draggable.shape == 'trapezoid' && draggable.kind == 'seat'" :scale-factor="scaleFactor" :w="draggable.w" :h="draggable.h" :origin="draggable.origin"></trapezoidSeatplanComponent>
-                    <rectangularSeatplanComponent v-if="draggable.shape == 'rectangular' && draggable.kind == 'seat'" :scale-factor="scaleFactor" :w="draggable.w" :h="draggable.h" :origin="draggable.origin"></rectangularSeatplanComponent>
+                    <circularSeatplanComponent v-if="draggable.shape == 'circular' && draggable.type == 'seat'" :scale-factor="scaleFactor" :w="draggable.w" :h="draggable.h" :origin="draggable.origin" :starting-row="draggable.startingRow"></circularSeatplanComponent>
+                    <trapezoidSeatplanComponent v-if="draggable.shape == 'trapezoid' && draggable.type == 'seat'" :scale-factor="scaleFactor" :w="draggable.w" :h="draggable.h" :origin="draggable.origin" :starting-row="draggable.startingRow"></trapezoidSeatplanComponent>
+                    <rectangularSeatplanComponent v-if="draggable.shape == 'rectangular' && draggable.type == 'seat'" :scale-factor="scaleFactor" :w="draggable.w" :h="draggable.h" :origin="draggable.origin"></rectangularSeatplanComponent>
                 </Vue3DraggableResizable>
             </div>
         </div>
@@ -26,6 +26,8 @@
             <button v-else disabled>Undo</button>
             <button v-if="available.redo" @click="historyOp( 'redo' )">Redo</button>
             <button v-else disabled>Redo</button>
+            <button @click="zoom( 1.2 )">+</button>
+            <button @click="zoom( 0.8 )">-</button>
             <button @click="addNewElement()">Add</button>
             <button @click="deleteSelected()">Delete</button>
         </div>
@@ -52,11 +54,12 @@
         data() {
             return {
                 active: 0,
-                draggables: { 1: { 'x': 100, 'y':100, 'h': 100, 'w': 250, 'active': false, 'draggable': true, 'resizable': true, 'id': 1, 'origin': 1, 'categories': { 1: 0 }, 'shape':'rectangular', 'kind': 'seat' } },
+                draggables: { 1: { 'x': 100, 'y':100, 'h': 100, 'w': 250, 'active': false, 'draggable': true, 'resizable': true, 'id': 1, 'origin': 1, 'shape':'rectangular', 'type': 'seat', 'startingRow': 1 } },
                 available: { 'redo': false, 'undo': false },
                 scaleFactor: 1,
                 sizePoll: null,
                 prevSize: { 'h': window.innerHeight, 'w': window.innerWidth },
+                zoomFactor: 1,
             }
         },
         methods: {
@@ -71,6 +74,7 @@
             */
             runHook () {
                 let self = this;
+                this.zoomFactor = sessionStorage.getItem( 'zoom' ) ? sessionStorage.getItem( 'zoom' ) : 1;
 
                 /* 
                     Keybinds:
@@ -100,8 +104,6 @@
 
                 this.loadSeatplan();
 
-                // TODO: build Zoom function (including touch gesture support)
-
                 if ( !sessionStorage.getItem( 'seatplan-history' ) ) {
                     sessionStorage.setItem( 'seatplan-history', JSON.stringify( { '1': this.scaleDown( this.draggables ) } ) );
                 }
@@ -118,6 +120,7 @@
                 }
 
                 let supportedBrowser = [];
+                this.save();
                 // TODO: Add warning for untested browsers & suboptimal window sizes!
             },
             eventHandler ( e ) {
@@ -131,8 +134,9 @@
                     Calculate scale factor (this adds support for differently sized screens)
                     900px is the "default" height
                 */
+
                 let height = $( document ).height() * 0.8;
-                this.scaleFactor = height / 900;
+                this.scaleFactor = ( height / 900 ) * this.zoomFactor;
                 /* 
                     Load seatplan
                 */
@@ -231,7 +235,7 @@
                 sessionStorage.setItem( 'seatplan', JSON.stringify( this.scaleDown( this.draggables ) ) );
             },
             addNewElement () {
-                this.draggables[ Object.keys( this.draggables ).length + 1 ] = { 'x': 100, 'y':100, 'h': 100, 'w': 250, 'active': false, 'draggable': true, 'resizable': true, 'id': Object.keys( this.draggables ).length + 1, 'origin': 1, 'categories': { 1: 0 }, 'shape':'rectangular', 'kind': 'seat' };
+                this.draggables[ Object.keys( this.draggables ).length + 1 ] = { 'x': 100, 'y':100, 'h': 100, 'w': 250, 'active': false, 'draggable': true, 'resizable': true, 'id': Object.keys( this.draggables ).length + 1, 'origin': 1, 'shape':'rectangular', 'type': 'seat', 'startingRow': 1 };
                 this.saveHistory();
             },
             deleteSelected () {
@@ -245,6 +249,12 @@
                 this.draggables = value;
                 this.selectedObject = value;
                 this.saveHistory();
+            },
+            zoom ( scale ) {
+                this.zoomFactor = this.zoomFactor * scale;
+                sessionStorage.setItem( 'zoom', this.zoomFactor );
+                this.scaleFactor = this.scaleFactor * scale;
+                this.draggables = this.scaleUp( JSON.parse( sessionStorage.getItem( 'seatplan' ) ) );
             }
         },
         created () {

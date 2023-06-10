@@ -41,6 +41,10 @@ export default {
             type: Number,
             "default": 1,
         },
+        startingRow: {
+            type: Number,
+            "default": 1,
+        }
     },
     data () {
         return {
@@ -60,7 +64,7 @@ export default {
             let count = Math.floor( heightTriangle / ( sideOffset * 2 ) );
             const angle = Math.PI / 4;
             this.seats = {};
-            for ( let row = 0; row < count; row++ ) {
+            for ( let row = this.startingRow; row < count; row++ ) {
                 let nn = 2 + ( row - 1 ) * 2; 
                 this.seats[ row ] = {};
                 for ( let n = 0; n < nn; n++ ) {
@@ -97,6 +101,9 @@ export default {
             this.calculateChairs();
         },
         origin() {
+            this.calculateChairs();
+        },
+        startingRow() {
             this.calculateChairs();
         }
     },

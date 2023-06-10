@@ -41,6 +41,10 @@ export default {
             type: Number,
             "default": 1,
         },
+        startingRow: {
+            type: Number,
+            "default": 1,
+        }
     },
     data () {
         return {
@@ -56,7 +60,7 @@ export default {
             const size = 33;
             let count = Math.min( Math.floor( w / size ), Math.floor( h / size  ) );
             this.seats = {};
-            for ( let row = 0; row < count; row++ ) {
+            for ( let row = this.startingRow; row < count; row++ ) {
                 let nn = row * ( Math.PI / 2 );
                 let r = row * size;
                 this.seats[ row ] = {};
@@ -94,6 +98,9 @@ export default {
             this.calculateChairs();
         },
         origin() {
+            this.calculateChairs();
+        },
+        startingRow() {
             this.calculateChairs();
         }
     },

@@ -14,36 +14,53 @@
             <tr>
                 <td>Position X:</td>
                 <td>
-                    <input type="number" min="20" v-model="internal[ active ].x" @focusout="resubmit()">
+                    <input type="number" min="20" v-model="internal[ active ].x" @change="resubmit()">
                 </td>
             </tr>
             <tr>
                 <td>Position Y:</td>
                 <td>
-                    <input type="number" min="20" v-model="internal[ active ].y" @focusout="resubmit()">
+                    <input type="number" min="20" v-model="internal[ active ].y" @change="resubmit()">
                 </td>
             </tr>
             <tr>
                 <td>Width:</td>
                 <td>
-                    <input type="number" min="20" v-model="internal[ active ].w" @focusout="resubmit()">
+                    <input type="number" min="20" v-model="internal[ active ].w" @change="resubmit()">
                 </td>
             </tr>
             <tr>
                 <td>Height:</td>
                 <td>
-                    <input type="number" min="20" v-model="internal[ active ].h" @focusout="resubmit()">
+                    <input type="number" min="20" v-model="internal[ active ].h" @change="resubmit()">
+                </td>
+            </tr>
+            <tr>
+                <td>Starting row:</td>
+                <td>
+                    <input type="number" min="1" max="20" v-model="internal[ active ].startingRow" @change="resubmit()">
                 </td>
             </tr>
             <tr>
                 <td>Origin:</td>
                 <td>
-                    <input type="number" min="1" max="4" v-model="internal[ active ].origin" @focusout="resubmit()">
+                    <input type="number" min="1" max="4" v-model="internal[ active ].origin" @change="resubmit()">
+                </td>
+            </tr>
+            <tr>
+                <td>Type:</td>
+                <td>
+                    <select min="20" v-model="internal[ active ].type" @change="resubmit()">
+                        <option value="seat">Seat</option>
+                        <option value="stand">Stand</option>
+                        <option value="stage">Stage</option>
+                    </select>
                 </td>
             </tr>
             <tr>
                 <td>Shape:</td>
-                <td><select min="20" v-model="internal[ active ].shape" @change="resubmit()">
+                <td>
+                    <select min="20" v-model="internal[ active ].shape" @change="resubmit()">
                         <option value="rectangular">Rectangular</option>
                         <option value="trapezoid">Trapezoid</option>
                         <option value="circular">Circular</option>
