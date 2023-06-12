@@ -53,7 +53,7 @@ router.beforeEach( ( to, from ) => {
         return { name: 'login' };
     } else if ( !isUserAuthenticated && to.name === 'pay' ) {
         return { name: 'purchase' };
-    } else if ( to.name.substring( 0, 5 ) === 'setup' && !backendStore.getVisitedSetupPages[ to.name.substring( 5 ).toLowerCase() ] && to.name.substring( 5 ).toLowerCase() !== 'start' ) {
+    } else if ( to.name.substring( 0, 5 ) === 'setup' && !backendStore.getVisitedSetupPages[ to.name.substring( 5 ).toLowerCase() ] && to.name.substring( 5 ).toLowerCase() !== 'start' && to.name.substring( 5 ).toLowerCase() !== 'root' ) {
         return { name: 'setupStart' };
     }
 } );
