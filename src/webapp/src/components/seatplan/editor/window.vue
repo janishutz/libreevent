@@ -40,6 +40,8 @@
     import circularSeatplanComponent from '@/components/seatplan/seatplanComponents/seats/circular.vue';
     import rectangularSeatplanComponent from '@/components/seatplan/seatplanComponents/seats/rectangular.vue';
     import trapezoidSeatplanComponent from '@/components/seatplan/seatplanComponents/seats/trapezoid.vue';
+    import stagesSeatplanComponent from '@/components/seatplan/seatplanComponents/stage/stages.vue';
+    import standingSeatplanComponent from '@/components/seatplan/seatplanComponents/stand/standing.vue';
     import 'vue3-draggable-resizable/dist/Vue3DraggableResizable.css';
 
     export default {
@@ -50,6 +52,8 @@
             circularSeatplanComponent,
             rectangularSeatplanComponent,
             trapezoidSeatplanComponent,
+            stagesSeatplanComponent,
+            standingSeatplanComponent,
         },
         data() {
             return {
