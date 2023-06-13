@@ -8,15 +8,36 @@
 -->
 
 <template>
-    <div id="stages">
-        <div id="rectangular" v-if="origin == 'rectangular'"></div>
-        <div id="trapezoid" v-if="origin == 'trapezoid'"></div>
-        <div id="circular" v-if="origin == 'circular'"></div>
+    <div id="stages" class="stages">
+        <div id="rectangular" v-if="shape == 'rectangular'" class="stages"></div>
+        <div id="trapezoid" v-else-if="shape == 'trapezoid'" class="stages"><div id="trapezoid-ingredient"></div></div>
+        <div id="circular" v-else-if="shape == 'circular'" class="stages">Stage</div>
     </div>
 </template>
 
 <style scoped>
+.stages {
+    height: 100%;
+    width: 100%;
+}
 
+#rectangular {
+    border: solid black 2px;
+}
+
+#trapezoid {
+    overflow: hidden;
+}
+
+#trapezoid-ingredient {
+    border: solid black 2px;
+    rotate: 45deg;
+    height: 100vw;
+    width: 100vw;
+    position: relative;
+    top: 29vh;
+    right: 120vh;
+}
 </style>
 
 <script>
@@ -27,7 +48,7 @@ export default {
             type: Number,
             "default": 1,
         },
-        origin: {
+        shape: {
             type: String,
             "default": "rectangular",
         },
