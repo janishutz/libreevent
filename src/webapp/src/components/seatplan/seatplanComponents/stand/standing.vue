@@ -11,7 +11,7 @@
     <div id="stages">
         <div id="rectangular" v-if="shape == 'rectangular'"></div>
         <div id="trapezoid" v-if="shape == 'trapezoid'"></div>
-        <div id="circular" v-if="orishapegin == 'circular'"></div>
+        <div id="circular" v-if="origin == 'circular'"></div>
     </div>
 </template>
 

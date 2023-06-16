@@ -11,7 +11,7 @@
     <div id="stages" class="stages">
         <div id="rectangular" v-if="shape == 'rectangular'" class="stages"></div>
         <div id="trapezoid" v-else-if="shape == 'trapezoid'" class="stages"><div id="trapezoid-ingredient"></div></div>
-        <div id="circular" v-else-if="shape == 'circular'" class="stages">Stage</div>
+        <div id="circular" v-else-if="shape == 'circular'" class="stages"><div id="circular-ingredient"></div></div>
     </div>
 </template>
 
@@ -25,7 +25,7 @@
     border: solid black 2px;
 }
 
-#trapezoid {
+#trapezoid, #circular {
     overflow: hidden;
 }
 
@@ -37,6 +37,16 @@
     position: relative;
     top: 29vh;
     right: 120vh;
+}
+
+#circular-ingredient {
+    border: solid black 2px;
+    border-radius: 100%;
+    height: 199%;
+    width: 199%;
+    position: relative;
+    top: 0;
+    right: 100%;
 }
 </style>
 

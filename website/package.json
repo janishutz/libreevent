@@ -4,7 +4,7 @@
   "description": "The website of libreevent",
   "main": "build.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "node build.js"
   },
   "repository": {
     "type": "git",
@@ -17,7 +17,6 @@
   },
   "homepage": "https://libreevent.janishutz.com",
   "dependencies": {
-    "markdown-it": "^13.0.1",
-    "prompt-sync": "^4.2.0"
+    "markdown-it": "^13.0.1"
   }
 }

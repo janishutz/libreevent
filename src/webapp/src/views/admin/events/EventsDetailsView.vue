@@ -17,15 +17,29 @@
         </div>
         <div class="ticket-settings">
             <h3>Ticket Settings</h3>
-            <div class="category" v-for="category in event.categories">
+            <table class="category" v-for="category in event.categories">
                 {{ category.name }}:
-                <div v-for="price in category.price">
-                    {{ price.name }}:
-                    <input type="number" v-model="price.price">
-                </div>
-                {{ category.fg }}
-                {{ category.bg }}
-            </div>
+                <tr v-for="price in category.price">
+                    <td>
+                        {{ price.name }}:
+                    </td>
+                    <td>
+                        <input type="number" v-model="price.price">
+                    </td>
+                </tr>
+                <tr>
+                    <td>Foreground colour</td>
+                    <td>
+                        <input type="text" data-coloris v-model="category.fg" onkeydown="return false;">
+                    </td>
+                </tr>
+                <tr>
+                    <td>Background colour</td>
+                    <td>
+                        <input type="text" data-coloris v-model="category.bg" onkeydown="return false;">
+                    </td>
+                </tr>
+            </table>
         </div>
         <div class="special-settings">
             <h3>Special Settings</h3>
