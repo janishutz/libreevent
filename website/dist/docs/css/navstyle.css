@@ -1,0 +1,45 @@
+/*
+*				libreevent - navstyle.css
+*
+*	Created by Janis Hutz 06/17/2023, Licensed under the GPL V3 License
+*			https://janishutz.com, development@janishutz.com
+*
+*
+*/
+
+.side-nav-container {
+    min-height: 100vh;
+    width: 100%;
+    background-color: rgb(0, 0, 49);
+}
+
+.side-nav-item {
+    width: 90%;
+    padding: 3% 5%;
+    display: block;
+    background-color: rgb(16, 16, 46);
+    color: white;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.5s;
+}
+
+
+.side-nav-subitem {
+    width: 85%;
+    padding: 2% 5% 2% 10%;
+    display: block;
+    background-color: rgb(16, 16, 46);
+    color: white;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.5s;
+}
+
+.side-dropdown {
+    display: none;
+}
+
+.side-nav-item:hover, .side-nav-subitem:hover, .active {
+    background-color: rgb(0, 0, 133);
+}

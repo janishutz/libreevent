@@ -26,7 +26,7 @@ function buildNav ( pathObject ) {
             <div class="side-nav-container">
                 <div class="side-nav-wrapper">
                     <div class="side-nav-list">
-                    <a class="side-nav-item" id="home" href="/docs">Home</a>`;
+                    <a class="side-nav-item" id="docs-home" href="/docs">Home</a>`;
     let groups = {};
     for ( let item in pathObject ) {
         if ( groups[ pathObject[ item ][ 'group' ] ] ) {
@@ -37,12 +37,16 @@ function buildNav ( pathObject ) {
     }
 
     for ( let group in groups ) {
-        html += `<a class="side-nav-item" id="${ group }Nav" onclick="toggleList( '${ group }' );">${ group }</a>
-<div class="side-dropdown" id="${ group }">\n`;
-        for ( let entry in groups[ group ] ) {
-            html += `<a class="side-nav-subitem" id="root" href="${ groups[ group ][ entry ][ 'filePath' ] }">${ groups[ group ][ entry ][ 'title' ] }</a>\n`;
+        if ( Object.keys( groups[ group ] ).length > 1 ) {
+            html += `<a class="side-nav-item" id="${ group }Nav" onclick="toggleList( '${ group }' );">${ group.slice( 0, 1 ).toUpperCase() + group.substring( 1 ) }</a>
+<div class="side-dropdown" id="${ group }-dropdown">\n`;
+            for ( let entry in groups[ group ] ) {
+                html += `<a class="side-nav-subitem" id="${ groups[ group ][ entry ][ 'id' ] }" href="${ groups[ group ][ entry ][ 'filePath' ] }">${ groups[ group ][ entry ][ 'title' ] }</a>\n`;
+            }
+            html += '</div>\n';
+        } else {
+            html += `<a class="side-nav-item" id="${ groups[ group ][ 0 ][ 'id' ] }" href="${ groups[ group ][ 0 ][ 'filePath' ] }">${ groups[ group ][ 0 ][ 'title' ] }</a>\n`;
         }
-        html += '</div>\n';
     }
 
     html += `</div>
@@ -52,8 +56,9 @@ function buildNav ( pathObject ) {
     </body>
 </html>`;
 
-    console.log( html );
     fs.writeFileSync( path.join( __dirname + '/dist/docs/side-bar.html' ), html );
+
+    console.log( '\n\n==> Completed building website! \n\n' );
 }
 
 function buildDocs () {
@@ -132,8 +137,7 @@ function storeHTML( html, filepath ) {
     <html lang="en">
         <head>
             <title>${ title } :: docs - libreevent</title>
-            <link rel="stylesheet" href="/css/style.css">
-            <link rel="stylesheet" href="/css/home.css">
+            <link rel="stylesheet" href="/docs/css/style.css">
             <meta http-equiv="X-UA-Compatible" content="IE=edge">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
             <meta charset="utf-8">
@@ -150,7 +154,6 @@ function storeHTML( html, filepath ) {
                 <div id="doc-container">
                 ${ html }</div>
             </div>
-            <div id="footer"></div>
             <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
             <script src="/docs/js/index.js"></script>
         </body>
@@ -176,5 +179,13 @@ function storeHTML( html, filepath ) {
     }
     fileOutputPath += '/index.html';
     fs.writeFileSync( fileOutputPath, data );
-    return { 'filePath': '/docs/' + category, 'title': title, 'group': group };
+    let id = '';
+    for ( let letter in category ) {
+        if ( category[ letter ] == '/' ) {
+            id += '-';
+        } else {
+            id += category[ letter ];
+        }
+    }
+    return { 'filePath': '/docs/' + category, 'title': title, 'group': group, 'id': id };
 }
