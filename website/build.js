@@ -17,6 +17,23 @@ buildNav( buildDocs() );
 
 function buildNav ( pathObject ) {
     console.log( 'building nav ' + pathObject );
+    let fileStruct = `<!DOCTYPE html>
+    <html>
+        <head>
+            <meta http-equiv="X-UA-Compatible" content="IE=edge">
+            <link rel="stylesheet" href="/css/docs/navstyle.css">
+        </head>
+        <body>
+            <div class="nav-container">
+                <a class="logo-container" href="/"><img class="logo" src="/assets/apple-touch-icon.png" alt="impress-logo"></a>
+                <div class="nav-wrapper">
+                    <div class="nav-list">
+                    <a class="navitem" id="home" href="/docs">Home</a>
+                    <div class="dropdown" id="reference">
+                        <a class="nav-subitem" id="root" href="/docs/reference">Home</a>`;
+    for ( let item in pathObject ) {
+        console.log( pathObject[ item ] );
+    }
 }
 
 function buildDocs () {
@@ -85,29 +102,33 @@ function handleMD ( filepath ) {
     return storeHTML( fileContent, filepath );
 }
 
+function guessTitle( html ) {
+    return html.substring( parseInt( html.indexOf( '<h1>' ) ) + 4, html.indexOf( '</h1>' ) );
+}
+
 function storeHTML( html, filepath ) {
-    /* 
-        TODO: Guess doc page title from first H1 Element.
-    */
+    let title = guessTitle( html );
     let data = `<!DOCTYPE html>
     <html>
         <head>
-        <title>${ filepath } :: DOCS - libreevent</title>
+        <title>${ title } :: docs - libreevent</title>
+        <link rel="stylesheet" href="/css/style.css">
+        <link rel="stylesheet" href="/css/home.css">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta charset="utf-8">
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
-        <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.3/jquery-ui.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-        <script src="/js/docs/loader.js"></script>
-        <link rel="stylesheet" href="/css/docs/style.css">
+        <script src="/docs/js/index.js"></script>
+        <link rel="stylesheet" href="/docs/css/style.css">
         </head>
         <body>
-            <div class="content">
-                <div id="nav"></div>
-                <div id="top"></div>
-                    <div id="docPage">
-                        <div id="doc-container">
-                        ${ html }</div>
-                    </div>
-                <div id="footer"></div>
+            <div id="side-bar"></div>
+            <div id="nav"></div>
+            <div id="docPage">
+                <div id="doc-container">
+                ${ html }</div>
             </div>
+            <div id="footer"></div>
         </body>
     </html>`;
 
@@ -116,7 +137,14 @@ function storeHTML( html, filepath ) {
     */
     let fileOutputPath = path.join( __dirname + '/dist/docs' );
     let pos = filepath.indexOf( 'src' );
-    fileOutputPath += filepath.substring( parseInt( pos ) + 3, filepath.length - 3 );
+    let category = filepath.substring( parseInt( pos ) + 4, filepath.length - 3 );
+    fileOutputPath += '/' + category;
+    let group = '';
+    if ( category.lastIndexOf( '/' ) >= 0 ) {
+        group = category.slice( 0, category.lastIndexOf( '/' ) );
+    } else {
+        group = category;
+    }
     try {
         fs.mkdirSync( fileOutputPath, { recursive: true } );
     } catch ( error ) {
@@ -124,5 +152,5 @@ function storeHTML( html, filepath ) {
     }
     fileOutputPath += '/index.html';
     fs.writeFileSync( fileOutputPath, data );
-    return fileOutputPath;
+    return { 'filePath': fileOutputPath, 'title': title, 'group': group };
 }

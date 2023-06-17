@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+    <html>
+        <head>
+        <title>Admin Accounts :: docs - libreevent</title>
+        <link rel="stylesheet" href="/css/style.css">
+        <link rel="stylesheet" href="/css/home.css">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta charset="utf-8">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+        <script src="/docs/js/index.js"></script>
+        <link rel="stylesheet" href="/docs/css/style.css">
+        </head>
+        <body>
+            <div id="side-bar"></div>
+            <div id="nav"></div>
+            <div id="docPage">
+                <div id="doc-container">
+                <h1>Admin Accounts</h1>
+<p>On this page you may add, modify or remove admin accounts. Note that in order for you to see this page, you'll need to be logged in as the user root.</p>
+<h2>Adding an account</h2>
+<h3>Privileges</h3>
+<p>libreevent features a privilege system where you can choose to what group of users you want to add a user you are currently creating. Possible values are:</p>
+<table>
+<thead>
+<tr>
+<th>Group</th>
+<th>Allowed settings</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Root</td>
+<td>All pages. Can only be one account (the root account)</td>
+</tr>
+<tr>
+<td>Admin</td>
+<td>Can access all pages and settings except for Admin Accounts</td>
+</tr>
+<tr>
+<td>Event-Manager</td>
+<td>Access the events &amp; pages page</td>
+</tr>
+<tr>
+<td>Event-Handler</td>
+<td>Can log into the apps to do entry control</td>
+</tr>
+</tbody>
+</table>
+<h3>Email</h3>
+<p>An Email address is required for account activation and to recover a password in case it gets lost. The system will automatically send an activation email so the user can confirm that the email address is valid.</p>
+<h3>2FA</h3>
+<p>With this checkbox you can choose if this user needs to do two factor authentication, meaning, if the user needs to authorise the login using a link. In the <a href="/docs/admin-panel/settings#2fa">Settings</a> you may choose between the two different 2FA modes that libreevent offers.</p>
+<h2>Modifying an account</h2>
+<h2>Removing an account</h2>
+</div>
+            </div>
+            <div id="footer"></div>
+        </body>
+    </html>
