@@ -14,39 +14,19 @@
     </head>
     <body>
         <div id="nav"></div>
+        <div id="side-bar"></div>
         <div id="backToTop" onclick="backToTop();"></div>
-        <div class="title-wrapper">
-            <h1>Docs - libreǝvent</h1>
-            <footer>Learn how to setup and use libreǝvent!</footer>
-        </div>
-        <div class="content">
-            <h3 class="dev">Website & project not completed yet!</h3>
+        <div id="docPage">
+            <div class="title-wrapper">
+                <h1>Docs - libreǝvent</h1>
+                <footer>Learn how to setup and use libreǝvent!</footer>
+            </div>
+            <div class="content">
+                <h3 class="dev">Website & project not completed yet!</h3>
+            </div>
         </div>
         <div id="footer"></div>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
-        <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.3/jquery-ui.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-        <script>
-            let btn = document.getElementById( 'backToTop' );
-            $( document ).ready( function () {
-                $( '#nav' ).load( '/nav.html' );
-                $( '#footer' ).load( '/footer.html' );
-            } );
-
-            function backToTop () {
-                if ( document.body.scrollTop > 500 || document.documentElement.scrollTop > 500 ) {
-                    window.scrollTo( { top: 0, behavior: 'smooth' } );
-                }
-            }
-
-            window.onscroll = function () {
-                if ( document.body.scrollTop > 500 || document.documentElement.scrollTop > 500 ) {
-                    btn.style.opacity = '1';
-                    btn.style.cursor = 'pointer';
-                } else {
-                    btn.style.opacity = '0';
-                    btn.style.cursor = 'default';
-                }
-            };
-        </script>
+        <script src="/docs/js/index.js"></script>
     </body>
 </html>

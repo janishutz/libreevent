@@ -16,24 +16,44 @@ buildNav( buildDocs() );
 
 
 function buildNav ( pathObject ) {
-    console.log( 'building nav ' + pathObject );
-    let fileStruct = `<!DOCTYPE html>
-    <html>
+    let html = `<!DOCTYPE html>
+    <html lang="en">
         <head>
             <meta http-equiv="X-UA-Compatible" content="IE=edge">
-            <link rel="stylesheet" href="/css/docs/navstyle.css">
+            <link rel="stylesheet" href="/docs/css/navstyle.css">
         </head>
         <body>
-            <div class="nav-container">
-                <a class="logo-container" href="/"><img class="logo" src="/assets/apple-touch-icon.png" alt="impress-logo"></a>
-                <div class="nav-wrapper">
-                    <div class="nav-list">
-                    <a class="navitem" id="home" href="/docs">Home</a>
-                    <div class="dropdown" id="reference">
-                        <a class="nav-subitem" id="root" href="/docs/reference">Home</a>`;
+            <div class="side-nav-container">
+                <div class="side-nav-wrapper">
+                    <div class="side-nav-list">
+                    <a class="side-nav-item" id="home" href="/docs">Home</a>`;
+    let groups = {};
     for ( let item in pathObject ) {
-        console.log( pathObject[ item ] );
+        if ( groups[ pathObject[ item ][ 'group' ] ] ) {
+            groups[ pathObject[ item ][ 'group' ] ].push( pathObject[ item ] );
+        } else {
+            groups[ pathObject[ item ][ 'group' ] ] = [ pathObject[ item ] ];
+        }
     }
+
+    for ( let group in groups ) {
+        html += `<a class="side-nav-item" id="${ group }Nav" onclick="toggleList( '${ group }' );">${ group }</a>
+<div class="side-dropdown" id="${ group }">\n`;
+        for ( let entry in groups[ group ] ) {
+            html += `<a class="side-nav-subitem" id="root" href="${ groups[ group ][ entry ][ 'filePath' ] }">${ groups[ group ][ entry ][ 'title' ] }</a>\n`;
+        }
+        html += '</div>\n';
+    }
+
+    html += `</div>
+                </div>
+            </div>
+        <script src="/docs/js/nav.js"></script>
+    </body>
+</html>`;
+
+    console.log( html );
+    fs.writeFileSync( path.join( __dirname + '/dist/docs/side-bar.html' ), html );
 }
 
 function buildDocs () {
@@ -109,26 +129,30 @@ function guessTitle( html ) {
 function storeHTML( html, filepath ) {
     let title = guessTitle( html );
     let data = `<!DOCTYPE html>
-    <html>
+    <html lang="en">
         <head>
-        <title>${ title } :: docs - libreevent</title>
-        <link rel="stylesheet" href="/css/style.css">
-        <link rel="stylesheet" href="/css/home.css">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <meta charset="utf-8">
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
-        <script src="/docs/js/index.js"></script>
-        <link rel="stylesheet" href="/docs/css/style.css">
+            <title>${ title } :: docs - libreevent</title>
+            <link rel="stylesheet" href="/css/style.css">
+            <link rel="stylesheet" href="/css/home.css">
+            <meta http-equiv="X-UA-Compatible" content="IE=edge">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <meta charset="utf-8">
+            <meta name="description" content="Looking for a free and open source event management solution you can host yourself? libreevent is a project that does exactly that.">
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/dark.min.css">
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+            <script>hljs.highlightAll();</script>
         </head>
         <body>
-            <div id="side-bar"></div>
             <div id="nav"></div>
+            <div id="side-bar"></div>
+            <div id="backToTop" onclick="backToTop();"></div>
             <div id="docPage">
                 <div id="doc-container">
                 ${ html }</div>
             </div>
             <div id="footer"></div>
+            <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+            <script src="/docs/js/index.js"></script>
         </body>
     </html>`;
 
@@ -152,5 +176,5 @@ function storeHTML( html, filepath ) {
     }
     fileOutputPath += '/index.html';
     fs.writeFileSync( fileOutputPath, data );
-    return { 'filePath': fileOutputPath, 'title': title, 'group': group };
+    return { 'filePath': '/docs/' + category, 'title': title, 'group': group };
 }

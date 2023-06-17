@@ -30,10 +30,15 @@
                 } else {
                     $( '.nav-wrapper' ).css( 'display', 'none' );
                 }
+
                 if ( location.pathname === '/' ) {
                     $( '#home' ).removeClass( 'inactive' );
-                } else {
+                } else if( !location.pathname.substring( 1, location.pathname.length - 1 ).includes( '/' ) ) {
                     $( '#' + location.pathname.slice( 1, location.pathname.length - 1 ) ).removeClass( 'inactive' );
+                } else if ( location.pathname.slice( 1, location.pathname.substring( 1 ).indexOf( '/' ) + 1 ) === 'docs' ) {
+                    $( '#docs' ).removeClass( 'inactive' );
+                } else {
+                    console.error( 'an error occurred whilst highlighting the path' );
                 }
                 sessionStorage.setItem( 'menuOpen', 'false' );
             } );
