@@ -9,7 +9,7 @@
 
 <template>
     <div id="window">
-        <properties class="properties" v-model:draggables="draggables" @updated="handleUpdate" :scale-factor="scaleFactor" :active="active"></properties>
+        <properties class="properties" v-model:draggables="draggables" @updated="handleUpdate" :scale-factor="scaleFactor" :active="active" :history-pos="historyPos" :zoom-factor="zoomFactor" v-model:general-settings="generalSettings"></properties>
         <div class="parent">
             <div class="content-parent">
                 <Vue3DraggableResizable v-for="draggable in draggables" :initW="draggable.w" :initH="draggable.h" v-model:x="draggable.x" v-model:y="draggable.y" v-model:w="draggable.w" v-model:h="draggable.h"
@@ -23,15 +23,20 @@
                 </Vue3DraggableResizable>
             </div>
         </div>
-        <div>
-            <button v-if="available.undo" @click="historyOp( 'undo' )">Undo</button>
-            <button v-else disabled>Undo</button>
-            <button v-if="available.redo" @click="historyOp( 'redo' )">Redo</button>
-            <button v-else disabled>Redo</button>
-            <button @click="zoom( 1.2 )">+</button>
-            <button @click="zoom( 0.8 )">-</button>
-            <button @click="addNewElement()">Add</button>
-            <button @click="deleteSelected()">Delete</button>
+        <div class="toolbar">
+            <button title="Go back to location settings" @click="this.$router.push( '/admin/locations' )"><span class="material-symbols-outlined">arrow_back</span></button>
+            <button title="Undo [Ctrl + Z]" v-if="available.undo" @click="historyOp( 'undo' )"><span class="material-symbols-outlined">undo</span></button>
+            <button title="Undo (unavailable)" v-else disabled>Undo</button>
+            <button title="Redo [Ctrl + Y]" v-if="available.redo" @click="historyOp( 'redo' )"><span class="material-symbols-outlined">redo</span></button>
+            <button title="Redo (unavailable)" v-else disabled><span class="material-symbols-outlined">redo</span></button>
+            <button title="Zoom in [+]" @click="zoom( 0.2 )"><span class="material-symbols-outlined">zoom_in</span></button>
+            <button title="Reset zoom [=]" @click="zoom( 1 );"><span class="material-symbols-outlined">center_focus_strong</span></button>
+            <button title="Zoom out [-]" @click="zoom( -0.2 )"><span class="material-symbols-outlined">zoom_out</span></button>
+            <button title="Add component [Ctrl + I]" @click="addNewElement()"><span class="material-symbols-outlined">add</span></button>
+            <button title="Remove selected component [Delete]" @click="deleteSelected()"><span class="material-symbols-outlined">delete</span></button>
+            <!-- TODO: Create real save function -->
+            <button title="Save this seatplan as a draft" @click="save()"><span class="material-symbols-outlined">save</span></button>
+            <button title="Deploy this seatplan (save it for use)" @click="save()"><span class="material-symbols-outlined">system_update_alt</span></button>
         </div>
     </div>
 </template>
@@ -60,12 +65,14 @@
         data() {
             return {
                 active: 0,
-                draggables: { 1: { 'x': 100, 'y':100, 'h': 100, 'w': 250, 'active': false, 'draggable': true, 'resizable': true, 'id': 1, 'origin': 1, 'shape':'rectangular', 'type': 'seat', 'startingRow': 1 } },
+                draggables: { 1: { 'x': 100, 'y':100, 'h': 100, 'w': 250, 'active': false, 'draggable': true, 'resizable': true, 'id': 1, 'origin': 1, 'shape':'rectangular', 'type': 'seat', 'startingRow': 1, 'seatCountingStartingPoint': 0 } },
                 available: { 'redo': false, 'undo': false },
                 scaleFactor: 1,
                 sizePoll: null,
                 prevSize: { 'h': window.innerHeight, 'w': window.innerWidth },
                 zoomFactor: 1,
+                historyPos: 0,
+                generalSettings: { 'namingScheme': 'numeric' },
             }
         },
         methods: {
@@ -80,7 +87,7 @@
             */
             runHook () {
                 let self = this;
-                this.zoomFactor = sessionStorage.getItem( 'zoom' ) ? sessionStorage.getItem( 'zoom' ) : 1;
+                this.zoomFactor = sessionStorage.getItem( 'zoom' ) ? parseFloat( sessionStorage.getItem( 'zoom' ) ) : 1;
 
                 /* 
                     Keybinds:
@@ -105,6 +112,12 @@
                     } else if ( event.ctrlKey && event.key === 'i' ) {
                         event.preventDefault();
                         self.addNewElement();
+                    } else if ( event.key === '+' ) {
+                        self.zoom( 0.2 );
+                    } else if ( event.key === '-' ) {
+                        self.zoom( -0.2 );
+                    } else  if ( event.key === '=' ) {
+                        self.zoom( 1 );
                     }
                 };
 
@@ -194,6 +207,7 @@
             saveHistory () {
                 let history = sessionStorage.getItem( 'seatplan-history' ) ? JSON.parse( sessionStorage.getItem( 'seatplan-history' ) ) : {};
                 let count = parseInt( Object.keys( history ).length + 1 );
+                this.historyPos = count;
                 if ( count - 1 > parseInt( sessionStorage.getItem( 'historyPos' ) ) ) {
                     for ( let i = parseInt( sessionStorage.getItem( 'historyPos' ) ) + 1; i < count; i++ ) {
                         delete history[ i ];
@@ -236,19 +250,25 @@
                         this.available.redo = false;
                     }
                 }
+                this.historyPos = sessionStorage.getItem( 'historyPos' );
             },
             save () {
                 sessionStorage.setItem( 'seatplan', JSON.stringify( this.scaleDown( this.draggables ) ) );
             },
             addNewElement () {
-                this.draggables[ Object.keys( this.draggables ).length + 1 ] = { 'x': 100, 'y':100, 'h': 100, 'w': 250, 'active': false, 'draggable': true, 'resizable': true, 'id': Object.keys( this.draggables ).length + 1, 'origin': 1, 'shape':'rectangular', 'type': 'seat', 'startingRow': 1 };
+                this.draggables[ Object.keys( this.draggables ).length + 1 ] = { 'x': 100, 'y':100, 'h': 100, 'w': 250, 'active': false, 'draggable': true, 'resizable': true, 'id': Object.keys( this.draggables ).length + 1, 'origin': 1, 'shape':'rectangular', 'type': 'seat', 'startingRow': 1, 'seatCountingStartingPoint': 0 };
                 this.saveHistory();
             },
             deleteSelected () {
-                this.draggables[ this.active ].active = true;
-                if ( confirm( 'Do you really want to delete the selected item?' ) ) {
-                    delete this.draggables[ this.active ];
-                    this.saveHistory();
+                if ( this.active ) {
+                    this.draggables[ this.active ].active = true;
+                    if ( confirm( 'Do you really want to delete the selected item?' ) ) {
+                        delete this.draggables[ this.active ];
+                        this.saveHistory();
+                        this.active = 0;
+                    }
+                } else {
+                    alert( 'Please select a component first!' );
                 }
             },
             handleUpdate ( value ) {
@@ -257,10 +277,22 @@
                 this.saveHistory();
             },
             zoom ( scale ) {
-                this.zoomFactor = this.zoomFactor * scale;
-                sessionStorage.setItem( 'zoom', this.zoomFactor );
-                this.scaleFactor = this.scaleFactor * scale;
-                this.draggables = this.scaleUp( JSON.parse( sessionStorage.getItem( 'seatplan' ) ) );
+                if ( scale == 1 ) {
+                    this.zoomFactor = 1;
+                    this.loadSeatplan();
+                } else {
+                    if ( ( this.zoomFactor < 0.3 && scale < 0 ) || ( this.zoomFactor > 2.9 && scale > 0 ) ) {
+                        if ( this.zoomFactor < 0.3 ) {
+                            alert( 'Minimum zoom factor reached' );
+                        } else {
+                            alert( 'Maximum zoom factor reached' );
+                        }
+                    } else {
+                        this.zoomFactor += scale;
+                    }
+                    sessionStorage.setItem( 'zoom', this.zoomFactor );
+                    this.loadSeatplan();
+                }
             }
         },
         created () {
@@ -275,11 +307,11 @@
 
 <style scoped>
     .parent {
+        height: 90vh;
         aspect-ratio: 16 / 9;
-        max-height: 90vh;
-        max-width: 90vw;
-        left: 5%;
-        position: relative;
+        top: 7.5vh;
+        left: 3vw;
+        position: absolute;
         border: black 1px solid;
         user-select: none;
         -moz-user-select: none;
@@ -301,13 +333,32 @@
         background-color: var( --accent-background );
         color: var( --secondary-color );
         width: 20vw;
-        height: 75vh;
-        top: 10vh;
-        left: 79vw;
+        height: 90vh;
+        top: 7.5vh;
+        right: 0.5vw;
     }
 
     .content-parent {
         aspect-ratio: 16 / 9;
         height: 400%;
+    }
+
+    .toolbar {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        position: absolute;
+        top: 7.5vh;
+        left: 0.5vw;
+        height: 90vh;
+    }
+    .toolbar button {
+        margin-top: 10%;
+        cursor: pointer;
+    }
+
+    .toolbar button:disabled {
+        cursor: default;
     }
 </style>

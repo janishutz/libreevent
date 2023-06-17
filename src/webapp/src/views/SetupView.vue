@@ -11,14 +11,14 @@
     <div>
         <nav class="setup-nav">
             <router-link to="/setup">Start</router-link> | 
-            <router-link to="/setup/root">Root account</router-link> | 
-            <router-link to="/setup/page" v-if="backendStore.getVisitedSetupPages[ 'page' ]">Landing page</router-link>
+            <router-link to="/setup/root" @click="unlock( 'page' )">Root account</router-link> | 
+            <router-link to="/setup/page" v-if="backendStore.getVisitedSetupPages[ 'page' ]" @click="unlock( 'payments' )">Landing page</router-link>
             <a v-else class="inactive">Landing page</a> | 
-            <router-link to="/setup/payments" v-if="backendStore.getVisitedSetupPages[ 'payments' ]">Payments</router-link>
+            <router-link to="/setup/payments" v-if="backendStore.getVisitedSetupPages[ 'payments' ]" @click="unlock( 'events' )">Payments</router-link>
             <a v-else class="inactive">Payments</a> | 
-            <router-link to="/setup/events" v-if="backendStore.getVisitedSetupPages[ 'events' ]">Events</router-link>
+            <router-link to="/setup/events" v-if="backendStore.getVisitedSetupPages[ 'events' ]" @click="unlock( 'tos' )">Events</router-link>
             <a v-else class="inactive">Events</a> | 
-            <router-link to="/setup/tos" v-if="backendStore.getVisitedSetupPages[ 'tos' ]">TOS</router-link>
+            <router-link to="/setup/tos" v-if="backendStore.getVisitedSetupPages[ 'tos' ]" @click="unlock( 'complete' )">TOS</router-link>
             <a v-else class="inactive">TOS</a> | 
             <router-link to="/setup/complete" v-if="backendStore.getVisitedSetupPages[ 'complete' ]">Complete</router-link>
             <a v-else class="inactive">Complete</a>
@@ -49,6 +49,11 @@
         created () {
             this.backendStore.loadVisitedSetupPages();
         },
+        methods: {
+            unlock ( page ) {
+                this.backendStore.addVisitedSetupPages( page, true );
+            }
+        }
     };
 </script>
 
