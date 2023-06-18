@@ -38,7 +38,7 @@
             <button title="Save this seatplan as a draft [Ctrl + S]" @click="saveDraft()"><span class="material-symbols-outlined">save</span></button>
             <button title="Deploy this seatplan (save it for use)" @click="deploy()"><span class="material-symbols-outlined">system_update_alt</span></button>
         </div>
-        <notifications ref="notification"></notifications>
+        <notifications ref="notification" location="topleft"></notifications>
     </div>
 </template>
 

@@ -1,8 +1,9 @@
 <template>
     <div id="notifications" @click="handleNotifications();">
-        <div class="message-box" :class="messageType">
-            <div class="message-container">
-                <span class="material-symbols-outlined types" v-if="messageType == 'ok'" style="background-color: green;">done</span>
+        <div class="message-box" :class="location">
+            <div class="message-container" :class="messageType">
+                <span class="material-symbols-outlined types hide" v-if="messageType == 'hide'">question_mark</span>
+                <span class="material-symbols-outlined types" v-else-if="messageType == 'ok'" style="background-color: green;">done</span>
                 <span class="material-symbols-outlined types" v-else-if="messageType == 'error'" style="background-color: red;">close</span>
                 <span class="material-symbols-outlined types progress-spinner" v-else-if="messageType == 'progress'" style="background-color: blue;">progress_activity</span>
                 <span class="material-symbols-outlined types" v-else-if="messageType == 'info'" style="background-color: lightblue;">info</span>
@@ -15,6 +16,12 @@
 <script>
     export default {
         name: 'notifications',
+        props: {
+            location: {
+                type: String,
+                'default': 'topleft',
+            }
+        },
         data () {
             return {
                 notifications: {},
@@ -32,7 +39,7 @@
         methods: {
             createNotification( message, showDuration, messageType, priority ) {
                 /* 
-                    Takes a notification options array that contains: message, showDuration (in seconds), messageType (ok, error, progress, info) and priority (low, medium, critical).
+                    Takes a notification options array that contains: message, showDuration (in seconds), messageType (ok, error, progress, info) and priority (low, normal, critical).
                     Returns a notification ID which can be used to cancel the notification. The component will throttle notifications and display
                     one at a time and prioritize messages with higher priority. Use vue refs to access these methods.
                 */
@@ -99,14 +106,31 @@
 <style scoped>
     .message-box {
         position: fixed;
-        left: 0.5%;
         z-index: 5;
-        top: 3%;
         color: white;
         height: 10vh;
         width: 15vw;
-        opacity: 1;
         transition: all 0.5s;
+    }
+
+    .topleft {
+        top: 3%;
+        left: 0.5%;
+    }
+
+    .topright {
+        top: 3%;
+        right: 0.5%;
+    }
+
+    .bottomright {
+        bottom: 3%;
+        right: 0.5%;
+    }
+
+    .bottomleft {
+        top: 3%;
+        right: 0.5%;
     }
 
     .message-container {
@@ -115,6 +139,8 @@
         align-items: center;
         height: 100%;
         width: 100%;
+        opacity: 1;
+        transition: all 0.5s;
     }
 
     .types {

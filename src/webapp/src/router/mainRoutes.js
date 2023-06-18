@@ -96,7 +96,7 @@ export default [
         name: 'purchase',
         component: () => import( '@/views/PurchaseView.vue' ),
         meta: {
-            title: 'Pay - libreevent',
+            title: 'Purchase - libreevent',
             transition: 'scale'
         }
     },
@@ -124,6 +124,15 @@ export default [
         component: () => import( '@/views/admin/events/EditorView.vue' ),
         meta: {
             title: 'Seatplan Editor :: Admin - libreevent',
+            adminAuthRequired: true,
+        }
+    },
+    {
+        path: '/admin/ticketEditor',
+        name: 'adminTicketEditor',
+        component: () => import( '@/views/admin/events/TicketEditorView.vue' ),
+        meta: {
+            title: 'Ticket Editor :: Admin - libreevent',
             adminAuthRequired: true,
         }
     },

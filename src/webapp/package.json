@@ -7,6 +7,8 @@
     "build": "vue-cli-service build"
   },
   "dependencies": {
+    "@pdfme/generator": "^1.2.3",
+    "@pdfme/ui": "^1.2.3",
     "core-js": "^3.8.3",
     "pinia": "^2.0.34",
     "vue": "^3.2.13",

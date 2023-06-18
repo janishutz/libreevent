@@ -45,6 +45,7 @@
             <h3>Special Settings</h3>
             <settings v-model:settings="specialSettings"></settings>
         </div>
+        <notifications ref="notification" location="'topright'"></notifications>
     </div>
 </template>
 
@@ -56,11 +57,13 @@
 
 <script>
     import settings from '@/components/settings/settings.vue';
+    import notifications from '@/components/notifications/notifications.vue';
 
     export default {
         name: 'TicketsDetailsView',
         components: {
             settings,
+            notifications,
         },
         created () {
             if ( !sessionStorage.getItem( 'selectedTicket' ) ) {
