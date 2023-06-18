@@ -36,7 +36,10 @@
             <button title="Add component [Ctrl + I]" @click="addNewElement()"><span class="material-symbols-outlined">add</span></button>
             <button title="Remove selected component [Delete]" @click="deleteSelected()"><span class="material-symbols-outlined">delete</span></button>
             <!-- TODO: Create real save function -->
-            <button title="Save this seatplan as a draft" @click="save()"><span class="material-symbols-outlined">save</span></button>
+            <div class="save-wrapper">
+                <button title="Save this seatplan as a draft" @click="save()"><span class="material-symbols-outlined">save</span></button>
+                <div class="saved" v-if="saved">Saved!</div>
+            </div>
             <button title="Deploy this seatplan (save it for use)" @click="save()"><span class="material-symbols-outlined">system_update_alt</span></button>
         </div>
     </div>
@@ -74,6 +77,7 @@
                 zoomFactor: 1,
                 historyPos: 0,
                 generalSettings: { 'namingScheme': 'numeric' },
+                saved: false,
             }
         },
         methods: {
@@ -255,6 +259,10 @@
             },
             save () {
                 sessionStorage.setItem( 'seatplan', JSON.stringify( this.scaleDown( this.draggables ) ) );
+                this.saved = true;
+                setTimeout( () => {
+                    this.saved = false;
+                }, 5000 )
             },
             addNewElement () {
                 this.draggables[ Object.keys( this.draggables ).length + 1 ] = { 'x': 100, 'y':100, 'h': 100, 'w': 250, 'active': false, 'draggable': true, 'resizable': true, 'id': Object.keys( this.draggables ).length + 1, 'origin': 1, 'shape':'rectangular', 'type': 'seat', 'startingRow': 1, 'seatCountingStartingPoint': 0 };
@@ -361,5 +369,35 @@
 
     .toolbar button:disabled {
         cursor: default;
+    }
+
+    .save-wrapper {
+        position: relative;
+    }
+
+    .saved {
+        transition: all 0.5s;
+        position: absolute;
+        top: 20%;
+        left: 150%;
+        width: 7vw;
+        height: 3vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: var( --accent-background );
+        color: white;
+        border-radius: 5px;
+    }
+
+    .saved::before {
+        content: " ";
+        position: absolute;
+        bottom: 13%;
+        left: -10%;
+        margin-left: -5px;
+        border-width: 10px;
+        border-style: solid;
+        border-color: transparent var( --accent-background ) transparent transparent;
     }
 </style>
