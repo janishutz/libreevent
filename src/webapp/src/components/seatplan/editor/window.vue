@@ -35,17 +35,10 @@
             <button title="Zoom out [-]" @click="zoom( -0.2 )"><span class="material-symbols-outlined">zoom_out</span></button>
             <button title="Add component [Ctrl + I]" @click="addNewElement()"><span class="material-symbols-outlined">add</span></button>
             <button title="Remove selected component [Delete]" @click="deleteSelected()"><span class="material-symbols-outlined">delete</span></button>
-            <button title="Save this seatplan as a draft" @click="saveDraft()"><span class="material-symbols-outlined">save</span></button>
+            <button title="Save this seatplan as a draft [Ctrl + S]" @click="saveDraft()"><span class="material-symbols-outlined">save</span></button>
             <button title="Deploy this seatplan (save it for use)" @click="deploy()"><span class="material-symbols-outlined">system_update_alt</span></button>
         </div>
-        <div class="message-box" :class="messageType">
-            <div class="message-container">
-                <span class="material-symbols-outlined types" v-if="messageType == 'ok'" style="background-color: green;">done</span>
-                <span class="material-symbols-outlined types" v-else-if="messageType == 'error'" style="background-color: red;">close</span>
-                <span class="material-symbols-outlined types progress-spinner" v-else-if="messageType == 'progress'" style="background-color: blue;">progress_activity</span>
-                <p class="message">{{ message }}</p>
-            </div>
-        </div>
+        <notifications ref="notification"></notifications>
     </div>
 </template>
 
@@ -57,6 +50,7 @@
     import trapezoidSeatplanComponent from '@/components/seatplan/seatplanComponents/seats/trapezoid.vue';
     import stagesSeatplanComponent from '@/components/seatplan/seatplanComponents/stage/stages.vue';
     import standingSeatplanComponent from '@/components/seatplan/seatplanComponents/stand/standing.vue';
+    import notifications from '@/components/notifications/notifications.vue';
     import 'vue3-draggable-resizable/dist/Vue3DraggableResizable.css';
 
     export default {
@@ -69,6 +63,7 @@
             trapezoidSeatplanComponent,
             stagesSeatplanComponent,
             standingSeatplanComponent,
+            notifications,
         },
         data() {
             return {
@@ -81,8 +76,6 @@
                 zoomFactor: 1,
                 historyPos: 0,
                 generalSettings: { 'namingScheme': 'numeric' },
-                message: 'Test message',
-                messageType: 'hide',
             }
         },
         methods: {
@@ -267,29 +260,18 @@
             },
             saveDraft () {
                 sessionStorage.setItem( 'seatplan', JSON.stringify( this.scaleDown( this.draggables ) ) );
+                this.$refs.notification.createNotification( 'Saved as draft', 5, 'ok', 'normal' );
                 // TODO: Save to server
-                this.message = 'Saved as draft';
-                this.messageType = 'ok';
-                setTimeout( () => {
-                    this.messageType = 'hide';
-                }, 5000 );
             },
             deploy () {
                 // TODO: Save to server
-                this.message = 'Deploying...';
-                this.messageType = 'progress';
-                setTimeout( () => {
-                    this.messageType = 'ok';
-                    this.message = 'Deployed successfully';
-                }, 5000 );
-                setTimeout( () => {
-                    this.messageType = 'hide';
-                    this.message = '';
-                }, 10000 );
+                this.$refs.notification.createNotification( 'Deploying...', 5, 'progress', 'normal' );
+                this.$refs.notification.createNotification( 'Deployed successfully', 5, 'ok', 'normal' );
             },
             addNewElement () {
                 this.draggables[ Object.keys( this.draggables ).length + 1 ] = { 'x': 100, 'y':100, 'h': 100, 'w': 250, 'active': false, 'draggable': true, 'resizable': true, 'id': Object.keys( this.draggables ).length + 1, 'origin': 1, 'shape':'rectangular', 'type': 'seat', 'startingRow': 1, 'seatCountingStartingPoint': 0 };
                 this.saveHistory();
+                this.$refs.notification.createNotification( 'New component added successfully', 5, 'ok', 'normal' );
             },
             deleteSelected () {
                 if ( this.active ) {
@@ -298,9 +280,10 @@
                         delete this.draggables[ this.active ];
                         this.saveHistory();
                         this.active = 0;
+                        this.$refs.notification.createNotification( 'Successfully deleted component', 5, 'ok', 'normal' );
                     }
                 } else {
-                    alert( 'Please select a component first!' );
+                    this.$refs.notification.createNotification( 'Please select a seat first!', 5, 'error', 'normal' );
                 }
             },
             handleUpdate ( value ) {
@@ -315,17 +298,9 @@
                 } else {
                     if ( ( this.zoomFactor < 0.3 && scale < 0 ) || ( this.zoomFactor > 2.9 && scale > 0 ) ) {
                         if ( this.zoomFactor < 0.3 ) {
-                            this.message = 'Minimum zoom factor reached';
-                            this.messageType = 'error';
-                            setTimeout( () => {
-                                this.messageType = 'hide';
-                            }, 5000 );
+                            this.$refs.notification.createNotification( 'Minimum zoom factor reached', 5, 'error', 'normal' );
                         } else {
-                            this.message = 'Maximum zoom factor reached';
-                            this.messageType = 'error';
-                            setTimeout( () => {
-                                this.messageType = 'hide';
-                            }, 5000 );
+                            this.$refs.notification.createNotification( 'Maximum zoom factor reached', 5, 'error', 'normal' );
                         }
                     } else {
                         this.zoomFactor += scale;
@@ -400,66 +375,5 @@
 
     .toolbar button:disabled {
         cursor: default;
-    }
-
-    .message-box {
-        position: fixed;
-        left: 0.5%;
-        z-index: 5;
-        top: 3%;
-        color: white;
-        height: 10vh;
-        width: 15vw;
-        opacity: 1;
-        transition: all 0.5s;
-    }
-
-    .message-container {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 100%;
-        width: 100%;
-    }
-
-    .types {
-        color: white;
-        border-radius: 100%;
-        margin-right: auto;
-        margin-left: 5%;
-        font-size: 200%;
-    }
-
-    .message {
-        margin-right: 5%;
-    }
-
-    .ok {
-        background-color: rgb(1, 71, 1);
-    }
-
-    .error {
-        background-color: rgb(114, 1, 1);
-    }
-
-    .hide {
-        opacity: 0;
-    }
-
-    .progress {
-        background-color: rgb(0, 0, 99);
-    }
-
-    .progress-spinner {
-        animation: spin 2s infinite linear;
-    }
-
-    @keyframes spin {
-        from {
-            transform: rotate( 0deg );
-        }
-        to {
-            transform: rotate( 720deg );
-        }
     }
 </style>
