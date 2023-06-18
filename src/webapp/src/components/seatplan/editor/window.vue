@@ -27,7 +27,7 @@
         <div class="toolbar">
             <button title="Go back to location settings" @click="this.$router.push( '/admin/locations' )"><span class="material-symbols-outlined">arrow_back</span></button>
             <button title="Undo [Ctrl + Z]" v-if="available.undo" @click="historyOp( 'undo' )"><span class="material-symbols-outlined">undo</span></button>
-            <button title="Undo (unavailable)" v-else disabled>Undo</button>
+            <button title="Undo (unavailable)" v-else disabled><span class="material-symbols-outlined">undo</span></button>
             <button title="Redo [Ctrl + Y]" v-if="available.redo" @click="historyOp( 'redo' )"><span class="material-symbols-outlined">redo</span></button>
             <button title="Redo (unavailable)" v-else disabled><span class="material-symbols-outlined">redo</span></button>
             <button title="Zoom in [+]" @click="zoom( 0.2 )"><span class="material-symbols-outlined">zoom_in</span></button>
@@ -35,12 +35,16 @@
             <button title="Zoom out [-]" @click="zoom( -0.2 )"><span class="material-symbols-outlined">zoom_out</span></button>
             <button title="Add component [Ctrl + I]" @click="addNewElement()"><span class="material-symbols-outlined">add</span></button>
             <button title="Remove selected component [Delete]" @click="deleteSelected()"><span class="material-symbols-outlined">delete</span></button>
-            <!-- TODO: Create real save function -->
-            <div class="save-wrapper">
-                <button title="Save this seatplan as a draft" @click="save()"><span class="material-symbols-outlined">save</span></button>
-                <div class="saved" v-if="saved">Saved!</div>
+            <button title="Save this seatplan as a draft" @click="saveDraft()"><span class="material-symbols-outlined">save</span></button>
+            <button title="Deploy this seatplan (save it for use)" @click="deploy()"><span class="material-symbols-outlined">system_update_alt</span></button>
+        </div>
+        <div class="message-box" :class="messageType">
+            <div class="message-container">
+                <span class="material-symbols-outlined types" v-if="messageType == 'ok'" style="background-color: green;">done</span>
+                <span class="material-symbols-outlined types" v-else-if="messageType == 'error'" style="background-color: red;">close</span>
+                <span class="material-symbols-outlined types progress-spinner" v-else-if="messageType == 'progress'" style="background-color: blue;">progress_activity</span>
+                <p class="message">{{ message }}</p>
             </div>
-            <button title="Deploy this seatplan (save it for use)" @click="save()"><span class="material-symbols-outlined">system_update_alt</span></button>
         </div>
     </div>
 </template>
@@ -77,7 +81,8 @@
                 zoomFactor: 1,
                 historyPos: 0,
                 generalSettings: { 'namingScheme': 'numeric' },
-                saved: false,
+                message: 'Test message',
+                messageType: 'hide',
             }
         },
         methods: {
@@ -107,7 +112,7 @@
                         self.deleteSelected();
                     } else if ( event.ctrlKey && event.key === 's' ) {
                         event.preventDefault();
-                        self.save();
+                        self.saveDraft();
                     } else if ( ( event.ctrlKey && event.key === 'y' ) ) {
                         event.preventDefault();
                         self.historyOp( 'redo' );
@@ -259,10 +264,28 @@
             },
             save () {
                 sessionStorage.setItem( 'seatplan', JSON.stringify( this.scaleDown( this.draggables ) ) );
-                this.saved = true;
+            },
+            saveDraft () {
+                sessionStorage.setItem( 'seatplan', JSON.stringify( this.scaleDown( this.draggables ) ) );
+                // TODO: Save to server
+                this.message = 'Saved as draft';
+                this.messageType = 'ok';
                 setTimeout( () => {
-                    this.saved = false;
-                }, 5000 )
+                    this.messageType = 'hide';
+                }, 5000 );
+            },
+            deploy () {
+                // TODO: Save to server
+                this.message = 'Deploying...';
+                this.messageType = 'progress';
+                setTimeout( () => {
+                    this.messageType = 'ok';
+                    this.message = 'Deployed successfully';
+                }, 5000 );
+                setTimeout( () => {
+                    this.messageType = 'hide';
+                    this.message = '';
+                }, 10000 );
             },
             addNewElement () {
                 this.draggables[ Object.keys( this.draggables ).length + 1 ] = { 'x': 100, 'y':100, 'h': 100, 'w': 250, 'active': false, 'draggable': true, 'resizable': true, 'id': Object.keys( this.draggables ).length + 1, 'origin': 1, 'shape':'rectangular', 'type': 'seat', 'startingRow': 1, 'seatCountingStartingPoint': 0 };
@@ -292,9 +315,17 @@
                 } else {
                     if ( ( this.zoomFactor < 0.3 && scale < 0 ) || ( this.zoomFactor > 2.9 && scale > 0 ) ) {
                         if ( this.zoomFactor < 0.3 ) {
-                            alert( 'Minimum zoom factor reached' );
+                            this.message = 'Minimum zoom factor reached';
+                            this.messageType = 'error';
+                            setTimeout( () => {
+                                this.messageType = 'hide';
+                            }, 5000 );
                         } else {
-                            alert( 'Maximum zoom factor reached' );
+                            this.message = 'Maximum zoom factor reached';
+                            this.messageType = 'error';
+                            setTimeout( () => {
+                                this.messageType = 'hide';
+                            }, 5000 );
                         }
                     } else {
                         this.zoomFactor += scale;
@@ -371,33 +402,64 @@
         cursor: default;
     }
 
-    .save-wrapper {
-        position: relative;
+    .message-box {
+        position: fixed;
+        left: 0.5%;
+        z-index: 5;
+        top: 3%;
+        color: white;
+        height: 10vh;
+        width: 15vw;
+        opacity: 1;
+        transition: all 0.5s;
     }
 
-    .saved {
-        transition: all 0.5s;
-        position: absolute;
-        top: 20%;
-        left: 150%;
-        width: 7vw;
-        height: 3vh;
+    .message-container {
         display: flex;
         justify-content: center;
         align-items: center;
-        background-color: var( --accent-background );
-        color: white;
-        border-radius: 5px;
+        height: 100%;
+        width: 100%;
     }
 
-    .saved::before {
-        content: " ";
-        position: absolute;
-        bottom: 13%;
-        left: -10%;
-        margin-left: -5px;
-        border-width: 10px;
-        border-style: solid;
-        border-color: transparent var( --accent-background ) transparent transparent;
+    .types {
+        color: white;
+        border-radius: 100%;
+        margin-right: auto;
+        margin-left: 5%;
+        font-size: 200%;
+    }
+
+    .message {
+        margin-right: 5%;
+    }
+
+    .ok {
+        background-color: rgb(1, 71, 1);
+    }
+
+    .error {
+        background-color: rgb(114, 1, 1);
+    }
+
+    .hide {
+        opacity: 0;
+    }
+
+    .progress {
+        background-color: rgb(0, 0, 99);
+    }
+
+    .progress-spinner {
+        animation: spin 2s infinite linear;
+    }
+
+    @keyframes spin {
+        from {
+            transform: rotate( 0deg );
+        }
+        to {
+            transform: rotate( 720deg );
+        }
     }
 </style>
