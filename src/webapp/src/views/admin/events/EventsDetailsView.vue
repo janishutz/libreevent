@@ -11,9 +11,11 @@
     <div class="details">
         <h2>{{ event.name }}</h2>
         <div class="general-settings">
-            <textarea v-model="event.description" class="big-text"></textarea>
-            <input v-model="event.location" class="small-text">
-            <input v-model="event.date" class="small-text" type="date">
+            <textarea v-model="event.description" class="big-text"></textarea><br>
+            <select v-model="event.location" class="small-text">
+                <option value="TestLocation">TestLocation</option>
+            </select><br>
+            <input v-model="event.date" class="small-text" type="date"><br>
         </div>
         <div class="ticket-settings">
             <h3>Ticket Settings</h3>
@@ -52,6 +54,14 @@
 <style scoped>
     .details {
         flex-grow: 1;
+    }
+
+    .ticket-settings {
+        width: 100%;
+    }
+
+    .category {
+        width: 100%;
     }
 </style>
 
