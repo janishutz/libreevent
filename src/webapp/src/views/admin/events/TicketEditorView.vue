@@ -13,33 +13,33 @@
         created() {
             setTimeout( () => {
                 const domContainer = document.getElementById( 'editor' );
-                console.log( domContainer );
                 const template = {
                     basePdf: BLANK_PDF,
                     schemas: [
                         {
-                        a: {
-                            type: 'text',
-                            position: { x: 0, y: 0 },
-                            width: 10,
-                            height: 10,
-                        },
-                        b: {
-                            type: 'text',
-                            position: { x: 10, y: 10 },
-                            width: 10,
-                            height: 10,
-                        },
-                        c: {
-                            type: 'text',
-                            position: { x: 20, y: 20 },
-                            width: 10,
-                            height: 10,
-                        },
+                            locationAndTime: {
+                                type: 'text',
+                                position: { x: 0, y: 0 },
+                                width: 10,
+                                height: 10,
+                            },
+                            ticketName: {
+                                type: 'text',
+                                position: { x: 10, y: 10 },
+                                width: 10,
+                                height: 10,
+                            },
+                            ticketQRCode: {
+                                type: 'qrcode',
+                                position: { x: 20, y: 20 },
+                                width: 10,
+                                height: 10,
+                            },
                         },
                     ],
                 }
                 const designer = new Designer( { domContainer, template } );
+                // designer.updateTemplate(  ) -> Used to update the template AND base PDF
             }, 300 );
         }
     }

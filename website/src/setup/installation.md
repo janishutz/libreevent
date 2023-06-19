@@ -24,3 +24,8 @@ Generally MySQL, except:
 - Your web hosting plan does not includes MySQL and you've got no access to MySQL in any other way. *NOTE: Free MySQL services should NEVER be used in such an application, as most hosting plans include MySQL which is much more reliable and if you lose access to the database, you can only access the root account and all other data (and therefore all user accounts) is lost.*
 
 MySQL generally is more difficult to set up, but we'll run you through the process here to make the process easier for you. If you chose the JSON based database, skip ahead to the next chapter.
+
+# Uploading libreevent
+
+## npm install
+This project relies on a variety of different node.js modules that need to be installed on the server. Most webhosting providers give you an easy way to run *npm install*. If not, you might be required to upload the *node_modules* folder yourself. You can create such a folder either by downloading the *node_modules.zip* folder from the GitHub releases page or by installing npm on your local machine and then by running *npm i* in the terminal. 
