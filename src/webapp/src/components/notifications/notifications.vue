@@ -28,7 +28,7 @@
                 queue: [],
                 message: '',
                 messageType: 'hide',
-                notificationDisplayTime: 1,
+                notificationDisplayTime: 0,
                 notificationPriority: 'normal',
                 currentlyDisplayedNotificationID: 0,
                 currentID: { 'critical': 0, 'medium': 1000, 'low': 100000 },
@@ -58,6 +58,9 @@
                 this.notifications[ id ] = { 'message': message, 'showDuration': showDuration, 'messageType': messageType, 'priority': priority };
                 this.queue.push( id );
                 console.log( 'scheduled notification: ' + id + ' (' + message + ')' );
+                if ( this.displayTimeCurrentNotification >= this.notificationDisplayTime ) {
+                    this.handleNotifications();
+                }
                 return id;
             },
             cancelNotification ( id ) {
@@ -75,6 +78,8 @@
                     This methods should NOT be called in any other component than this one!
                 */
                 this.displayTimeCurrentNotification = 0;
+                this.notificationDisplayTime = 0;
+                this.message = '';
                 this.queue.sort();
                 if ( this.queue.length > 0 ) {
                     this.message = this.notifications[ this.queue[ 0 ] ][ 'message' ];
@@ -141,6 +146,7 @@
         width: 100%;
         opacity: 1;
         transition: all 0.5s;
+        cursor: default;
     }
 
     .types {
