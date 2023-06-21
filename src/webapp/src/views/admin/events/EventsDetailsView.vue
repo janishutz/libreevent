@@ -16,6 +16,7 @@
                 <option value="TestLocation">TestLocation</option>
             </select><br>
             <input v-model="event.date" class="small-text" type="date"><br>
+            <router-link to="/admin/ticketEditor">Edit ticket layout</router-link>
         </div>
         <div class="ticket-settings">
             <h3>Ticket Settings</h3>

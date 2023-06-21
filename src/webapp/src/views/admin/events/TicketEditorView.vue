@@ -1,6 +1,7 @@
 <template>
     <div id="ticketEditor">
         <h1>Ticket Editor</h1>
+        <router-link to="/admin/events/view">Back to event settings</router-link>
         <div id="editor">Loading editor...</div>
     </div>
 </template>
