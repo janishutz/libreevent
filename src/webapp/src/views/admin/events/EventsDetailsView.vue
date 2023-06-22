@@ -11,17 +11,22 @@
     <div class="details">
         <h2>{{ event.name }}</h2>
         <div class="general-settings">
-            <textarea v-model="event.description" class="big-text"></textarea><br>
+            <p>Event Description</p>
+            <textarea v-model="event.description" class="big-text" cols="70" rows="3" placeholder="Event description..."></textarea>
+            <p>Event location</p>
             <select v-model="event.location" class="small-text">
                 <option value="TestLocation">TestLocation</option>
-            </select><br>
+            </select>
+            <p>Event date</p>
             <input v-model="event.date" class="small-text" type="date"><br>
+            <p>Ticket editor</p>
             <router-link to="/admin/ticketEditor">Edit ticket layout</router-link>
         </div>
         <div class="ticket-settings">
             <h3>Ticket Settings</h3>
+            <p>The foreground and background colours of the seats are used to show the customer to which category the seats belong.</p>
             <table class="category" v-for="category in event.categories">
-                {{ category.name }}:
+                {{ category.name }}
                 <tr v-for="price in category.price">
                     <td>
                         {{ price.name }}:
@@ -45,10 +50,14 @@
             </table>
         </div>
         <div class="special-settings">
-            <h3>Special Settings</h3>
+            <h3>General Settings</h3>
+            <p>Currency codes used must be valid ISO 4217 codes. Read more on <a href="https://libreevent.janishutz.com/docs/admin-panel/events#currency">this page</a> of the documentation <!-- https://en.wikipedia.org/wiki/ISO_4217#List_of_ISO_4217_currency_codes"--></p>
             <settings v-model:settings="specialSettings"></settings>
         </div>
-        <notifications ref="notification" location="'topright'"></notifications>
+        <div>
+            <p>Please read into the documentation of this section if you want to use the requirements. It requires specific syntax to work. See <a href="https://libreevent.janishutz.com/docs/admin-panel/events#special-requirements">here</a> for more information</p>
+        </div>
+        <notifications ref="notification" location="topright"></notifications>
     </div>
 </template>
 
@@ -86,6 +95,13 @@
             return {
                 event: { 'name': 'TestEvent', 'description': 'This is a description for the TestEvent to test multiline support and proper positioning of the Fields', 'freeSeats': 2, 'maxSeats': 2, 'date':'TestDate', 'startingPrice':15, 'location': 'TestLocation', 'eventID': 'test', 'currency': 'CHF', 'logo': 'logo.png', 'categories': { '1': { 'price': { '1': { 'price':25, 'name':'Child (0-15.99 years)'}, '2': { 'price':35, 'name':'Adult'} }, 'bg': 'black', 'fg': 'white', 'name': 'Category 1' }, '2': { 'price': { '1': { 'price':25, 'name':'Child (0-15.99 years)' }, '2': { 'price':35, 'name':'Adult'} }, 'bg': 'green', 'fg': 'white', 'name': 'Category 2' } } },
                 specialSettings: {
+                    'currency': { 
+                        'display': 'Currency', 
+                        'id': 'currency', 
+                        'tooltip':'Specify a currency in which the prices are displayed to the customer. Defaults to USD. Please use valid currency codes.', 
+                        'value': 'USD',
+                        'type': 'text',
+                    },
                     'guest-purchase': { 
                         'display': 'Enable guest purchase', 
                         'id': 'guest-purchase', 
@@ -137,15 +153,11 @@
                         }
                     },
                     'requiredParameterValue': { 
-                        'display': 'Maximum ticket count per account', 
+                        'display': 'Special requirements values ', 
                         'id': 'requiredParameterValue', 
-                        'tooltip':'With this setting you can control how many tickets a person can buy. Defaults to 0, which means do not limit.', 
-                        'value': 0,
-                        'type': 'number',
-                        'restrictions': {
-                            'min': 0,
-                            'max': 100,
-                        }
+                        'tooltip':'Put a filter here, corresponding to your selection above. Please read the documentation on our website. See link below!', 
+                        'value': '',
+                        'type': 'text',
                     },
                 }
             }

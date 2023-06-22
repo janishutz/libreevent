@@ -16,8 +16,7 @@
                     <div class="info-container" @mouseenter="showInfo( setting.id )" @mouseleave="hideInfo( setting.id )">
                         <span class="material-symbols-outlined info-icon">info</span>
                         <div class="info-box" :id="setting.id">
-                            <div class="info-box-container">
-                                {{ setting.tooltip }}
+                            <div class="info-box-container" v-html="setting.tooltip">
                             </div>
                         </div>
                     </div>

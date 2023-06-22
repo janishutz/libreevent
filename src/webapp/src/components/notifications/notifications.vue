@@ -7,6 +7,7 @@
                 <span class="material-symbols-outlined types" v-else-if="messageType == 'error'" style="background-color: red;">close</span>
                 <span class="material-symbols-outlined types progress-spinner" v-else-if="messageType == 'progress'" style="background-color: blue;">progress_activity</span>
                 <span class="material-symbols-outlined types" v-else-if="messageType == 'info'" style="background-color: lightblue;">info</span>
+                <span class="material-symbols-outlined types" v-else-if="messageType == 'warning'" style="background-color: orangered;">warning</span>
                 <p class="message">{{ message }}</p>
             </div>
         </div>
@@ -55,7 +56,7 @@
                     this.currentID[ 'low' ] += 1;
                     id = this.currentID[ 'low' ];
                 }
-                this.notifications[ id ] = { 'message': message, 'showDuration': showDuration, 'messageType': messageType, 'priority': priority };
+                this.notifications[ id ] = { 'message': message, 'showDuration': showDuration, 'messageType': messageType, 'priority': priority, 'id': id };
                 this.queue.push( id );
                 console.log( 'scheduled notification: ' + id + ' (' + message + ')' );
                 if ( this.displayTimeCurrentNotification >= this.notificationDisplayTime ) {
@@ -67,8 +68,12 @@
                 /* 
                     This method deletes a notification and, in case the notification is being displayed, hides it.
                 */
-                delete notifications[ id ];
-                delete this.queue[ this.queue.findIndex( id ) ];
+                try { 
+                    delete notifications[ id ];
+                    delete this.queue[ this.queue.findIndex( id ) ];
+                } catch ( error ) {
+                    console.log( 'notification to be deleted is nonexistent or currently being displayed' );
+                }
                 if ( this.currentlyDisplayedNotificationID == id ) {
                     this.handleNotifications();
                 }
@@ -85,6 +90,7 @@
                     this.message = this.notifications[ this.queue[ 0 ] ][ 'message' ];
                     this.messageType = this.notifications[ this.queue[ 0 ] ][ 'messageType' ];
                     this.priority = this.notifications[ this.queue[ 0 ] ][ 'priority' ];
+                    this.currentlyDisplayedNotificationID = this.notifications[ this.queue[ 0 ] ][ 'id' ];
                     this.notificationDisplayTime = this.notifications[ this.queue[ 0 ] ][ 'showDuration' ];
                     this.queue.reverse();
                     this.queue.pop();
@@ -111,7 +117,7 @@
 <style scoped>
     .message-box {
         position: fixed;
-        z-index: 5;
+        z-index: 10;
         color: white;
         height: 10vh;
         width: 15vw;
@@ -119,23 +125,23 @@
     }
 
     .topleft {
-        top: 3%;
-        left: 0.5%;
+        top: 3vh;
+        left: 0.5vw;
     }
 
     .topright {
-        top: 3%;
-        right: 0.5%;
+        top: 3vh;
+        right: 0.5vw;
     }
 
     .bottomright {
-        bottom: 3%;
-        right: 0.5%;
+        bottom: 3vh;
+        right: 0.5vw;
     }
 
     .bottomleft {
-        top: 3%;
-        right: 0.5%;
+        top: 3vh;
+        right: 0.5vw;
     }
 
     .message-container {
@@ -154,11 +160,13 @@
         border-radius: 100%;
         margin-right: auto;
         margin-left: 5%;
+        padding: 1.5%;
         font-size: 200%;
     }
 
     .message {
         margin-right: 5%;
+        text-align: end;
     }
 
     .ok {
@@ -171,6 +179,10 @@
 
     .info {
         background-color: rgb(44, 112, 151);
+    }
+
+    .warning {
+        background-color: orange;
     }
 
     .hide {
