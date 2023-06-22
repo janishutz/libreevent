@@ -2,6 +2,7 @@
     <div id="ticketEditor">
         <h1>Ticket Editor</h1>
         <router-link to="/admin/events/view">Back to event settings</router-link>
+        <button @click="saveTemplate()">Save Template</button>
         <div id="editor">Loading editor...</div>
     </div>
 </template>
@@ -11,6 +12,16 @@
 
     export default {
         name: 'ticketEditor',
+        data() {
+            return {
+                designer: null,
+            }
+        },
+        methods: {
+            saveTemplate() {
+                console.log( this.designer.getTemplate() );
+            }
+        },
         created() {
             setTimeout( () => {
                 const domContainer = document.getElementById( 'editor' );
@@ -39,7 +50,7 @@
                         },
                     ],
                 }
-                const designer = new Designer( { domContainer, template } );
+                this.designer = new Designer( { domContainer, template } );
                 // designer.updateTemplate(  ) -> Used to update the template AND base PDF
             }, 300 );
         }
