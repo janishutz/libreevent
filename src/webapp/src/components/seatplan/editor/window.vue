@@ -259,6 +259,7 @@
                 sessionStorage.setItem( 'seatplan', JSON.stringify( this.scaleDown( this.draggables ) ) );
             },
             saveDraft () {
+                let progressNotification = this.$refs.notification.createNotification( 'Saving as draft', 5, 'progress', 'normal' );
                 sessionStorage.setItem( 'seatplan', JSON.stringify( this.scaleDown( this.draggables ) ) );
                 this.$refs.notification.createNotification( 'Saved as draft', 5, 'ok', 'normal' );
                 // TODO: Save to server
@@ -294,13 +295,14 @@
             zoom ( scale ) {
                 if ( scale == 1 ) {
                     this.zoomFactor = 1;
+                    sessionStorage.setItem( 'zoom', this.zoomFactor );
                     this.loadSeatplan();
                 } else {
                     if ( ( this.zoomFactor < 0.3 && scale < 0 ) || ( this.zoomFactor > 2.9 && scale > 0 ) ) {
                         if ( this.zoomFactor < 0.3 ) {
-                            this.$refs.notification.createNotification( 'Minimum zoom factor reached', 5, 'error', 'normal' );
+                            this.$refs.notification.createNotification( 'Minimum zoom factor reached', 5, 'warning', 'normal' );
                         } else {
-                            this.$refs.notification.createNotification( 'Maximum zoom factor reached', 5, 'error', 'normal' );
+                            this.$refs.notification.createNotification( 'Maximum zoom factor reached', 5, 'warning', 'normal' );
                         }
                     } else {
                         this.zoomFactor += scale;
