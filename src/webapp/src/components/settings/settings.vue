@@ -8,7 +8,7 @@
 -->
 
 <template>
-    <div>
+    <div class="settings-wrapper">
         <table class="settings-toggles">
             <tr class="settings-option" v-for="setting in settings">
                 <td class="info-wrapper">
@@ -68,8 +68,17 @@
 </script>
 
 <style scoped>
+.settings-wrapper {
+    width: 100%;
+    display: flex;
+    text-align: justify;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+
 .settings-toggles {
-    width: 80%;
+    width: 70%;
 }
 
 .info-wrapper {
@@ -87,6 +96,7 @@
 }
 
 .info-box {
+    text-align: center;
     display: none;
     position: absolute;
     z-index: 10;

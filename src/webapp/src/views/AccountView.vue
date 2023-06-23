@@ -3,3 +3,10 @@
         <h1>Account</h1>
     </div>
 </template>
+
+
+<style>
+    nav {
+        display: initial;
+    }
+</style>

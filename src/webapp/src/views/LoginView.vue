@@ -77,4 +77,8 @@
         padding: 5px 10px;
         margin-top: 2%;
     }
+
+    nav {
+        display: initial;
+    }
 </style>

@@ -133,3 +133,10 @@
         }
     }
 </script>
+
+
+<style>
+    nav {
+        display: initial;
+    }
+</style>

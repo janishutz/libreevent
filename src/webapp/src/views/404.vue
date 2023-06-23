@@ -41,4 +41,8 @@
     .small {
         font-style: italic;
     }
+    
+    nav {
+        display: initial;
+    }
 </style>

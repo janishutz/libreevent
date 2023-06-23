@@ -62,3 +62,10 @@
         margin-right: auto
     }
 </style>
+
+
+<style>
+    nav {
+        display: initial;
+    }
+</style>

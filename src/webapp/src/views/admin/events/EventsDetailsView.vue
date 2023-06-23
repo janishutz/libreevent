@@ -10,44 +10,56 @@
 <template>
     <div class="details">
         <h2>{{ event.name }}</h2>
-        <div class="general-settings">
+        <div class="category-wrapper">
             <p>Event Description</p>
             <textarea v-model="event.description" class="big-text" cols="70" rows="3" placeholder="Event description..."></textarea>
-            <p>Event location</p>
-            <select v-model="event.location" class="small-text">
-                <option value="TestLocation">TestLocation</option>
-            </select>
-            <p>Event date</p>
-            <input v-model="event.date" class="small-text" type="date"><br>
-            <p>Ticket editor</p>
-            <router-link to="/admin/ticketEditor">Edit ticket layout</router-link>
+            <table class="category">
+                <tr>
+                    <td>Event location</td>
+                    <td>
+                        <select v-model="event.location" class="small-text">
+                            <option value="TestLocation">TestLocation</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Event date</td>
+                    <td><input v-model="event.date" class="small-text" type="date"></td>
+                </tr>
+                <tr>
+                    <td>Ticket editor</td>
+                    <router-link to="/admin/ticketEditor">Edit ticket layout</router-link>
+                </tr>
+            </table>
         </div>
         <div class="ticket-settings">
             <h3>Ticket Settings</h3>
             <p>The foreground and background colours of the seats are used to show the customer to which category the seats belong.</p>
-            <table class="category" v-for="category in event.categories">
-                {{ category.name }}
-                <tr v-for="price in category.price">
-                    <td>
-                        {{ price.name }}:
-                    </td>
-                    <td>
-                        <input type="number" v-model="price.price">
-                    </td>
-                </tr>
-                <tr>
-                    <td>Foreground colour</td>
-                    <td>
-                        <input type="text" data-coloris v-model="category.fg" onkeydown="return false;">
-                    </td>
-                </tr>
-                <tr>
-                    <td>Background colour</td>
-                    <td>
-                        <input type="text" data-coloris v-model="category.bg" onkeydown="return false;">
-                    </td>
-                </tr>
-            </table>
+            <div class="category-wrapper">
+                <table class="category" v-for="category in event.categories">
+                    {{ category.name }}
+                    <tr v-for="price in category.price">
+                        <td>
+                            <div class="category-details">{{ price.name }}:</div>
+                        </td>
+                        <td>
+                            <input type="number" v-model="price.price">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><div class="category-details">Foreground colour:</div></td>
+                        <td>
+                            <input type="text" data-coloris v-model="category.fg" onkeydown="return false;">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><div class="category-details">Background colour:</div></td>
+                        <td>
+                            <input type="text" data-coloris v-model="category.bg" onkeydown="return false;">
+                        </td>
+                    </tr>
+                </table>
+            </div>
         </div>
         <div class="special-settings">
             <h3>General Settings</h3>
@@ -70,8 +82,21 @@
         width: 100%;
     }
 
-    .category {
+    .category-wrapper {
+        display: flex;
+        justify-content: center;
+        align-items: center;
         width: 100%;
+        flex-direction: column;
+    }
+
+    .category {
+        width: 50%;
+        text-align: justify;
+    }
+
+    .category-details {
+        margin-left: 7%;;
     }
 </style>
 
@@ -87,7 +112,7 @@
         },
         created () {
             if ( !sessionStorage.getItem( 'selectedTicket' ) ) {
-                this.$router.push( '/tickets' );
+                this.$router.push( '/admin/events' );
             }
             this.eventID = sessionStorage.getItem( 'selectedTicket' );
         },
