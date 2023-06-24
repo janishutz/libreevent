@@ -164,18 +164,18 @@ export default {
             if ( this.theme === '&#9788;' ) {
                 document.documentElement.classList.remove( 'dark' );
                 document.documentElement.classList.add( 'light' );
-                sessionStorage.setItem( 'theme', '&#9789;' );
+                localStorage.setItem( 'theme', '&#9789;' );
                 this.theme = '&#9789;';
             } else if ( this.theme === '&#9789;' ) {
                 document.documentElement.classList.remove( 'light' );
                 document.documentElement.classList.add( 'dark' );
-                sessionStorage.setItem( 'theme', '&#9788;' );
+                localStorage.setItem( 'theme', '&#9788;' );
                 this.theme = '&#9788;';
             }
         }
     },
     created () {
-        this.theme = sessionStorage.getItem( 'theme' ) ? sessionStorage.getItem( 'theme' ) : '';
+        this.theme = localStorage.getItem( 'theme' ) ? localStorage.getItem( 'theme' ) : '';
         if ( window.matchMedia( '(prefers-color-scheme: dark)' ).matches || this.theme === '&#9788;' ) {
             document.documentElement.classList.add( 'dark' );
             this.theme = '&#9788;';
