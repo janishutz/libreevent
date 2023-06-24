@@ -19,8 +19,13 @@
             <div v-else class="wrapper">
                 <div class="data">
                     <h2>Billing</h2>
-
-                    <router-link to="/pay">Buy now</router-link>
+                    <table class="billing-info-table">
+                        <tr>
+                            <td>Street and house number</td>
+                            <td><input type="text" name="address" id="address"></td>
+                        </tr>
+                    </table>
+                    <router-link to="/pay" id="buy-button">Buy now</router-link>
                 </div>
                 <div class="cart">
                     <div class="cart-list">
@@ -44,6 +49,25 @@
 </template>
 
 <style scoped>
+    #buy-button {
+        background-color: var( --accent-background );
+        padding: 2% 4%;
+        border-radius: 50px;
+        color: var( --secondary-color );
+        text-decoration: none;
+        transition: all 0.5s;
+        font-size: 100%;
+        margin-top: 4%;
+    }
+
+    #buy-button:hover {
+        margin-top: 2%;
+        border-radius: 20px;
+        padding: 3% 6%;
+        font-size: 130%;
+        background-color: var( --accent-background-hover );
+    }
+
     .purchase {
         height: 100%;
         display: flex;

@@ -1,7 +1,7 @@
 <!--
 *				libreevent - StartPageEditorView.vue
 *
-*	Created by Janis Hutz 05/12/2023, Licensed under the GPL V3 License
+*	Created by Janis Hutz 06/24/2023, Licensed under the GPL V3 License
 *			https://janishutz.com, development@janishutz.com
 *
 *
