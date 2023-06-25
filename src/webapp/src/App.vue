@@ -32,7 +32,7 @@
         --accent-color: #42b983;
         --hover-color: rgb(165, 165, 165);
         --accent-background-hover: #4380a8;
-        --overlay-color: rgba(37, 37, 37, 0.575);
+        --overlay-color: rgba(0, 0, 0, 0.7);
         --inactive-color: rgb(100, 100, 100);
         --highlight-backdrop: rgb(143, 134, 192);
         --PI: 3.14159265358979;

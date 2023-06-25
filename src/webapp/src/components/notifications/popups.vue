@@ -1,131 +1,100 @@
 <template>
-    <div id="notifications" @click="handleNotifications();">
-        <div class="message-box" :class="messageType">
-            <div class="message-container">
-                <span class="material-symbols-outlined types" v-if="messageType == 'ok'" style="background-color: green;">done</span>
-                <span class="material-symbols-outlined types" v-else-if="messageType == 'error'" style="background-color: red;">close</span>
-                <span class="material-symbols-outlined types progress-spinner" v-else-if="messageType == 'progress'" style="background-color: blue;">progress_activity</span>
-                <span class="material-symbols-outlined types" v-else-if="messageType == 'info'" style="background-color: lightblue;">info</span>
-                <p class="message">{{ message }}</p>
+    <div id="popup-backdrop" :class="status">
+        <div class="popup-container">
+            <div class="popup" :class="size">
+                <span class="material-symbols-outlined" @click="closePopup();">close</span>
+                <div class="message-container">
+                    {{ message }}
+                </div>
             </div>
         </div>
     </div>
 </template>
 
+<!-- Options to be passed in: HTML, Settings (for settings component), strings, numbers, confirm, radio, dropdowns, selection -->
+
 <script>
     export default {
-        name: 'notifications',
+        name: 'popups',
+        prop: {
+            size: {
+                type: String,
+                'default': 'normal',
+            },
+            message: {
+                type: Object,
+                'default': '{}',
+            },
+        },
         data () {
             return {
-                notifications: {},
-                queue: [],
-                message: '',
-                messageType: 'hide',
-                notificationDisplayTime: 1,
-                notificationPriority: 'normal',
-                currentlyDisplayedNotificationID: 0,
-                currentID: { 'critical': 0, 'medium': 1000, 'low': 100000 },
-                displayTimeCurrentNotification: 0,
-                notificationScheduler: null,
+                status: 'hidden',
             }
         },
         methods: {
-            createNotification( message, showDuration, messageType, priority ) {
-                /* 
-                    Takes a notification options array that contains: message, showDuration (in seconds), messageType (ok, error, progress, info) and priority (low, medium, critical).
-                    Returns a notification ID which can be used to cancel the notification. The component will throttle notifications and display
-                    one at a time and prioritize messages with higher priority. Use vue refs to access these methods.
-                */
-                let id = 0;
+            closePopup() {
+                this.shown = 'hidden'
+            },
+            openPopup () {
 
-                if ( priority === 'critical' ) {
-                    this.currentID[ 'critical' ] += 1;
-                    id = this.currentID[ 'critical' ];
-                } else if ( priority === 'normal' ) {
-                    this.currentID[ 'medium' ] += 1;
-                    id = this.currentID[ 'medium' ];
-                } else if ( priority === 'low' ) {
-                    this.currentID[ 'low' ] += 1;
-                    id = this.currentID[ 'low' ];
-                }
-                this.notifications[ id ] = { 'message': message, 'showDuration': showDuration, 'messageType': messageType, 'priority': priority };
-                this.queue.push( id );
-                console.log( 'scheduled notification: ' + id + ' (' + message + ')' );
-                return id;
-            },
-            cancelNotification ( id ) {
-                /* 
-                    This method deletes a notification and, in case the notification is being displayed, hides it.
-                */
-                delete notifications[ id ];
-                delete this.queue[ this.queue.findIndex( id ) ];
-                if ( this.currentlyDisplayedNotificationID == id ) {
-                    this.handleNotifications();
-                }
-            },
-            handleNotifications () {
-                /* 
-                    This methods should NOT be called in any other component than this one!
-                */
-                this.displayTimeCurrentNotification = 0;
-                this.queue.sort();
-                if ( this.queue.length > 0 ) {
-                    this.message = this.notifications[ this.queue[ 0 ] ][ 'message' ];
-                    this.messageType = this.notifications[ this.queue[ 0 ] ][ 'messageType' ];
-                    this.priority = this.notifications[ this.queue[ 0 ] ][ 'priority' ];
-                    this.notificationDisplayTime = this.notifications[ this.queue[ 0 ] ][ 'showDuration' ];
-                    this.queue.reverse();
-                    this.queue.pop();
-                } else {
-                    this.messageType = 'hide';
-                }
             }
-        },
-        created () {
-            this.notificationScheduler = setInterval( () => { 
-                if ( this.displayTimeCurrentNotification >= this.notificationDisplayTime ) {
-                    this.handleNotifications();
-                } else {
-                    this.displayTimeCurrentNotification += 0.5;
-                }
-            }, 500 );
-        },
-        unmounted ( ) {
-            clearInterval( this.notificationScheduler );
         }
     }
 </script>
 
 <style scoped>
-    .message-box {
+    #popup-backdrop {
         position: fixed;
-        left: 0.5%;
-        z-index: 5;
-        top: 3%;
-        color: white;
-        height: 10vh;
-        width: 15vw;
-        opacity: 1;
-        transition: all 0.5s;
+        top: 0;
+        left: 0;
+        z-index: 10;
+        width: 100vw;
+        height: 100vh;
+        background-color: var( --overlay-color );
+        display: none;
     }
 
-    .message-container {
+    .shown {
+        display: block;
+    }
+
+    .popup-container {
+        width: 100%;
+        height: 100%;
         display: flex;
         justify-content: center;
         align-items: center;
-        height: 100%;
-        width: 100%;
+        flex-direction: column;
     }
 
-    .types {
-        color: white;
-        border-radius: 100%;
-        margin-right: auto;
-        margin-left: 5%;
-        font-size: 200%;
+    .popup {
+        border: none;
+        border-radius: 20px;
+        background-color: var( --popup-color );
     }
 
-    .message {
-        margin-right: 5%;
+    .small {
+        width: 40%;
+        height: 40%;
+    }
+
+    .normal {
+        width: 50%;
+        height: 50%;
+    }
+
+    .big {
+        width: 60%;
+        height: 60%;
+    }
+
+    .bigger {
+        width: 70%;
+        height: 70%;
+    }
+
+    .huge {
+        width: 80%;
+        height: 80%;
     }
 </style>

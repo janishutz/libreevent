@@ -80,5 +80,14 @@ export default {
                 adminAuthRequired: true,
             }
         },
+        {
+            path: 'locations/view',
+            name: 'locationDetails',
+            component: () => import( '../views/admin/locations/LocationEditView.vue' ),
+            meta: {
+                title: 'Admin - libreevent',
+                adminAuthRequired: true,
+            }
+        },
     ]
 }

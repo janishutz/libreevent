@@ -9,7 +9,7 @@
 
 <template>
     <div>
-        <h2>Seatplan Editor</h2>
+        <h2>Seat Plan Editor</h2>
         <window />
     </div>
 </template>
