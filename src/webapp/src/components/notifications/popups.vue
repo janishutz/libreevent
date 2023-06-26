@@ -1,30 +1,34 @@
 <template>
-    <div id="popup-backdrop" :class="status">
+    <div id="popup-backdrop">
         <div class="popup-container">
             <div class="popup" :class="size">
-                <span class="material-symbols-outlined" @click="closePopup();">close</span>
+                <div class="close-wrapper"><span class="material-symbols-outlined close-button" @click="closePopup();">close</span></div>
                 <div class="message-container">
-                    {{ message }}
+                    {{ data }}
                 </div>
             </div>
         </div>
     </div>
 </template>
 
-<!-- Options to be passed in: HTML, Settings (for settings component), strings, numbers, confirm, radio, dropdowns, selection -->
+<!-- Options to be passed in: html, settings (for settings component), strings, numbers, confirm, radio, dropdowns, selection -->
 
 <script>
     export default {
         name: 'popups',
-        prop: {
+        props: {
             size: {
                 type: String,
                 'default': 'normal',
             },
-            message: {
-                type: Object,
-                'default': '{}',
+            contentType: {
+                type: String,
+                'default': 'string'
             },
+            data: {
+                type: Object,
+                'default': {}
+            }
         },
         data () {
             return {
@@ -33,10 +37,10 @@
         },
         methods: {
             closePopup() {
-                this.shown = 'hidden'
+                $( '#popup-backdrop' ).fadeOut( 300 );
             },
             openPopup () {
-
+                $( '#popup-backdrop' ).fadeIn( 300 );
             }
         }
     }
@@ -54,10 +58,6 @@
         display: none;
     }
 
-    .shown {
-        display: block;
-    }
-
     .popup-container {
         width: 100%;
         height: 100%;
@@ -65,6 +65,22 @@
         justify-content: center;
         align-items: center;
         flex-direction: column;
+    }
+
+    .close-wrapper {
+        width: 100%;
+        height: 5%;
+        display: flex;
+        justify-content: center;
+        align-items: flex-end;
+        flex-direction: column;
+    }
+
+    .close-button {
+        margin-right: 1vw;
+        margin-top: 2vw;
+        font-size: 200%;
+        cursor: pointer;
     }
 
     .popup {
