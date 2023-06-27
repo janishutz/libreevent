@@ -69,12 +69,6 @@
             notifications,
             popups,
         },
-        created () {
-            if ( !sessionStorage.getItem( 'selectedTicket' ) ) {
-                this.$router.push( '/admin/events' );
-            }
-            this.eventID = sessionStorage.getItem( 'selectedTicket' );
-        },
         data() {
             return {
                 event: { 'name': 'TestEvent', 'description': 'This is a description for the TestEvent to test multiline support and proper positioning of the Fields', 'freeSeats': 2, 'maxSeats': 2, 'date':'TestDate', 'startingPrice':15, 'location': 'TestLocation', 'eventID': 'test', 'currency': 'CHF', 'logo': 'logo.png', 'categories': { '1': { 'price': { '1': { 'price':25, 'name':'Child (0-15.99 years)'}, '2': { 'price':35, 'name':'Adult'} }, 'bg': 'black', 'fg': 'white', 'name': 'Category 1' }, '2': { 'price': { '1': { 'price':25, 'name':'Child (0-15.99 years)' }, '2': { 'price':35, 'name':'Adult'} }, 'bg': 'green', 'fg': 'white', 'name': 'Category 2' } } },
