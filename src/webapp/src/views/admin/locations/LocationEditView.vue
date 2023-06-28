@@ -25,7 +25,7 @@
             </table>
         </div>
         <button @click="openPopup()">Open Popup</button>
-        <popups ref="popup"></popups>
+        <popups ref="popup" @data="( event ) => { popupReturnHandling( event ) }"></popups>
         <notifications ref="notification" location="topright"></notifications>
     </div>
 </template>
@@ -78,6 +78,9 @@
             openPopup() {
                 console.log( 'opening' );
                 this.$refs.popup.openPopup();
+            },
+            popupReturnHandling( event ) {
+                console.log( event );
             }
         }
     };

@@ -76,16 +76,16 @@ export default {
             name: 'eventDetails',
             component: () => import( '../views/admin/events/EventsDetailsView.vue' ),
             meta: {
-                title: 'Admin - libreevent',
+                title: 'Event details :: Admin - libreevent',
                 adminAuthRequired: true,
             }
         },
         {
-            path: 'locations/view',
-            name: 'locationDetails',
-            component: () => import( '../views/admin/locations/LocationEditView.vue' ),
+            path: 'events/analytics',
+            name: 'eventAnalytics',
+            component: () => import( '../views/admin/events/AnalyticsView.vue' ),
             meta: {
-                title: 'Admin - libreevent',
+                title: 'Event analytics :: Admin - libreevent',
                 adminAuthRequired: true,
             }
         },

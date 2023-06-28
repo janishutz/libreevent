@@ -16,9 +16,9 @@
             <router-link to="/admin/pages" class="bigButton">Pages</router-link>
             <router-link to="/admin/events" class="bigButton">Events</router-link>
             <router-link to="/admin/locations" class="bigButton">Locations</router-link>
-            <router-link to="/admin/events" class="bigButton">Plugins</router-link>
-            <router-link to="/admin/events" class="bigButton">Settings</router-link>
-            <a href="https://libreevent.janishutz.com/docs/admin-panel" class="bigButton" target="_blank">Documentation</a>
+            <router-link to="/admin/plugins" class="bigButton">Plugins</router-link>
+            <router-link to="/admin/settings" class="bigButton">Settings</router-link>
+            <a href="https://libreevent.janishutz.com/docs/admin-panel" class="bigButton" target="_blank">Documentation <span class="material-symbols-outlined" style="display: inline; font-size: 100%;">open_in_new</span></a>
         </div>
     </div>
 </template>

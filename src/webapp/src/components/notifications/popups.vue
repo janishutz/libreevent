@@ -2,27 +2,34 @@
     <div id="popup-backdrop">
         <div class="popup-container">
             <div class="popup" :class="size">
-                <div class="close-wrapper"><span class="material-symbols-outlined close-button" @click="closePopup( 'cancel' );">close</span></div>
+                <div class="close-wrapper"><span class="material-symbols-outlined close-button" @click="closePopup( 'cancel' );" title="Close this popup">close</span></div>
                 <div class="message-container">
-                    <div v-if="contentType === 'string'">{{ data.message }}</div>
-                    <div v-else-if="contentType === 'html'" v-html="data.message"></div>
-                    <div v-else-if="contentType === 'settings'">
-                        <settings v-model:settings="data.settings"></settings>
+                    <div v-if="contentType === 'string'" class="options"><h3>{{ data.message }}</h3></div>
+                    <div v-else-if="contentType === 'html'" v-html="data.message" class="options"></div>
+                    <div v-else-if="contentType === 'settings'" class="options">
+                        <h3>{{ data.message }}</h3>
+                        <settings v-model:settings="data.options"></settings>
+                        <div style="width: 100%; margin-top: 3%;">
+                            <button @click="closePopup( 'ok' )" title="Save changes">Save</button>
+                            <button @click="closePopup( 'cancel' )" title="Cancel changes">Cancel</button>
+                        </div>
                     </div>
-                    <div v-else-if="contentType === 'confirm'" class="confirm">
-                        {{ data.message }}
+                    <div v-else-if="contentType === 'confirm'" class="confirm options">
+                        <h3>{{ data.message }}</h3>
                         <div style="width: 100%; margin-top: 3%;">
                             <button @click="closePopup( 'ok' )">Ok</button>
                             <button @click="closePopup( 'cancel' )">Cancel</button>
                         </div>
                     </div>
-                    <div v-else-if="contentType === 'radio'">
-                        <form>
-                            <div v-for="selectOption in data.radio">
-                                <input type="radio" value="selectOption.value" name="group1" id="selectOption.id">
-                                <label for="selectOption.id">selectOption.displayName</label>
-                            </div>
-                        </form>
+                    <div v-else-if="contentType === 'dropdown'" class="options">
+                        <h3>{{ data.message }}</h3>
+                        <select id="select" v-model="data.selected">
+                            <option v-for="selectOption in data.options" :value="selectOption.value">{{ selectOption.displayName }}</option>
+                        </select>
+                        <div style="width: 100%; margin-top: 3%;">
+                            <button @click="closePopup( 'ok' )" title="Save changes">Save</button>
+                            <button @click="closePopup( 'cancel' )" title="Cancel changes">Cancel</button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -30,7 +37,7 @@
     </div>
 </template>
 
-<!-- Options to be passed in: html, settings (for settings component), strings, confirm, radio, dropdowns, selection -->
+<!-- Options to be passed in: html, settings (for settings component), strings, confirm, dropdowns, selection -->
 
 <script>
     import settings from '@/components/settings/settings.vue';
@@ -47,22 +54,25 @@
         },
         data () {
             return {
-                status: 'hidden',
                 contentType: 'dropdown',
-                data: { 'message': 'No message defined on method call' }
+                data: {}
             }
         },
         methods: {
             closePopup( message ) {
                 $( '#popup-backdrop' ).fadeOut( 300 );
                 if ( message ) {
-                    this.$emit( 'data', message );
+                    this.$emit( 'status', message );
+                    this.$emit( 'data', this.data );
                 }
             },
-            openPopup () {
+            openPopup ( message, options, dataType, selected ) {
+                let data = { 'message': message ? message : 'No message defined on method call!!', 'options': options ? options : { '1': { 'value': 'undefined', 'displayName': 'No options specified in call' } }, 'selected': selected ? selected : '' };
+                this.data = data;
+                this.contentType = dataType ? dataType : 'string';
                 $( '#popup-backdrop' ).fadeIn( 300 );
             }
-        }
+        },
     }
 </script>
 
@@ -138,22 +148,20 @@
         height: 90%;
         width: 90%;
         margin-left: 5%;
-        display: flex;
-        justify-content: center;
-        flex-direction: column;
-        align-items: center;
+        overflow: scroll;
     }
 
-    .confirm {
+    .options {
         display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        overflow: visible;
+        min-height: 100%;
         width: 100%;
-        height: 100%;
-        justify-content: center;
-        align-items: center;
-        flex-direction: column;
     }
 
-    .confirm button {
+    .options button {
         padding: 1% 2%;
         display: inline-block;
         background-color: var( --accent-background );
@@ -161,7 +169,7 @@
         cursor: pointer;
     }
 
-    .confirm button:hover {
+    .options button:hover {
         background-color: var( --accent-background-hover );
     }
 </style>

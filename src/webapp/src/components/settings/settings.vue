@@ -44,6 +44,9 @@
                 <td v-else-if="setting.type == 'date'">
                     <input type="date" v-model="setting.value">
                 </td>
+                <td v-else-if="setting.type == 'link'">
+                    <router-link :to="setting.restrictions.to">{{ setting.restrictions.displayName }}</router-link>
+                </td>
             </tr>
         </table>
     </div>
@@ -102,7 +105,7 @@
     z-index: 10;
     width: 20vw;
     height: 20vh;
-    background-color: var( --popup-color );
+    background-color: var( --hint-color );
     border-radius: 20px;
     top: 125%;
     right: -9.3vw;
@@ -116,7 +119,7 @@
     margin-left: -5px;
     border-width: 10px;
     border-style: solid;
-    border-color: transparent transparent var( --popup-color ) transparent;
+    border-color: transparent transparent var( --hint-color ) transparent;
 }
 
 .info-box-container {

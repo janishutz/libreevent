@@ -11,12 +11,22 @@
     <div class="order">
         <h2>Events</h2>
         <div class="order-app" v-if="events">
-            <ul>
-                <li v-for="event in events">
-                    <router-link to="/admin/events/view" class="ticket" @click="setActiveTicket( event.eventID );">
+            <ul v-for="timeframe in eventList">
+                <h3>{{ timeframe.name }}</h3>
+                <li v-for="event in timeframe.content">
+                    <router-link to="/admin/events/view" class="ticket" @click="setActiveTicket( event.eventID );" v-if="new Date( event.date ).getTime() > currentDate">
                         <div class="ticket-name">
                             <h3>{{ event.name }}</h3>
                             <p>{{ event.description }}</p>
+                            <b>{{ event.date }}</b>
+                        </div>
+                        <img :src="require( '@/assets/' + event.logo )" alt="event logo" class="ticket-logo">
+                    </router-link>
+                    <router-link to="/admin/events/analytics" class="ticket" @click="setActiveTicket( event.eventID );" v-else="new Date( event.date ).getTime() > currentDate">
+                        <div class="ticket-name">
+                            <h3>{{ event.name }}</h3>
+                            <p>{{ event.description }}</p>
+                            <b>{{ event.date }}</b>
                         </div>
                         <img :src="require( '@/assets/' + event.logo )" alt="event logo" class="ticket-logo">
                     </router-link>
@@ -71,7 +81,7 @@
 
     .ticket-name {
         margin-right: auto;
-        max-width: 35%;
+        max-width: 60%;
     }
 
     .ticket-info {
@@ -90,7 +100,27 @@
         },
         data () {
             return {
-                events: { 'test':{ 'name': 'TestEvent', 'description': 'This is a description for the TestEvent to test multiline support and proper positioning of the Fields', 'freeSeats': 2, 'maxSeats': 2, 'date':'TestDate', 'startingPrice':15, 'location': 'TestLocation', 'eventID': 'test', 'currency': 'CHF', 'logo': 'logo.png' }, 'test2':{ 'name': 'TestEvent2', 'description': 'This is a description for the TestEvent to test multiline support and proper positioning of the Fields', 'freeSeats': 2, 'maxSeats': 2, 'date':'TestDate', 'startingPrice':15, 'location': 'TestLocation', 'eventID': 'test2', 'currency': 'CHF', 'logo': 'logo.png' } }
+                events: { 'test':{ 'name': 'TestEvent', 'description': 'This is a description for the TestEvent to test multiline support and proper positioning of the Fields', 'freeSeats': 2, 'maxSeats': 2, 'date':'2023-07-15', 'startingPrice':15, 'location': 'TestLocation', 'eventID': 'test', 'currency': 'CHF', 'logo': 'logo.png' }, 'test2':{ 'name': 'TestEvent2', 'description': 'This is a description for the TestEvent to test multiline support and proper positioning of the Fields', 'freeSeats': 2, 'maxSeats': 2, 'date':'2023-06-14', 'startingPrice':15, 'location': 'TestLocation', 'eventID': 'test2', 'currency': 'CHF', 'logo': 'logo.png' } },
+                currentDate: new Date().getTime(),
+                eventList: { 'upcoming': { 'name': 'Upcoming', 'content': {} }, 'past': { 'name': 'Past', 'content': {} } },
+            }
+        },
+        created() {
+            // Sort events object such that events closest to today are displayed first and past events displayed last
+            let sortable = [];
+            for ( let event in this.events ) {
+                sortable.push( [ this.events[ event ][ 'eventID' ], new Date( this.events[ event ][ 'date' ] ).getTime() ] );
+            }
+            sortable.sort( function( a, b ) {
+                return a[ 1 ] - b [ 1 ];
+            } );
+
+            for ( let element in sortable ) {
+                if ( sortable[ element ][ 1 ] > this.currentDate ) {
+                    this.eventList.upcoming.content[ sortable[ element ][ 0 ] ] = this.events[ sortable[ element ][ 0 ] ];
+                } else {
+                    this.eventList.past.content[ sortable[ element ][ 0 ] ] = this.events[ sortable[ element ][ 0 ] ];
+                }
             }
         }
     };
