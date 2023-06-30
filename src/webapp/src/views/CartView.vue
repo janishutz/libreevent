@@ -26,6 +26,9 @@
         </div>
         <div v-else>
             Cart is empty. Please add tickets <router-link to="/tickets">here</router-link>
+            <div class="empty-cart-wrapper">
+                <span class="material-symbols-outlined empty-cart">remove_shopping_cart</span>
+            </div>
         </div>
     </div>
 </template>
@@ -38,6 +41,19 @@
         flex-direction: column;
         align-items: center;
         justify-content: center;
+    }
+
+    .empty-cart-wrapper {
+        width: 100%;
+        height: 70vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .empty-cart {
+        display: block;
+        font-size: 20rem;
     }
 
     .cart-list {

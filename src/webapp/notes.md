@@ -4,3 +4,5 @@
 - set page title based on settings
 
 - make pricing groups changeable in UI (event categories)
+
+- add webpack to project website to decrease file size

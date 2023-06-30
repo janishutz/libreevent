@@ -37,6 +37,7 @@
             <button title="Remove selected component [Delete]" @click="deleteSelected()"><span class="material-symbols-outlined">delete</span></button>
             <button title="Save this seatplan as a draft [Ctrl + S]" @click="saveDraft()"><span class="material-symbols-outlined">save</span></button>
             <button title="Deploy this seatplan (save it for use)" @click="deploy()"><span class="material-symbols-outlined">system_update_alt</span></button>
+            <button title="Get amount of seats printed to console" @click="getSeatCount()"><span class="material-symbols-outlined">living</span></button>
         </div>
         <notifications ref="notification" location="topleft"></notifications>
     </div>
@@ -310,7 +311,10 @@
                     sessionStorage.setItem( 'zoom', this.zoomFactor );
                     this.loadSeatplan();
                 }
-            }
+            },
+            getSeatCount () {
+                console.log( 'Seat count is: ' + document.getElementsByClassName( 'seats' ).length );
+            },
         },
         created () {
             this.runHook();
