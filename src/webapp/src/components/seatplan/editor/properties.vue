@@ -209,7 +209,7 @@ export default {
     data () {
         return {
             internal: {},
-            categories: {},
+            categories: { '1':{} },
         }
     },
     methods: {
@@ -219,7 +219,7 @@ export default {
                 this.internal[ value ] = {};
                 for ( let info in this.draggables[ value ] ) {
                     if ( info === 'w' || info === 'h' || info === 'x' || info === 'y' ) {
-                        this.internal[ value ][ info ] = Math.round( this.draggables[ value ][ info ] / this.scaleFactor );
+                        this.internal[ value ][ info ] = Math.round( ( this.draggables[ value ][ info ] / this.scaleFactor ) * 1000 ) / 1000;
                     } else {
                         this.internal[ value ][ info ] = this.draggables[ value ][ info ];
                     }

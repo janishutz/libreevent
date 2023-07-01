@@ -12,7 +12,7 @@
         <router-link to="/">Home</router-link> |
         <router-link to="/tickets">Tickets</router-link> |
         <router-link to="/cart">Cart</router-link> |
-        <router-link to="/login">Account</router-link> |
+        <router-link to="/account">Account</router-link> |
         <button @click="changeTheme();" v-html="theme" id="themeSelector"></button>
     </nav>
     <router-view v-slot="{ Component, route }">
@@ -31,7 +31,7 @@
         --popup-color: rgb(224, 224, 224);
         --accent-color: #42b983;
         --hover-color: rgb(165, 165, 165);
-        --accent-background-hover: #4380a8;
+        --accent-background-hover: rgb(124, 140, 236);
         --overlay-color: rgba(0, 0, 0, 0.7);
         --inactive-color: rgb(100, 100, 100);
         --highlight-backdrop: rgb(143, 134, 192);

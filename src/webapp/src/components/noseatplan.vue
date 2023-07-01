@@ -30,20 +30,6 @@
                 </div>
             </div>
         </div>
-        <div class="overlay" id="placeNotAvailable">
-            <div class="popup">
-                <div class="popup-content">
-                    <div class="close-container">
-                        <span class="material-symbols-outlined close-button" @click="closePlaceNotAvailablePopup()">close</span>
-                    </div>
-                    <div class="popup-content-wrapper">
-                        <h3>One or more seat(s) you have previously selected is/are no longer available!</h3>
-                        <p>Please select another one!</p>
-                        <button class="button" @click="closePlaceNotAvailablePopup()">Ok</button>
-                    </div>
-                </div>
-            </div>
-        </div>
     </div>
 </template>
 
@@ -86,10 +72,7 @@ export default {
             }
 
             if ( showError ) {
-                setTimeout( function () {
-                    $( '#placeNotAvailable' ).show( 200 );
-                    console.log( 'showing error message' );
-                }, 500 );
+                // TODO: Show popup that no more tickets in a category are available
             }
 
 
@@ -132,9 +115,6 @@ export default {
                 sessionStorage.setItem( 'backend', JSON.stringify( back ) );            
                 sessionStorage.setItem( 'cart', JSON.stringify( cart ) );
             }
-        },
-        closePlaceNotAvailablePopup () {
-            $( '#placeNotAvailable' ).hide( 300 );
         },
         selectSeat( placeID, rowID ) {
             /* 

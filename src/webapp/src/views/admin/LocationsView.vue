@@ -11,6 +11,7 @@
     <div>
         <h2>Locations</h2>
         <p>Here you can change everything regarding event locations. All locations can have a seating plan.</p>
+        <button @click="addLocation();">Add new location</button>
         <div class="location-app" v-if="Object.keys( locations ).length">
             <ul>
                 <li v-for="location in locations">
@@ -28,6 +29,7 @@
             No locations configured, please <b @click="addLocation();" style="cursor: pointer;">add</b> one
         </div>
         <popups ref="popup" size="big"></popups>
+        <popups ref="popup2" size="huge"></popups>
     </div>
 </template>
 
@@ -75,7 +77,33 @@
             , 'settings' );
             },
             addLocation () {
-
+                this.$refs.popup.openPopup( 'Add a new location', {
+                    'locationName': {
+                        'display': 'Location name', 
+                        'id': 'locationName', 
+                        'tooltip':'Give the location the event takes place a name. This name will also be shown to customers', 
+                        'value': '',
+                        'type': 'text',
+                    },
+                    'usesSeatplan': { 
+                        'display': 'Use seat plan?', 
+                        'id': 'usesSeatplan', 
+                        'tooltip':'With this toggle you may specify whether or not this location has a seat plan or not.', 
+                        'value': true,
+                        'type': 'toggle',
+                    },
+                    'seatplanEditor': { 
+                        'display': 'Seat plan editor', 
+                        'id': 'seatplanEditor', 
+                        'tooltip':'The seat plan editor allows you to create a seat plan that closely resembles the location you host the event in.', 
+                        'type': 'link',
+                        'restrictions': {
+                            'to': '/admin/seatplan',
+                            'displayName': 'Edit seat plan'
+                        }
+                    },
+                }
+            , 'settings' );
             },
         }
     };

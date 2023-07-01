@@ -44,6 +44,10 @@ export default {
         startingRow: {
             type: Number,
             "default": 1,
+        },
+        id: {
+            type: Number,
+            "default": 1
         }
     },
     data () {
@@ -64,9 +68,11 @@ export default {
             let count = Math.floor( heightTriangle / ( sideOffset * 2 ) );
             const angle = Math.PI / 4;
             this.seats = {};
+            let details = { 'data': {}, 'id': this.id };
             for ( let row = this.startingRow; row < count; row++ ) {
                 let nn = 2 + ( row - 1 ) * 2; 
                 this.seats[ row ] = {};
+                details.data[ row ] = Math.floor( nn );
                 for ( let n = 0; n < nn; n++ ) {
                     let side = n * sideOffset;
                     if ( this.origin === 1 ) {
@@ -80,6 +86,7 @@ export default {
                     }
                 }
             }
+            this.$emit( 'seatingInfo', details );
         },
         setScaleFactor () {
             for ( let row in this.seats ) {

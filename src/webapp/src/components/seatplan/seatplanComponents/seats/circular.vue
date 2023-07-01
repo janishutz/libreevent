@@ -44,6 +44,10 @@ export default {
         startingRow: {
             type: Number,
             "default": 1,
+        },
+        id: {
+            type: Number,
+            "default": 1
         }
     },
     data () {
@@ -58,10 +62,12 @@ export default {
             let w = Math.round( this.w / this.scaleFactor );
             let h = Math.round( this.h / this.scaleFactor );
             const size = 33;
-            let count = Math.min( Math.floor( w / size ), Math.floor( h / size  ) );
+            let count = Math.min( Math.floor( w / size ), Math.floor( h / size ) );
             this.seats = {};
+            let details = { 'data': {}, 'id': this.id };
             for ( let row = this.startingRow; row < count; row++ ) {
                 let nn = row * ( Math.PI / 2 );
+                details.data[ row ] = Math.floor( nn );
                 let r = row * size;
                 this.seats[ row ] = {};
                 for ( let n = 0; n < nn; n++ ) {
@@ -77,6 +83,7 @@ export default {
                     }
                 }
             }
+            this.$emit( 'seatingInfo', details );
         },
         setScaleFactor () {
             for ( let row in this.seats ) {
