@@ -18,18 +18,18 @@
     import window from '@/components/seatplan/editor/window.vue';
 
     export default {
-        data () {
-            return {
-                formData: {}
-            }
-        },
         components: {
             window,
         },
         methods: {
-            setup () {
-                
+            checkLocationSelected () {
+                if ( !sessionStorage.getItem( 'locationID' ) ) {
+                    this.$router.push( '/admin/locations' );
+                }
             }
+        },
+        created() {
+            this.checkLocationSelected();
         }
     };
 </script>
