@@ -21,6 +21,7 @@
                     <rectangularSeatplanComponent v-else-if="draggable.shape == 'rectangular' && draggable.type == 'seat'" :scale-factor="scaleFactor" :w="draggable.w" :h="draggable.h" :origin="draggable.origin"></rectangularSeatplanComponent>
                     <stagesSeatplanComponent v-else-if="draggable.type == 'stage'" :origin="draggable.origin" :shape="draggable.shape"></stagesSeatplanComponent>
                     <standingSeatplanComponent v-else-if="draggable.type == 'stand'" :origin="draggable.origin" :shape="draggable.shape"></standingSeatplanComponent>
+                    <textFieldSeatplanComponent v-else-if="draggable.type == 'text'" :text="draggable.text.text" :text-size="draggable.text.textSize" :colour="draggable.text.colour" :origin="draggable.origin" :scale-factor="scaleFactor"></textFieldSeatplanComponent>
                 </Vue3DraggableResizable>
             </div>
         </div>
@@ -37,7 +38,6 @@
             <button title="Remove selected component [Delete]" @click="deleteSelected()"><span class="material-symbols-outlined">delete</span></button>
             <button title="Save this seatplan as a draft [Ctrl + S]" @click="saveDraft()"><span class="material-symbols-outlined">save</span></button>
             <button title="Deploy this seatplan (save it for use)" @click="deploy()"><span class="material-symbols-outlined">system_update_alt</span></button>
-            <button title="Get amount of seats printed to console" @click="getSeatCount()"><span class="material-symbols-outlined">living</span></button>
         </div>
         <notifications ref="notification" location="topleft"></notifications>
     </div>
@@ -49,8 +49,9 @@
     import circularSeatplanComponent from '@/components/seatplan/seatplanComponents/seats/circular.vue';
     import rectangularSeatplanComponent from '@/components/seatplan/seatplanComponents/seats/rectangular.vue';
     import trapezoidSeatplanComponent from '@/components/seatplan/seatplanComponents/seats/trapezoid.vue';
-    import stagesSeatplanComponent from '@/components/seatplan/seatplanComponents/stage/stages.vue';
-    import standingSeatplanComponent from '@/components/seatplan/seatplanComponents/stand/standing.vue';
+    import stagesSeatplanComponent from '@/components/seatplan/seatplanComponents/stages.vue';
+    import standingSeatplanComponent from '@/components/seatplan/seatplanComponents/standing.vue';
+    import textFieldSeatplanComponent from '@/components/seatplan/seatplanComponents/textField.vue';
     import notifications from '@/components/notifications/notifications.vue';
     import 'vue3-draggable-resizable/dist/Vue3DraggableResizable.css';
 
@@ -64,12 +65,13 @@
             trapezoidSeatplanComponent,
             stagesSeatplanComponent,
             standingSeatplanComponent,
+            textFieldSeatplanComponent,
             notifications,
         },
         data() {
             return {
                 active: 0,
-                draggables: { 1: { 'x': 100, 'y':100, 'h': 100, 'w': 250, 'active': false, 'draggable': true, 'resizable': true, 'id': 1, 'origin': 1, 'shape':'rectangular', 'type': 'seat', 'startingRow': 1, 'seatCountingStartingPoint': 0 } },
+                draggables: { 1: { 'x': 100, 'y':100, 'h': 100, 'w': 250, 'active': false, 'draggable': true, 'resizable': true, 'id': 1, 'origin': 1, 'shape':'rectangular', 'type': 'seat', 'startingRow': 1, 'seatCountingStartingPoint': 1, 'sector': 'A', 'text': { 'text': 'TestText', 'textSize': 20, 'colour': '#20FFFF' } }, 'ticketCount': 1 },
                 available: { 'redo': false, 'undo': false },
                 scaleFactor: 1,
                 sizePoll: null,
@@ -197,7 +199,7 @@
                     returnArray[ entry ] = {};
                     for ( let attributes in valueArray[ entry ] ) {
                         if ( allowedAttributes.includes( attributes ) ) {
-                            returnArray[ entry ][ attributes ] = Math.round( valueArray[ entry ][ attributes ] * this.scaleFactor );
+                            returnArray[ entry ][ attributes ] = valueArray[ entry ][ attributes ] * this.scaleFactor;
                         } else {
                             returnArray[ entry ][ attributes ] = valueArray[ entry ][ attributes ];
                         }
@@ -263,7 +265,7 @@
                 let progressNotification = this.$refs.notification.createNotification( 'Saving as draft', 5, 'progress', 'normal' );
                 sessionStorage.setItem( 'seatplan', JSON.stringify( this.scaleDown( this.draggables ) ) );
                 this.$refs.notification.createNotification( 'Saved as draft', 5, 'ok', 'normal' );
-                // TODO: Save to server
+                // TODO: Save to server and add warning if no component has a seat start point if any component is a seat component
             },
             deploy () {
                 // TODO: Save to server
@@ -271,7 +273,7 @@
                 this.$refs.notification.createNotification( 'Deployed successfully', 5, 'ok', 'normal' );
             },
             addNewElement () {
-                this.draggables[ Object.keys( this.draggables ).length + 1 ] = { 'x': 100, 'y':100, 'h': 100, 'w': 250, 'active': false, 'draggable': true, 'resizable': true, 'id': Object.keys( this.draggables ).length + 1, 'origin': 1, 'shape':'rectangular', 'type': 'seat', 'startingRow': 1, 'seatCountingStartingPoint': 0 };
+                this.draggables[ Object.keys( this.draggables ).length + 1 ] = { 'x': 100, 'y':100, 'h': 100, 'w': 250, 'active': false, 'draggable': true, 'resizable': true, 'id': Object.keys( this.draggables ).length + 1, 'origin': 1, 'shape':'rectangular', 'type': 'seat', 'startingRow': 1, 'seatCountingStartingPoint': 0, 'sector': 'A', 'text': { 'text': 'TestText', 'textSize': 20, 'colour': '#20FFFF' }, 'ticketCount': 1 };
                 this.saveHistory();
                 this.$refs.notification.createNotification( 'New component added successfully', 5, 'ok', 'normal' );
             },
@@ -357,6 +359,7 @@
         height: 90vh;
         top: 7.5vh;
         right: 0.5vw;
+        overflow: scroll;
     }
 
     .content-parent {

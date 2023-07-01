@@ -24,6 +24,7 @@
 #rectangular {
     border-color: black;
     border-width: 2px;
+    background-color: var( --popup-color );
 }
 
 #circular, #trapezoid {
@@ -33,7 +34,7 @@
 #trapezoid-ingredient {
     display: flex;
     justify-content: center;
-    align-items: center;
+    align-items: flex-end;
     height: 200%;
     width: 200%;
     position: relative;
@@ -43,9 +44,10 @@
 
 #trapezoid-line {
     border: black solid 1px;
-    height: 0%;
+    height: 50%;
     width: 100%;
     display: block;
+    background-color: var( --popup-color );
 }
 
 #circular-ingredient {
@@ -54,6 +56,7 @@
     height: 199%;
     width: 199%;
     position: relative;
+    background-color: var( --popup-color );
 }
 </style>
 
