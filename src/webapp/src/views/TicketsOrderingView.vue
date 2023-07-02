@@ -22,7 +22,7 @@
 </style>
 
 <script>
-    import seatplan from '@/components/seatplan.vue';
+    import seatplan from '@/components/seatplan/userApp/userWindow.vue';
     import noseatplan from '@/components/noseatplan.vue';
 
     export default {

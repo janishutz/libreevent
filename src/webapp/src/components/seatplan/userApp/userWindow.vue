@@ -9,11 +9,11 @@
 
 <template>
     <div id="window">
-        <!-- TODO: Add additional div with v-if to check if a location has been selected and warn if not so. -->
-        <div class="parent" id="parent">
+        <h2>Seat plan: {{ event.name }}</h2>
+        <div class="parent" id="parent" @wheel="( e ) => { handleScroll( e ); }" @mousemove="( e ) => { handleDrag( e ); }" @mousedown="( e ) => { setOffset( e ); }">
             <div class="content-parent">
                 <Vue3DraggableResizable v-for="draggable in draggables" :initW="draggable.w" :initH="draggable.h" :x="draggable.x" :y="draggable.y" :w="draggable.w" :h="draggable.h"
-                    :active="false" :draggable="false" :resizable="false" :parent="true" @contextmenu="( e ) => { e.preventDefault(); }" class="draggable-box">
+                    :active="false" :draggable="false" :resizable="false" :parent="true" class="draggable-box">
                     <circularSeatplanComponent v-if="draggable.shape == 'circular' && draggable.type == 'seat'" :scale-factor="scaleFactor" :w="draggable.w" :h="draggable.h" :origin="draggable.origin" :starting-row="draggable.startingRow"></circularSeatplanComponent>
                     <trapezoidSeatplanComponent v-else-if="draggable.shape == 'trapezoid' && draggable.type == 'seat'" :scale-factor="scaleFactor" :w="draggable.w" :h="draggable.h" :origin="draggable.origin" :starting-row="draggable.startingRow"></trapezoidSeatplanComponent>
                     <rectangularSeatplanComponent v-else-if="draggable.shape == 'rectangular' && draggable.type == 'seat'" :scale-factor="scaleFactor" :w="draggable.w" :h="draggable.h" :origin="draggable.origin"></rectangularSeatplanComponent>
@@ -23,18 +23,23 @@
                 </Vue3DraggableResizable>
             </div>
         </div>
+        <div class="toolbar">
+            <button title="Zoom in [+]" @click="zoom( 0.2 )"><span class="material-symbols-outlined">zoom_in</span></button>
+            <button title="Reset zoom [=]" @click="zoom( 1 );"><span class="material-symbols-outlined">center_focus_strong</span></button>
+            <button title="Zoom out [-]" @click="zoom( -0.2 )"><span class="material-symbols-outlined">zoom_out</span></button>
+        </div>
         <notifications ref="notification" location="topleft"></notifications>
     </div>
 </template>
 
 <script>
     import Vue3DraggableResizable from 'vue3-draggable-resizable';
-    import circularSeatplanComponent from '@/components/seatplan/seatplanComponents/seats/circular.vue';
-    import rectangularSeatplanComponent from '@/components/seatplan/seatplanComponents/seats/rectangular.vue';
-    import trapezoidSeatplanComponent from '@/components/seatplan/seatplanComponents/seats/trapezoid.vue';
-    import stagesSeatplanComponent from '@/components/seatplan/seatplanComponents/stages.vue';
-    import standingSeatplanComponent from '@/components/seatplan/seatplanComponents/standing.vue';
-    import textFieldSeatplanComponent from '@/components/seatplan/seatplanComponents/textField.vue';
+    import circularSeatplanComponent from '@/components/seatplan/userApp/seatplanComponents/seats/circular.vue';
+    import rectangularSeatplanComponent from '@/components/seatplan/userApp/seatplanComponents/seats/rectangular.vue';
+    import trapezoidSeatplanComponent from '@/components/seatplan/userApp/seatplanComponents/seats/trapezoid.vue';
+    import stagesSeatplanComponent from '@/components/seatplan/userApp/seatplanComponents/stages.vue';
+    import standingSeatplanComponent from '@/components/seatplan/userApp/seatplanComponents/standing.vue';
+    import textFieldSeatplanComponent from '@/components/seatplan/userApp/seatplanComponents/textField.vue';
     import notifications from '@/components/notifications/notifications.vue';
     import 'vue3-draggable-resizable/dist/Vue3DraggableResizable.css';
 
@@ -54,12 +59,14 @@
             return {
                 active: 0,
                 draggables: { 1: { 'x': 100, 'y':100, 'h': 100, 'w': 250, 'active': false, 'draggable': true, 'resizable': true, 'id': 1, 'origin': 1, 'shape':'rectangular', 'type': 'seat', 'startingRow': 1, 'seatCountingStartingPoint': 1, 'sector': 'A', 'text': { 'text': 'TestText', 'textSize': 20, 'colour': '#20FFFF' } }, 'ticketCount': 1 },
+                event: { 'name': 'TestEvent2', 'location': 'TestLocation2', 'date': '2023-07-15', 'RoomName': 'TestRoom2', 'currency': 'CHF', 'categories': { '1': { 'price': { '1':25, '2':35 }, 'bg': 'black', 'fg': 'white', 'name': 'Category 1' }, '2': { 'price': { '1':15, '2':20 }, 'bg': 'green', 'fg': 'white', 'name': 'Category 2' } }, 'ageGroups': { '1':{ 'id': 1, 'name':'Child', 'age':'0 - 15.99' }, '2':{ 'id': 2, 'name': 'Adult', 'age': null } }, 'ageGroupCount': 2, 'maxTickets': 2 },
                 available: { 'redo': false, 'undo': false },
                 scaleFactor: 1,
                 sizePoll: null,
                 prevSize: { 'h': window.innerHeight, 'w': window.innerWidth },
                 zoomFactor: 1,
-                historyPos: 0,
+                standardDeviation: { 'currentTop': 0, 'currentLeft': 0 },
+                movePos: { 'top': 0, 'left': 0, 'isMoving': false, 'isSet': false },
                 generalSettings: { 'namingScheme': 'numeric' },
             }
         },
@@ -85,22 +92,7 @@
                         - Ctrl + Y: Redo
                 */
                 document.onkeydown = function ( event ) {
-                    if ( event.key === 'Delete' ) {
-                        event.preventDefault();
-                        self.deleteSelected();
-                    } else if ( event.ctrlKey && event.key === 's' ) {
-                        event.preventDefault();
-                        self.saveDraft();
-                    } else if ( ( event.ctrlKey && event.key === 'y' ) ) {
-                        event.preventDefault();
-                        self.historyOp( 'redo' );
-                    } else if ( event.ctrlKey && event.key === 'z' ) {
-                        event.preventDefault();
-                        self.historyOp( 'undo' );
-                    } else if ( event.ctrlKey && event.key === 'i' ) {
-                        event.preventDefault();
-                        self.addNewElement();
-                    } else if ( event.key === '+' ) {
+                    if ( event.key === '+' ) {
                         self.zoom( 0.2 );
                     } else if ( event.key === '-' ) {
                         self.zoom( -0.2 );
@@ -110,13 +102,65 @@
                 };
 
                 this.loadSeatplan();
-                // TODO: Add warning for untested browsers & suboptimal window sizes!
+                sessionStorage.setItem( 'seatplan', JSON.stringify( this.scaleDown( this.draggables ) ) );
+                // TODO: remove scaleDown function again once backend is up
+                // TODO: Optimise for odd screen sizes and aspect ratios
             },
             eventHandler ( e ) {
                 if ( this.prevSize.h != window.innerHeight || this.prevSize.w != window.innerWidth ) {
                     this.prevSize = { 'h': window.innerHeight, 'w': window.innerWidth };
                     this.loadSeatplan();
                 }
+            },
+            handleScroll ( e ) {
+                e.preventDefault();
+                if ( e.deltaY > 0 ) {
+                    this.zoom( 0.2 );
+                } else {
+                    this.zoom( -0.2 );
+                }
+            },
+            setOffset( e ) {
+                this.standardDeviation.currentLeft = e.clientX;
+                this.standardDeviation.currentTop = e.clientY;
+            },
+            handleDrag ( e ) {
+                if ( e.buttons === 1 ) {
+                    let parent = document.getElementById( 'parent' );
+                    if ( !this.movePos.isSet ) {
+                        this.movePos.left = parent.scrollWidth - parent.scrollLeft;
+                        this.movePos.top = parent.scrollHeight - parent.scrollTop;
+                        this.movePos.isSet = true;
+                    }
+                    this.movePos.isMoving = true;
+                    e.preventDefault();
+                    let valueTop = parent.scrollHeight - ( e.clientY - this.standardDeviation.currentTop + this.movePos.top );
+                    let valueLeft = parent.scrollWidth - ( e.clientX - this.standardDeviation.currentLeft + this.movePos.left );
+                    parent.scrollTop = valueTop > 0 ? valueTop : 0;
+                    parent.scrollLeft = valueLeft > 0 ? valueLeft : 0;
+                } else {
+                    if ( this.movePos.isMoving ) {
+                        let parent = document.getElementById( 'parent' );
+                        this.movePos.left = parent.scrollWidth - parent.scrollLeft;
+                        this.movePos.top = parent.scrollHeight - parent.scrollTop;
+                        this.movePos.isMoving = false;
+                    }
+                };
+            },
+            scaleDown ( valueArray ) {
+                const allowedAttributes = [ 'w', 'h', 'x', 'y' ]
+                let returnArray = {};
+                for ( let entry in valueArray ) {
+                    returnArray[ entry ] = {};
+                    for ( let attributes in valueArray[ entry ] ) {
+                        if ( allowedAttributes.includes( attributes ) ) {
+                            returnArray[ entry ][ attributes ] = Math.round( ( valueArray[ entry ][ attributes ] / this.scaleFactor ) * 1000 ) / 1000;
+                        } else {
+                            returnArray[ entry ][ attributes ] = valueArray[ entry ][ attributes ];
+                        }
+                    }
+                }
+                return returnArray;
             },
             loadSeatplan () {
                 /* 
@@ -134,7 +178,6 @@
                     this.draggables = this.scaleUp( JSON.parse( sessionStorage.getItem( 'seatplan' ) ) );
                 }
 
-
                 for ( let element in this.draggables ) {
                     if ( this.draggables[ element ].active ) {
                         this.draggables[ element ].active = false;
@@ -142,7 +185,7 @@
                 }
             },
             scaleUp ( valueArray ) {
-                const allowedAttributes = [ 'w', 'h', 'x', 'y' ]
+                const allowedAttributes = [ 'w', 'h', 'x', 'y' ];
                 let returnArray = {};
                 for ( let entry in valueArray ) {
                     returnArray[ entry ] = {};
@@ -156,11 +199,6 @@
                 }
                 return returnArray;
             },
-            handleUpdate ( value ) {
-                this.draggables = value;
-                this.selectedObject = value;
-                this.saveHistory();
-            },
             zoom ( scale ) {
                 if ( scale == 1 ) {
                     this.zoomFactor = 1;
@@ -168,11 +206,7 @@
                     this.loadSeatplan();
                 } else {
                     if ( ( this.zoomFactor < 0.3 && scale < 0 ) || ( this.zoomFactor > 2.9 && scale > 0 ) ) {
-                        if ( this.zoomFactor < 0.3 ) {
-                            this.$refs.notification.createNotification( 'Minimum zoom factor reached', 5, 'warning', 'normal' );
-                        } else {
-                            this.$refs.notification.createNotification( 'Maximum zoom factor reached', 5, 'warning', 'normal' );
-                        }
+                        
                     } else {
                         this.zoomFactor += scale;
                     }
@@ -193,10 +227,10 @@
 
 <style scoped>
     .parent {
-        height: 90vh;
+        height: 80vh;
         aspect-ratio: 16 / 9;
-        top: 7.5vh;
-        left: 3vw;
+        top: 17vh;
+        left: 10vw;
         position: absolute;
         border: black 1px solid;
         user-select: none;
@@ -206,7 +240,7 @@
     }
 
     .draggable-box {
-        cursor: all-scroll;
+        cursor: default;
     }
 
     .properties {
@@ -232,13 +266,9 @@
 
     .toolbar {
         display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        position: absolute;
-        top: 7.5vh;
-        left: 0.5vw;
-        height: 90vh;
+        position: fixed;
+        top: 17vh;
+        left: 10.5vw;
     }
     .toolbar button {
         margin-top: 10%;
