@@ -71,7 +71,7 @@
         data() {
             return {
                 active: 0,
-                draggables: { 1: { 'x': 100, 'y':100, 'h': 100, 'w': 250, 'active': false, 'draggable': true, 'resizable': true, 'id': 1, 'origin': 1, 'shape':'rectangular', 'type': 'seat', 'startingRow': 1, 'seatCountingStartingPoint': 1, 'sector': 'A', 'text': { 'text': 'TestText', 'textSize': 20, 'colour': '#20FFFF' } } },
+                draggables: { 1: { 'x': 100, 'y':100, 'h': 100, 'w': 250, 'active': false, 'draggable': true, 'resizable': true, 'id': 1, 'origin': 1, 'shape':'rectangular', 'type': 'seat', 'startingRow': 1, 'seatNumberingPosition': 1, 'sector': 'A', 'text': { 'text': 'TestText', 'textSize': 20, 'colour': '#20FFFF' }, 'numberingDirection': 'left' } },
                 available: { 'redo': false, 'undo': false },
                 scaleFactor: 1,
                 sizePoll: null,
@@ -275,7 +275,9 @@
                 this.$refs.notification.createNotification( 'Deployed successfully', 5, 'ok', 'normal' );
             },
             addNewElement () {
-                this.draggables[ Object.keys( this.draggables ).length + 1 ] = { 'x': 100, 'y':100, 'h': 100, 'w': 250, 'active': false, 'draggable': true, 'resizable': true, 'id': Object.keys( this.draggables ).length + 1, 'origin': 1, 'shape':'rectangular', 'type': 'seat', 'startingRow': 1, 'seatCountingStartingPoint': 0, 'sector': 'A', 'text': { 'text': 'TestText', 'textSize': 20, 'colour': '#20FFFF' }, 'ticketCount': 1 };
+                // TODO: Check that this algorithm actually works in practice. If not, replace with one that
+                // searches for the first available ID or uses a var to determine ID.
+                this.draggables[ Object.keys( this.draggables ).length + 1 ] = { 'x': 100, 'y':100, 'h': 100, 'w': 250, 'active': false, 'draggable': true, 'resizable': true, 'id': Object.keys( this.draggables ).length + 1, 'origin': 1, 'shape':'rectangular', 'type': 'seat', 'startingRow': 1, 'seatNumberingPosition': Object.keys( this.draggables ).length + 1, 'sector': 'A', 'text': { 'text': 'TestText', 'textSize': 20, 'colour': '#20FFFF' }, 'ticketCount': 1, 'numberingDirection': 'left' };
                 this.saveHistory();
                 document.getElementById( 'parent' ).scrollTop = 0;
                 document.getElementById( 'parent' ).scrollLeft = 0;

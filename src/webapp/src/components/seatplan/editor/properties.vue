@@ -133,12 +133,31 @@
             <!-- SEAT NUMBERING for seats -->
 
             <tr v-if="internal[ active ].type == 'seat'">
-                <td>Seat numbering:</td>
+                <td>Component number:
+                    <div class="info-container" @mouseenter="showInfo( 'componentNumber' )" @mouseleave="hideInfo( 'componentNumber' )">
+                        <span class="material-symbols-outlined info-icon">info</span>
+                        <div class="info-box" id="componentNumber">
+                            <div class="info-box-container">
+                                <div>
+                                    With this you can change what the order of the components is which is used to determine the seat numbering. Read more <a href="https://libreevent.janishutz.com/docs/admin-panel/seatplan-editor#component-number-property">here</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </td>
                 <td>
-                    <select v-model="internal[ active ].seatCountingStartingPoint" @change="resubmit()">
-                        <option value="0">Continue</option>
-                        <option value="1">Start left</option>
-                        <option value="2">Start right</option>
+                    <input type="number" min="1" max="4" v-model="internal[ active ].seatNumberingPosition" @change="resubmit()">
+                </td>
+            </tr>
+
+            <!-- SEAT NUMBERING direction -->
+
+            <tr v-if="internal[ active ].type == 'seat'">
+                <td>Numbering direction:</td>
+                <td>
+                    <select min="20" v-model="internal[ active ].numberingDirection" @change="resubmit()">
+                        <option value="left">Left to right</option>
+                        <option value="right">Right to left</option>
                     </select>
                 </td>
             </tr>
@@ -239,6 +258,14 @@ export default {
                 }
             }
             this.$emit( 'updated', ret );
+        },
+        showInfo ( box ) {
+            $( '#' + box ).stop();
+            $( '#' + box ).fadeIn( 300 );
+        },
+        hideInfo ( box ) {
+            $( '#' + box ).stop();
+            $( '#' + box ).fadeOut( 300 );
         }
     },
     watch: {
@@ -261,3 +288,50 @@ export default {
 }
 </script>
 
+<style scoped>
+.info-container {
+    display: inline;
+    position: relative;
+}
+
+.info-icon {
+    font-size: 100%;
+    cursor: default;
+}
+
+.info-box {
+    color: var( --primary-color );
+    text-align: center;
+    display: none;
+    position: absolute;
+    z-index: 10;
+    width: 20vw;
+    height: 20vh;
+    background-color: var( --hint-color );
+    border-radius: 20px;
+    top: 125%;
+    right: -9.3vw;
+}
+
+.info-box::before {
+    content: " ";
+    position: absolute;
+    bottom: 100%; /* At the bottom of the tooltip */
+    left: 50%;
+    margin-left: -5px;
+    border-width: 10px;
+    border-style: solid;
+    border-color: transparent transparent var( --hint-color ) transparent;
+}
+
+.info-box-container {
+    display: flex;
+    width: 80%;
+    height: 80%;
+    padding: 10%;
+    padding-top: 5%;
+    align-items: center;
+    justify-content: center;
+}
+
+</style>
