@@ -10,7 +10,14 @@
 <template>
     <div id="rectangularSeatplan">
         <div v-for="row in seats" class="rows">
-            <span class="material-symbols-outlined seats" v-for="seat in row" :style="seat.style" @click="selectSeat( seat.id )">living</span>
+            <div class="seats" v-for="seat in row" :style="seat.style" :id="seat.id">
+                <span class="material-symbols-outlined" :style="seat.scaling" @click="selectSeat( seat.row, seat.seat )" v-if="seat.status == 'av'" 
+                :title="seat.displayName + ', Available'">living</span>
+                <span class="material-symbols-outlined" :style="seat.scaling" v-else-if="seat.status == 'nav'"
+                :title="seat.displayName + ', Unavailable'">close</span>
+                <span class="material-symbols-outlined" :style="seat.scaling" v-else-if="seat.status == 'sel'"
+                :title="seat.displayName + ', Selected'">done</span>
+            </div>
         </div>
     </div>
 </template>
@@ -41,9 +48,9 @@ export default {
             type: Number,
             "default": 1,
         },
-        id: {
-            type: Number,
-            "default": 1
+        data: {
+            type: Object,
+            "default": { 'sector': 'A', 'sectorCount': 1, 'unavailableSeats': { 'secAr0s0': true } }
         }
     },
     data () {
@@ -62,14 +69,22 @@ export default {
             for ( let row = 0; row < Math.floor( h / size ); row++ ) {
                 this.seats[ row ] = {};
                 for ( let n = 0; n < Math.floor( w / size ); n++ ) {
+                    this.seats[ row ][ n ] = { 'style': '', 'id': 'sec' + this.data.sector + 'r' + row + 's' + n, 'displayName': ( this.data.sectorCount > 1 ? 'Sector ' + this.data.sector + ', ' : '' ) + 'Row ' + ( row + 1 ) + ', Seat ' + ( n + 1 ), 'status': 'av', 'row': row, 'seat': n };
+                    // TODO: apply style of category
                     if ( this.origin === 1 ) {
-                        this.seats[ row ][ n ] = { 'style': `font-size: ${this.scaleFactor * 200}%; bottom: ${ row * size * this.scaleFactor }px; left: ${ n * size * this.scaleFactor }px; rotate: ${ this.origin / 4 - 0.25 }turn;` };
+                        this.seats[ row ][ n ][ 'style' ] = `bottom: ${ row * size * this.scaleFactor }px; left: ${ n * size * this.scaleFactor }px; rotate: ${ this.origin / 4 - 0.25 }turn;`;
                     } else if ( this.origin === 2 ) {
-                        this.seats[ row ][ n ] = { 'style': `font-size: ${this.scaleFactor * 200}%; bottom: ${ row * size * this.scaleFactor }px; right: ${ n * size * this.scaleFactor }px; rotate: ${ this.origin / 4 - 0.25 }turn;` };
+                        this.seats[ row ][ n ][ 'style' ] = `bottom: ${ row * size * this.scaleFactor }px; right: ${ n * size * this.scaleFactor }px; rotate: ${ this.origin / 4 - 0.25 }turn;`;
                     } else if ( this.origin === 3 ) {
-                        this.seats[ row ][ n ] = { 'style': `font-size: ${this.scaleFactor * 200}%; top: ${ row * size * this.scaleFactor }px; right: ${ n * size * this.scaleFactor }px; rotate: ${ this.origin / 4 - 0.25 }turn;` };
+                        this.seats[ row ][ n ][ 'style' ] = `top: ${ row * size * this.scaleFactor }px; right: ${ n * size * this.scaleFactor }px; rotate: ${ this.origin / 4 - 0.25 }turn;`;
                     } else if ( this.origin === 4 ) {
-                        this.seats[ row ][ n ] = { 'style': `font-size: ${this.scaleFactor * 200}%; top: ${ row * size * this.scaleFactor }px; left: ${ n * size * this.scaleFactor }px; rotate: ${ this.origin / 4 - 0.25 }turn;` };
+                        this.seats[ row ][ n ][ 'style' ] = `top: ${ row * size * this.scaleFactor }px; left: ${ n * size * this.scaleFactor }px; rotate: ${ this.origin / 4 - 0.25 }turn;`;
+                    }
+                    this.seats[ row ][ n ][ 'scaling' ] = `font-size: ${this.scaleFactor * 200}%; `;
+                    if ( this.data.unavailableSeats ) {
+                        if ( this.data.unavailableSeats[ this.seats[ row ][ n ][ 'id' ] ] ) {
+                            this.seats[ row ][ n ][ 'status' ] = 'nav';
+                        }
                     }
                 }
             }
@@ -81,6 +96,18 @@ export default {
                     this.seats[ row ][ seat ].style = `font-size: ${this.scaleFactor * 200}%;` + styles;
                 }
             }
+        },
+        selectSeat ( row, seat ) {
+            this.$emit( 'seatSelected', this.seats[ row ][ seat ] );
+        },
+        deselectSeat( row, seat ) {
+            this.$emit( 'seatDeselected', this.seats[ row ][ seat ] );
+            this.seats[ seatObject[ 'row' ] ][ seatObject[ 'seat' ] ][ 'status' ] = 'av';
+            // TODO: Make server call to deselect ticket
+        },
+        validateSeatSelection( seatObject ) {
+            this.seats[ seatObject[ 'row' ] ][ seatObject[ 'seat' ] ][ 'status' ] = 'sel';
+            // TODO: Make server call to reserve ticket
         }
     },
     watch: {

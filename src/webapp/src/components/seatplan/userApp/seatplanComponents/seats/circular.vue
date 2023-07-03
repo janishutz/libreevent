@@ -10,7 +10,14 @@
 <template>
     <div id="circularSeatplan">
         <div v-for="row in seats">
-            <span class="material-symbols-outlined seats" v-for="seat in row" :style="seat.style">living</span>
+            <div class="seats" v-for="seat in row" :style="seat.style" :id="seat.id">
+                <span class="material-symbols-outlined" :style="seat.scaling" @click="selectSeat( seat.row, seat.seat )" v-if="seat.status == 'av'" 
+                :title="seat.displayName + ', Available'">living</span>
+                <span class="material-symbols-outlined" :style="seat.scaling" v-else-if="seat.status == 'nav'"
+                :title="seat.displayName + ', Unavailable'">close</span>
+                <span class="material-symbols-outlined" :style="seat.scaling" v-else-if="seat.status == 'sel'"
+                :title="seat.displayName + ', Selected'">done</span>
+            </div>
         </div>
     </div>
 </template>
@@ -45,9 +52,9 @@ export default {
             type: Number,
             "default": 1,
         },
-        id: {
-            type: Number,
-            "default": 1
+        data: {
+            type: Object,
+            "default": { 'sector': 'A', 'sectorCount': 1, 'unavailableSeats': { 'secAr0s0': true } }
         }
     },
     data () {
@@ -64,26 +71,25 @@ export default {
             const size = 33;
             let count = Math.min( Math.floor( w / size ), Math.floor( h / size ) );
             this.seats = {};
-            let details = { 'data': {}, 'id': this.id };
             for ( let row = this.startingRow; row < count; row++ ) {
                 let nn = row * ( Math.PI / 2 );
-                details.data[ row ] = Math.floor( nn );
                 let r = row * size;
                 this.seats[ row ] = {};
                 for ( let n = 0; n < nn; n++ ) {
+                    this.seats[ row ][ n ] = { 'style': '', 'id': 'sec' + this.data.sector + 'r' + row + 's' + n, 'displayName': ( this.data.sectorCount > 1 ? 'Sector ' + this.data.sector + ', ' : '' ) + 'Row ' + ( row + 1 ) + ', Seat ' + ( n + 1 ), 'status': 'av', 'row': row, 'seat': n };
                     let phi = n * size / ( row * size );
                     if ( this.origin === 1 ) {
-                        this.seats[ row ][ n ] = { 'style': `font-size: ${this.scaleFactor * 200}%; bottom: ${ r * Math.cos( phi ) * this.scaleFactor }px; left: ${ r * Math.sin( phi ) * this.scaleFactor }px; rotate: ${ phi }rad` };
+                        this.seats[ row ][ n ][ 'style' ] = `bottom: ${ r * Math.cos( phi ) * this.scaleFactor }px; left: ${ r * Math.sin( phi ) * this.scaleFactor }px; rotate: ${ phi }rad`;
                     } else if ( this.origin === 2 ) {
-                        this.seats[ row ][ n ] = { 'style': `font-size: ${this.scaleFactor * 200}%; bottom: ${ r * Math.cos( phi ) * this.scaleFactor }px; right: ${ r * Math.sin( phi ) * this.scaleFactor }px; rotate: ${ Math.PI * 2 - phi }rad` };
+                        this.seats[ row ][ n ][ 'style' ] = `bottom: ${ r * Math.cos( phi ) * this.scaleFactor }px; right: ${ r * Math.sin( phi ) * this.scaleFactor }px; rotate: ${ Math.PI * 2 - phi }rad`;
                     } else if ( this.origin === 3 ) {
-                        this.seats[ row ][ n ] = { 'style': `font-size: ${this.scaleFactor * 200}%; top: ${ r * Math.cos( phi ) * this.scaleFactor }px; right: ${ r * Math.sin( phi ) * this.scaleFactor }px; rotate: ${ phi + Math.PI }rad` };
+                        this.seats[ row ][ n ][ 'style' ] = `top: ${ r * Math.cos( phi ) * this.scaleFactor }px; right: ${ r * Math.sin( phi ) * this.scaleFactor }px; rotate: ${ phi + Math.PI }rad`;
                     } else if ( this.origin === 4 ) {
-                        this.seats[ row ][ n ] = { 'style': `font-size: ${this.scaleFactor * 200}%; top: ${ r * Math.cos( phi ) * this.scaleFactor }px; left: ${ r * Math.sin( phi ) * this.scaleFactor }px; rotate: ${ Math.PI - phi }rad` };
+                        this.seats[ row ][ n ][ 'style' ] = `top: ${ r * Math.cos( phi ) * this.scaleFactor }px; left: ${ r * Math.sin( phi ) * this.scaleFactor }px; rotate: ${ Math.PI - phi }rad`;
                     }
+                    this.seats[ row ][ n ][ 'scaling' ] = `font-size: ${this.scaleFactor * 200}%; `;
                 }
             }
-            this.$emit( 'seatingInfo', details );
         },
         setScaleFactor () {
             for ( let row in this.seats ) {
@@ -92,6 +98,9 @@ export default {
                     this.seats[ row ][ seat ].style = `font-size: ${this.scaleFactor * 200}%;` + styles;
                 }
             }
+        },
+        selectSeat ( row, seat ) {
+            console.log( row + ' ' + seat );
         }
     },
     watch: {
