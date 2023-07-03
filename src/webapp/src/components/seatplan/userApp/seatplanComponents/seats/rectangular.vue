@@ -14,9 +14,9 @@
                 <span class="material-symbols-outlined" :style="seat.scaling" @click="selectSeat( seat.row, seat.seat )" v-if="seat.status == 'av'" 
                 :title="seat.displayName + ', Available'">living</span>
                 <span class="material-symbols-outlined" :style="seat.scaling" v-else-if="seat.status == 'nav'"
-                :title="seat.displayName + ', Unavailable'">close</span>
+                :title="seat.displayName + ', Unavailable'">disabled_by_default</span>
                 <span class="material-symbols-outlined" :style="seat.scaling" v-else-if="seat.status == 'sel'"
-                :title="seat.displayName + ', Selected'">done</span>
+                :title="seat.displayName + ', Selected'" @click="deselectSeat( seat.row, seat.seat )">check_box</span>
             </div>
         </div>
     </div>
@@ -105,8 +105,9 @@ export default {
             this.seats[ seatObject[ 'row' ] ][ seatObject[ 'seat' ] ][ 'status' ] = 'av';
             // TODO: Make server call to deselect ticket
         },
-        validateSeatSelection( seatObject ) {
+        validateSeatSelection( seatObject, selectedTicketOption ) {
             this.seats[ seatObject[ 'row' ] ][ seatObject[ 'seat' ] ][ 'status' ] = 'sel';
+            this.seats[ seatObject[ 'row' ] ][ seatObject[ 'seat' ] ][ 'ticketOption' ] = selectedTicketOption;
             // TODO: Make server call to reserve ticket
         }
     },
