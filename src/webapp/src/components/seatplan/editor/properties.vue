@@ -146,7 +146,7 @@
                     </div>
                 </td>
                 <td>
-                    <input type="number" min="1" max="4" v-model="internal[ active ].seatNumberingPosition" @change="resubmit()">
+                    <input type="number" min="1" max="100" v-model="internal[ active ].seatNumberingPosition" @change="resubmit()">
                 </td>
             </tr>
 
