@@ -14,9 +14,19 @@
             <div class="content-parent">
                 <Vue3DraggableResizable v-for="draggable in draggables" :initW="draggable.w" :initH="draggable.h" :x="draggable.x" :y="draggable.y" :w="draggable.w" :h="draggable.h"
                     :active="false" :draggable="false" :resizable="false" :parent="true" class="draggable-box">
-                    <circularSeatplanComponent v-if="draggable.shape == 'circular' && draggable.type == 'seat'" :scale-factor="scaleFactor" :w="draggable.w" :h="draggable.h" :origin="draggable.origin" :starting-row="draggable.startingRow"></circularSeatplanComponent>
-                    <trapezoidSeatplanComponent v-else-if="draggable.shape == 'trapezoid' && draggable.type == 'seat'" :scale-factor="scaleFactor" :w="draggable.w" :h="draggable.h" :origin="draggable.origin" :starting-row="draggable.startingRow"></trapezoidSeatplanComponent>
-                    <rectangularSeatplanComponent v-else-if="draggable.shape == 'rectangular' && draggable.type == 'seat'" :scale-factor="scaleFactor" :w="draggable.w" :h="draggable.h" :origin="draggable.origin"></rectangularSeatplanComponent>
+
+                    <circularSeatplanComponent v-if="draggable.shape == 'circular' && draggable.type == 'seat'" :scale-factor="scaleFactor" 
+                    :w="draggable.w" :h="draggable.h" :origin="draggable.origin" :starting-row="draggable.startingRow"
+                    @seatSelected="( seat ) => { seatSelected( seat ) }"></circularSeatplanComponent>
+
+                    <trapezoidSeatplanComponent v-else-if="draggable.shape == 'trapezoid' && draggable.type == 'seat'" :scale-factor="scaleFactor" 
+                    :w="draggable.w" :h="draggable.h" :origin="draggable.origin" :starting-row="draggable.startingRow"
+                    @seatSelected="( seat ) => { seatSelected( seat ) }"></trapezoidSeatplanComponent>
+
+                    <rectangularSeatplanComponent v-else-if="draggable.shape == 'rectangular' && draggable.type == 'seat'" :scale-factor="scaleFactor" 
+                    :w="draggable.w" :h="draggable.h" :origin="draggable.origin" 
+                    @seatSelected="( seat ) => { seatSelected( seat ) }" @seatDeselected="( seat ) => { seatDeselected( seat ) }"></rectangularSeatplanComponent>
+
                     <stagesSeatplanComponent v-else-if="draggable.type == 'stage'" :origin="draggable.origin" :shape="draggable.shape"></stagesSeatplanComponent>
                     <standingSeatplanComponent v-else-if="draggable.type == 'stand'" :origin="draggable.origin" :shape="draggable.shape"></standingSeatplanComponent>
                     <textFieldSeatplanComponent v-else-if="draggable.type == 'text'" :text="draggable.text.text" :text-size="draggable.text.textSize" :colour="draggable.text.colour" :origin="draggable.origin" :scale-factor="scaleFactor"></textFieldSeatplanComponent>
@@ -29,6 +39,7 @@
             <button title="Zoom out [-]" @click="zoom( -0.2 )"><span class="material-symbols-outlined">zoom_out</span></button>
         </div>
         <notifications ref="notification" location="topleft"></notifications>
+        <popups ref="popups" size="big"></popups>
     </div>
 </template>
 
@@ -41,6 +52,7 @@
     import standingSeatplanComponent from '@/components/seatplan/userApp/seatplanComponents/standing.vue';
     import textFieldSeatplanComponent from '@/components/seatplan/userApp/seatplanComponents/textField.vue';
     import notifications from '@/components/notifications/notifications.vue';
+    import popups from '@/components/notifications/popups.vue';
     import 'vue3-draggable-resizable/dist/Vue3DraggableResizable.css';
 
     export default {
@@ -54,6 +66,7 @@
             standingSeatplanComponent,
             textFieldSeatplanComponent,
             notifications,
+            popups,
         },
         data() {
             return {
@@ -183,6 +196,15 @@
                         this.draggables[ element ].active = false;
                     }
                 }
+                // Check if all seats are available
+                // TODO: delay call
+                let allSeatsAvailable = false;
+                let self = this;
+                setTimeout( () => {
+                    if ( !allSeatsAvailable ) {
+                        self.$refs.popups.openPopup( 'We are sorry to tell you that since the last time the seat plan was refreshed, one or more of the seats you have selected has/have been taken.', {}, 'string' );
+                    }
+                }, 500 );
             },
             scaleUp ( valueArray ) {
                 const allowedAttributes = [ 'w', 'h', 'x', 'y' ];
@@ -214,6 +236,14 @@
                     this.loadSeatplan();
                 }
             },
+            seatSelected ( seat ) {
+                console.log( seat );
+                this.$refs.popups.openPopup( 'Please choose a ticket option', seat.option, 'dropdown' );
+                // Make call to server to reserve ticket.
+            },
+            seatDeselected ( seat ) {
+
+            }
         },
         created () {
             this.runHook();
@@ -229,6 +259,7 @@
     .parent {
         height: 80vh;
         aspect-ratio: 16 / 9;
+        -webkit-aspect-ratio: 16 / 9;
         top: 17vh;
         left: 10vw;
         position: absolute;

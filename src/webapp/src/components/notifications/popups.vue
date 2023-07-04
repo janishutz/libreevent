@@ -4,7 +4,12 @@
             <div class="popup" :class="size">
                 <div class="close-wrapper"><span class="material-symbols-outlined close-button" @click="closePopup( 'cancel' );" title="Close this popup">close</span></div>
                 <div class="message-container">
-                    <div v-if="contentType === 'string'" class="options"><h3>{{ data.message }}</h3></div>
+                    <div v-if="contentType === 'string'" class="options">
+                        <h3>{{ data.message }}</h3>
+                        <div style="width: 100%; margin-top: 3%;">
+                            <button @click="closePopup( 'ok' )" title="Close popup">Ok</button>
+                        </div>
+                    </div>
                     <div v-else-if="contentType === 'html'" v-html="data.message" class="options"></div>
                     <div v-else-if="contentType === 'settings'" class="options">
                         <h3>{{ data.message }}</h3>
@@ -17,8 +22,8 @@
                     <div v-else-if="contentType === 'confirm'" class="confirm options">
                         <h3>{{ data.message }}</h3>
                         <div style="width: 100%; margin-top: 3%;">
-                            <button @click="closePopup( 'ok' )">Ok</button>
-                            <button @click="closePopup( 'cancel' )">Cancel</button>
+                            <button @click="closePopup( 'ok' )" title="Confirm operation">Ok</button>
+                            <button @click="closePopup( 'cancel' )" title="Cancel operation">Cancel</button>
                         </div>
                     </div>
                     <div v-else-if="contentType === 'dropdown'" class="options">
