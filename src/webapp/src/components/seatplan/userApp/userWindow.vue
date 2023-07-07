@@ -117,7 +117,7 @@
                 this.loadSeatplan();
                 sessionStorage.setItem( 'seatplan', JSON.stringify( this.scaleDown( this.draggables ) ) );
                 // TODO: remove scaleDown function again once backend is up
-                // TODO: Optimise for odd screen sizes and aspect ratios
+                // TODO: Optimise for odd screen sizes and aspect ratios and fucking webkit
             },
             eventHandler ( e ) {
                 if ( this.prevSize.h != window.innerHeight || this.prevSize.w != window.innerWidth ) {
@@ -191,20 +191,17 @@
                     this.draggables = this.scaleUp( JSON.parse( sessionStorage.getItem( 'seatplan' ) ) );
                 }
 
-                for ( let element in this.draggables ) {
-                    if ( this.draggables[ element ].active ) {
-                        this.draggables[ element ].active = false;
-                    }
-                }
-                // Check if all seats are available
-                // TODO: delay call
-                let allSeatsAvailable = false;
+                // TODO: Check if all seats are available
+                let allSeatsAvailable = true;
+                // Method: Server sends all user selected seats + all selected seats. If seat is in both
+                // then selected, if just in all selected, taken, else available.
+
                 let self = this;
-                setTimeout( () => {
-                    if ( !allSeatsAvailable ) {
+                if ( !allSeatsAvailable ) {
+                    setTimeout( () => {
                         self.$refs.popups.openPopup( 'We are sorry to tell you that since the last time the seat plan was refreshed, one or more of the seats you have selected has/have been taken.', {}, 'string' );
-                    }
-                }, 500 );
+                    }, 500 );
+                }
             },
             scaleUp ( valueArray ) {
                 const allowedAttributes = [ 'w', 'h', 'x', 'y' ];
