@@ -36,6 +36,12 @@
                             <button @click="closePopup( 'cancel' )" title="Cancel changes">Cancel</button>
                         </div>
                     </div>
+                    <div v-else-if="contentType === 'selection'" class="options selection">
+                        <h3>{{ data.message }}</h3>
+                        <div v-for="selectOption in data.options">
+                            <button class="select-button" @click="closePopupAdvanced( 'ok', selectOption.value )">{{ selectOption.displayName }}</button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -67,9 +73,12 @@
             closePopup( message ) {
                 $( '#popup-backdrop' ).fadeOut( 300 );
                 if ( message ) {
-                    this.$emit( 'status', message );
-                    this.$emit( 'data', this.data );
+                    this.$emit( 'data', { 'data': this.data.selected, 'status': message } );
                 }
+            },
+            closePopupAdvanced ( message, data ) {
+                this.data[ 'selected' ] = data;
+                this.closePopup( message );
             },
             openPopup ( message, options, dataType, selected ) {
                 let data = { 'message': message ? message : 'No message defined on method call!!', 'options': options ? options : { '1': { 'value': 'undefined', 'displayName': 'No options specified in call' } }, 'selected': selected ? selected : '' };
@@ -176,5 +185,19 @@
 
     .options button:hover {
         background-color: var( --accent-background-hover );
+    }
+
+    .select-button {
+        background-color: rgba( 0, 0, 0, 0 ) !important;
+        color: var( --primary-color ) !important;
+        padding: 1vh 2vw !important;
+        border: solid var( --primary-color ) 1px;
+        border-radius: 5px;
+        transition: all 0.5s ease-in-out;
+        margin-bottom: 1vh;
+    }
+
+    .select-button:hover {
+        background-color: var( --hover-color ) !important;
     }
 </style>

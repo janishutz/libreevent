@@ -50,7 +50,11 @@ export default {
         },
         data: {
             type: Object,
-            "default": { 'sector': 'A', 'sectorCount': 1, 'unavailableSeats': { 'secAr0s0': true } }
+            "default": { 'sector': 'A', 'sectorCount': 1, 'unavailableSeats': { 'secAr0s0': true }, 'categoryInfo': { 'pricing': { 'adult': { 'displayName': 'Adults - CHF 20.-', 'value': 'adult', 'price': 20 }, 'child': { 'displayName': 'Child (0 - 15.99y) - CHF 15.-', 'value': 'child', 'price': 15 } } } }
+        },
+        id: {
+            type: Number,
+            "default": 1,
         }
     },
     data () {
@@ -81,6 +85,10 @@ export default {
                         this.seats[ row ][ n ][ 'style' ] = `top: ${ row * size * this.scaleFactor }px; left: ${ n * size * this.scaleFactor }px; rotate: ${ this.origin / 4 - 0.25 }turn;`;
                     }
                     this.seats[ row ][ n ][ 'scaling' ] = `font-size: ${this.scaleFactor * 200}%; `;
+                    if ( this.data.categoryInfo.color ) {
+                        this.seats[ row ][ n ][ 'style' ] += `color: ${ this.data.categoryInfo.color.fg ? this.data.categoryInfo.color.fg : 'black' }; background-color: ${ this.data.categoryInfo.color.bg ? this.data.categoryInfo.color.bg : 'rgba( 0, 0, 0, 0 )' }`;
+                    }
+
                     if ( this.data.unavailableSeats ) {
                         if ( this.data.unavailableSeats[ this.seats[ row ][ n ][ 'id' ] ] ) {
                             this.seats[ row ][ n ][ 'status' ] = 'nav';
@@ -98,17 +106,19 @@ export default {
             }
         },
         selectSeat ( row, seat ) {
-            this.$emit( 'seatSelected', this.seats[ row ][ seat ] );
+            let selectedSeat = this.seats[ row ][ seat ];
+            selectedSeat[ 'sector' ] = this.data.sector;
+            selectedSeat[ 'option' ] = this.data.categoryInfo.pricing;
+            selectedSeat[ 'componentID' ] = this.id;
+            this.$emit( 'seatSelected', selectedSeat );
         },
         deselectSeat( row, seat ) {
             this.$emit( 'seatDeselected', this.seats[ row ][ seat ] );
-            this.seats[ seatObject[ 'row' ] ][ seatObject[ 'seat' ] ][ 'status' ] = 'av';
-            // TODO: Make server call to deselect ticket
+            this.seats[ row ][ seat ][ 'status' ] = 'av';
         },
         validateSeatSelection( seatObject, selectedTicketOption ) {
             this.seats[ seatObject[ 'row' ] ][ seatObject[ 'seat' ] ][ 'status' ] = 'sel';
             this.seats[ seatObject[ 'row' ] ][ seatObject[ 'seat' ] ][ 'ticketOption' ] = selectedTicketOption;
-            // TODO: Make server call to reserve ticket
         }
     },
     watch: {

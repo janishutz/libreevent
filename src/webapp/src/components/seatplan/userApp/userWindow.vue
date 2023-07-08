@@ -15,21 +15,21 @@
                 <Vue3DraggableResizable v-for="draggable in draggables" :initW="draggable.w" :initH="draggable.h" :x="draggable.x" :y="draggable.y" :w="draggable.w" :h="draggable.h"
                     :active="false" :draggable="false" :resizable="false" :parent="true" class="draggable-box">
 
-                    <circularSeatplanComponent v-if="draggable.shape == 'circular' && draggable.type == 'seat'" :scale-factor="scaleFactor" 
+                    <circularSeatplanComponent :ref="'component' + draggable.id" v-if="draggable.shape == 'circular' && draggable.type == 'seat'" :scale-factor="scaleFactor" 
                     :w="draggable.w" :h="draggable.h" :origin="draggable.origin" :starting-row="draggable.startingRow"
                     @seatSelected="( seat ) => { seatSelected( seat ) }"></circularSeatplanComponent>
 
-                    <trapezoidSeatplanComponent v-else-if="draggable.shape == 'trapezoid' && draggable.type == 'seat'" :scale-factor="scaleFactor" 
+                    <trapezoidSeatplanComponent :ref="'component' + draggable.id" v-else-if="draggable.shape == 'trapezoid' && draggable.type == 'seat'" :scale-factor="scaleFactor" 
                     :w="draggable.w" :h="draggable.h" :origin="draggable.origin" :starting-row="draggable.startingRow"
                     @seatSelected="( seat ) => { seatSelected( seat ) }"></trapezoidSeatplanComponent>
 
-                    <rectangularSeatplanComponent v-else-if="draggable.shape == 'rectangular' && draggable.type == 'seat'" :scale-factor="scaleFactor" 
-                    :w="draggable.w" :h="draggable.h" :origin="draggable.origin" 
+                    <rectangularSeatplanComponent :ref="'component' + draggable.id" v-else-if="draggable.shape == 'rectangular' && draggable.type == 'seat'" :scale-factor="scaleFactor" 
+                    :w="draggable.w" :h="draggable.h" :origin="draggable.origin"
                     @seatSelected="( seat ) => { seatSelected( seat ) }" @seatDeselected="( seat ) => { seatDeselected( seat ) }"></rectangularSeatplanComponent>
 
-                    <stagesSeatplanComponent v-else-if="draggable.type == 'stage'" :origin="draggable.origin" :shape="draggable.shape"></stagesSeatplanComponent>
-                    <standingSeatplanComponent v-else-if="draggable.type == 'stand'" :origin="draggable.origin" :shape="draggable.shape"></standingSeatplanComponent>
-                    <textFieldSeatplanComponent v-else-if="draggable.type == 'text'" :text="draggable.text.text" :text-size="draggable.text.textSize" :colour="draggable.text.colour" :origin="draggable.origin" :scale-factor="scaleFactor"></textFieldSeatplanComponent>
+                    <stagesSeatplanComponent :ref="'component' + draggable.id" v-else-if="draggable.type == 'stage'" :origin="draggable.origin" :shape="draggable.shape"></stagesSeatplanComponent>
+                    <standingSeatplanComponent :ref="'component' + draggable.id" v-else-if="draggable.type == 'stand'" :origin="draggable.origin" :shape="draggable.shape"></standingSeatplanComponent>
+                    <textFieldSeatplanComponent :ref="'component' + draggable.id" v-else-if="draggable.type == 'text'" :text="draggable.text.text" :text-size="draggable.text.textSize" :colour="draggable.text.colour" :origin="draggable.origin" :scale-factor="scaleFactor"></textFieldSeatplanComponent>
                 </Vue3DraggableResizable>
             </div>
         </div>
@@ -39,7 +39,7 @@
             <button title="Zoom out [-]" @click="zoom( -0.2 )"><span class="material-symbols-outlined">zoom_out</span></button>
         </div>
         <notifications ref="notification" location="topleft"></notifications>
-        <popups ref="popups" size="big"></popups>
+        <popups ref="popups" size="normal" @data="data => { reserveTicket( data ) }"></popups>
     </div>
 </template>
 
@@ -81,6 +81,7 @@
                 standardDeviation: { 'currentTop': 0, 'currentLeft': 0 },
                 movePos: { 'top': 0, 'left': 0, 'isMoving': false, 'isSet': false },
                 generalSettings: { 'namingScheme': 'numeric' },
+                selectedSeat: {},
             }
         },
         methods: {
@@ -88,22 +89,14 @@
                 Coords are from top left corner of box.
                 The below function is executed as the init hook (created hook)
                 of vue.js, so whenever this particular page is loaded.
-                It loads previous data (if available) and starts the event listeners
-                for keyevents (like delete) and also check if the user uses a desktop
-                browser that meets all the requirements for being able to use the editor
-                reliably according to testing done.
+                It loads seat plan data and starts the event listeners
+                for keyevents (like +, -, =)
             */
             runHook () {
                 let self = this;
                 this.zoomFactor = sessionStorage.getItem( 'zoom' ) ? parseFloat( sessionStorage.getItem( 'zoom' ) ) : 1;
 
-                /* 
-                    Keybinds:
-                        - Delete: delete selected object
-                        - Ctrl + S: Save
-                        - Ctrl + Z: Undo
-                        - Ctrl + Y: Redo
-                */
+
                 document.onkeydown = function ( event ) {
                     if ( event.key === '+' ) {
                         self.zoom( 0.2 );
@@ -234,12 +227,21 @@
                 }
             },
             seatSelected ( seat ) {
-                console.log( seat );
-                this.$refs.popups.openPopup( 'Please choose a ticket option', seat.option, 'dropdown' );
-                // Make call to server to reserve ticket.
+                this.selectedSeat = seat;
+                if ( Object.keys( seat.option ).length > 1 ) {
+                    this.$refs.popups.openPopup( 'Please choose a ticket option', seat.option, 'selection', 'adult' );
+                } else {
+                    this.reserveTicket( { 'status': 'ok', 'data': Object.keys( seat.option )[ 0 ][ 'value' ] } );
+                }
+            },
+            reserveTicket ( option ) {
+                if ( option.status == 'ok' ) {
+                    this.$refs.component1[ 0 ].validateSeatSelection( this.selectedSeat, option.data );
+                }
+                // TODO: Make call to server to reserve ticket when data is returned & save to localStorage array.
             },
             seatDeselected ( seat ) {
-
+                // TODO: Make call to server to deselect ticket & delete from localStorage array and delete eventArray if empty!
             }
         },
         created () {
