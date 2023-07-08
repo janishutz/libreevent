@@ -15,6 +15,8 @@ const bodyParser = require( 'body-parser' );
 const cookieParser = require( 'cookie-parser' );
 const http = require( 'http' );
 const fs = require( 'fs' );
+// const sql = require( './backend/db/mysqldb.js' );
+// const sqld = new sql();
 
 // const env = process.env.PROD || false;
 
@@ -30,7 +32,6 @@ app.use( expressSession( {
 app.use( bodyParser.urlencoded( { extended: false } ) );
 app.use( bodyParser.json() );
 app.use( cookieParser() );
-// app.use( favicon( path.join( __dirname + '/ui/assets/logo.png' ) ) );
 app.use( express.static( '../webapp/dist' ) );
 
 
