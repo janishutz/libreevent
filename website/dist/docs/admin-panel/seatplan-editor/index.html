@@ -24,7 +24,11 @@
 <h2>Removing components</h2>
 <p>You may remove components by clicking the trash icon or by hitting 'delete' on your keyboard.</p>
 <h2>Editing history</h2>
-<p>The editor features undo and redo functions such that you can undo your mistakes and accidental undos can be reverted. Just hit the corresponding button in the toolbar.</p>
+<p>The editor features undo and redo functions such that you can undo your mistakes and accidental undos can be reverted. Just hit the corresponding button in the toolbar or use the keyboard shortcuts Ctrl + Z for Undo and Ctrl + Y for Redo.</p>
+<h2>Component number property</h2>
+<p>This property can be used to tell the system in which order to number seats in. You can start at one for every time the numbering should start at 1 again. Just keep in mind that for optimal results, you should use a different sector whenever setting the component number to 1 again as otherwise there might be two seats 1 in a sector which can lead to confusion for the customer. You will be notified if there's such a conflict before deploying the seat plan.</p>
+<p><strong>Example:</strong>
+You've got a seat plan which has 4 seat components. These 4 components are grouped into two different sectors. Now, for the component where the seat numbering should start for each sector, set the component number property to 1. This will tell the system to start numbering the seats from this component. You may also choose the numbering direction with the option right below called 'Numbering direction'.</p>
 <h2>Saving</h2>
 <p>The editor does auto-save a draft every minute. Pressing Ctrl + S or hitting the Save button in the toolbar will immediately save the seatplan as a draft. Click the deploy button to save the seatplan permanently, irreversibly overwriting any potentially existing old seatplan of that location, except you change the location name after the fact.</p>
 </div>
