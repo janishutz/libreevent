@@ -15,14 +15,15 @@ const bodyParser = require( 'body-parser' );
 const cookieParser = require( 'cookie-parser' );
 const http = require( 'http' );
 const fs = require( 'fs' );
-// const sql = require( './backend/db/mysqldb.js' );
-// const sqld = new sql();
+const sql = require( './backend/db/mysqldb.js' );
+const sqld = new sql();
 
 // const env = process.env.PROD || false;
 
 const settings = JSON.parse( fs.readFileSync( path.join( __dirname + '/config.json' ) ) );
 
 // initialise express with middlewares
+// TODO: Generate random token
 app.use( expressSession( {
     secret: 'gaoevgoawefgo083tq2rfvöfaf0p8',
     resave: true,

@@ -18,6 +18,7 @@ module.exports = ( app, settings ) => {
         pwdmanager.checkpassword( request.body.mail, request.body.pwd ).then( data => {
             if ( data ) {
                 if ( settings.twoFA ) {
+                    // TODO: Support both methods of 2fa
                     response.send( '2fa' );
                 } else {
                     request.session.loggedInAdmin = true;

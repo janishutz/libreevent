@@ -19,10 +19,10 @@ app.use( createPinia() );
 
 let userStore = useUserStore();
 
-let prod = false;
+let prod = true;
 
 if ( prod ) {
-    fetch( '/api/getAuth' ).then( res => {
+    fetch( 'http://localhost:8081/api/getAuth' ).then( res => {
         res.json().then( data => {
             userStore.setUserAuth( data.user );
             userStore.setAdminAuth( data.admin );
