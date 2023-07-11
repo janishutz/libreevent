@@ -64,6 +64,7 @@ module.exports = {
         'space-in-parens': [
             'error', 
             'always'
-        ]
+        ],
+        'no-var': 'error'
     }
 };

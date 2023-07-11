@@ -15,8 +15,8 @@ const bodyParser = require( 'body-parser' );
 const cookieParser = require( 'cookie-parser' );
 const http = require( 'http' );
 const fs = require( 'fs' );
-// const sql = require( './backend/db/mysqldb.js' );
-// const sqld = new sql();
+const mail = require( './backend/mail/mailSender.js' );
+const mailManager = new mail();
 
 // const env = process.env.PROD || false;
 

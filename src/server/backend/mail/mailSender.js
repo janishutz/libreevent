@@ -10,9 +10,10 @@
 const mailer = require( 'nodemailer' );
 const html2text = require( 'html-to-text' );
 
-// import jsondb.js file and let it import mail config
+const db = require( '../db/db.js' );
 
-var transporter = mailer.createTransport(  );
+let transporter = mailer.createTransport( db.getJSONDataSync( 'mail.secret.json' ) );
+
 
 class MailManager {
     constructor () {
@@ -26,7 +27,7 @@ class MailManager {
     */
     sendMail ( recipient, html, subject, sender ) {
         let text = html2text.convert( html, this.options );
-        var mailOptions = {
+        let mailOptions = {
             from: sender,
             to: recipient,
             subject: subject,
@@ -43,7 +44,7 @@ class MailManager {
 
     sendMailWithAttachment ( recipient, html, subject, attachments, from ) {
         let text = html2text.convert( html, this.options );
-        var mailOptions = {
+        let mailOptions = {
             from: from,
             to: recipient,
             subject: subject,
