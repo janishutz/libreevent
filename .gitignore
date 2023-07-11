@@ -15,3 +15,5 @@ node_modules
 
 # ignore dist folder (this repo only contains source code!)
 /dist
+
+*.secret.json

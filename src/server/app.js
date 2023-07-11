@@ -15,8 +15,8 @@ const bodyParser = require( 'body-parser' );
 const cookieParser = require( 'cookie-parser' );
 const http = require( 'http' );
 const fs = require( 'fs' );
-const sql = require( './backend/db/mysqldb.js' );
-const sqld = new sql();
+// const sql = require( './backend/db/mysqldb.js' );
+// const sqld = new sql();
 
 // const env = process.env.PROD || false;
 
@@ -35,9 +35,7 @@ app.use( bodyParser.json() );
 app.use( cookieParser() );
 app.use( express.static( '../webapp/dist' ) );
 
-
 require( './admin/routes.js' )( app, settings ); // admin route
-
 
 app.use( ( request, response ) => {
     response.sendFile( path.join( __dirname + '/../webapp/dist/index.html' ) );
