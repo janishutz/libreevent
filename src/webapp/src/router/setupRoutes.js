@@ -10,7 +10,7 @@
 export default {
     path: '/setup',
     name: 'setup',
-    component: () => import( '../views/SetupView.vue' ),
+    component: () => import( '../views/setup/SetupView.vue' ),
     meta: {
         title: 'Login :: Admin - libreevent',
         setupAuthRequired: true,

@@ -1,6 +1,6 @@
 <template>
     <div id="notifications" @click="handleNotifications();">
-        <div class="message-box" :class="location">
+        <div class="message-box" :class="[ location, size ]">
             <div class="message-container" :class="messageType">
                 <span class="material-symbols-outlined types hide" v-if="messageType == 'hide'">question_mark</span>
                 <span class="material-symbols-outlined types" v-else-if="messageType == 'ok'" style="background-color: green;">done</span>
@@ -21,7 +21,12 @@
             location: {
                 type: String,
                 'default': 'topleft',
+            },
+            size: {
+                type: String,
+                'default': 'default',
             }
+            // Size options: small, default (default option), big, bigger, huge
         },
         data () {
             return {
@@ -119,9 +124,32 @@
         position: fixed;
         z-index: 10;
         color: white;
+        transition: all 0.5s;
+    }
+
+    .default {
         height: 10vh;
         width: 15vw;
-        transition: all 0.5s;
+    }
+
+    .small {
+        height: 7vh;
+        width: 11vw;
+    }
+
+    .big {
+        height: 12vh;
+        width: 17vw;
+    }
+
+    .bigger {
+        height: 15vh;
+        width: 20vw;
+    }
+
+    .huge {
+        height: 20vh;
+        width: 25vw;
     }
 
     .topleft {

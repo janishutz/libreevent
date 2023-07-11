@@ -55,6 +55,10 @@ router.beforeEach( ( to, from ) => {
         return { name: 'purchase' };
     } else if ( to.name.substring( 0, 5 ) === 'setup' && !backendStore.getVisitedSetupPages[ to.name.substring( 5 ).toLowerCase() ] && to.name.substring( 5 ).toLowerCase() !== 'start' && to.name.substring( 5 ).toLowerCase() !== 'root' ) {
         return { name: 'setupStart' };
+    } else if ( to.name === '2fa' && !userStore.getUserTwoFACompliant ) {
+        return { name: 'login' };
+    } else if ( to.name === 'Admin2fa' && !userStore.getAdminTwoFACompliant ) {
+        return { name: 'adminLogin' };
     }
 } );
 

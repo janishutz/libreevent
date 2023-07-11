@@ -27,7 +27,7 @@ export default [
     {
         path: '/tickets',
         name: 'tickets',
-        component: () => import( '../views/OrderView.vue' ),
+        component: () => import( '../views/purchasing/OrderView.vue' ),
         meta: {
             title: 'Order ticket - libreevent'
         }
@@ -35,7 +35,7 @@ export default [
     {
         path: '/login',
         name: 'login',
-        component: () => import( '../views/LoginView.vue' ),
+        component: () => import( '../views/user/LoginView.vue' ),
         meta: {
             title: 'Login - libreevent'
         }
@@ -43,7 +43,7 @@ export default [
     {
         path: '/admin/login',
         name: 'adminLogin',
-        component: () => import( '../views/AdminLoginView.vue' ),
+        component: () => import( '../views/admin/AdminLoginView.vue' ),
         meta: {
             title: 'Login :: Admin - libreevent'
         }
@@ -51,7 +51,7 @@ export default [
     {
         path: '/signup',
         name: 'signup',
-        component: () => import( '../views/SignupView.vue' ),
+        component: () => import( '../views/user/SignupView.vue' ),
         meta: {
             title: 'Signup - libreevent'
         }
@@ -59,15 +59,23 @@ export default [
     {
         path: '/account',
         name: 'account',
-        component: () => import( '../views/AccountView.vue' ),
+        component: () => import( '../views/user/AccountView.vue' ),
         meta: {
             title: 'Account - libreevent'
         }
     },
     {
+        path: '/twoFactors',
+        name: '2fa',
+        component: () => import( '../views/user/TwoFA.vue' ),
+        meta: {
+            title: 'Two Factor Authentication - libreevent'
+        }
+    },
+    {
         path: '/tickets/details',
         name: 'ticketDetails',
-        component: () => import( '../views/TicketsDetailsView.vue' ),
+        component: () => import( '../views/purchasing/TicketsDetailsView.vue' ),
         meta: {
             title: 'Details - libreevent',
             transition: 'scale'
@@ -76,7 +84,7 @@ export default [
     {
         path: '/tickets/order',
         name: 'ticketOrder',
-        component: () => import( '../views/TicketsOrderingView.vue' ),
+        component: () => import( '../views/purchasing/TicketsOrderingView.vue' ),
         meta: {
             title: 'Order ticket - libreevent',
             transition: 'scale'
@@ -85,7 +93,7 @@ export default [
     {
         path: '/cart',
         name: 'cart',
-        component: () => import( '../views/CartView.vue' ),
+        component: () => import( '../views/purchasing/CartView.vue' ),
         meta: {
             title: 'Cart - libreevent',
             transition: 'scale'
@@ -94,7 +102,7 @@ export default [
     {
         path: '/purchase',
         name: 'purchase',
-        component: () => import( '@/views/PurchaseView.vue' ),
+        component: () => import( '@/views/purchasing/PurchaseView.vue' ),
         meta: {
             title: 'Purchase - libreevent',
             transition: 'scale'
@@ -103,18 +111,9 @@ export default [
     {
         path: '/pay',
         name: 'pay',
-        component: () => import( '@/views/PaymentView.vue' ),
+        component: () => import( '@/views/purchasing/PaymentView.vue' ),
         meta: {
             title: 'Pay - libreevent',
-            transition: 'scale',
-        }
-    },
-    { 
-        path: '/:pathMatch(.*)*', 
-        name: 'NotFound', 
-        component: () => import( '@/views/404.vue' ),
-        meta: {
-            title: '404 - Page not found :: libreevent',
             transition: 'scale',
         }
     },
@@ -134,6 +133,15 @@ export default [
         meta: {
             title: 'Ticket Editor :: Admin - libreevent',
             adminAuthRequired: true,
+        }
+    },
+    { 
+        path: '/:pathMatch(.*)*', 
+        name: 'NotFound', 
+        component: () => import( '@/views/404.vue' ),
+        meta: {
+            title: '404 - Page not found :: libreevent',
+            transition: 'scale',
         }
     },
 ]

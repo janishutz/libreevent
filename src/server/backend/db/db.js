@@ -11,7 +11,6 @@ const path = require( 'path' );
 const fs = require( 'fs' );
 
 module.exports.getData = function getData ( db, searchQuery ) {
-    console.log( db + searchQuery );
     return new Promise( resolve => {
         resolve( '$2b$05$ElMYWoMjk7567lXkIkee.e.6cxCrWU4gkfuNLB8gmGYLQQPm7gT3O' );
     } );

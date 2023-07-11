@@ -36,6 +36,7 @@ app.use( cookieParser() );
 app.use( express.static( '../webapp/dist' ) );
 
 require( './admin/routes.js' )( app, settings ); // admin route
+require( './backend/userRoutes.js' )( app, settings ); // user route
 
 app.use( ( request, response ) => {
     response.sendFile( path.join( __dirname + '/../webapp/dist/index.html' ) );
