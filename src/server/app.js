@@ -27,6 +27,10 @@ db.connect();
 
 const settings = JSON.parse( fs.readFileSync( path.join( __dirname + '/config/settings.config.json' ) ) );
 
+if ( !settings.init ) {
+    db.setupDB( 'janishut_libreeventTest' );
+}
+
 // initialise express with middlewares
 // TODO: Generate random token
 app.use( expressSession( {
