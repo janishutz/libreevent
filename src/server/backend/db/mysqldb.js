@@ -61,10 +61,89 @@ class SQLDB {
         } );
     }
 
-    query ( operation, dataToBeInserted ) {
-        // Legal options for the operation parameter are objects with the command attribute:
-        // getAllData, getFilteredData, getRelationalData, 
-        this.sqlConnection.query();
+    query ( operation, table ) {
+        return new Promise( ( resolve, reject ) => {
+            // getAllData, getFilteredData, InnerJoin, LeftJoin, RightJoin, addData, updateData, deleteData, checkDataAvailability, fullCustomCommand (NOTE: SANITISATION WILL NOT TAKE PLACE!)
+            /* 
+                Possible operation.command values (all need the table argument of the method call):
+                    - getAllData: no additional instructions needed
+
+                    - getFilteredData: 
+                        - operation.property (the column to search for the value), 
+                        - operation.searchQuery (the value to search for [will be sanitised by method])
+
+                    - InnerJoin (Select values that match in both tables):
+                        - operation.property (the column to search for the value),
+                        - operation.searchQuery (the value to search for [will be sanitised by method])
+                        - operation.selection (The columns of both tables to be selected, e.g. users.name, orders.id)
+                        - operation.secondTable (The second table to perform Join operation with)
+                        - operation.matchingParam (Which properties should be matched to get the data, e.g. order.user_id=users.id)
+
+                    - LeftJoin (Select values in first table and return all corresponding values of second table): 
+                        - operation.property (the column to search for the value), 
+                        - operation.searchQuery (the value to search for [will be sanitised by method])
+                        - operation.selection (The columns of both tables to be selected, e.g. users.name, orders.id)
+                        - operation.secondTable (The second table to perform Join operation with)
+                        - operation.matchingParam (Which properties should be matched to get the data, e.g. order.user_id=users.id)
+
+                    - RightJoin (Select values in second table and return all corresponding values of first table): 
+                        - operation.property (the column to search for the value), 
+                        - operation.searchQuery (the value to search for [will be sanitised by method])
+                        - operation.selection (The columns of both tables to be selected, e.g. users.name, orders.id)
+                        - operation.secondTable (The second table to perform Join operation with)
+                        - operation.matchingParam (Which properties should be matched to get the data, e.g. order.user_id=users.id)
+
+                    - addData:
+                        - operation.columns (the columns into which the data should be inserted (as a space separated string))
+                        - operation.values (the data to be inserted into the columns selected before (as a space separated string))
+                     
+                    - updateData:
+                        - operation.newValues (a object with keys being the column and value being the value to be inserted into that column, values are being
+                            sanitised by the function)
+                        - operation.property (the column to search for the value), 
+                        - operation.searchQuery (the value to search for [will be sanitised by method])
+                    - checkDataAvailability:
+                        - operation.property (the column to search for the value), 
+                        - operation.searchQuery (the value to search for [will be sanitised by method])
+            */
+            let command = '';
+            if ( operation.command === 'getAllData' ) {
+                command = 'SELECT * FROM ' + table;
+            } else if ( operation.command === 'getFilteredData' ) {
+                command = 'SELECT * FROM ' + table + ' WHERE ' + operation.property + ' = ' + this.sqlConnection.escape( operation.searchQuery );
+            } else if ( operation.command === 'fullCustomCommand' ) {
+                command = operation.query;
+            } else if ( operation.command === 'addData' ) {
+                command = 'INSERT INTO ' + table + ' (' + operation.columns + ') VALUES (' + this.sqlConnection.escape( operation.values ) + ');';
+            } else if ( operation.command === 'updateData' ) {
+                if ( !operation.property || !operation.searchQuery ) reject( 'Refusing to run destructive command: Missing Constraints' );
+                else {
+                    command = 'UPDATE ' + table + ' SET ';
+                    for ( let value in operation.newValues ) {
+                        command += value + ' = ' + this.sqlConnection.escape( operation.newValues[ value ] );
+                    }
+                    command += ' WHERE ' + operation.property + ' = ' + this.sqlConnection.escape( operation.searchQuery );
+                }
+            } else if ( operation.command === 'deleteData' ) {
+                if ( !operation.property || !operation.searchQuery ) reject( 'Refusing to run destructive command: Missing Constraints' );
+                else {
+                    command = 'DELETE FROM ' + table + ' WHERE ' + operation.property + ' = ' + this.sqlConnection.escape( operation.searchQuery );
+                }
+            } else if ( operation.command === 'InnerJoin' ) {
+                command = 'SELECT ' + operation.selection + ' FROM ' + table + ' WHERE ' + operation.property + ' = ' + this.sqlConnection.escape( operation.searchQuery ) + ' INNER JOIN ' + operation.secondTable + ' ON ' + operation.matchingParam;
+            } else if ( operation.command === 'LeftJoin' ) {
+                command = 'SELECT ' + operation.selection + ' FROM ' + table + ' WHERE ' + operation.property + ' = ' + this.sqlConnection.escape( operation.searchQuery ) + ' LEFT JOIN ' + operation.secondTable + ' ON ' + operation.matchingParam;
+            } else if ( operation.command === 'RightJoin' ) {
+                command = 'SELECT ' + operation.selection + ' FROM ' + table + ' WHERE ' + operation.property + ' = ' + this.sqlConnection.escape( operation.searchQuery ) + ' RIGHT JOIN ' + operation.secondTable + ' ON ' + operation.matchingParam;
+            } else if ( operation.command === 'checkDataAvailability' ) {
+                command = 'SELECT * FROM ' + table + ' WHERE ' + operation.property + ' = ' + this.sqlConnection.escape( operation.searchQuery );
+            }
+            this.sqlConnection.query( command, ( error, results ) => {
+                if ( error ) reject( error );
+                console.log( results );
+                resolve( results );
+            } );
+        } );
     }
 }
 
