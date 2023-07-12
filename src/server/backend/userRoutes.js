@@ -11,6 +11,7 @@ const db = require( './db/db.js' );
 const pwdmanager = require( './credentials/pwdmanager.js' );
 const auth = require( './credentials/2fa.js' );
 const twoFA = new auth();
+const path = require( 'path' );
 
 module.exports = ( app, settings ) => {
     app.post( '/api/reserveTicket', ( request, response ) => {
@@ -23,17 +24,17 @@ module.exports = ( app, settings ) => {
             pwdmanager.checkpassword( request.body.mail, request.body.password ).then( data => {
                 if ( data ) {
                     if ( settings.twoFA === 'standard' ) {
-                        // TODO: Support both methods of 2fa
-                        response.send( '2fa' );
+                        let tok = twoFA.registerStandardAuthentication()[ 'token' ];
+                        response.send( { 'status': '2fa' } );
                     } else if ( settings.twoFA === 'enhanced' ) {
-                        // TODO: Support both methods of 2fa
-                        response.send( '2fa+' );
+                        let res = twoFA.registerEnhancedAuthentication();
+                        response.send( { 'status': '2fa+', 'code': res.code } );
                     } else {
                         request.session.loggedInUser = true;
-                        response.send( 'ok' );
+                        response.send( { 'status': 'ok' } );
                     }
                 } else {
-                    response.send( 'pwErr' );
+                    response.send( { 'status': 'pwErr' } );
                 }
             } );
         } else {
@@ -42,6 +43,18 @@ module.exports = ( app, settings ) => {
     } );
 
     app.get( '/user/2fa', ( request, response ) => {
+        // TODO: Add multi language
+        let tokType = twoFA.verifySimple( request.query.token );
+        if ( tokType === 'standard' ) {
+            response.sendFile( path.join( __dirname + '/../ui/en/2faSimple.html' ) );
+        } else if ( tokType === 'enhanced' ) {
+            response.sendFile( path.join( __dirname + '/../ui/en/2faEnhanced.html' ) );
+        } else {
+            response.sendFile( path.join( __dirname + '/../ui/en/2faInvalid.html' ) );
+        }
+    } );
 
+    app.post( '/user/2fa/verify', ( request, response ) => {
+        
     } );
 };

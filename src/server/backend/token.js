@@ -8,11 +8,11 @@
 */
 
 
-module.exports.generateToken = () => {
+module.exports.generateToken = ( length ) => {
     let token = '';
     let min = 48;
     let max = 122;
-    for ( let i = 0; i < 61; i++ ) {
+    for ( let i = 0; i < length; i++ ) {
         let randomNumber = Math.floor( Math.random() * ( max - min ) ) + min;
         while ( randomNumber === 92 || randomNumber === 58 || randomNumber === 96 || randomNumber === 94 || randomNumber === 64 ) {
             randomNumber = Math.floor( Math.random() * ( max - min ) ) + min;
@@ -20,4 +20,12 @@ module.exports.generateToken = () => {
         token += String.fromCharCode( randomNumber );
     }
     return token;
+};
+
+module.exports.generateNumber = ( length ) => {
+    let number = '';
+    for ( let i = 0; i < length; i++ ) {
+        number += Math.floor( Math.random() * 10 );
+    }
+    return number;
 };
