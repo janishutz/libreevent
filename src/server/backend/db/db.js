@@ -16,6 +16,10 @@ module.exports.getData = function getData ( db, searchQuery ) {
     } );
 };
 
+module.exports.writeData = function writeData ( db ) {
+
+};
+
 module.exports.getJSONData = function getData ( file ) {
     return new Promise( ( resolve, reject ) => {
         fs.readFile( path.join( __dirname + '/../../' + file ), ( error, data ) => {

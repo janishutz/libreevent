@@ -18,9 +18,14 @@ const fs = require( 'fs' );
 const mail = require( './backend/mail/mailSender.js' );
 const mailManager = new mail();
 
+const dbh = require( './backend/db/mysqldb.js' );
+const db = new dbh();
+
+db.connect();
+
 // const env = process.env.PROD || false;
 
-const settings = JSON.parse( fs.readFileSync( path.join( __dirname + '/config.json' ) ) );
+const settings = JSON.parse( fs.readFileSync( path.join( __dirname + '/config/settings.config.json' ) ) );
 
 // initialise express with middlewares
 // TODO: Generate random token
