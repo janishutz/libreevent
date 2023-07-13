@@ -8,6 +8,8 @@
 */
 
 const token = require( '../token.js' );
+// let createSSRApp = require( 'vue' ).createSSRApp;
+// let renderToString = require( 'vue/server-renderer' ).renderToString;
 
 class TwoFA {
     constructor () {
@@ -15,14 +17,20 @@ class TwoFA {
     }
 
     registerStandardAuthentication () {
-        let tok = token.generateToken( 61 );
+        let tok = token.generateToken( 60 );
+        while ( this.tokenStore[ tok ] ) {
+            tok = token.generateToken( 60 );
+        }
         this.tokenStore[ tok ] = { 'mode': 'standard' };
         return { 'token': tok };
     }
     
     registerEnhancedAuthentication () {
-        let tok = token.generateToken( 61 );
-        let code = token.generateNumber( 7 );
+        let tok = token.generateToken( 60 );
+        while ( this.tokenStore[ tok ] ) {
+            tok = token.generateToken( 60 );
+        }
+        let code = token.generateNumber( 6 );
         this.tokenStore[ tok ] = { 'mode': 'enhanced', 'code': code };
         return { 'code': code, 'token': tok };
     }
@@ -30,14 +38,18 @@ class TwoFA {
     verifyEnhanced ( token, number = '' ) {
         if ( this.tokenStore[ token ]?.mode === 'standard' ) return true;
         else if ( this.tokenStore[ token ]?.mode === 'enhanced' ) {
-            if ( this.tokenStore[ token ].code == number ) return true;
-            else return false;
+            if ( this.tokenStore[ token ].code == number ) { 
+                delete this.tokenStore[ token ];
+                return true;
+            } else return false;
         } else return false;
     }
 
     verifySimple ( token ) {
-        if ( this.tokenStore[ token ]?.mode === 'standard' ) return 'standard';
-        else if ( this.tokenStore[ token ]?.mode === 'enhanced' ) return 'enhanced';
+        if ( this.tokenStore[ token ]?.mode === 'standard' ) {
+            delete this.tokenStore[ token ];
+            return 'standard';
+        } else if ( this.tokenStore[ token ]?.mode === 'enhanced' ) return 'enhanced';
         else return 'invalid';
     }
 }

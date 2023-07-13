@@ -46,15 +46,20 @@ module.exports = ( app, settings ) => {
         // TODO: Add multi language
         let tokType = twoFA.verifySimple( request.query.token );
         if ( tokType === 'standard' ) {
-            response.sendFile( path.join( __dirname + '/../ui/en/2faSimple.html' ) );
+            request.session.loggedInUser = true;
+            response.sendFile( path.join( __dirname + '/../ui/en/2fa/2faSimple.html' ) );
         } else if ( tokType === 'enhanced' ) {
-            response.sendFile( path.join( __dirname + '/../ui/en/2faEnhanced.html' ) );
+            response.sendFile( path.join( __dirname + '/../ui/en/2fa/2faEnhanced.html' ) );
         } else {
-            response.sendFile( path.join( __dirname + '/../ui/en/2faInvalid.html' ) );
+            response.sendFile( path.join( __dirname + '/../ui/en/2fa/2faInvalid.html' ) );
         }
     } );
 
     app.post( '/user/2fa/verify', ( request, response ) => {
-        
+        let verified = twoFA.verifyEnhanced( request.body.token, request.body.code );
+        if ( verified ) {
+            request.session.loggedInUser = true;
+            response.send( 'ok' );
+        } else response.send( 'wrong' );
     } );
 };

@@ -54,14 +54,17 @@
                             }
                         };
                         fetch( localStorage.getItem( 'url' ) + '/user/login', fetchOptions ).then( res => {
-                            res.text().then( text => {
-                                console.log( text );
-                                if ( text === 'ok' ) {
+                            res.json().then( json => {
+                                if ( json.status === 'ok' ) {
                                     this.userStore.setUserAuth( true );
                                     this.$router.push( sessionStorage.getItem( 'redirect' ) ? sessionStorage.getItem( 'redirect' ) : '/account' );
                                     sessionStorage.removeItem( 'redirect' );
-                                } else if ( text === '2fa' ) {
+                                } else if ( json.status === '2fa' ) {
                                     this.userStore.setUser2fa( true );
+                                    this.$router.push( '/twoFactors' );
+                                } else if ( json.status === '2fa+' ) {
+                                    this.userStore.setUser2fa( true );
+                                    sessionStorage.setItem( '2faCode', json.code );
                                     this.$router.push( '/twoFactors' );
                                 } else {
                                     this.$refs.notification.createNotification( 'The credentials you provided do not match our records.', 5, 'error', 'normal' );

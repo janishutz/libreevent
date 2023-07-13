@@ -1,4 +1,4 @@
 {
     "init": false,
-    "twoFA": "disabled"
+    "twoFA": "enhanced"
 }
