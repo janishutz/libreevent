@@ -22,7 +22,8 @@ let userStore = useUserStore();
 let prod = true;
 
 if ( prod ) {
-    fetch( 'http://localhost:8081/api/getAuth' ).then( res => {
+    fetch( '/api/getAuth' ).then( res => {
+    // fetch( 'http://localhost:8081/api/getAuth' ).then( res => {
         res.json().then( data => {
             userStore.setUserAuth( data.user );
             userStore.setAdminAuth( data.admin );

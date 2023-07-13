@@ -19,7 +19,9 @@ const db = require( '../db/db.js' );
 module.exports.checkpassword = function checkpassword ( username, password ) {
     return new Promise( resolve => {
         db.getData( 'user', username ).then( data => {
-            resolve( bcrypt.compareSync( password, data ) );
+            bcrypt.compare( password, data ).then( data => {
+                resolve( data );
+            } );
         } );
     } );
 };

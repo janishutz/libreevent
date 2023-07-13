@@ -14,6 +14,7 @@ const token = require( '../token.js' );
 class TwoFA {
     constructor () {
         this.tokenStore = {};
+        this.references = {};
     }
 
     registerStandardAuthentication () {
@@ -33,6 +34,14 @@ class TwoFA {
         let code = token.generateNumber( 6 );
         this.tokenStore[ tok ] = { 'mode': 'enhanced', 'code': code };
         return { 'code': code, 'token': tok };
+    }
+
+    storeTokenReference ( token, sessionID ) {
+        this.references[ token ] = sessionID;
+    }
+
+    getTokenReference ( token ) {
+        return this.references[ token ];
     }
 
     verifyEnhanced ( token, number = '' ) {

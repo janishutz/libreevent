@@ -45,6 +45,7 @@
             login () {
                 if ( this.formData.mail ) { 
                     if ( this.formData.password ) {
+                        let progress = this.$refs.notification.createNotification( 'Logging you in', 20, 'progress', 'normal' );
                         let fetchOptions = {
                             method: 'post',
                             body: JSON.stringify( this.formData ),
@@ -67,6 +68,7 @@
                                     sessionStorage.setItem( '2faCode', json.code );
                                     this.$router.push( '/twoFactors' );
                                 } else {
+                                    this.$refs.notification.cancelNotification( progress );
                                     this.$refs.notification.createNotification( 'The credentials you provided do not match our records.', 5, 'error', 'normal' );
                                 }
                             } );
