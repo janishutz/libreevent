@@ -16,9 +16,9 @@
 const bcrypt = require( 'bcrypt' );
 const db = require( '../db/db.js' );
 
-module.exports.checkpassword = function checkpassword ( username, password ) {
+module.exports.checkpassword = function checkpassword ( email, password ) {
     return new Promise( resolve => {
-        db.getData( 'user', username ).then( data => {
+        db.getDataSimple( 'user', 'email', email ).then( data => {
             bcrypt.compare( password, data ).then( data => {
                 resolve( data );
             } );

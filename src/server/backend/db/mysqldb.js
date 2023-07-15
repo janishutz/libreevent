@@ -8,14 +8,15 @@
 */
 
 const mysql = require( 'mysql' );
-const db = require( './db.js' );
+const fs = require( 'fs' );
+const path = require( 'path' );
 
 // If the connection does not work for you, you will need to add your ip
 // to the whitelist of the database
 
 class SQLDB {
     constructor () {
-        this.sqlConnection = mysql.createConnection( db.getJSONDataSync( '/config/db.config.secret.json' ) );
+        this.sqlConnection = mysql.createConnection( JSON.parse( fs.readFileSync( path.join( __dirname + '/../../config/db.config.secret.json' ) ) ) );
     }
 
     connect () {
@@ -63,7 +64,6 @@ class SQLDB {
 
     query ( operation, table ) {
         return new Promise( ( resolve, reject ) => {
-            // getAllData, getFilteredData, InnerJoin, LeftJoin, RightJoin, addData, updateData, deleteData, checkDataAvailability, fullCustomCommand (NOTE: SANITISATION WILL NOT TAKE PLACE!)
             /* 
                 Possible operation.command values (all need the table argument of the method call):
                     - getAllData: no additional instructions needed
@@ -102,9 +102,13 @@ class SQLDB {
                             sanitised by the function)
                         - operation.property (the column to search for the value), 
                         - operation.searchQuery (the value to search for [will be sanitised by method])
+
                     - checkDataAvailability:
                         - operation.property (the column to search for the value), 
                         - operation.searchQuery (the value to search for [will be sanitised by method])
+
+                    - fullCustomCommand:
+                        - operation.query (the SQL instruction to be executed) --> NOTE: This command will not be sanitised, so use only with proper sanitisation!
             */
             let command = '';
             if ( operation.command === 'getAllData' ) {

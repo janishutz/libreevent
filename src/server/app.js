@@ -60,7 +60,6 @@ require( './admin/routes.js' )( app, settings ); // admin routes
 require( './backend/userRoutes.js' )( app, settings ); // user routes
 
 app.use( ( request, response ) => {
-    console.log( 'index fallback' );
     response.sendFile( path.join( __dirname + '/../webapp/dist/index.html' ) );
 } );
 

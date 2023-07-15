@@ -10,14 +10,35 @@
 const path = require( 'path' );
 const fs = require( 'fs' );
 
-module.exports.getData = function getData ( db, searchQuery ) {
+const settings = JSON.parse( fs.readFileSync( path.join( __dirname + '/../../config/settings.config.json' ) ) );
+
+const dbRef = { 'user': 'libreevent_users', 'admin': 'libreevent_admin', 'order': 'libreevent_orders' };
+
+let dbh;
+
+if ( settings.db === 'mysql' ) {
+    const dbsoft = require( './mysqldb.js' );
+    dbh = new dbsoft();
+} else {
+    const dbsoft = require( './jsondb.js' );
+    dbh = new dbsoft();
+}
+
+module.exports.getDataSimple = function getData ( db, column, searchQuery ) {
     return new Promise( resolve => {
+        dbh.query( { 'command': 'getFilteredData', 'property': column, 'searchQuery': searchQuery }, dbRef[ db ] ).then( data => {
+            console.log( data );
+        } ).catch( error => {
+            console.error( error );
+        } );
         resolve( '$2b$05$ElMYWoMjk7567lXkIkee.e.6cxCrWU4gkfuNLB8gmGYLQQPm7gT3O' );
     } );
 };
 
-module.exports.writeData = function writeData ( db ) {
-
+module.exports.writeDataSimple = function writeData ( db, column, searchQuery ) {
+    return new Promise( ( resolve, reject ) => {
+        
+    } );
 };
 
 module.exports.getJSONData = function getData ( file ) {
