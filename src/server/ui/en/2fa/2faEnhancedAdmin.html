@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Two Factor Authentication Invalid</title>
+        <style>
+            body, html {
+                width: 100%;
+                height: 100%;
+                margin: 0;
+                padding: 0;
+            }
+
+            body {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                flex-direction: column;
+                font-family: Avenir, Helvetica, Arial, sans-serif;
+                text-align: center;
+                background-color: rgb(41, 40, 40);
+                color: white;
+                font-size: 150%;
+            }
+
+            .content {
+                width: 70%;
+            }
+
+            #code {
+                padding: 0.75%;
+                border: solid white 1px;
+                border-radius: 7px;
+                font-size: 100%;
+                text-align: center;
+            }
+
+            .submit {
+                margin-top: 2%;
+                background: linear-gradient(90deg, rgb(30, 36, 131), rgb(87, 66, 184), rgb(105, 115, 214), rgb(30, 36, 131), rgb(41, 128, 109), rgb(146, 50, 47));
+                background-size: 300px;
+                padding: 10px 20px;
+                border: none;
+                border-radius: 20px;
+                cursor: pointer;
+                transition: all 3s;
+                font-size: 75%;
+                color: white;
+            }
+
+            .submit:hover {
+                background-size: 200%;
+                background-position: -100%;
+            }
+
+            #popup {
+                border: none;
+                border-radius: 20px;
+                padding: 5%;
+                background-color: rgb(34, 34, 34);
+                color: white;
+                max-width: 70%;
+            }
+
+            #popup::backdrop {
+                background-color: rgba( 0, 0, 0, 0.8 );
+            }
+        </style>
+    </head>
+    <body>
+        <div class="content">
+            <h1>Two-Factor Authen&shy;tication</h1>
+            <p id="text">Please enter the code displayed on the login page down below to finish the Two-Factor Authentication.</p>
+            <form onsubmit="return submitFunction()" id="form">
+                <input type="text" name="code" id="code"><br>
+                <input type="submit" value="Submit" class="submit">
+            </form>
+            <dialog id="popup">
+                <p id="popup-message"></p>
+                <form method="dialog">
+                    <input type="submit" value="Ok" class="submit">
+                </form>
+            </dialog>
+        </div>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+        <script>
+            function submitFunction () {
+                let code = document.getElementById( 'code' ).value;
+                let data = '';
+                if ( code.includes( ' ' ) ) {
+                    for ( let letter in code ) {
+                        if ( code[ letter ] != ' ' ) {
+                            data += code[ letter ];
+                        }
+                    }
+                } else {
+                    data = code;
+                }
+                if ( data.length == 6 ) {
+                    let fetchOptions = {
+                        method: 'post',
+                        body: JSON.stringify( { 'code': data, 'token': location.search.substring( 7 ) } ),
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'charset': 'utf-8'
+                        }
+                    };
+                    fetch( '/admin/2fa/verify', fetchOptions ).then( res => {
+                        res.text().then( data => {
+                            if ( data === 'ok' ) {
+                                document.getElementById( 'text' ).innerText = 'Two-Factor Authentication is complete! Head back to the original page!';
+                                document.getElementById( 'form' ).innerHTML = '';
+                                openPopup( 'You have successfully authorised this login. You may now close this tab and head back to the original tab.' );
+                            } else {
+                                openPopup( 'This code you specified is invalid (or no longer valid). Please try again.' );
+                            }
+                        } );
+                    } );
+                } else {
+                    openPopup( 'Please enter a six-character code to proceed' );
+                }
+                return false;
+            }
+
+            function openPopup ( message ) {
+                document.getElementById( 'popup-message' ).innerHTML = message;
+                document.getElementById( 'popup' ).showModal();
+            }
+        </script>
+    </body>
+</html>

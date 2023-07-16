@@ -49,6 +49,14 @@ export default [
         }
     },
     {
+        path: '/admin/twoFactors',
+        name: 'admin2FA',
+        component: () => import( '../views/admin/TwoFA.vue' ),
+        meta: {
+            title: 'Two Factor Authentication :: Admin - libreevent'
+        }
+    },
+    {
         path: '/signup',
         name: 'signup',
         component: () => import( '../views/user/SignupView.vue' ),
