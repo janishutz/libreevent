@@ -71,7 +71,7 @@
     <body>
         <div class="content">
             <h1>Two-Factor Authen&shy;tication</h1>
-            <p>Please enter the code displayed on the login page down below to finish the Two-Factor Authentication.</p>
+            <p id="text">Please enter the code displayed on the login page down below to finish the Two-Factor Authentication.</p>
             <form onsubmit="return submitFunction()" id="form">
                 <input type="text" name="code" id="code"><br>
                 <input type="submit" value="Submit" class="submit">
@@ -86,7 +86,17 @@
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
         <script>
             function submitFunction () {
-                let data = document.getElementById( 'code' ).value;
+                let code = document.getElementById( 'code' ).value;
+                let data = '';
+                if ( code.includes( ' ' ) ) {
+                    for ( let letter in code ) {
+                        if ( code[ letter ] != ' ' ) {
+                            data += code[ letter ];
+                        }
+                    }
+                } else {
+                    data = code;
+                }
                 if ( data.length == 6 ) {
                     let fetchOptions = {
                         method: 'post',
@@ -99,6 +109,8 @@
                     fetch( '/user/2fa/verify', fetchOptions ).then( res => {
                         res.text().then( data => {
                             if ( data === 'ok' ) {
+                                document.getElementById( 'text' ).innerText = 'Two-Factor Authentication is complete! Head back to the original page!';
+                                document.getElementById( 'form' ).innerHTML = '';
                                 openPopup( 'You have successfully authorised this login. You may now close this tab and head back to the original tab.' );
                             } else {
                                 openPopup( 'This code you specified is invalid (or no longer valid). Please try again.' );

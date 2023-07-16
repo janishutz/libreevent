@@ -19,9 +19,11 @@ let dbh;
 if ( settings.db === 'mysql' ) {
     const dbsoft = require( './mysqldb.js' );
     dbh = new dbsoft();
+    dbh.connect();
 } else {
-    const dbsoft = require( './jsondb.js' );
+    const dbsoft = require( './nedbDB.js' );
     dbh = new dbsoft();
+    dbh.connect();
 }
 
 module.exports.getDataSimple = function getData ( db, column, searchQuery ) {

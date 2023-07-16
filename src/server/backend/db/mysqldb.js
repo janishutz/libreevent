@@ -15,21 +15,22 @@ const path = require( 'path' );
 // to the whitelist of the database
 
 class SQLDB {
-    constructor () {
+    constructor ( ) {
         this.sqlConnection = mysql.createConnection( JSON.parse( fs.readFileSync( path.join( __dirname + '/../../config/db.config.secret.json' ) ) ) );
     }
 
-    connect () {
+    connect ( ) {
         this.sqlConnection.connect( function( err ) {
             if ( err ) {
                 console.error( 'error connecting: ' + err.stack );
                 return;
             }
+            console.log( 'connected' );
             return 'connection';
         } );
     }
 
-    disconnect () {
+    disconnect ( ) {
         this.sqlConnection.end();
     }
 
@@ -144,7 +145,6 @@ class SQLDB {
             }
             this.sqlConnection.query( command, ( error, results ) => {
                 if ( error ) reject( error );
-                console.log( results );
                 resolve( results );
             } );
         } );

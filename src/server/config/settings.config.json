@@ -1,5 +1,5 @@
 {
     "init": false,
-    "twoFA": "standard",
+    "twoFA": "enhanced",
     "db": "mysql"
 }

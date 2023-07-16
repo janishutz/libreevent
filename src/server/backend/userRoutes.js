@@ -24,6 +24,7 @@ module.exports = ( app, settings ) => {
     app.post( '/user/login', ( request, response ) => {
         if ( request.body.mail && request.body.password ) {
             pwdmanager.checkpassword( request.body.mail, request.body.password ).then( data => {
+                request.session.username = request.body.mail;
                 if ( data ) {
                     // TODO: Send mails
                     if ( settings.twoFA === 'standard' ) {
@@ -67,7 +68,7 @@ module.exports = ( app, settings ) => {
         let verified = twoFA.verifyEnhanced( request.body.token, request.body.code );
         if ( verified ) {
             request.session.loggedInUser = true;
-            responseObjects[ request.query.token ].write( 'data: authenticated\n\n' );
+            responseObjects[ request.body.token ].write( 'data: authenticated\n\n' );
             response.send( 'ok' );
         } else response.send( 'wrong' );
     } );
@@ -82,5 +83,10 @@ module.exports = ( app, settings ) => {
         response.flushHeaders();
         response.write( 'data: connected\n\n' );
         responseObjects[ request.session.token ] = response;
+    } );
+
+    app.get( '/user/logout', ( request, response ) => {
+        request.session.loggedInUser = false;
+        response.send( 'logoutOk' );
     } );
 };

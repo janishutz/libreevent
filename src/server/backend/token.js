@@ -10,11 +10,11 @@
 
 module.exports.generateToken = ( length ) => {
     let token = '';
-    let min = 48;
+    let min = 45;
     let max = 122;
     for ( let i = 0; i < length; i++ ) {
         let randomNumber = Math.floor( Math.random() * ( max - min ) ) + min;
-        while ( randomNumber === 92 || randomNumber === 58 || randomNumber === 96 || randomNumber === 94 || randomNumber === 64 ) {
+        while ( ( 58 < randomNumber && randomNumber < 63 ) || ( 90 < randomNumber && randomNumber < 95 ) || ( 95 < randomNumber && randomNumber < 97 ) ) {
             randomNumber = Math.floor( Math.random() * ( max - min ) ) + min;
         }
         token += String.fromCharCode( randomNumber );
