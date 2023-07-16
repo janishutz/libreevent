@@ -18,10 +18,16 @@
 const bcrypt = require( 'bcrypt' );
 const db = require( '../backend/db/db.js' );
 
-module.exports.checkpassword = function checkpassword ( username, password ) {
+module.exports.checkpassword = ( username, password ) => {
     return new Promise( resolve => {
         db.getDataSimple( 'admin', 'email', username ).then( data => {
             resolve( bcrypt.compareSync( password, data ) );
         } );
+    } );
+};
+
+module.exports.hashPassword = ( password ) => {
+    return new Promise( resolve => {
+        resolve( bcrypt.hashSync( password, 10 ) );
     } );
 };

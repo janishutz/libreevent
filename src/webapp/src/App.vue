@@ -186,8 +186,6 @@ export default {
             document.documentElement.classList.add( 'light' );
             this.theme = '&#9789;';
         }
-        // localStorage.setItem( 'url', 'http://localhost:8081' );
-        localStorage.setItem( 'url', '' );
     }
 }
 </script>

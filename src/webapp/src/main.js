@@ -19,21 +19,24 @@ app.use( createPinia() );
 
 let userStore = useUserStore();
 
-let prod = true;
+let prod = false;
 
 if ( prod ) {
     fetch( '/api/getAuth' ).then( res => {
-    // fetch( 'http://localhost:8081/api/getAuth' ).then( res => {
+        // fetch( 'http://localhost:8081/api/getAuth' ).then( res => {
         res.json().then( data => {
             userStore.setUserAuth( data.user );
             userStore.setAdminAuth( data.admin );
-
+            
             app.use( router );
             app.mount( '#app' );
         } );
     } );
+    localStorage.setItem( 'url', '' );
 } else {
-    // userStore.setUserAuth( true );
+    localStorage.setItem( 'url', 'http://localhost:8081' );
+    userStore.setUserAuth( true );
+    userStore.setAdminAuth( true );
     app.use( router );
     app.mount( '#app' );
 }

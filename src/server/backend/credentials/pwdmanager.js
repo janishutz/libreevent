@@ -25,3 +25,9 @@ module.exports.checkpassword = function checkpassword ( email, password ) {
         } );
     } );
 };
+
+module.exports.hashPassword = ( password ) => {
+    return new Promise( resolve => {
+        resolve( bcrypt.hashSync( password, 10 ) );
+    } );
+};
