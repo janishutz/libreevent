@@ -95,14 +95,14 @@
         },
         data () {
             return {
-                events: { 'test':{ 'name': 'TestEvent', 'description': 'This is a description for the TestEvent to test multiline support and proper positioning of the Fields', 'freeSeats': 2, 'maxSeats': 2, 'date':'2023-07-20T09:00:00Z', 'startingPrice':15, 'location': 'TestLocation', 'eventID': 'test', 'currency': 'CHF', 'logo': new URL( '/src/assets/logo.png', import.meta.url ).href, 'dateCode': 10 }, 'test2':{ 'name': 'TestEvent2', 'description': 'This is a description for the TestEvent to test multiline support and proper positioning of the Fields', 'freeSeats': 2, 'maxSeats': 2, 'date':'2023-08-01T09:00:00Z', 'startingPrice':15, 'location': 'TestLocation', 'eventID': 'test2', 'currency': 'CHF', 'logo': new URL( '/src/assets/logo.png', import.meta.url ).href, 'dateCode': 5 } },
+                events: { 'test':{ 'name': 'TestEvent', 'description': 'This is a description for the TestEvent to test multiline support and proper positioning of the Fields', 'freeSeats': 2, 'maxSeats': 2, 'date':'2023-07-15T09:00:00Z', 'startingPrice':15, 'location': 'TestLocation', 'eventID': 'test', 'currency': 'CHF', 'logo': new URL( '/src/assets/logo.png', import.meta.url ).href }, 'test2':{ 'name': 'TestEvent2', 'description': 'This is a description for the TestEvent to test multiline support and proper positioning of the Fields', 'freeSeats': 2, 'maxSeats': 2, 'date':'2023-08-01T09:00:00Z', 'startingPrice':15, 'location': 'TestLocation', 'eventID': 'test2', 'currency': 'CHF', 'logo': new URL( '/src/assets/logo.png', import.meta.url ).href } },
                 today: new Date().getTime()
             }
         },
         computed: {
             orderedEvents () {
                 let sorted = Object.keys( this.events ).sort( ( a, b ) => {
-                    return this.events[ a ].dateCode - this.events[ b ].dateCode;
+                    return new Date( this.events[ a ].date ).getTime() - new Date( this.events[ b ].date ).getTime();
                 } );
                 let rt = {};
                 for ( let element in sorted ) {
