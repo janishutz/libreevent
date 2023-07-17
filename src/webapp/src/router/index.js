@@ -62,16 +62,5 @@ router.beforeEach( ( to, from ) => {
     }
 } );
 
-let doSetup = true;
-
-if ( doSetup ) {
-    import( '@/router/setupRoutes' ).then( data => {
-        router.addRoute( data.default );
-        setTimeout( function () {
-            router.replace( window.location.pathname );
-        }, 200 );
-    } );
-}
-
 
 export default router;

@@ -53,9 +53,9 @@
                     };
                     
                     source.addEventListener( 'error', function(e) {
-                        if (e.eventPhase == EventSource.CLOSED) source.close();
+                        if ( e.eventPhase == EventSource.CLOSED ) source.close();
 
-                        if (e.target.readyState == EventSource.CLOSED) {
+                        if ( e.target.readyState == EventSource.CLOSED ) {
                             console.log( e );
                             self.$refs.notification.cancelNotification( startNotification );
                             self.$refs.notification.createNotification( 'Could not connect to status service', 5, 'error', 'normal' );

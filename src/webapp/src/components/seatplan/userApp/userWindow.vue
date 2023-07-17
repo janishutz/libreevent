@@ -38,6 +38,7 @@
             <button title="Reset zoom [=]" @click="zoom( 1 );"><span class="material-symbols-outlined">center_focus_strong</span></button>
             <button title="Zoom out [-]" @click="zoom( -0.2 )"><span class="material-symbols-outlined">zoom_out</span></button>
         </div>
+        <sideCartView id="cart"></sideCartView>
         <notifications ref="notification" location="topleft"></notifications>
         <popups ref="popups" size="normal" @data="data => { reserveTicket( data ) }"></popups>
     </div>
@@ -54,6 +55,7 @@
     import notifications from '@/components/notifications/notifications.vue';
     import popups from '@/components/notifications/popups.vue';
     import 'vue3-draggable-resizable/dist/Vue3DraggableResizable.css';
+    import sideCartView from '@/components/sideCartView.vue';
 
     export default {
         'name': 'window',
@@ -67,6 +69,7 @@
             textFieldSeatplanComponent,
             notifications,
             popups,
+            sideCartView,
         },
         data() {
             return {
