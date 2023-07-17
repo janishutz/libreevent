@@ -12,7 +12,7 @@
         <h1>Order tickets</h1>
         <div class="order-app" v-if="events">
             <ul>
-                <li v-for="event in events">
+                <li v-for="event in orderedEvents">
                     <router-link to="/tickets/details" class="ticket" @click="setActiveTicket( event.eventID );">
                         <div class="ticket-name">
                             <h3>{{ event.name }}</h3>
@@ -20,7 +20,7 @@
                         </div>
                         <div class="ticket-info">
                             <p>Free seats: {{ event.freeSeats }} / {{ event.maxSeats }}</p>
-                            <p>{{ event.location }}, {{ event.date }}</p>
+                            <p>{{ event.location }}, {{ event.dateString }}</p>
                             <h4>Starting at {{ event.currency }} {{ event.startingPrice }}</h4>
                         </div>
                         <img :src="event.logo" alt="event logo" class="ticket-logo">
@@ -95,9 +95,25 @@
         },
         data () {
             return {
-                events: { 'test':{ 'name': 'TestEvent', 'description': 'This is a description for the TestEvent to test multiline support and proper positioning of the Fields', 'freeSeats': 2, 'maxSeats': 2, 'date':'TestDate', 'startingPrice':15, 'location': 'TestLocation', 'eventID': 'test', 'currency': 'CHF', 'logo': new URL( '/src/assets/logo.png', import.meta.url ).href }, 'test2':{ 'name': 'TestEvent2', 'description': 'This is a description for the TestEvent to test multiline support and proper positioning of the Fields', 'freeSeats': 2, 'maxSeats': 2, 'date':'TestDate', 'startingPrice':15, 'location': 'TestLocation', 'eventID': 'test2', 'currency': 'CHF', 'logo': new URL( '/src/assets/logo.png', import.meta.url ).href } }
+                events: { 'test':{ 'name': 'TestEvent', 'description': 'This is a description for the TestEvent to test multiline support and proper positioning of the Fields', 'freeSeats': 2, 'maxSeats': 2, 'date':'2023-07-20T09:00:00Z', 'startingPrice':15, 'location': 'TestLocation', 'eventID': 'test', 'currency': 'CHF', 'logo': new URL( '/src/assets/logo.png', import.meta.url ).href, 'dateCode': 10 }, 'test2':{ 'name': 'TestEvent2', 'description': 'This is a description for the TestEvent to test multiline support and proper positioning of the Fields', 'freeSeats': 2, 'maxSeats': 2, 'date':'2023-08-01T09:00:00Z', 'startingPrice':15, 'location': 'TestLocation', 'eventID': 'test2', 'currency': 'CHF', 'logo': new URL( '/src/assets/logo.png', import.meta.url ).href, 'dateCode': 5 } },
+                today: new Date().getTime()
             }
-        }
+        },
+        computed: {
+            orderedEvents () {
+                let sorted = Object.keys( this.events ).sort( ( a, b ) => {
+                    return this.events[ a ].dateCode - this.events[ b ].dateCode;
+                } );
+                let rt = {};
+                for ( let element in sorted ) {
+                    if ( new Date( this.events[ sorted[ element ] ].date ) > this.today ) {
+                        rt[ sorted[ element ] ] = this.events[ sorted[ element ] ];
+                        rt[ sorted[ element ] ][ 'dateString' ] = new Date( rt[ sorted[ element ] ][ 'date' ] ).toLocaleString();
+                    }
+                }
+                return rt;
+            }
+        },
     };
 </script>
 

@@ -112,7 +112,7 @@
                 sortable.push( [ this.events[ event ][ 'eventID' ], new Date( this.events[ event ][ 'date' ] ).getTime() ] );
             }
             sortable.sort( function( a, b ) {
-                return a[ 1 ] - b [ 1 ];
+                return a[ 1 ] - b[ 1 ];
             } );
 
             for ( let element in sortable ) {
