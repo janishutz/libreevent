@@ -12,7 +12,16 @@
         <img src="@/assets/logo.png" alt="libreevent logo" style="height: 30vh;">
         <h1>Setup complete!</h1>
         <p>Congratulations on finishing the setup of libreǝvent!</p>
-        <p>It is now time to head to the admin panel to add more accounts and to familiarise yourself with the admin portal</p>
-        <router-link to="/admin">To the admin panel</router-link>
+        <p>Please restart the node.js application to have it load the actual user interface for libreevent. You may then log in at <a :href="windowURL" target="_blank">{{ windowURL }}</a></p>
     </div>
 </template>
+
+<script>
+     export default {
+        data () {
+            return {
+                windowURL: location.protocol + '//' + location.host +'/admin/login',
+            }
+        },
+    };
+</script>

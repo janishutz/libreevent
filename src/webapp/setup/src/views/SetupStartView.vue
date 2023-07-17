@@ -19,7 +19,7 @@
 </template>
 
 <script>
-    import { useBackendStore } from '@/stores/backendStore';
+    import { useBackendStore } from '@/stores/backendStore.js';
     import { mapStores } from 'pinia';
 
     export default {

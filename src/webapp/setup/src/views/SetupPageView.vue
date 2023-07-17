@@ -10,7 +10,7 @@
 <template>
     <div>
         <h1>Landing page</h1>
-        <p>The landing page is the page your customers see when they visit your webpage. You may select a page template <a href="https://libreevent.janishutz.com/docs/homepage/templates">here</a>.</p>
+        <p>The landing page is the page your customers see when they visit your webpage. You may select a page template <a href="https://libreevent.janishutz.com/docs/homepage/templates" target="_blank">here</a>.</p>
         <p>You may find more infos about this part <a href="https://libreevent.janishutz.com/docs/setup/setup#page-setup" target="_blank">here</a></p>
 
         <label for="template">Choose a template</label><br>
@@ -23,7 +23,7 @@
 </template>
 
 <script>
-    import { useBackendStore } from '@/stores/backendStore';
+    import { useBackendStore } from '@/stores/backendStore.js';
     import { mapStores } from 'pinia';
 
     export default {

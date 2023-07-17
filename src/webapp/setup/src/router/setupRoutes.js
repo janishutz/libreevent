@@ -10,16 +10,16 @@
 export default {
     path: '/setup',
     name: 'setup',
-    component: () => import( '../views/setup/SetupView.vue' ),
+    component: () => import( '../views/SetupView.vue' ),
     meta: {
-        title: 'Login :: Admin - libreevent',
+        title: 'Setup :: Admin - libreevent',
         setupAuthRequired: true,
     },
     children: [
         {
             path: '',
             name: 'setupStart',
-            component: () => import( '../views/setup/SetupStartView.vue' ),
+            component: () => import( '../views/SetupStartView.vue' ),
             meta: {
                 title: 'Start :: Setup - libreevent',
                 setupAuthRequired: true,
@@ -28,7 +28,7 @@ export default {
         {
             path: 'root',
             name: 'setupRoot',
-            component: () => import( '../views/setup/SetupRootView.vue' ),
+            component: () => import( '../views/SetupRootView.vue' ),
             meta: {
                 title: 'Root account :: Setup - libreevent',
                 setupAuthRequired: true,
@@ -37,7 +37,7 @@ export default {
         {
             path: 'page',
             name: 'setupPage',
-            component: () => import( '../views/setup/SetupPageView.vue' ),
+            component: () => import( '../views/SetupPageView.vue' ),
             meta: {
                 title: 'Landing page :: Setup - libreevent',
                 setupAuthRequired: true,
@@ -46,7 +46,7 @@ export default {
         {
             path: 'payments',
             name: 'setupPayments',
-            component: () => import( '../views/setup/SetupPaymentsView.vue' ),
+            component: () => import( '../views/SetupPaymentsView.vue' ),
             meta: {
                 title: 'Payments :: Setup - libreevent',
                 setupAuthRequired: true,
@@ -55,7 +55,7 @@ export default {
         {
             path: 'events',
             name: 'setupEvents',
-            component: () => import( '../views/setup/SetupEventsView.vue' ),
+            component: () => import( '../views/SetupEventsView.vue' ),
             meta: {
                 title: 'Events :: Setup - libreevent',
                 setupAuthRequired: true,
@@ -64,7 +64,7 @@ export default {
         {
             path: 'tos',
             name: 'setupTOS',
-            component: () => import( '../views/setup/SetupTOSView.vue' ),
+            component: () => import( '../views/SetupTOSView.vue' ),
             meta: {
                 title: 'TOS (Optional) :: Setup - libreevent',
                 setupAuthRequired: true,
@@ -73,7 +73,7 @@ export default {
         {
             path: 'complete',
             name: 'setupComplete',
-            component: () => import( '../views/setup/SetupCompleteView.vue' ),
+            component: () => import( '../views/SetupCompleteView.vue' ),
             meta: {
                 title: 'Setup complete :: Setup - libreevent',
                 setupAuthRequired: true,

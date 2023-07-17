@@ -8,12 +8,12 @@
 -->
 
 <template>
-    <initial></initial>
+    <div>
+        <h1>Welcome!</h1>
+    </div>
 </template>
 
 <script>
-    import initial from '@/components/initial.vue';
-
     export default {
         data () {
             return {
@@ -25,8 +25,5 @@
                 
             }
         },
-        components: {
-            initial
-        }
     };
 </script>
