@@ -46,7 +46,7 @@
         },
         methods: {
             submit () {
-                this.backendStore.addVisitedSetupPages( 'payments', true );
+                this.backendStore.addVisitedSetupPages( 'page', true );
                 this.$router.push( 'page' );
             }
         },

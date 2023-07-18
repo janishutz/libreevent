@@ -21,25 +21,11 @@ const settings = JSON.parse( fs.readFileSync( path.join( __dirname + '/config/se
 // const mail = require( './backend/mail/mailSender.js' );
 // const mailManager = new mail();
 
-// const dbh = require( './backend/db/mysqldb.js' );
-// const db = new dbh();
-
-// db.connect();
-
-// const env = process.env.PROD || false;
-
-
-// if ( !settings.init ) {
-//     db.setupDB( 'janishut_libreeventTest' );
-// }
-
-// const responseTime = require( 'response-time' );
-// app.use( responseTime( ( request, response, time ) => {
-//     console.log( time );
-// } ) );
-
-app.use( express.static( '../webapp/dist' ) );
-// app.use( express.static( '.' ) );
+if ( settings.init ) {
+    app.use( express.static( '../webapp/main/dist' ) );
+} else {
+    app.use( express.static( '../webapp/setup/dist' ) );
+}
 
 // initialise express with middlewares
 // TODO: Generate random token
@@ -56,11 +42,19 @@ app.use( bodyParser.urlencoded( { extended: false } ) );
 app.use( bodyParser.json() );
 app.use( cookieParser() );
 
-require( './admin/routes.js' )( app, settings ); // admin routes
-require( './backend/userRoutes.js' )( app, settings ); // user routes
+let file = path.join( __dirname + '/../webapp/main/dist/index.html' );
+
+if ( settings.init ) {
+    require( './admin/adminRoutes.js' )( app, settings ); // admin routes
+    require( './backend/userRoutes.js' )( app, settings ); // user routes
+} else {
+    require( './setup/setupRoutes.js' )( app, settings ); // setup routes
+    file = path.join( __dirname + '/../webapp/setup/dist/index.html' );
+}
+
 
 app.use( ( request, response ) => {
-    response.sendFile( path.join( __dirname + '/../webapp/dist/index.html' ) );
+    response.sendFile( file );
 } );
 
 const PORT = process.env.PORT || 8081;
