@@ -8,20 +8,35 @@
 -->
 
 <template>
-    <div id="sideCartView">
+    <div id="sideCartView" :style="'width: ' + width + 'vw'">
         <h2>Cart</h2>
-        <div v-for="event in cart">
-            <h3>{{ event.displayName }}</h3>
-            <table>
-                <tr v-for="ticket in event.tickets">
+        <div v-if="Object.keys( cart ).length > 0">
+            <div v-for="event in cart">
+                <h3>{{ event.displayName }}</h3>
+                <table class="tickets-table">
+                    <tr v-for="ticket in event.tickets">
+                        <td>
+                            <h4 class="price">{{ ticket.displayName }}: </h4>
+                        </td>
+                        <td>
+                            {{ currency }} {{ ticket.price }}
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <table class="tickets-table">
+                <tr>
                     <td>
-                        <h4>{{ ticket.displayName }}: </h4>
+                        <h4>TOTAL:</h4>
                     </td>
                     <td>
-                        {{ event.currency }} {{ ticket.price }}
+                        <h4>{{ currency }} {{ total }}</h4>
                     </td>
                 </tr>
             </table>
+        </div>
+        <div v-else>
+            Your cart is currently empty
         </div>
     </div>
 </template>
@@ -32,18 +47,31 @@ export default {
     props: {
         'cart': {
             type: Object,
-            default: { 'TestEvent2': { 'displayName': 'TestEvent2', 'tickets': { 'secAr1s1': { 'displayName': 'Row 1, Seat 1', 'price': 20 } }, 'currency': 'CHF' } },
-            total: 0
+            default: {},
+            // EXAMPLE: { 'TestEvent2': { 'displayName': 'TestEvent2', 'tickets': { 'secAr1s1': { 'displayName': 'Row 1, Seat 1', 'price': 20 } } } }
+        },
+        'width': {
+            type: Number,
+            default: 25
+        },
+        'currency': {
+            type: String,
+            default: 'CHF'
         }
     },
-    watch: {
-        cart() {
-            this.calculateTotal();
+    data() {
+        return {
+            total: 0,
         }
     },
     methods: {
         calculateTotal () {
-            console.log( 'cart updated' );
+            this.total = 0;
+            for ( let event in this.cart ) {
+                for ( let ticket in this.cart[ event ][ 'tickets' ] ) {
+                    this.total += parseInt( this.cart[ event ][ 'tickets' ][ ticket ][ 'price' ] );
+                }
+            }
         }
     },
     created() {
@@ -51,3 +79,23 @@ export default {
     }
 }
 </script>
+
+<style scoped>
+    #sideCartView {
+        position: fixed;
+        right: 0;
+        top: 17vh;
+        height: 90vh;
+        background-color: var( --accent-background );
+        color: var( --secondary-color );
+    }
+
+    .tickets-table {
+        width: 80%;
+    }
+
+    .price {
+        margin: 0;
+        padding: 0;
+    }
+</style>

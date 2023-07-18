@@ -110,6 +110,7 @@ export default {
             selectedSeat[ 'sector' ] = this.data.sector;
             selectedSeat[ 'option' ] = this.data.categoryInfo.pricing;
             selectedSeat[ 'componentID' ] = this.id;
+            console.log( selectedSeat );
             this.$emit( 'seatSelected', selectedSeat );
         },
         deselectSeat( row, seat ) {

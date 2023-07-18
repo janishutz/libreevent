@@ -38,7 +38,7 @@
             <button title="Reset zoom [=]" @click="zoom( 1 );"><span class="material-symbols-outlined">center_focus_strong</span></button>
             <button title="Zoom out [-]" @click="zoom( -0.2 )"><span class="material-symbols-outlined">zoom_out</span></button>
         </div>
-        <sideCartView id="cart"></sideCartView>
+        <sideCartView :cart="cart" ref="cart"></sideCartView>
         <notifications ref="notification" location="topleft"></notifications>
         <popups ref="popups" size="normal" @data="data => { reserveTicket( data ) }"></popups>
     </div>
@@ -73,7 +73,6 @@
         },
         data() {
             return {
-                active: 0,
                 draggables: { 1: { 'x': 100, 'y':100, 'h': 100, 'w': 250, 'active': false, 'draggable': true, 'resizable': true, 'id': 1, 'origin': 1, 'shape':'rectangular', 'type': 'seat', 'startingRow': 1, 'seatCountingStartingPoint': 1, 'sector': 'A', 'text': { 'text': 'TestText', 'textSize': 20, 'colour': '#20FFFF' } }, 'ticketCount': 1 },
                 event: { 'name': 'TestEvent2', 'location': 'TestLocation2', 'date': '2023-07-15', 'RoomName': 'TestRoom2', 'currency': 'CHF', 'categories': { '1': { 'price': { '1':25, '2':35 }, 'bg': 'black', 'fg': 'white', 'name': 'Category 1' }, '2': { 'price': { '1':15, '2':20 }, 'bg': 'green', 'fg': 'white', 'name': 'Category 2' } }, 'ageGroups': { '1':{ 'id': 1, 'name':'Child', 'age':'0 - 15.99' }, '2':{ 'id': 2, 'name': 'Adult', 'age': null } }, 'ageGroupCount': 2, 'maxTickets': 2 },
                 available: { 'redo': false, 'undo': false },
@@ -85,6 +84,7 @@
                 movePos: { 'top': 0, 'left': 0, 'isMoving': false, 'isSet': false },
                 generalSettings: { 'namingScheme': 'numeric' },
                 selectedSeat: {},
+                cart: {},
             }
         },
         methods: {
@@ -110,10 +110,14 @@
                     }
                 };
 
+                // Load seat plan
                 this.loadSeatplan();
-                sessionStorage.setItem( 'seatplan', JSON.stringify( this.scaleDown( this.draggables ) ) );
                 // TODO: remove scaleDown function again once backend is up
                 // TODO: Optimise for odd screen sizes and aspect ratios and fucking webkit
+                sessionStorage.setItem( 'seatplan', JSON.stringify( this.scaleDown( this.draggables ) ) );
+
+                // Load cart
+                this.cart = localStorage.getItem( 'cart' ) ? JSON.parse( localStorage.getItem( 'cart' ) ): {};
             },
             eventHandler ( e ) {
                 if ( this.prevSize.h != window.innerHeight || this.prevSize.w != window.innerWidth ) {
@@ -234,16 +238,37 @@
                 if ( Object.keys( seat.option ).length > 1 ) {
                     this.$refs.popups.openPopup( 'Please choose a ticket option', seat.option, 'selection', 'adult' );
                 } else {
-                    this.reserveTicket( { 'status': 'ok', 'data': Object.keys( seat.option )[ 0 ][ 'value' ] } );
+                    this.reserveTicket( { 'status': 'ok', 'data': Object.keys( seat.option )[ 0 ][ 'value' ], 'id': this.selectedSeat.componentID } );
                 }
+            },
+            cartHandling ( operation, data ) {
+                if ( operation === 'select' ) {
+                    if ( this.cart[ this.event.name ] ) {
+                        this.cart[ this.event.name ][ 'tickets' ][ this.selectedSeat.id ] = { 'displayName': this.selectedSeat.displayName, 'price': this.selectedSeat.option[ data ].price, 'id': this.selectedSeat.id };
+                    } else {
+                        this.cart[ this.event.name ] = { 'displayName': this.event.name, 'tickets': {} };
+                        this.cart[ this.event.name ][ 'tickets' ][ this.selectedSeat.id ] = { 'displayName': this.selectedSeat.displayName, 'price': this.selectedSeat.option[ data ].price, 'id': this.selectedSeat.id };
+                    }
+                } else if ( operation === 'deselect' ) {
+                    if ( Object.keys( this.cart[ this.event.name ][ 'tickets' ] ).length > 1 ) {
+                        delete this.cart[ this.event.name ][ 'tickets' ][ this.selectedSeat.id ];
+                    } else {
+                        delete this.cart[ this.event.name ];
+                    }
+                }
+                this.$refs.cart.calculateTotal();
+                localStorage.setItem( 'cart', JSON.stringify( this.cart ) );
             },
             reserveTicket ( option ) {
                 if ( option.status == 'ok' ) {
-                    this.$refs.component1[ 0 ].validateSeatSelection( this.selectedSeat, option.data );
+                    this.$refs[ 'component' + this.selectedSeat.componentID ][ 0 ].validateSeatSelection( this.selectedSeat, option.data );
+                    this.cartHandling( 'select', option.data );
                 }
                 // TODO: Make call to server to reserve ticket when data is returned & save to localStorage array.
             },
             seatDeselected ( seat ) {
+                this.selectedSeat = seat;
+                this.cartHandling( 'deselect' );
                 // TODO: Make call to server to deselect ticket & delete from localStorage array and delete eventArray if empty!
             }
         },
@@ -263,7 +288,7 @@
         aspect-ratio: 16 / 9;
         -webkit-aspect-ratio: 16 / 9;
         top: 17vh;
-        left: 10vw;
+        left: 5vw;
         position: absolute;
         border: black 1px solid;
         user-select: none;
@@ -301,7 +326,7 @@
         display: flex;
         position: fixed;
         top: 17vh;
-        left: 10.5vw;
+        left: 5.5vw;
     }
     .toolbar button {
         margin-top: 10%;

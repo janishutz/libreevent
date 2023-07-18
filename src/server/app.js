@@ -21,6 +21,8 @@ const settings = JSON.parse( fs.readFileSync( path.join( __dirname + '/config/se
 // const mail = require( './backend/mail/mailSender.js' );
 // const mailManager = new mail();
 
+console.log( settings );
+
 if ( settings.init ) {
     app.use( express.static( '../webapp/main/dist' ) );
 } else {
