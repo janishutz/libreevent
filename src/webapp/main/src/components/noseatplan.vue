@@ -5,12 +5,17 @@
             <h3>Available tickets</h3>
             <div class="wrapper">
                 <div v-for="ticket in tickets">
-                    {{ eventInfo[ 'categories' ][ ticket.category ][ 'name' ] }}<br>
-                    <div v-for="ticketOption in eventInfo[ 'ageGroups' ]" class="ticket">
-                        <div>
-                            {{ ticketOption.name }} <div style="display: inline" v-if="ticketOption.age">({{ ticketOption.age }})</div> {{ eventInfo.currency }} {{ eventInfo[ 'categories' ][ ticket.category ][ 'price' ][ ticketOption.id ] }} <span class="material-symbols-outlined">add</span> Selected <span class="material-symbols-outlined">remove</span>
-                        </div>
-                    </div>
+                    {{ eventInfo[ 'categories' ][ ticket.category ][ 'name' ] }}
+                    <table>
+                        <tr v-for="ticketOption in eventInfo[ 'ageGroups' ]">
+                            <td>
+                                {{ ticketOption.name }} <div style="display: inline" v-if="ticketOption.age">({{ ticketOption.age }})</div> 
+                            </td>
+                            <td>
+                                {{ eventInfo.currency }} {{ eventInfo[ 'categories' ][ ticket.category ][ 'price' ][ ticketOption.id ] }} <span class="material-symbols-outlined">add</span> Selected <span class="material-symbols-outlined">remove</span>
+                            </td>
+                        </tr>
+                    </table>
                 </div>
             </div>
         </div>
