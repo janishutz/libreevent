@@ -50,7 +50,7 @@ export default {
         },
         data: {
             type: Object,
-            "default": { 'sector': 'A', 'sectorCount': 1, 'unavailableSeats': { 'secAr0s0': true }, 'categoryInfo': { 'pricing': { 'adult': { 'displayName': 'Adults - CHF 20.-', 'value': 'adult', 'price': 20 }, 'child': { 'displayName': 'Child (0 - 15.99y) - CHF 15.-', 'value': 'child', 'price': 15 } } } }
+            "default": { 'sector': 'A', 'sectorCount': 1, 'unavailableSeats': { 'secAr0s0': 'nav' }, 'categoryInfo': { 'pricing': { '1': { 'displayName': 'Adults - CHF 20.-', 'value': '1', 'price': 20 }, '2': { 'displayName': 'Child (0 - 15.99y) - CHF 15.-', 'value': '2', 'price': 15 } } } }
         },
         id: {
             type: Number,
@@ -91,7 +91,7 @@ export default {
 
                     if ( this.data.unavailableSeats ) {
                         if ( this.data.unavailableSeats[ this.seats[ row ][ n ][ 'id' ] ] ) {
-                            this.seats[ row ][ n ][ 'status' ] = 'nav';
+                            this.seats[ row ][ n ][ 'status' ] = this.data.unavailableSeats[ this.seats[ row ][ n ][ 'id' ] ];
                         }
                     }
                 }
@@ -110,7 +110,6 @@ export default {
             selectedSeat[ 'sector' ] = this.data.sector;
             selectedSeat[ 'option' ] = this.data.categoryInfo.pricing;
             selectedSeat[ 'componentID' ] = this.id;
-            console.log( selectedSeat );
             this.$emit( 'seatSelected', selectedSeat );
         },
         deselectSeat( row, seat ) {

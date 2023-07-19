@@ -31,13 +31,19 @@
                     <div class="cart-list">
                         <h2>Order summary</h2>
                         <h3>Your tickets</h3>
-                        <ul v-for="event in tickets">
-                            <li>{{ event.name }}
-                                <ul v-for="ticket in event.selectedSeats">
-                                    <li>{{ ticket.name }} ({{ ticket.category.name }}, {{ ticket.ageGroup }}) {{ event.currency }} {{ ticket.price }}</li>
-                                </ul>
-                            </li>
-                        </ul>
+                        <div v-for="event in cart">
+                            <h3>{{ event.displayName }}</h3>
+                            <table class="tickets-table">
+                                <tr v-for="ticket in event.tickets">
+                                    <td>
+                                        <h4 class="price"><div style="display: inline;" v-if="ticket.count">{{ ticket.count }}x</div> {{ ticket.displayName }}: </h4>
+                                    </td>
+                                    <td>
+                                        {{ backend.currency }} {{ ticket.price }}
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
                         <div class="tool-wrapper wrapper-loggedIn">
                             <h4>Total: {{ backend.currency }} {{ backend.total }}</h4>
                         </div>
@@ -144,11 +150,6 @@
         'main main main sidebar';
     }
 
-    ul {
-        list-style: none;
-        text-align: justify;
-    }
-
     .cart-list {
         width: 100%;
         display: flex;
@@ -164,6 +165,11 @@
         justify-content: center;
         align-items: center;
     }
+
+    .price {
+        margin: 0;
+        padding: 0;
+    }
 </style>
 
 <script>
@@ -177,8 +183,8 @@ export default {
         return {
             settings: { 'accountRequired': true, 'requiresAddress': true, 'requiresAge': true, 'requiresSpecialNumber': true, 'specialNumberDisplayName': { 'de': '', 'en': 'id number' } },
             isAuthenticated: false,
-            tickets: {},
-            backend: {},
+            cart: {},
+            backend: { 'currency': 'CHF' },
             cartNotEmpty: false,
         }
     },
@@ -189,21 +195,31 @@ export default {
     methods: {
         loadData () {
             this.cartNotEmpty = false;
-            let tickets = JSON.parse( sessionStorage.getItem( 'cart' ) );
+            let tickets = JSON.parse( localStorage.getItem( 'cart' ) );
 
+            console.log( tickets );
             for ( let event in tickets ) {
-                if ( Object.keys( tickets[ event ][ 'selectedSeats' ] ).length  ) {
+                if ( Object.keys( tickets[ event ][ 'tickets' ] ).length  ) {
                     this.cartNotEmpty = true;
                 };
             }
 
+            
             if ( this.cartNotEmpty ) {
-                this.tickets = tickets;
-                this.backend = JSON.parse( sessionStorage.getItem( 'backend' ) );
+                this.cart = tickets;
                 this.isAuthenticated = this.userStore.getUserAuthenticated;
                 this.settings.accountRequired = !this.backendStore.getIsGuestPurchaseAllowed;
+                this.calculateTotal();
             } else {
                 this.$router.push( '/tickets' );
+            }
+        },
+        calculateTotal () {
+            this.backend[ 'total' ] = 0;
+            for ( let event in this.cart ) {
+                for ( let ticket in this.cart[ event ][ 'tickets' ] ) {
+                    this.backend[ 'total' ] += parseInt( this.cart[ event ][ 'tickets' ][ ticket ][ 'price' ] ) * parseInt( this.cart[ event ][ 'tickets' ][ ticket ][ 'count' ] ?? 1 );
+                }
             }
         },
         setRedirect () {

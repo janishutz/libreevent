@@ -24,7 +24,7 @@
                     @seatSelected="( seat ) => { seatSelected( seat ) }"></trapezoidSeatplanComponent>
 
                     <rectangularSeatplanComponent :ref="'component' + draggable.id" v-else-if="draggable.shape == 'rectangular' && draggable.type == 'seat'" :scale-factor="scaleFactor" 
-                    :w="draggable.w" :h="draggable.h" :origin="draggable.origin"
+                    :w="draggable.w" :h="draggable.h" :origin="draggable.origin" :data="draggable.data"
                     @seatSelected="( seat ) => { seatSelected( seat ) }" @seatDeselected="( seat ) => { seatDeselected( seat ) }"></rectangularSeatplanComponent>
 
                     <stagesSeatplanComponent :ref="'component' + draggable.id" v-else-if="draggable.type == 'stage'" :origin="draggable.origin" :shape="draggable.shape"></stagesSeatplanComponent>
@@ -73,8 +73,8 @@
         },
         data() {
             return {
-                draggables: { 1: { 'x': 100, 'y':100, 'h': 100, 'w': 250, 'active': false, 'draggable': true, 'resizable': true, 'id': 1, 'origin': 1, 'shape':'rectangular', 'type': 'seat', 'startingRow': 1, 'seatCountingStartingPoint': 1, 'sector': 'A', 'text': { 'text': 'TestText', 'textSize': 20, 'colour': '#20FFFF' } }, 'ticketCount': 1 },
-                event: { 'name': 'TestEvent2', 'location': 'TestLocation2', 'date': '2023-07-15', 'RoomName': 'TestRoom2', 'currency': 'CHF', 'categories': { '1': { 'price': { '1':25, '2':35 }, 'bg': 'black', 'fg': 'white', 'name': 'Category 1' }, '2': { 'price': { '1':15, '2':20 }, 'bg': 'green', 'fg': 'white', 'name': 'Category 2' } }, 'ageGroups': { '1':{ 'id': 1, 'name':'Child', 'age':'0 - 15.99' }, '2':{ 'id': 2, 'name': 'Adult', 'age': null } }, 'ageGroupCount': 2, 'maxTickets': 2 },
+                draggables: { 1: { 'x': 100, 'y':100, 'h': 100, 'w': 250, 'active': false, 'draggable': true, 'resizable': true, 'id': 1, 'origin': 1, 'shape':'rectangular', 'type': 'seat', 'startingRow': 1, 'seatCountingStartingPoint': 1, 'sector': 'A', 'text': { 'text': 'TestText', 'textSize': 20, 'colour': '#20FFFF' }, 'ticketCount': 1, 'category': 1 } },
+                event: { 'name': 'TestEvent2', 'location': 'TestLocation2', 'date': '2023-07-15', 'RoomName': 'TestRoom2', 'currency': 'CHF', 'categories': { '1': { 'price': { '1':25, '2':35 }, 'bg': 'black', 'fg': 'white', 'name': 'Category 1' }, '2': { 'price': { '1':15, '2':20 }, 'bg': 'green', 'fg': 'white', 'name': 'Category 2' } }, 'ageGroups': { '1':{ 'id': 1, 'name':'Child', 'age':'0 - 15.99' }, '2':{ 'id': 2, 'name': 'Adult' } }, 'ageGroupCount': 2, 'maxTickets': 2 },
                 available: { 'redo': false, 'undo': false },
                 scaleFactor: 1,
                 sizePoll: null,
@@ -110,14 +110,16 @@
                     }
                 };
 
+                
+                // Load cart
+                this.cart = localStorage.getItem( 'cart' ) ? JSON.parse( localStorage.getItem( 'cart' ) ): {};
+                
                 // Load seat plan
                 this.loadSeatplan();
+
                 // TODO: remove scaleDown function again once backend is up
                 // TODO: Optimise for odd screen sizes and aspect ratios and fucking webkit
                 sessionStorage.setItem( 'seatplan', JSON.stringify( this.scaleDown( this.draggables ) ) );
-
-                // Load cart
-                this.cart = localStorage.getItem( 'cart' ) ? JSON.parse( localStorage.getItem( 'cart' ) ): {};
             },
             eventHandler ( e ) {
                 if ( this.prevSize.h != window.innerHeight || this.prevSize.w != window.innerWidth ) {
@@ -202,6 +204,28 @@
                         self.$refs.popups.openPopup( 'We are sorry to tell you that since the last time the seat plan was refreshed, one or more of the seats you have selected has/have been taken.', {}, 'string' );
                     }, 500 );
                 }
+
+                // Mark all selected seats + all unavailable seats
+                // { 'sector': 'A', 'sectorCount': 1, 'unavailableSeats': { 'secAr0s0': 'nav' }, 'categoryInfo': { 'pricing': { '1': { 'displayName': 'Adults - CHF 20.-', 'value': 'adult', 'price': 20 }, '2': { 'displayName': 'Child (0 - 15.99y) - CHF 15.-', 'value': 'child', 'price': 15 } } } }
+                let categoryDetails = {};
+                for ( let category in this.event.categories ) {
+                    categoryDetails[ category ] = {};
+                    for ( let group in this.event.ageGroups ) {
+                        categoryDetails[ category ][ group ] = {};
+                        categoryDetails[ category ][ group ] = { 'displayName': this.event.ageGroups[ group ].name + ( this.event.ageGroups[ group ].age ? ' (' + this.event.ageGroups[ group ].age + ')' : '' ) + ' - ' + this.event.currency + ' ' + this.event.categories[ category ].price[ group ], 'value': group, 'price': this.event.categories[ category ].price[ group ] };
+                    }
+                }
+
+                for ( let element in this.draggables ) {
+                    this.draggables[ element ][ 'data' ] = { 'sector': this.draggables[ element ][ 'sector' ], 'unavailableSeats': {}, 'categoryInfo': { 'pricing': categoryDetails[ this.draggables[ element ][ 'category' ] ] } };
+                }               
+
+                if ( this.cart[ this.event.name ] ) {
+                    let tickets = this.cart[ this.event.name ][ 'tickets' ];
+                    for ( let ticket in tickets ) {
+                        this.draggables[ tickets[ ticket ].comp ][ 'data' ][ 'unavailableSeats' ][ ticket ] = 'sel';
+                    }
+                }
             },
             scaleUp ( valueArray ) {
                 const allowedAttributes = [ 'w', 'h', 'x', 'y' ];
@@ -235,6 +259,7 @@
             },
             seatSelected ( seat ) {
                 this.selectedSeat = seat;
+                console.log( seat );
                 if ( Object.keys( seat.option ).length > 1 ) {
                     this.$refs.popups.openPopup( 'Please choose a ticket option', seat.option, 'selection', 'adult' );
                 } else {
@@ -243,11 +268,12 @@
             },
             cartHandling ( operation, data ) {
                 if ( operation === 'select' ) {
+                    console.log( this.selectedSeat.option );
                     if ( this.cart[ this.event.name ] ) {
-                        this.cart[ this.event.name ][ 'tickets' ][ this.selectedSeat.id ] = { 'displayName': this.selectedSeat.displayName, 'price': this.selectedSeat.option[ data ].price, 'id': this.selectedSeat.id };
+                        this.cart[ this.event.name ][ 'tickets' ][ this.selectedSeat.id ] = { 'displayName': this.selectedSeat.displayName, 'price': this.selectedSeat.option[ data ].price, 'id': this.selectedSeat.id, 'option': data, 'comp': this.selectedSeat.componentID };
                     } else {
                         this.cart[ this.event.name ] = { 'displayName': this.event.name, 'tickets': {} };
-                        this.cart[ this.event.name ][ 'tickets' ][ this.selectedSeat.id ] = { 'displayName': this.selectedSeat.displayName, 'price': this.selectedSeat.option[ data ].price, 'id': this.selectedSeat.id };
+                        this.cart[ this.event.name ][ 'tickets' ][ this.selectedSeat.id ] = { 'displayName': this.selectedSeat.displayName, 'price': this.selectedSeat.option[ data ].price, 'id': this.selectedSeat.id, 'option': data, 'comp': this.selectedSeat.componentID };
                     }
                 } else if ( operation === 'deselect' ) {
                     if ( Object.keys( this.cart[ this.event.name ][ 'tickets' ] ).length > 1 ) {

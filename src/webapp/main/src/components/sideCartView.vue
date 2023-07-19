@@ -8,32 +8,35 @@
 -->
 
 <template>
-    <div id="sideCartView" :style="'width: ' + width + 'vw'">
+    <div id="sideCartView" :style="'width: ' + width + 'vw; top: ' + height + 'vh;'">
         <h2>Cart</h2>
-        <div v-if="Object.keys( cart ).length > 0">
-            <div v-for="event in cart">
-                <h3>{{ event.displayName }}</h3>
+        <div v-if="Object.keys( cart ).length > 0" style="height: 100%; width: 100%;">
+            <div class="scroll-wrapper">
+                <div v-for="event in cart">
+                    <h3>{{ event.displayName }}</h3>
+                    <table class="tickets-table">
+                        <tr v-for="ticket in event.tickets">
+                            <td>
+                                <h4 class="price"><div style="display: inline;" v-if="ticket.count">{{ ticket.count }}x</div> {{ ticket.displayName }}: </h4>
+                            </td>
+                            <td>
+                                {{ currency }} {{ ticket.price }}
+                            </td>
+                        </tr>
+                    </table>
+                </div>
                 <table class="tickets-table">
-                    <tr v-for="ticket in event.tickets">
+                    <tr>
                         <td>
-                            <h4 class="price">{{ ticket.displayName }}: </h4>
+                            <h4>TOTAL:</h4>
                         </td>
                         <td>
-                            {{ currency }} {{ ticket.price }}
+                            <h4>{{ currency }} {{ total }}</h4>
                         </td>
                     </tr>
                 </table>
+                <router-link to="/cart">To Cart</router-link>
             </div>
-            <table class="tickets-table">
-                <tr>
-                    <td>
-                        <h4>TOTAL:</h4>
-                    </td>
-                    <td>
-                        <h4>{{ currency }} {{ total }}</h4>
-                    </td>
-                </tr>
-            </table>
         </div>
         <div v-else>
             Your cart is currently empty
@@ -57,6 +60,10 @@ export default {
         'currency': {
             type: String,
             default: 'CHF'
+        },
+        'height': {
+            type: Number,
+            default: 17
         }
     },
     data() {
@@ -69,7 +76,7 @@ export default {
             this.total = 0;
             for ( let event in this.cart ) {
                 for ( let ticket in this.cart[ event ][ 'tickets' ] ) {
-                    this.total += parseInt( this.cart[ event ][ 'tickets' ][ ticket ][ 'price' ] );
+                    this.total += parseInt( this.cart[ event ][ 'tickets' ][ ticket ][ 'price' ] ) * parseInt( this.cart[ event ][ 'tickets' ][ ticket ][ 'count' ] ?? 1 );
                 }
             }
         }
@@ -84,14 +91,19 @@ export default {
     #sideCartView {
         position: fixed;
         right: 0;
-        top: 17vh;
-        height: 90vh;
+        height: 100vh;
         background-color: var( --accent-background );
         color: var( --secondary-color );
     }
 
     .tickets-table {
         width: 80%;
+    }
+
+    .scroll-wrapper {
+        width: 100%;
+        height: 70%;
+        overflow: scroll;
     }
 
     .price {
