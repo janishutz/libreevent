@@ -44,6 +44,10 @@ export default {
             type: Number,
             "default": 1,
         },
+        startingRow: {
+            type: Number,
+            "default": 1,
+        },
         origin: {
             type: Number,
             "default": 1,
@@ -74,7 +78,6 @@ export default {
                 this.seats[ row ] = {};
                 for ( let n = 0; n < Math.floor( w / size ); n++ ) {
                     this.seats[ row ][ n ] = { 'style': '', 'id': 'sec' + this.data.sector + 'r' + row + 's' + n, 'displayName': ( this.data.sectorCount > 1 ? 'Sector ' + this.data.sector + ', ' : '' ) + 'Row ' + ( row + 1 ) + ', Seat ' + ( n + 1 ), 'status': 'av', 'row': row, 'seat': n };
-                    // TODO: apply style of category
                     if ( this.origin === 1 ) {
                         this.seats[ row ][ n ][ 'style' ] = `bottom: ${ row * size * this.scaleFactor }px; left: ${ n * size * this.scaleFactor }px; rotate: ${ this.origin / 4 - 0.25 }turn;`;
                     } else if ( this.origin === 2 ) {
@@ -84,7 +87,9 @@ export default {
                     } else if ( this.origin === 4 ) {
                         this.seats[ row ][ n ][ 'style' ] = `top: ${ row * size * this.scaleFactor }px; left: ${ n * size * this.scaleFactor }px; rotate: ${ this.origin / 4 - 0.25 }turn;`;
                     }
+
                     this.seats[ row ][ n ][ 'scaling' ] = `font-size: ${this.scaleFactor * 200}%; `;
+                    
                     if ( this.data.categoryInfo.color ) {
                         this.seats[ row ][ n ][ 'style' ] += `color: ${ this.data.categoryInfo.color.fg ? this.data.categoryInfo.color.fg : 'black' }; background-color: ${ this.data.categoryInfo.color.bg ? this.data.categoryInfo.color.bg : 'rgba( 0, 0, 0, 0 )' }`;
                     }
@@ -100,8 +105,7 @@ export default {
         setScaleFactor () {
             for ( let row in this.seats ) {
                 for ( let seat in this.seats[ row ] ) {
-                    let styles = this.seats[ row ][ seat ].style.substring( this.seats[ row ][ seat ].style.indexOf( ';' ) + 1 );
-                    this.seats[ row ][ seat ].style = `font-size: ${this.scaleFactor * 200}%;` + styles;
+                    this.seats[ row ][ seat ].scaling = `font-size: ${this.scaleFactor * 200}%;`;
                 }
             }
         },

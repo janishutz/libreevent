@@ -106,9 +106,7 @@
             <tr v-if="internal[ active ].type == 'seat' || internal[ active ].type == 'stand'">
                 <td>Category:</td>
                 <td>
-                    <select v-model="internal[ active ].seatCountingStartingPoint" @change="resubmit()">
-                        <option v-for="category in categories" :value="category.value">{{ category.name }}</option>
-                    </select>
+                    <input type="text" v-model="internal[ active ].category" @change="resubmit()">
                 </td>
             </tr>
 

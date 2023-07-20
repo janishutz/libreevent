@@ -1,9 +1,19 @@
-const express = require( 'express' );
-let app = express();
-const http = require( 'http' );
+const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+let result = '';
 
-app.use( express.static( '.' ) );
+// https://stackoverflow.com/questions/36129721/convert-number-to-alphabet-letter
+function printToLetter( number ) {
+    let charIndex = number % alphabet.length;
+    let quotient = number / alphabet.length;
+    if ( charIndex - 1 === -1 ) {
+        charIndex = alphabet.length;
+        quotient --;
+    }
+    result = alphabet.charAt( charIndex - 1 ) + result;
+    if ( quotient >= 1 ) {
+        printToLetter( parseInt( quotient ) );
+    }
+}
 
-
-const PORT = process.env.PORT || 8081;
-http.createServer( app ).listen( PORT );
+printToLetter( 150036 );
+console.log( result );

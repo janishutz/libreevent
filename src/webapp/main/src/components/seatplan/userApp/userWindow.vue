@@ -15,16 +15,19 @@
                 <Vue3DraggableResizable v-for="draggable in draggables" :initW="draggable.w" :initH="draggable.h" :x="draggable.x" :y="draggable.y" :w="draggable.w" :h="draggable.h"
                     :active="false" :draggable="false" :resizable="false" :parent="true" class="draggable-box">
 
-                    <circularSeatplanComponent :ref="'component' + draggable.id" v-if="draggable.shape == 'circular' && draggable.type == 'seat'" :scale-factor="scaleFactor" 
-                    :w="draggable.w" :h="draggable.h" :origin="draggable.origin" :starting-row="draggable.startingRow"
-                    @seatSelected="( seat ) => { seatSelected( seat ) }"></circularSeatplanComponent>
+                    <circularSeatplanComponent v-if="draggable.shape == 'circular' && draggable.type == 'seat'" :ref="'component' + draggable.id" 
+                    :scale-factor="scaleFactor" :w="draggable.w" :h="draggable.h" :origin="draggable.origin" :starting-row="draggable.startingRow" 
+                    :data="draggable.data" :id="draggable.id"
+                    @seatSelected="( seat ) => { seatSelected( seat ) }" @seatDeselected="( seat ) => { seatDeselected( seat ) }"></circularSeatplanComponent>
 
-                    <trapezoidSeatplanComponent :ref="'component' + draggable.id" v-else-if="draggable.shape == 'trapezoid' && draggable.type == 'seat'" :scale-factor="scaleFactor" 
-                    :w="draggable.w" :h="draggable.h" :origin="draggable.origin" :starting-row="draggable.startingRow"
-                    @seatSelected="( seat ) => { seatSelected( seat ) }"></trapezoidSeatplanComponent>
+                    <trapezoidSeatplanComponent v-else-if="draggable.shape == 'trapezoid' && draggable.type == 'seat'" :ref="'component' + draggable.id" 
+                    :scale-factor="scaleFactor" :w="draggable.w" :h="draggable.h" :origin="draggable.origin" :starting-row="draggable.startingRow" 
+                    :data="draggable.data" :id="draggable.id"
+                    @seatSelected="( seat ) => { seatSelected( seat ) }" @seatDeselected="( seat ) => { seatDeselected( seat ) }"></trapezoidSeatplanComponent>
 
-                    <rectangularSeatplanComponent :ref="'component' + draggable.id" v-else-if="draggable.shape == 'rectangular' && draggable.type == 'seat'" :scale-factor="scaleFactor" 
-                    :w="draggable.w" :h="draggable.h" :origin="draggable.origin" :data="draggable.data"
+                    <rectangularSeatplanComponent v-else-if="draggable.shape == 'rectangular' && draggable.type == 'seat'" :ref="'component' + draggable.id" 
+                    :scale-factor="scaleFactor" :w="draggable.w" :h="draggable.h" :origin="draggable.origin" :starting-row="draggable.startingRow" 
+                    :data="draggable.data" :id="draggable.id" 
                     @seatSelected="( seat ) => { seatSelected( seat ) }" @seatDeselected="( seat ) => { seatDeselected( seat ) }"></rectangularSeatplanComponent>
 
                     <stagesSeatplanComponent :ref="'component' + draggable.id" v-else-if="draggable.type == 'stage'" :origin="draggable.origin" :shape="draggable.shape"></stagesSeatplanComponent>
@@ -110,12 +113,25 @@
                     }
                 };
 
-                
                 // Load cart
                 this.cart = localStorage.getItem( 'cart' ) ? JSON.parse( localStorage.getItem( 'cart' ) ): {};
                 
-                // Load seat plan
-                this.loadSeatplan();
+
+                // Load seatplan from server
+                let height = $( document ).height() * 0.8;
+                this.scaleFactor = ( height / 900 ) * this.zoomFactor;
+                fetch( localStorage.getItem( 'url' ) + '/getAPI/getSeatplan?location=' + sessionStorage.getItem( 'selectedTicket' ) ).then( res => { 
+                    if ( res.status === 200 ) {
+                        res.json().then( data => {
+                            this.draggables = this.scaleUp( data.data );
+                            sessionStorage.setItem( 'seatplan', JSON.stringify( data.data ) );
+                        } );
+                    } else if ( res.status === 500 ) {
+                        if ( sessionStorage.getItem( 'seatplan' ) ) {
+                            this.draggables = this.scaleUp( JSON.parse( sessionStorage.getItem( 'seatplan' ) ) );
+                        }
+                    }
+                } );
 
                 // TODO: remove scaleDown function again once backend is up
                 // TODO: Optimise for odd screen sizes and aspect ratios and fucking webkit
@@ -188,7 +204,6 @@
                 /* 
                     Load seatplan
                 */
-                // TODO: load from server
                 if ( sessionStorage.getItem( 'seatplan' ) ) {
                     this.draggables = this.scaleUp( JSON.parse( sessionStorage.getItem( 'seatplan' ) ) );
                 }
@@ -218,7 +233,7 @@
 
                 for ( let element in this.draggables ) {
                     this.draggables[ element ][ 'data' ] = { 'sector': this.draggables[ element ][ 'sector' ], 'unavailableSeats': {}, 'categoryInfo': { 'pricing': categoryDetails[ this.draggables[ element ][ 'category' ] ] } };
-                }               
+                }
 
                 if ( this.cart[ this.event.name ] ) {
                     let tickets = this.cart[ this.event.name ][ 'tickets' ];
@@ -286,6 +301,7 @@
                 localStorage.setItem( 'cart', JSON.stringify( this.cart ) );
             },
             reserveTicket ( option ) {
+                console.log( this.selectedSeat.componentID );
                 if ( option.status == 'ok' ) {
                     this.$refs[ 'component' + this.selectedSeat.componentID ][ 0 ].validateSeatSelection( this.selectedSeat, option.data );
                     this.cartHandling( 'select', option.data );

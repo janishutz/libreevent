@@ -181,11 +181,12 @@ export default {
     name: 'PurchaseView',
     data () {
         return {
-            settings: { 'accountRequired': true, 'requiresAddress': true, 'requiresAge': true, 'requiresSpecialNumber': true, 'specialNumberDisplayName': { 'de': '', 'en': 'id number' } },
+            settings: { 'accountRequired': true, 'requiresAddress': true, 'requiresAge': true, 'requiresSpecialNumber': true, 'specialRequirement': { 'display': { 'de': '', 'en': 'id number' }, 'rules': {} } },
             isAuthenticated: false,
             cart: {},
             backend: { 'currency': 'CHF' },
             cartNotEmpty: false,
+            userData: {},
         }
     },
     computed: {

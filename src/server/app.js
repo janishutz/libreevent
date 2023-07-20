@@ -48,6 +48,8 @@ let file = path.join( __dirname + '/../webapp/main/dist/index.html' );
 
 if ( settings.init ) {
     require( './admin/adminRoutes.js' )( app, settings ); // admin routes
+    require( './admin/adminAPIRoutes.js' )( app, settings ); // admin api routes
+    require( './backend/userAPIRoutes.js' )( app, settings ); // admin api routes
     require( './backend/userRoutes.js' )( app, settings ); // user routes
 } else {
     require( './setup/setupRoutes.js' )( app, settings ); // setup routes

@@ -71,7 +71,7 @@
         data() {
             return {
                 active: 0,
-                draggables: { 1: { 'x': 100, 'y':100, 'h': 100, 'w': 250, 'active': false, 'draggable': true, 'resizable': true, 'id': 1, 'origin': 1, 'shape':'rectangular', 'type': 'seat', 'startingRow': 1, 'seatNumberingPosition': 1, 'sector': 'A', 'text': { 'text': 'TestText', 'textSize': 20, 'colour': '#20FFFF' }, 'numberingDirection': 'left' } },
+                draggables: { 1: { 'x': 100, 'y':100, 'h': 100, 'w': 250, 'active': false, 'draggable': true, 'resizable': true, 'id': 1, 'origin': 1, 'shape':'rectangular', 'type': 'seat', 'startingRow': 1, 'seatNumberingPosition': 1, 'sector': 'A', 'text': { 'text': 'TestText', 'textSize': 20, 'colour': '#20FFFF' }, 'numberingDirection': 'left', 'seatNumberingPosition': 1, 'category': '1' } },
                 available: { 'redo': false, 'undo': false },
                 scaleFactor: 1,
                 sizePoll: null,
@@ -128,7 +128,41 @@
                     }
                 };
 
-                this.loadSeatplan();
+                // TODO: Create 1min interval saving
+                
+                /* 
+                Calculate scale factor (this adds support for differently sized screens)
+                900px is the "default" height
+                */
+               
+                let height = $( document ).height() * 0.8;
+                this.scaleFactor = ( height / 900 ) * this.zoomFactor;
+                
+                /* 
+                    Load seatplan
+                */
+                fetch( localStorage.getItem( 'url' ) + '/admin/getAPI/getSeatplanDraft?location=' + sessionStorage.getItem( 'locationID' ) ).then( res => { 
+                    if ( res.status === 200 ) {
+                        res.json().then( data => {
+                            this.draggables = this.scaleUp( data.data );
+                            sessionStorage.setItem( 'seatplan', JSON.stringify( data.data ) );
+                            for ( let element in this.draggables ) {
+                                if ( this.draggables[ element ].active ) {
+                                    this.draggables[ element ].active = false;
+                                }
+                            }
+                        } );
+                    } else if ( res.status === 500 ) {
+                        if ( sessionStorage.getItem( 'seatplan' ) ) {
+                            this.draggables = this.scaleUp( JSON.parse( sessionStorage.getItem( 'seatplan' ) ) );
+                        }
+                        for ( let element in this.draggables ) {
+                            if ( this.draggables[ element ].active ) {
+                                this.draggables[ element ].active = false;
+                            }
+                        }
+                    }
+                } );
 
                 if ( !sessionStorage.getItem( 'seatplan-history' ) ) {
                     sessionStorage.setItem( 'seatplan-history', JSON.stringify( { '1': this.scaleDown( this.draggables ) } ) );
@@ -163,10 +197,7 @@
 
                 let height = $( document ).height() * 0.8;
                 this.scaleFactor = ( height / 900 ) * this.zoomFactor;
-                /* 
-                    Load seatplan
-                */
-                // TODO: load from server
+
                 if ( sessionStorage.getItem( 'seatplan' ) ) {
                     this.draggables = this.scaleUp( JSON.parse( sessionStorage.getItem( 'seatplan' ) ) );
                 }
@@ -263,21 +294,59 @@
                 sessionStorage.setItem( 'seatplan', JSON.stringify( this.scaleDown( this.draggables ) ) );
             },
             saveDraft () {
-                // TODO: Save seat count and seat config to server as well
+                this.getSeatCount();
                 let progressNotification = this.$refs.notification.createNotification( 'Saving as draft', 5, 'progress', 'normal' );
                 sessionStorage.setItem( 'seatplan', JSON.stringify( this.scaleDown( this.draggables ) ) );
-                this.$refs.notification.createNotification( 'Saved as draft', 5, 'ok', 'normal' );
-                // TODO: Save to server and add warning if no component has a seat start point if any component is a seat component
+                const options = {
+                    method: 'post',
+                    body: JSON.stringify( { 'data':{ 'seatInfo': this.seatCountInfo, 'data': this.scaleDown( this.draggables ) }, 'location': sessionStorage.getItem( 'locationID' ) } ),
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'charset': 'utf-8'
+                    }
+                };
+                fetch( localStorage.getItem( 'url' ) + '/admin/api/saveSeatplanDraft', options ).then( res => {
+                    if ( res.status === 200 ) {
+                        res.text().then( text => {
+                            console.log( text );
+                            this.$refs.notification.cancelNotification( progressNotification );
+                            this.$refs.notification.createNotification( 'Saved as draft', 5, 'ok', 'normal' );
+                        } );
+                    } else if ( res.status === 403 ) {
+                        this.$refs.notification.cancelNotification( progressNotification );
+                        this.$refs.notification.createNotification( 'Unauthenticated', 5, 'ok', 'error' );
+                    }
+                } );
+                // TODO: add warning if no component has a seat start point if any component is a seat component
             },
             deploy () {
-                // TODO: Save to server
-                this.$refs.notification.createNotification( 'Deploying...', 5, 'progress', 'normal' );
-                this.$refs.notification.createNotification( 'Deployed successfully', 5, 'ok', 'normal' );
+                let deployNotification = this.$refs.notification.createNotification( 'Deploying...', 5, 'progress', 'normal' );
+                const options = {
+                    method: 'post',
+                    body: JSON.stringify( { 'data':{ 'seatInfo': this.seatCountInfo, 'data': this.scaleDown( this.draggables ) }, 'location': sessionStorage.getItem( 'locationID' ) } ),
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'charset': 'utf-8'
+                    }
+                };
+                fetch( localStorage.getItem( 'url' ) + '/admin/api/saveSeatplan', options ).then( res => {
+                    if ( res.status === 200 ) {
+                        res.text().then( text => {
+                            console.log( text );
+                            this.$refs.notification.cancelNotification( deployNotification );
+                            this.$refs.notification.createNotification( 'Deployed successfully', 5, 'ok', 'normal' );
+                        } );
+                    } else if ( res.status === 403 ) {
+                        this.$refs.notification.cancelNotification( deployNotification );
+                        this.$refs.notification.createNotification( 'Unauthenticated', 5, 'ok', 'error' );
+                    }
+                } );
+                // TODO: add warning if no component has a seat start point if any component is a seat component
             },
             addNewElement () {
                 // TODO: Check that this algorithm actually works in practice. If not, replace with one that
                 // searches for the first available ID or uses a var to determine ID.
-                this.draggables[ Object.keys( this.draggables ).length + 1 ] = { 'x': 100, 'y':100, 'h': 100, 'w': 250, 'active': false, 'draggable': true, 'resizable': true, 'id': Object.keys( this.draggables ).length + 1, 'origin': 1, 'shape':'rectangular', 'type': 'seat', 'startingRow': 1, 'seatNumberingPosition': Object.keys( this.draggables ).length, 'sector': 'A', 'text': { 'text': 'TestText', 'textSize': 20, 'colour': '#20FFFF' }, 'ticketCount': 1, 'numberingDirection': 'left' };
+                this.draggables[ Object.keys( this.draggables ).length + 1 ] = { 'x': 100, 'y':100, 'h': 100, 'w': 250, 'active': false, 'draggable': true, 'resizable': true, 'id': ( Object.keys( this.draggables ).length + 1 ), 'origin': 1, 'shape':'rectangular', 'type': 'seat', 'startingRow': 1, 'seatNumberingPosition': Object.keys( this.draggables ).length, 'sector': 'A', 'text': { 'text': 'TestText', 'textSize': 20, 'colour': '#20FFFF' }, 'ticketCount': 1, 'numberingDirection': 'left', 'category': '1' };
                 this.saveHistory();
                 document.getElementById( 'parent' ).scrollTop = 0;
                 document.getElementById( 'parent' ).scrollLeft = 0;

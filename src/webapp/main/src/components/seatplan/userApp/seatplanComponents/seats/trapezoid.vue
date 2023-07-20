@@ -14,9 +14,9 @@
                 <span class="material-symbols-outlined" :style="seat.scaling" @click="selectSeat( seat.row, seat.seat )" v-if="seat.status == 'av'" 
                 :title="seat.displayName + ', Available'">living</span>
                 <span class="material-symbols-outlined" :style="seat.scaling" v-else-if="seat.status == 'nav'"
-                :title="seat.displayName + ', Unavailable'">close</span>
+                :title="seat.displayName + ', Unavailable'">disabled_by_default</span>
                 <span class="material-symbols-outlined" :style="seat.scaling" v-else-if="seat.status == 'sel'"
-                :title="seat.displayName + ', Selected'">done</span>
+                :title="seat.displayName + ', Selected'" @click="deselectSeat( seat.row, seat.seat )">check_box</span>
             </div>
         </div>
     </div>
@@ -54,7 +54,11 @@ export default {
         },
         data: {
             type: Object,
-            "default": { 'sector': 'A', 'sectorCount': 1, 'unavailableSeats': { 'secAr0s0': true } }
+            "default": { 'sector': 'A', 'sectorCount': 1, 'unavailableSeats': { 'secAr0s0': 'nav' }, 'categoryInfo': { 'pricing': { '1': { 'displayName': 'Adults - CHF 20.-', 'value': '1', 'price': 20 }, '2': { 'displayName': 'Child (0 - 15.99y) - CHF 15.-', 'value': '2', 'price': 15 } } } }
+        },
+        id: {
+            type: Number,
+            "default": 1,
         }
     },
     data () {
@@ -79,7 +83,7 @@ export default {
                 let nn = 2 + ( row - 1 ) * 2; 
                 this.seats[ row ] = {};
                 for ( let n = 0; n < nn; n++ ) {
-                    this.seats[ row ][ n ] = { 'style': '', 'id': 'sec' + this.data.sector + 'r' + row + 's' + n, 'displayName': ( this.data.sectorCount > 1 ? 'Sector ' + this.data.sector + ', ' : '' ) + 'Row ' + ( row + 1 ) + ', Seat ' + ( n + 1 ), 'status': 'av', 'row': row, 'seat': n };
+                    this.seats[ row ][ n ] = { 'style': '', 'id': 'sec' + this.data.sector + 'r' + row + 's' + n, 'displayName': ( this.data.sectorCount > 1 ? 'Sector ' + this.data.sector + ', ' : '' ) + 'Row ' + row + ', Seat ' + ( n + 1 ), 'status': 'av', 'row': row, 'seat': n };
                     let side = n * sideOffset;
                     if ( this.origin === 1 ) {
                         this.seats[ row ][ n ][ 'style' ] = `bottom: ${ ( side + 5 ) * this.scaleFactor }px; left: ${ ( row * sideOffset * 2 - side ) * this.scaleFactor }px; rotate: ${ angle }rad`;
@@ -90,20 +94,43 @@ export default {
                     } else if ( this.origin === 4 ) {
                         this.seats[ row ][ n ][ 'style' ] = `top: ${ ( side + 5 ) * this.scaleFactor }px; left: ${ ( row * sideOffset * 2 - side ) * this.scaleFactor }px; rotate: ${ Math.PI - angle }rad`;
                     }
+
                     this.seats[ row ][ n ][ 'scaling' ] = `font-size: ${this.scaleFactor * 200}%; `;
+
+                    if ( this.data.categoryInfo.color ) {
+                        this.seats[ row ][ n ][ 'style' ] += `color: ${ this.data.categoryInfo.color.fg ? this.data.categoryInfo.color.fg : 'black' }; background-color: ${ this.data.categoryInfo.color.bg ? this.data.categoryInfo.color.bg : 'rgba( 0, 0, 0, 0 )' }`;
+                    }
+
+                    if ( this.data.unavailableSeats ) {
+                        if ( this.data.unavailableSeats[ this.seats[ row ][ n ][ 'id' ] ] ) {
+                            this.seats[ row ][ n ][ 'status' ] = this.data.unavailableSeats[ this.seats[ row ][ n ][ 'id' ] ];
+                        }
+                    }
                 }
             }
         },
         setScaleFactor () {
             for ( let row in this.seats ) {
                 for ( let seat in this.seats[ row ] ) {
-                    let styles = this.seats[ row ][ seat ].style.substring( this.seats[ row ][ seat ].style.indexOf( ';' ) + 1 );
-                    this.seats[ row ][ seat ].style = `font-size: ${this.scaleFactor * 200}%;` + styles;
+                    this.seats[ row ][ seat ].scaling = `font-size: ${this.scaleFactor * 200}%;`;
                 }
             }
         },
         selectSeat ( row, seat ) {
-            console.log( row + ' ' + seat );
+            let selectedSeat = this.seats[ row ][ seat ];
+            selectedSeat[ 'sector' ] = this.data.sector;
+            selectedSeat[ 'option' ] = this.data.categoryInfo.pricing;
+            selectedSeat[ 'componentID' ] = this.id;
+            this.$emit( 'seatSelected', selectedSeat );
+        },
+        deselectSeat( row, seat ) {
+            this.$emit( 'seatDeselected', this.seats[ row ][ seat ] );
+            this.seats[ row ][ seat ][ 'status' ] = 'av';
+        },
+        validateSeatSelection( seatObject, selectedTicketOption ) {
+            console.log( seatObject );
+            this.seats[ seatObject[ 'row' ] ][ seatObject[ 'seat' ] ][ 'status' ] = 'sel';
+            this.seats[ seatObject[ 'row' ] ][ seatObject[ 'seat' ] ][ 'ticketOption' ] = selectedTicketOption;
         }
     },
     watch: {
