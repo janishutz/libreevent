@@ -56,6 +56,8 @@ if ( settings.init ) {
     file = path.join( __dirname + '/../webapp/setup/dist/index.html' );
 }
 
+// TODO: Create plugin loader and manager
+
 
 app.use( ( request, response ) => {
     response.sendFile( file );

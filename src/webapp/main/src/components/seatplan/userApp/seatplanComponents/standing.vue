@@ -94,7 +94,7 @@ export default {
                 this.style = 'border-style: none none none solid';
                 this.circularStyle = 'top: -100%; right: 100%;';
             }
-        }
+        },
     },
     watch: {
         origin ( value ) {

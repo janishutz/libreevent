@@ -31,7 +31,8 @@
                     @seatSelected="( seat ) => { seatSelected( seat ) }" @seatDeselected="( seat ) => { seatDeselected( seat ) }"></rectangularSeatplanComponent>
 
                     <stagesSeatplanComponent :ref="'component' + draggable.id" v-else-if="draggable.type == 'stage'" :origin="draggable.origin" :shape="draggable.shape"></stagesSeatplanComponent>
-                    <standingSeatplanComponent :ref="'component' + draggable.id" v-else-if="draggable.type == 'stand'" :origin="draggable.origin" :shape="draggable.shape"></standingSeatplanComponent>
+                    <standingSeatplanComponent :ref="'component' + draggable.id" v-else-if="draggable.type == 'stand'" :origin="draggable.origin" 
+                    :shape="draggable.shape" @click="standing( draggable.id )"></standingSeatplanComponent>
                     <textFieldSeatplanComponent :ref="'component' + draggable.id" v-else-if="draggable.type == 'text'" :text="draggable.text.text" :text-size="draggable.text.textSize" :colour="draggable.text.colour" :origin="draggable.origin" :scale-factor="scaleFactor"></textFieldSeatplanComponent>
                 </Vue3DraggableResizable>
             </div>
@@ -43,7 +44,8 @@
         </div>
         <sideCartView :cart="cart" ref="cart"></sideCartView>
         <notifications ref="notification" location="topleft"></notifications>
-        <popups ref="popups" size="normal" @data="data => { reserveTicket( data ) }"></popups>
+        <popups ref="popups" size="normal" @data="data => { reserveTicket( data ) }"
+            @ticket="data => { standingTicketHandling( data ) }"></popups>
     </div>
 </template>
 
@@ -77,7 +79,7 @@
         data() {
             return {
                 draggables: { 1: { 'x': 100, 'y':100, 'h': 100, 'w': 250, 'active': false, 'draggable': true, 'resizable': true, 'id': 1, 'origin': 1, 'shape':'rectangular', 'type': 'seat', 'startingRow': 1, 'seatCountingStartingPoint': 1, 'sector': 'A', 'text': { 'text': 'TestText', 'textSize': 20, 'colour': '#20FFFF' }, 'ticketCount': 1, 'category': 1 } },
-                event: { 'name': 'TestEvent2', 'location': 'TestLocation2', 'date': '2023-07-15', 'RoomName': 'TestRoom2', 'currency': 'CHF', 'categories': { '1': { 'price': { '1':25, '2':35 }, 'bg': 'black', 'fg': 'white', 'name': 'Category 1' }, '2': { 'price': { '1':15, '2':20 }, 'bg': 'green', 'fg': 'white', 'name': 'Category 2' } }, 'ageGroups': { '1':{ 'id': 1, 'name':'Child', 'age':'0 - 15.99' }, '2':{ 'id': 2, 'name': 'Adult' } }, 'ageGroupCount': 2, 'maxTickets': 2 },
+                event: { 'name': 'TestEvent2', 'location': 'TestLocation2', 'date': '2023-07-15', 'RoomName': 'TestRoom2', 'currency': 'CHF', 'categories': { '1': { 'price': { '1':25, '2':35 }, 'bg': 'black', 'fg': 'white', 'name': 'Category 1' }, '2': { 'price': { '1':15, '2':20 }, 'bg': 'green', 'fg': 'white', 'name': 'Category 2' } }, 'ageGroups': { '1':{ 'id': 1, 'name':'Child', 'age':'0 - 15.99' }, '2':{ 'id': 2, 'name': 'Adult' } }, 'maxTickets': 2 },
                 available: { 'redo': false, 'undo': false },
                 scaleFactor: 1,
                 sizePoll: null,
@@ -133,7 +135,39 @@
                     }
                 } );
 
-                // TODO: remove scaleDown function again once backend is up
+                // Mark all selected seats + all unavailable seats
+                // { 'sector': 'A', 'sectorCount': 1, 'unavailableSeats': { 'secAr0s0': 'nav' }, 'categoryInfo': { 'pricing': { '1': { 'displayName': 'Adults - CHF 20.-', 'value': 'adult', 'price': 20 }, '2': { 'displayName': 'Child (0 - 15.99y) - CHF 15.-', 'value': 'child', 'price': 15 } } } }
+                let categoryDetails = {};
+                for ( let category in this.event.categories ) {
+                    categoryDetails[ category ] = {};
+                    for ( let group in this.event.ageGroups ) {
+                        categoryDetails[ category ][ group ] = {};
+                        categoryDetails[ category ][ group ] = { 'displayName': this.event.ageGroups[ group ].name + ( this.event.ageGroups[ group ].age ? ' (' + this.event.ageGroups[ group ].age + ')' : '' ) + ' - ' + this.event.currency + ' ' + this.event.categories[ category ].price[ group ], 'value': group, 'price': this.event.categories[ category ].price[ group ] };
+                    }
+                }
+
+                for ( let element in this.draggables ) {
+                    this.draggables[ element ][ 'data' ] = { 'sector': this.draggables[ element ][ 'sector' ], 'unavailableSeats': {}, 'categoryInfo': { 'pricing': categoryDetails[ this.draggables[ element ][ 'category' ] ] } };
+                }
+
+                if ( this.cart[ this.event.name ] ) {
+                    let tickets = this.cart[ this.event.name ][ 'tickets' ];
+                    for ( let ticket in tickets ) {
+                        this.draggables[ tickets[ ticket ].comp ][ 'data' ][ 'unavailableSeats' ][ ticket ] = 'sel';
+                    }
+                }
+
+                // TODO: Check if all seats are available
+                let allSeatsAvailable = true;
+                // Method: Server sends all user selected seats + all selected seats. If seat is in both
+                // then selected, if just in all selected, taken, else available.
+
+                if ( !allSeatsAvailable ) {
+                    setTimeout( () => {
+                        self.$refs.popups.openPopup( 'We are sorry to tell you that since the last time the seat plan was refreshed, one or more of the seats you have selected has/have been taken.', {}, 'string' );
+                    }, 500 );
+                }
+
                 // TODO: Optimise for odd screen sizes and aspect ratios and fucking webkit
                 sessionStorage.setItem( 'seatplan', JSON.stringify( this.scaleDown( this.draggables ) ) );
             },
@@ -207,40 +241,6 @@
                 if ( sessionStorage.getItem( 'seatplan' ) ) {
                     this.draggables = this.scaleUp( JSON.parse( sessionStorage.getItem( 'seatplan' ) ) );
                 }
-
-                // TODO: Check if all seats are available
-                let allSeatsAvailable = true;
-                // Method: Server sends all user selected seats + all selected seats. If seat is in both
-                // then selected, if just in all selected, taken, else available.
-
-                let self = this;
-                if ( !allSeatsAvailable ) {
-                    setTimeout( () => {
-                        self.$refs.popups.openPopup( 'We are sorry to tell you that since the last time the seat plan was refreshed, one or more of the seats you have selected has/have been taken.', {}, 'string' );
-                    }, 500 );
-                }
-
-                // Mark all selected seats + all unavailable seats
-                // { 'sector': 'A', 'sectorCount': 1, 'unavailableSeats': { 'secAr0s0': 'nav' }, 'categoryInfo': { 'pricing': { '1': { 'displayName': 'Adults - CHF 20.-', 'value': 'adult', 'price': 20 }, '2': { 'displayName': 'Child (0 - 15.99y) - CHF 15.-', 'value': 'child', 'price': 15 } } } }
-                let categoryDetails = {};
-                for ( let category in this.event.categories ) {
-                    categoryDetails[ category ] = {};
-                    for ( let group in this.event.ageGroups ) {
-                        categoryDetails[ category ][ group ] = {};
-                        categoryDetails[ category ][ group ] = { 'displayName': this.event.ageGroups[ group ].name + ( this.event.ageGroups[ group ].age ? ' (' + this.event.ageGroups[ group ].age + ')' : '' ) + ' - ' + this.event.currency + ' ' + this.event.categories[ category ].price[ group ], 'value': group, 'price': this.event.categories[ category ].price[ group ] };
-                    }
-                }
-
-                for ( let element in this.draggables ) {
-                    this.draggables[ element ][ 'data' ] = { 'sector': this.draggables[ element ][ 'sector' ], 'unavailableSeats': {}, 'categoryInfo': { 'pricing': categoryDetails[ this.draggables[ element ][ 'category' ] ] } };
-                }
-
-                if ( this.cart[ this.event.name ] ) {
-                    let tickets = this.cart[ this.event.name ][ 'tickets' ];
-                    for ( let ticket in tickets ) {
-                        this.draggables[ tickets[ ticket ].comp ][ 'data' ][ 'unavailableSeats' ][ ticket ] = 'sel';
-                    }
-                }
             },
             scaleUp ( valueArray ) {
                 const allowedAttributes = [ 'w', 'h', 'x', 'y' ];
@@ -274,7 +274,6 @@
             },
             seatSelected ( seat ) {
                 this.selectedSeat = seat;
-                console.log( seat );
                 if ( Object.keys( seat.option ).length > 1 ) {
                     this.$refs.popups.openPopup( 'Please choose a ticket option', seat.option, 'selection', 'adult' );
                 } else {
@@ -283,7 +282,6 @@
             },
             cartHandling ( operation, data ) {
                 if ( operation === 'select' ) {
-                    console.log( this.selectedSeat.option );
                     if ( this.cart[ this.event.name ] ) {
                         this.cart[ this.event.name ][ 'tickets' ][ this.selectedSeat.id ] = { 'displayName': this.selectedSeat.displayName, 'price': this.selectedSeat.option[ data ].price, 'id': this.selectedSeat.id, 'option': data, 'comp': this.selectedSeat.componentID };
                     } else {
@@ -301,17 +299,40 @@
                 localStorage.setItem( 'cart', JSON.stringify( this.cart ) );
             },
             reserveTicket ( option ) {
-                console.log( this.selectedSeat.componentID );
                 if ( option.status == 'ok' ) {
                     this.$refs[ 'component' + this.selectedSeat.componentID ][ 0 ].validateSeatSelection( this.selectedSeat, option.data );
                     this.cartHandling( 'select', option.data );
                 }
-                // TODO: Make call to server to reserve ticket when data is returned & save to localStorage array.
+                // TODO: Make call to server to reserve ticket when data is returned
             },
             seatDeselected ( seat ) {
                 this.selectedSeat = seat;
                 this.cartHandling( 'deselect' );
-                // TODO: Make call to server to deselect ticket & delete from localStorage array and delete eventArray if empty!
+                // TODO: Make call to server to deselect ticket
+            },
+            standing ( id ) {
+                const d = this.draggables[ id ];
+                const evG = this.event.ageGroups;
+                let count = {};
+                for ( let ageGroup in evG ) {
+                    if ( this.cart[ 'ticket' + id + '_' + ageGroup ] ) {
+                        count[ ageGroup ] = this.cart[ 'ticket' + id + '_' + ageGroup ].count;
+                    } else {
+                        count[ ageGroup ] = 0;
+                    }
+                }
+                this.$refs.popups.openPopup( 'Select tickets', { 
+                    'id': id,
+                    'max': d.ticketCount, 
+                    'name': 'Sector ' + d.sector + ' Ticket ' + id,
+                    'ageGroups': this.event.ageGroups,
+                    'currency': this.event.currency,
+                    'price': this.event.categories[ d.category ],
+                    'count': count
+                }, 'tickets' );
+            },
+            standingTicketHandling ( data ) {
+                console.log( data );
             }
         },
         created () {

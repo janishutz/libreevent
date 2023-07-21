@@ -42,9 +42,9 @@
                 this.$router.push( '/tickets' );
             }
             this.eventID = sessionStorage.getItem( 'selectedTicket' );
-            if ( this.eventID == 'test' ) {
-                this.hasSeatplan = false;
-            }
+            // if ( this.eventID == 'test' ) {
+            //     this.hasSeatplan = false;
+            // }
         }
     };
 </script>

@@ -63,11 +63,11 @@
         </div>
         <div class="special-settings">
             <h3>General Settings</h3>
-            <p>Currency codes used must be valid ISO 4217 codes. Read more on <a href="https://libreevent.janishutz.com/docs/admin-panel/events#currency">this page</a> of the documentation <!-- https://en.wikipedia.org/wiki/ISO_4217#List_of_ISO_4217_currency_codes"--></p>
+            <p>Currency codes used must be valid ISO 4217 codes. Read more on <a href="https://libreevent.janishutz.com/docs/admin-panel/events#currency" target="_blank">this page</a> of the documentation <!-- https://en.wikipedia.org/wiki/ISO_4217#List_of_ISO_4217_currency_codes"--></p>
             <settings v-model:settings="specialSettings"></settings>
         </div>
         <div>
-            <p>Please read into the documentation of this section if you want to use the requirements. It requires specific syntax to work. See <a href="https://libreevent.janishutz.com/docs/admin-panel/events#special-requirements">here</a> for more information</p>
+            <p>Please read into the documentation of this section if you want to use the requirements. It requires specific syntax to work. See <a href="https://libreevent.janishutz.com/docs/admin-panel/events#special-requirements" target="_blank">here</a> for more information</p>
         </div>
         <notifications ref="notification" location="topright"></notifications>
     </div>
@@ -103,6 +103,9 @@
 <script>
     import settings from '@/components/settings/settings.vue';
     import notifications from '@/components/notifications/notifications.vue';
+
+    // TODO: When loading data form server, also load categories of this seat plan 
+    // and from it construct the array, if not set already.
 
     export default {
         name: 'TicketsDetailsView',
@@ -185,6 +188,11 @@
                         'type': 'text',
                     },
                 }
+            }
+        },
+        methods: {
+            save () {
+                
             }
         }
     };

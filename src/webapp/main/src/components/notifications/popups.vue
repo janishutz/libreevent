@@ -42,6 +42,28 @@
                             <button class="select-button" @click="closePopupAdvanced( 'ok', selectOption.value )">{{ selectOption.displayName }}</button>
                         </div>
                     </div>
+                    <div v-else-if="contentType === 'tickets'" class="options">
+                        <h3>{{ data.message }}</h3>
+                        <table>
+                            <tr v-for="ticketOption in data.options.ageGroups">
+                                <td>
+                                    {{ ticketOption.name }} <div style="display: inline" v-if="ticketOption.age">({{ ticketOption.age }})</div> 
+                                </td>
+                                <td>
+                                    {{ data.options.currency }} {{ data.options.price[ ticketOption.id ] }}
+                                </td>
+                                <td>
+                                    <span class="material-symbols-outlined controls" @click="selectTicket( ticketOption.id )">add</span> 
+                                    {{ data.options.count[ ticketOption.id ] }}
+                                    <span class="material-symbols-outlined controls" @click="deselectTicket( ticketOption.id )">remove</span>
+                                </td>
+                            </tr>
+                        </table>
+                        <div style="width: 100%; margin-top: 3%;">
+                            <button @click="submitTicket()" title="Save changes">Save</button>
+                            <button @click="closePopup( 'cancel' )" title="Cancel changes">Cancel</button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -66,7 +88,7 @@
         data () {
             return {
                 contentType: 'dropdown',
-                data: {}
+                data: {},
             }
         },
         methods: {
@@ -76,14 +98,32 @@
                     this.$emit( 'data', { 'data': this.data.selected, 'status': message } );
                 }
             },
+            selectTicket ( option ) {
+                let total = 0;
+                for ( let i in this.data.options.count ) {
+                    total += this.data.options.count[ i ];
+                }
+
+                if ( total < this.data.options.max ) {
+                    this.data.options.count[ option ] += 1;
+                }
+            },
+            deselectTicket ( option ) {
+                if ( this.data.options.count[ option ] > 0 ) {
+                    this.data.options.count[ option ] -= 1;
+                }
+            },
+            submitTicket () {
+                $( '#popup-backdrop' ).fadeOut( 300 );
+                this.$emit( 'ticket', { 'data': this.data.options.count, 'component': this.data.options.id } );
+            },
             closePopupAdvanced ( message, data ) {
                 this.data[ 'selected' ] = data;
                 this.closePopup( message );
             },
             openPopup ( message, options, dataType, selected ) {
-                let data = { 'message': message ? message : 'No message defined on method call!!', 'options': options ? options : { '1': { 'value': 'undefined', 'displayName': 'No options specified in call' } }, 'selected': selected ? selected : '' };
-                this.data = data;
-                this.contentType = dataType ? dataType : 'string';
+                this.data = { 'message': message ?? 'No message defined on method call!!', 'options': options ?? { '1': { 'value': 'undefined', 'displayName': 'No options specified in call' } }, 'selected': selected ?? '' };
+                this.contentType = dataType ?? 'string';
                 $( '#popup-backdrop' ).fadeIn( 300 );
             }
         },
@@ -199,5 +239,14 @@
 
     .select-button:hover {
         background-color: var( --hover-color ) !important;
+    }
+
+    .controls {
+        user-select: none;
+        cursor: pointer;
+        font-size: 100%;
+        font-weight: bold;
+        border: solid var( --primary-color ) 1px;
+        border-radius: 100%;
     }
 </style>
