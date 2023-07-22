@@ -115,6 +115,13 @@
                     }
                 };
 
+                this.seatPlanInit();
+
+                window.addEventListener( 'visibilitychange', ( e ) => {
+                    this.seatPlanInit();
+                }, 1 );
+            },
+            seatPlanInit () {
                 // Load cart
                 this.cart = localStorage.getItem( 'cart' ) ? JSON.parse( localStorage.getItem( 'cart' ) ): {};
                 
@@ -314,10 +321,16 @@
                 const d = this.draggables[ id ];
                 const evG = this.event.ageGroups;
                 let count = {};
-                for ( let ageGroup in evG ) {
-                    if ( this.cart[ 'ticket' + id + '_' + ageGroup ] ) {
-                        count[ ageGroup ] = this.cart[ 'ticket' + id + '_' + ageGroup ].count;
-                    } else {
+                if ( this.cart[ this.event.name ] ) {
+                    for ( let ageGroup in evG ) {
+                        if ( this.cart[ this.event.name ][ 'tickets' ][ 'ticket' + id + '_' + ageGroup ] ) {
+                            count[ ageGroup ] = this.cart[ this.event.name ][ 'tickets' ][ 'ticket' + id + '_' + ageGroup ].count;
+                        } else {
+                            count[ ageGroup ] = 0;
+                        }
+                    }
+                } else {
+                    for ( let ageGroup in evG ) {
                         count[ ageGroup ] = 0;
                     }
                 }
@@ -332,7 +345,26 @@
                 }, 'tickets' );
             },
             standingTicketHandling ( data ) {
-                console.log( data );
+                if ( !this.cart[ this.event.name ] ) {
+                    this.cart[ this.event.name ] = { 'displayName': this.event.name, 'tickets': {} };
+                }
+
+                for ( let group in data.data ) {
+                    if ( !this.cart[ this.event.name ][ 'tickets' ][ 'ticket' + data.component + '_' + group ] ) {
+                        if ( data.data[ group ] > 0 ) {
+                            this.cart[ this.event.name ][ 'tickets' ][ 'ticket' + data.component + '_' + group ] = { 'displayName': 'Ticket ' + data.component + ' (' + this.event.ageGroups[ group ].name + ')', 'price': this.event.categories[ this.draggables[ data.component ].category ].price[ group ], 'id': 'ticket' + data.component + '_' + group, 'count': data.data[ group ], 'comp': data.component };
+                        } else {
+                            delete this.cart[ this.event.name ][ 'tickets' ][ 'ticket' + data.component + '_' + group ];
+                        }
+                    }
+                }
+
+                if ( Object.keys( this.cart[ this.event.name ][ 'tickets' ] ).length < 1 ) {
+                    delete this.cart[ this.event.name ];
+                }
+
+                this.$refs.cart.calculateTotal();
+                localStorage.setItem( 'cart', JSON.stringify( this.cart ) );
             }
         },
         created () {

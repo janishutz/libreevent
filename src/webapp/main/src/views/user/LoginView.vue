@@ -58,7 +58,7 @@
                             res.json().then( json => {
                                 if ( json.status === 'ok' ) {
                                     this.userStore.setUserAuth( true );
-                                    this.$router.push( sessionStorage.getItem( 'redirect' ) ? sessionStorage.getItem( 'redirect' ) : '/account' );
+                                    this.$router.push( sessionStorage.getItem( 'redirect' ) ?? '/account' );
                                     sessionStorage.removeItem( 'redirect' );
                                 } else if ( json.status === '2fa' ) {
                                     this.userStore.setUser2fa( true );

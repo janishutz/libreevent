@@ -6,7 +6,7 @@
                 <div class="message-container">
                     <div v-if="contentType === 'string'" class="options">
                         <h3>{{ data.message }}</h3>
-                        <div style="width: 100%; margin-top: 3%;">
+                        <div class="button-wrapper">
                             <button @click="closePopup( 'ok' )" title="Close popup">Ok</button>
                         </div>
                     </div>
@@ -14,14 +14,14 @@
                     <div v-else-if="contentType === 'settings'" class="options">
                         <h3>{{ data.message }}</h3>
                         <settings v-model:settings="data.options"></settings>
-                        <div style="width: 100%; margin-top: 3%;">
+                        <div class="button-wrapper">
                             <button @click="closePopup( 'ok' )" title="Save changes">Save</button>
                             <button @click="closePopup( 'cancel' )" title="Cancel changes">Cancel</button>
                         </div>
                     </div>
                     <div v-else-if="contentType === 'confirm'" class="confirm options">
                         <h3>{{ data.message }}</h3>
-                        <div style="width: 100%; margin-top: 3%;">
+                        <div class="button-wrapper">
                             <button @click="closePopup( 'ok' )" title="Confirm operation">Ok</button>
                             <button @click="closePopup( 'cancel' )" title="Cancel operation">Cancel</button>
                         </div>
@@ -31,7 +31,7 @@
                         <select id="select" v-model="data.selected">
                             <option v-for="selectOption in data.options" :value="selectOption.value">{{ selectOption.displayName }}</option>
                         </select>
-                        <div style="width: 100%; margin-top: 3%;">
+                        <div class="button-wrapper">
                             <button @click="closePopup( 'ok' )" title="Save changes">Save</button>
                             <button @click="closePopup( 'cancel' )" title="Cancel changes">Cancel</button>
                         </div>
@@ -59,7 +59,7 @@
                                 </td>
                             </tr>
                         </table>
-                        <div style="width: 100%; margin-top: 3%;">
+                        <div class="button-wrapper">
                             <button @click="submitTicket()" title="Save changes">Save</button>
                             <button @click="closePopup( 'cancel' )" title="Cancel changes">Cancel</button>
                         </div>
@@ -149,6 +149,15 @@
         justify-content: center;
         align-items: center;
         flex-direction: column;
+    }
+
+    .button-wrapper {
+        width: 100%;
+        margin-top: 3%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: row;
     }
 
     .close-wrapper {

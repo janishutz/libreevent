@@ -105,6 +105,9 @@ export default {
         }
     },
     created () {
+        window.addEventListener( 'visibilitychange', ( e ) => {
+            this.cart = localStorage.getItem( 'cart' ) ? JSON.parse( localStorage.getItem( 'cart' ) ): {};
+        }, 1 );
         this.cart = localStorage.getItem( 'cart' ) ? JSON.parse( localStorage.getItem( 'cart' ) ): {};
         // this.loadTickets();
     }

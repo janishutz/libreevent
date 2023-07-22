@@ -130,6 +130,10 @@
             },
         },
         created () {
+            window.addEventListener( 'visibilitychange', ( e ) => {
+                this.cart = localStorage.getItem( 'cart' ) ? JSON.parse( localStorage.getItem( 'cart' ) ): {};
+                this.calculateTotal();
+            }, 1 );
             this.cart = localStorage.getItem( 'cart' ) ? JSON.parse( localStorage.getItem( 'cart' ) ): {};
             this.calculateTotal();
         }

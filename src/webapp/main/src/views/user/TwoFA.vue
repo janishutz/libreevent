@@ -5,8 +5,8 @@
         <div class="code-container" v-if="code[ 1 ] != ''">
             <p>Open the link in the email and enter this code:</p>
             <div class="code">
-                <div class="code-sub" id="code-part1">{{ code[1] }}</div>
-                <div class="code-sub" id="code-part2">{{ code[2] }}</div>
+                <div class="code-sub" id="code-part1">{{ code[ 1 ] }}</div>
+                <div class="code-sub" id="code-part2">{{ code[ 2 ] }}</div>
             </div>
         </div>
         <notifications ref="notification" location="bottomright" size="bigger"></notifications>
@@ -42,8 +42,7 @@
                     source.onmessage = ( e ) => {
                         if ( e.data === 'authenticated' ) {
                             self.userStore.setUserAuth( true );
-                            self.$router.push( '/account' );
-                            console.log( e.data );
+                            self.$router.push( sessionStorage.getItem( 'redirect' ) ?? '/account' );
                         }
                     }
 
@@ -52,11 +51,10 @@
                         self.$refs.notification.cancelNotification( startNotification );
                     };
                     
-                    source.addEventListener( 'error', function(e) {
-                        if (e.eventPhase == EventSource.CLOSED) source.close();
+                    source.addEventListener( 'error', function( e ) {
+                        if ( e.eventPhase == EventSource.CLOSED ) source.close();
 
-                        if (e.target.readyState == EventSource.CLOSED) {
-                            console.log( e );
+                        if ( e.target.readyState == EventSource.CLOSED ) {
                             self.$refs.notification.cancelNotification( startNotification );
                             self.$refs.notification.createNotification( 'Could not connect to status service', 5, 'error', 'normal' );
                         }
