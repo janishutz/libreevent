@@ -85,6 +85,10 @@
         font-size: 110%;
         margin: 0;
     }
+
+    .tickets-table {
+        margin-left: 3%;
+    }
 </style>
 
 <script>

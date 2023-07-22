@@ -61,6 +61,7 @@
                     }, false)
                 }, 300 );
             } else {
+                // TODO: Add ping method (pings every 5 sec)
                 setTimeout( () => {
                     this.$refs.notification.createNotification( 'Unsupported browser detected. Redirection might take longer to occur!', 20, 'warning', 'normal' );
                 }, 300 );

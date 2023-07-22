@@ -117,15 +117,6 @@ export default [
         }
     },
     {
-        path: '/pay',
-        name: 'pay',
-        component: () => import( '@/views/purchasing/PaymentView.vue' ),
-        meta: {
-            title: 'Pay - libreevent',
-            transition: 'scale',
-        }
-    },
-    {
         path: '/admin/seatplan',
         name: 'adminSeatplanEditor',
         component: () => import( '@/views/admin/events/EditorView.vue' ),

@@ -38,8 +38,6 @@ let authRequired = false;
 
 router.beforeEach( ( to, from ) => {
     let userStore = useUserStore();
-    let backendStore = useBackendStore();
-    backendStore.loadVisitedSetupPages();
     let isUserAuthenticated = userStore.getUserAuthenticated;
     let isAdminAuthenticated = userStore.getAdminAuthenticated;
 
@@ -53,8 +51,6 @@ router.beforeEach( ( to, from ) => {
         return { name: 'account' };
     } else if ( !isUserAuthenticated && to.name === 'pay' ) {
         return { name: 'purchase' };
-    } else if ( to.name.substring( 0, 5 ) === 'setup' && !backendStore.getVisitedSetupPages[ to.name.substring( 5 ).toLowerCase() ] && to.name.substring( 5 ).toLowerCase() !== 'start' && to.name.substring( 5 ).toLowerCase() !== 'root' ) {
-        return { name: 'setupStart' };
     } else if ( to.name === '2fa' && !userStore.getUserTwoFACompliant ) {
         return { name: 'login' };
     } else if ( to.name === 'Admin2fa' && !userStore.getAdminTwoFACompliant ) {

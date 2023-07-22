@@ -20,12 +20,28 @@
                 <div class="data">
                     <h2>Billing</h2>
                     <table class="billing-info-table">
-                        <tr>
+                        <tr v-if="settings.requiresAddress">
                             <td>Street and house number</td>
-                            <td><input type="text" name="address" id="address"></td>
+                            <td><input type="text" name="street" id="street" v-bind="userData.street" placeholder="Street"> <input type="text" name="houseNumber" id="houseNumber" v-bind="userData.houseNumber" placeholder="House number"></td>
+                        </tr>
+                        <tr v-if="settings.requiresAddress">
+                            <td>Zip Code and City</td>
+                            <td><input type="text" name="zip" id="zip" v-bind="userData.zip" placeholder="Zip Code"> <input type="text" name="city" id="city" v-bind="userData.city" placeholder="City"></td>
+                        </tr>
+                        <tr v-if="settings.requiresAddress">
+                            <td>Country</td>
+                            <td><input type="text" name="country" id="country" v-bind="userData.zip" placeholder="Country"></td>
+                        </tr>
+                        <tr v-if="settings.requiresAge">
+                            <td>Birth date</td>
+                            <td><input type="date" name="bday" id="bday" v-bind="userData.bday"></td>
                         </tr>
                     </table>
-                    <router-link to="/pay" id="buy-button">Buy now</router-link>
+
+                    <div v-if="settings.requiresSpecialToken">
+                        <!-- TODO: Implement -->
+                    </div>
+                    <button id="buy-button" @click="preparePayment();">Buy now</button>
                 </div>
                 <div class="cart">
                     <div class="cart-list">
@@ -181,7 +197,7 @@ export default {
     name: 'PurchaseView',
     data () {
         return {
-            settings: { 'accountRequired': true, 'requiresAddress': true, 'requiresAge': true, 'requiresSpecialNumber': true, 'specialRequirement': { 'display': { 'de': '', 'en': 'id number' }, 'rules': {} } },
+            settings: { 'accountRequired': true, 'requiresAddress': true, 'requiresAge': true, 'requiresSpecialToken': true, 'specialRequirement': { 'display': { 'de': '', 'en': 'id number' }, 'rules': {} } },
             isAuthenticated: false,
             cart: {},
             backend: { 'currency': 'CHF' },
@@ -196,18 +212,17 @@ export default {
     methods: {
         loadData () {
             this.cartNotEmpty = false;
-            let tickets = JSON.parse( localStorage.getItem( 'cart' ) );
+            let cart = JSON.parse( localStorage.getItem( 'cart' ) );
 
-            console.log( tickets );
-            for ( let event in tickets ) {
-                if ( Object.keys( tickets[ event ][ 'tickets' ] ).length  ) {
+            for ( let event in cart ) {
+                if ( Object.keys( cart[ event ][ 'tickets' ] ).length  ) {
                     this.cartNotEmpty = true;
                 };
             }
 
             
             if ( this.cartNotEmpty ) {
-                this.cart = tickets;
+                this.cart = cart;
                 this.isAuthenticated = this.userStore.getUserAuthenticated;
                 this.settings.accountRequired = !this.backendStore.getIsGuestPurchaseAllowed;
                 this.calculateTotal();
@@ -225,6 +240,14 @@ export default {
         },
         setRedirect () {
             sessionStorage.setItem( 'redirect', '/purchase' );
+        },
+        preparePayment () {
+            /* 
+                How it works: Request to payment handling route of server -> get URL for payment
+                -> Redirect to that URL -> On completion payment provider redirects to complete
+                route (plain HTML document) which then awaits processing completion and gives the
+                user a link to download the ticket. A mail has been sent to user automatically.
+            */
         }
     },
     created () {
