@@ -36,7 +36,7 @@
                 <span class="material-symbols-outlined empty-cart">remove_shopping_cart</span>
             </div>
         </div>
-        <popups ref="popups" size="normal" @data="data => { verifyTicketDelete( data.status ) }"></popups>
+        <popups ref="popups" size="small" @data="data => { verifyTicketDelete( data.status ) }"></popups>
     </div>
 </template>
 

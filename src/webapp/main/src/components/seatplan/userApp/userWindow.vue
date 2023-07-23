@@ -116,16 +116,11 @@
                 };
 
                 this.seatPlanInit();
-
-                window.addEventListener( 'visibilitychange', ( e ) => {
-                    this.seatPlanInit();
-                }, 1 );
             },
             seatPlanInit () {
                 // Load cart
                 this.cart = localStorage.getItem( 'cart' ) ? JSON.parse( localStorage.getItem( 'cart' ) ): {};
                 
-
                 // Load seatplan from server
                 let height = $( document ).height() * 0.8;
                 this.scaleFactor = ( height / 900 ) * this.zoomFactor;
@@ -133,15 +128,17 @@
                     if ( res.status === 200 ) {
                         res.json().then( data => {
                             this.draggables = this.scaleUp( data.data );
-                            sessionStorage.setItem( 'seatplan', JSON.stringify( data.data ) );
+                            this.prepSeatplan();
                         } );
                     } else if ( res.status === 500 ) {
                         if ( sessionStorage.getItem( 'seatplan' ) ) {
                             this.draggables = this.scaleUp( JSON.parse( sessionStorage.getItem( 'seatplan' ) ) );
+                            this.prepSeatplan();
                         }
                     }
                 } );
-
+            },
+            prepSeatplan () {
                 // Mark all selected seats + all unavailable seats
                 // { 'sector': 'A', 'sectorCount': 1, 'unavailableSeats': { 'secAr0s0': 'nav' }, 'categoryInfo': { 'pricing': { '1': { 'displayName': 'Adults - CHF 20.-', 'value': 'adult', 'price': 20 }, '2': { 'displayName': 'Child (0 - 15.99y) - CHF 15.-', 'value': 'child', 'price': 15 } } } }
                 let categoryDetails = {};
@@ -177,6 +174,10 @@
 
                 // TODO: Optimise for odd screen sizes and aspect ratios and fucking webkit
                 sessionStorage.setItem( 'seatplan', JSON.stringify( this.scaleDown( this.draggables ) ) );
+
+                window.addEventListener( 'visibilitychange', ( e ) => {
+                    this.seatPlanInit();
+                }, 1 );
             },
             eventHandler ( e ) {
                 if ( this.prevSize.h != window.innerHeight || this.prevSize.w != window.innerWidth ) {
@@ -248,6 +249,16 @@
                 if ( sessionStorage.getItem( 'seatplan' ) ) {
                     this.draggables = this.scaleUp( JSON.parse( sessionStorage.getItem( 'seatplan' ) ) );
                 }
+
+                if ( this.cart[ this.event.name ] ) {
+                    let tickets = this.cart[ this.event.name ][ 'tickets' ];
+                    for ( let ticket in tickets ) {
+                        this.draggables[ tickets[ ticket ].comp ][ 'data' ][ 'unavailableSeats' ][ ticket ] = 'sel';
+                    }
+                }
+
+                console.log( this.draggables );
+                console.log( 'load' );
             },
             scaleUp ( valueArray ) {
                 const allowedAttributes = [ 'w', 'h', 'x', 'y' ];

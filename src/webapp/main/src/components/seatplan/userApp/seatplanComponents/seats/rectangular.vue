@@ -137,6 +137,9 @@ export default {
         },
         origin() {
             this.calculateChairs();
+        },
+        data () {
+            this.calculateChairs();
         }
     },
     created() {

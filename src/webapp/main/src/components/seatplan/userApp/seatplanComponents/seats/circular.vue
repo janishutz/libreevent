@@ -145,6 +145,9 @@ export default {
         },
         startingRow() {
             this.calculateChairs();
+        },
+        data () {
+            this.calculateChairs();
         }
     },
     created() {

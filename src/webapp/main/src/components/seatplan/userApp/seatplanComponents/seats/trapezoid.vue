@@ -148,6 +148,10 @@ export default {
         },
         startingRow() {
             this.calculateChairs();
+        },
+        data () {
+            console.log( 'data changed' );
+            this.calculateChairs();
         }
     },
     created() {
