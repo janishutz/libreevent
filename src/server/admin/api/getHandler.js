@@ -21,10 +21,10 @@ class GETHandler {
                     if ( Object.keys( data ).length > 0 ) {
                         resolve( data[ 'save' ] );
                     } else {
-                        reject( 'No data found for this location' );
+                        reject( { 'code': 400, 'error': 'No data found for this location' } );
                     }
                 } ).catch( error => {
-                    reject( error );
+                    reject( { 'code': 500, 'error': error } );
                 } );
             } else if ( call === 'getSeatplanDraft' ) {
                 db.getJSONDataSimple( 'seatplan', query.location ).then( data => {
@@ -35,11 +35,19 @@ class GETHandler {
                             resolve( data[ 'save' ] );
                         }
                     } else {
-                        reject( 'No data found for this location' );
+                        reject( { 'code': 400, 'error': 'No data found for this location' } );
                     }
                 } ).catch( error => {
                     reject( error );
                 } );
+            } else if ( call === 'getLocations' ) {
+                db.getJSONData( 'locations' ).then( data => {
+                    resolve( data );
+                } ).catch( error => {
+                    reject( { 'code': 500, 'error': error } );
+                } );
+            } else {
+                reject( { 'code': 404, 'error': 'Route not found' } );
             }
         } );
     }

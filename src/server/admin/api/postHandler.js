@@ -24,15 +24,38 @@ class POSTHandler {
                     db.writeJSONDataSimple( 'seatplan', data.location, dat ).then( resp => { 
                         resolve( resp );
                     } ).catch( error => {
-                        reject( error );
+                        reject( { 'code': 500, 'error': error } );
                     } );
                 } );
             } else if ( call === 'saveSeatplan' ) {
                 db.writeJSONDataSimple( 'seatplan', data.location, { 'draft': {}, 'save': data.data } ).then( resp => { 
                     resolve( resp );
                 } ).catch( error => {
-                    reject( error );
+                    reject( { 'code': 500, 'error': error } );
                 } );
+            } else if ( call === 'saveLocations' ) {
+                db.getJSONData( 'seatplan' ).then( res => {
+                    let dat = res;
+                    for ( let loc in data.updated ) {
+                        if ( res[ loc ] ) {
+                            dat[ data.updated[ loc ] ] = res[ loc ];
+                            delete dat[ loc ];
+                        }
+                    }
+                    db.writeJSONData( 'seatplan', dat ).catch( error => {
+                        reject( { 'code': 500, 'error': error } );
+                    } );
+                } ).catch( error => {
+                    reject( { 'code': 500, 'error': error } );
+                } );
+
+                db.writeJSONData( 'locations', data.data ).then( resp => { 
+                    resolve( resp );
+                } ).catch( error => {
+                    reject( { 'code': 500, 'error': error } );
+                } );
+            } else {
+                reject( { 'code': 404, 'error': 'Route not found' } );
             }
         } );
     }

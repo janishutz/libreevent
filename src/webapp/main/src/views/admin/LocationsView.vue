@@ -15,9 +15,9 @@
         <div class="location-app" v-if="Object.keys( locations ).length">
             <ul>
                 <li v-for="location in locations">
-                    <div class="location" @click="selectLocation( location.locationID );" title="Edit this location">
+                    <div class="location" @click="selectLocation( location.locationID );" title="Edit this location" @contextmenu="( e ) => { e.preventDefault(); openRightClickMenu( location.locationID, e ); }">
                         <div class="location-name">
-                            <h3>{{ location.name }}</h3>
+                            <h3>{{ location.locationID }} ({{ location.name }})</h3>
                             <p v-if="location['seatplan-enabled']">This location has a seatplan.</p>
                             <p v-else>This location has NO seatplan.</p>
                         </div>
@@ -28,39 +28,54 @@
         <div v-else class="no-location-hint">
             No locations configured, please <b @click="addLocation();" style="cursor: pointer;">add</b> one
         </div>
-        <popups ref="popup" size="big"></popups>
-        <popups ref="popup2" size="huge"></popups>
+        <popups ref="popup" size="big" @data="( data ) => {
+            handleData( data );
+        }"></popups>
+        <rightClickMenu ref="rclk" @command="( command ) => { executeCommand( command ) }"></rightClickMenu>
     </div>
 </template>
 
 <script>
     import popups from '@/components/notifications/popups.vue';
+    import rightClickMenu from '@/components/settings/rightClickMenu.vue';
 
     export default {
         data () {
             return {
                 locations: { 'test':{ 'name':'TestLocation', 'locationID':'test', 'seatplan-enabled': true, 'seatplan': {} } },
+                currentlyOpenMenu: '',
+                currentPopup: '',
+                updatedLocations: {}
             }
         },
         components: {
             popups,
+            rightClickMenu,
         },
         methods: {
             selectLocation ( locationID ) {
                 sessionStorage.setItem( 'locationID', locationID );
+                this.currentlyOpenMenu = locationID;
                 this.$refs.popup.openPopup( 'Settings for ' + this.locations[ locationID ][ 'name' ], {
-                    'locationName': { 
-                        'display': 'Location name', 
-                        'id': 'locationName', 
-                        'tooltip':'Give the location the event takes place a name. This name will also be shown to customers', 
-                        'value': '',
+                    'locationID': { 
+                        'display': 'Internal location name', 
+                        'id': 'locationID', 
+                        'tooltip':'Give the location where the event takes place a name. This name will not be shown to the customers and is used for the backend and admin portal. Has to be unique', 
+                        'value': locationID,
                         'type': 'text',
                     },
-                    'usesSeatplan': { 
+                    'name': { 
+                        'display': 'Public location name', 
+                        'id': 'name', 
+                        'tooltip':'The name of the location that is shown to the customers.', 
+                        'value': this.locations[ locationID ][ 'name' ],
+                        'type': 'text',
+                    },
+                    'seatplan-enabled': { 
                         'display': 'Use seat plan?', 
-                        'id': 'usesSeatplan', 
+                        'id': 'seatplan-enabled', 
                         'tooltip':'With this toggle you may specify whether or not this location has a seat plan or not.', 
-                        'value': true,
+                        'value': this.locations[ locationID ][ 'seatplan-enabled' ],
                         'type': 'toggle',
                     },
                     'seatplanEditor': { 
@@ -78,16 +93,23 @@
             },
             addLocation () {
                 this.$refs.popup.openPopup( 'Add a new location', {
-                    'locationName': {
-                        'display': 'Location name', 
-                        'id': 'locationName', 
-                        'tooltip':'Give the location the event takes place a name. This name will also be shown to customers', 
+                    'locationID': { 
+                        'display': 'Internal location name', 
+                        'id': 'locationID', 
+                        'tooltip':'Give the location where the event takes place a name. This name will not be shown to the customers and is used for the backend and admin portal. Has to be unique', 
                         'value': '',
                         'type': 'text',
                     },
-                    'usesSeatplan': { 
+                    'name': { 
+                        'display': 'Public location name', 
+                        'id': 'name', 
+                        'tooltip':'The name of the location that is shown to the customers.', 
+                        'value': '',
+                        'type': 'text',
+                    },
+                    'seatplan-enabled': { 
                         'display': 'Use seat plan?', 
-                        'id': 'usesSeatplan', 
+                        'id': 'seatplan-enabled', 
                         'tooltip':'With this toggle you may specify whether or not this location has a seat plan or not.', 
                         'value': true,
                         'type': 'toggle',
@@ -105,6 +127,62 @@
                 }
             , 'settings' );
             },
+            openRightClickMenu( id, event ) {
+                this.$refs.rclk.openRightClickMenu( event, { 'edit': { 'command': 'editLocation', 'symbol': 'edit', 'display': 'Edit location' }, 'editor': { 'command': 'openEditor', 'symbol': 'tune', 'display': 'Edit seatplan' }, 'delete': { 'command': 'deleteLocation', 'symbol': 'delete', 'display': 'Delete location' } } )
+                this.currentlyOpenMenu = id;
+            },
+            executeCommand( command ) {
+                if ( command === 'editLocation' ) {
+                    this.selectLocation( this.currentlyOpenMenu );
+                } else if ( command === 'deleteLocation' ) {
+                    this.$refs.popup.openPopup( 'Do you really want to delete the location ' + this.currentlyOpenMenu + '?', {}, 'confirm' );
+                    this.currentPopup = 'delete';
+                } else if ( command === 'openEditor' ) {
+                    sessionStorage.setItem( 'locationID', this.currentlyOpenMenu );
+                    this.$router.push( '/admin/seatplan' );
+                }
+            },
+            handleData ( data ) {
+                if ( this.currentPopup === 'delete' ) {
+                    this.currentPopup = '';
+                    if ( data.status === 'ok' ) {
+                        delete this.locations[ this.currentlyOpenMenu ];
+                    }
+                } else {
+                    if ( data.status === 'settings' ) {
+                        if ( data.data.locationID !== this.currentlyOpenMenu && this.currentlyOpenMenu !== '' ) {
+                            delete this.locations[ this.currentlyOpenMenu ];
+                            this.updatedLocations[ this.currentlyOpenMenu ] = data.data.locationID;
+                        }
+                        this.locations[ data.data.locationID ] = data.data;
+                        this.currentlyOpenMenu = '';
+                        const options = {
+                            method: 'post',
+                            body: JSON.stringify( { 'updated': this.updatedLocations, 'data': this.locations } ),
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'charset': 'utf-8'
+                            }
+                        };
+                        fetch( localStorage.getItem( 'url' ) + '/admin/api/saveLocations', options ).then( res => {
+                            if ( res.status === 200 ) {
+                                res.text().then( text => {
+                                    console.log( text );
+                                } );
+                            }
+                        } );
+                    }
+                }
+            },
+        },
+        created () {
+            fetch( localStorage.getItem( 'url' ) + '/admin/getAPI/getLocations' ).then( res => {
+                res.json().then( data => {
+                    this.locations = data;
+                } ).catch( error => {
+                    console.error( error );
+                } );
+            } );
         }
     };
 </script>
@@ -148,5 +226,9 @@
     .location-name {
         margin-right: auto;
         max-width: 35%;
+    }
+
+    .no-location-hint {
+        margin-top: 5%;
     }
 </style>

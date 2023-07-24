@@ -15,7 +15,7 @@
                         <h3>{{ data.message }}</h3>
                         <settings v-model:settings="data.options"></settings>
                         <div class="button-wrapper">
-                            <button @click="closePopup( 'ok' )" title="Save changes">Save</button>
+                            <button @click="submitSettings( 'ok' )" title="Save changes">Save</button>
                             <button @click="closePopup( 'cancel' )" title="Cancel changes">Cancel</button>
                         </div>
                     </div>
@@ -120,6 +120,17 @@
             closePopupAdvanced ( message, data ) {
                 this.data[ 'selected' ] = data;
                 this.closePopup( message );
+            },
+            submitSettings () {
+                $( '#popup-backdrop' ).fadeOut( 300 );
+                const dat = this.data.options;
+                let ret = {};
+                for ( let setting in dat ) {
+                    if ( dat[ setting ][ 'type' ] !== 'link' ) {
+                        ret[ setting ] = dat[ setting ][ 'value' ];
+                    }
+                }
+                this.$emit( 'data', { 'data': ret, 'status': 'settings' } );
             },
             openPopup ( message, options, dataType, selected ) {
                 this.data = { 'message': message ?? 'No message defined on method call!!', 'options': options ?? { '1': { 'value': 'undefined', 'displayName': 'No options specified in call' } }, 'selected': selected ?? '' };

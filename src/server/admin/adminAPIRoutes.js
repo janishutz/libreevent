@@ -22,7 +22,7 @@ module.exports = ( app ) => {
             getHandler.handleCall( req.params.call, req.query ).then( data => {
                 res.send( data );
             } ).catch( error => {
-                res.status( 500 ).send( error );
+                res.status( error.code ).send( error.error );
             } );
         } else {
             res.status( 403 ).sendFile( path.join( __dirname + '/../ui/' + ( req.query.lang ?? 'en' ) + '/errors/403.html' ) );
@@ -34,7 +34,7 @@ module.exports = ( app ) => {
             postHandler.handleCall( req.params.call, req.body, req.query.lang ).then( data => {
                 res.send( data );
             } ).catch( error => {
-                res.status( 500 ).send( error );
+                res.status( error.code ).send( error.error );
             } );
         } else {
             res.status( 403 ).sendFile( path.join( __dirname + '/../ui/' + ( req.query.lang ?? 'en' ) + '/errors/403.html' ) );

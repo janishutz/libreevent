@@ -16,11 +16,12 @@
             <table class="category">
                 <tr>
                     <td>Event location</td>
-                    <td>
+                    <td v-if="Object.keys( locations ).length > 0">
                         <select v-model="event.location" class="small-text">
-                            <option value="TestLocation">TestLocation</option>
+                            <option v-for="location in locations" value="location.locationID">{{ location.locationID }} ({{ location.name }})</option>
                         </select>
                     </td>
+                    <td v-else>No locations configured yet. Configure one <router-link to="/admin/locations">here</router-link></td>
                 </tr>
                 <tr>
                     <td>Event date</td>
@@ -38,12 +39,12 @@
             <div class="category-wrapper">
                 <table class="category" v-for="category in event.categories">
                     {{ category.name }}
-                    <tr v-for="price in category.price">
+                    <tr v-for="ageGroup in event.ageGroups">
                         <td>
-                            <div class="category-details">{{ price.name }}:</div>
+                            <div class="category-details">{{ ageGroup.name }}<div style="display: inline;" v-if="ageGroup.age"> ({{ ageGroup.age }})</div>:</div>
                         </td>
                         <td>
-                            <input type="number" v-model="price.price">
+                            <input type="number" v-model="category.price[ ageGroup.id ]">
                         </td>
                     </tr>
                     <tr>
@@ -118,10 +119,18 @@
                 this.$router.push( '/admin/events' );
             }
             this.eventID = sessionStorage.getItem( 'selectedTicket' );
+            fetch( localStorage.getItem( 'url' ) + '/admin/getAPI/getLocations' ).then( res => {
+                res.json().then( data => {
+                    this.locations = data;
+                } ).catch( error => {
+                    console.error( error );
+                } );
+            } );
         },
         data() {
             return {
-                event: { 'name': 'TestEvent', 'description': 'This is a description for the TestEvent to test multiline support and proper positioning of the Fields', 'freeSeats': 2, 'maxSeats': 2, 'date':'TestDate', 'startingPrice':15, 'location': 'TestLocation', 'eventID': 'test', 'currency': 'CHF', 'logo': 'logo.png', 'categories': { '1': { 'price': { '1': { 'price':25, 'name':'Child (0-15.99 years)'}, '2': { 'price':35, 'name':'Adult'} }, 'bg': 'black', 'fg': 'white', 'name': 'Category 1' }, '2': { 'price': { '1': { 'price':25, 'name':'Child (0-15.99 years)' }, '2': { 'price':35, 'name':'Adult'} }, 'bg': 'green', 'fg': 'white', 'name': 'Category 2' } } },
+                locations: {},
+                event: { 'name': 'TestEvent', 'description': 'This is a description for the TestEvent to test multiline support and proper positioning of the Fields', 'location': 'test', 'date': '2023-07-15', 'currency': 'CHF', 'categories': { '1': { 'price': { '1':25, '2':35 }, 'bg': 'black', 'fg': 'white', 'name': 'Category 1' }, '2': { 'price': { '1':15, '2':20 }, 'bg': 'green', 'fg': 'white', 'name': 'Category 2' } }, 'ageGroups': { '1':{ 'id': 1, 'name':'Child', 'age':'0 - 15.99' }, '2':{ 'id': 2, 'name': 'Adult' } }, 'maxTickets': 2 },
                 specialSettings: {
                     'currency': { 
                         'display': 'Currency', 
