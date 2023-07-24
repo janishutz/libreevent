@@ -22,10 +22,10 @@ class SQLDB {
     connect ( ) {
         this.sqlConnection.connect( function( err ) {
             if ( err ) {
-                console.error( 'error connecting: ' + err.stack );
+                console.error( '[ SQL ]: An error ocurred whilst connecting: ' + err.stack );
                 return;
             }
-            console.log( 'connected' );
+            console.log( '[ SQL ] Connected to database successfully' );
             return 'connection';
         } );
     }

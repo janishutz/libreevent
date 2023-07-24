@@ -11,7 +11,8 @@
     <div class="details">
         <h2>{{ event.name }}</h2>
         <div class="category-wrapper">
-            <p>Event Description</p>
+            <h3>Event Details</h3>
+            <p>Event description</p>
             <textarea v-model="event.description" class="big-text" cols="70" rows="3" placeholder="Event description..."></textarea>
             <table class="category">
                 <tr>
@@ -32,6 +33,10 @@
                     <router-link to="/admin/ticketEditor">Edit ticket layout</router-link>
                 </tr>
             </table>
+            <div>
+                <h3>Assets</h3>
+                <p>Here you can view and change the event assets, meaning the images</p>
+            </div>
         </div>
         <div class="ticket-settings">
             <h3>Ticket Settings</h3>
@@ -68,7 +73,7 @@
             <settings v-model:settings="specialSettings"></settings>
         </div>
         <div>
-            <p>Please read into the documentation of this section if you want to use the requirements. It requires specific syntax to work. See <a href="https://libreevent.janishutz.com/docs/admin-panel/events#special-requirements" target="_blank">here</a> for more information</p>
+            <p>Please read the documentation of this section if you want to use the requirements. It requires specific syntax to work. See <a href="https://libreevent.janishutz.com/docs/admin-panel/events#special-requirements" target="_blank">here</a> for more information</p>
         </div>
         <notifications ref="notification" location="topright"></notifications>
     </div>
