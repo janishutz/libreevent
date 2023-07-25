@@ -1,5 +1,7 @@
 {
     "init": true,
     "twoFA": "enhanced",
-    "db": "mysql"
+    "db": "mysql",
+    "payments": "stripe",
+    "yourDomain": "http://localhost:8081"
 }

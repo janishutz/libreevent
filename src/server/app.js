@@ -15,6 +15,8 @@ const bodyParser = require( 'body-parser' );
 const cookieParser = require( 'cookie-parser' );
 const http = require( 'http' );
 const fs = require( 'fs' );
+const pm = require( './backend/plugins/manager.js' );
+const pluginManager = new pm();
 
 
 console.log( `
@@ -86,8 +88,8 @@ if ( settings.init ) {
     file = path.join( __dirname + '/../webapp/setup/dist/index.html' );
 }
 
-// TODO: Create plugin loader and manager
-
+console.log( '[ Server ] loading plugins' );
+pluginManager.load( app, settings );
 
 app.use( ( request, response ) => {
     response.sendFile( file );

@@ -7,9 +7,22 @@ You will also need to add documentation for the user to set up the payment gatew
 In the routes.js file you should have at least the following code:
 
 ```
-    module.exports = ( app ) => {
+module.exports = ( app, settings ) => {
+    app.post( '/payments/prepare', ( req, res ) => {
 
-    }
+    } );
+
+    app.get( '/payments/status', ( request, response ) => {
+        response.writeHead( 200, {
+            'Content-Type': 'text/event-stream',
+            'Cache-Control': 'no-cache',
+            'Connection': 'keep-alive',
+        } );
+        response.status( 200 );
+        response.flushHeaders();
+        response.write( 'data: connected\n\n' );
+    } );
+}
 ```
 
 Take some inspiration of the stripe or adyen setup as these are officially supported by the system and have been developed by the original creator.
