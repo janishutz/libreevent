@@ -11,8 +11,8 @@
     <div class="details">
         <div class="top-container" :style="`background: url( ${ event.banner } ); background-repeat: no-repeat; background-size: cover;`">
             <h1 class="eventTitle">{{ event.name }}</h1>
+            <router-link to="/tickets" class="back-button"><span class="material-symbols-outlined" style="font-size: 100%;">arrow_back</span></router-link>
         </div>
-        <router-link to="/tickets"><span class="material-symbols-outlined" style="font-size: 100%;">arrow_back</span>Back</router-link>
         <p>{{ event.description }}</p>
         <router-link to="/tickets/order">Order tickets</router-link>
     </div>
@@ -36,6 +36,22 @@
         color: white;
         padding: 1.5% 3%;
         margin: 0;
+    }
+
+    .back-button {
+        color: white;
+        background-color: rgb(31, 31, 31);
+        padding: 10px;
+        border-radius: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: fit-content;
+        height: fit-content;
+        text-decoration: none;
+        position: fixed;
+        left: 2vh;
+        top: 2vh;
     }
 </style>
 

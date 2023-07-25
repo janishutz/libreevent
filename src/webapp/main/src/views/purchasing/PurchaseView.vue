@@ -67,6 +67,7 @@
                 </div>
             </div>
         </div>
+        <notifications ref="notification" location="topleft" size="bigger"></notifications>
     </div>
 </template>
 
@@ -80,6 +81,7 @@
         transition: all 0.5s;
         font-size: 100%;
         margin-top: 4%;
+        cursor: pointer;
     }
 
     #buy-button:hover {
@@ -192,6 +194,7 @@
 import { useUserStore } from '@/stores/userStore';
 import { useBackendStore } from '@/stores/backendStore';
 import { mapStores } from 'pinia';
+import notifications from '@/components/notifications/notifications.vue';
 
 export default {
     name: 'PurchaseView',
@@ -204,6 +207,9 @@ export default {
             cartNotEmpty: false,
             userData: {},
         }
+    },
+    components: {
+        notifications,
     },
     computed: {
         ...mapStores( useUserStore ),
@@ -248,6 +254,11 @@ export default {
                 route (plain HTML document) which then awaits processing completion and gives the
                 user a link to download the ticket. A mail has been sent to user automatically.
             */
+            let prep = this.$refs.notification.createNotification( 'Preparing payment...', 20, 'progress', 'high' );
+            setTimeout( () => {
+                this.$refs.notification.cancelNotification( prep );
+                this.$refs.notification.createNotification( 'Payment prepared, redirecting...', 5, 'progress', 'high' );
+            }, 5000 );
         }
     },
     created () {
