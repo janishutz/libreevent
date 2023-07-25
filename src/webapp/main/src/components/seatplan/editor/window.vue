@@ -179,13 +179,13 @@
                     this.available.undo = true;
                 }
 
-                if ( window.webpage.engine.trident ) {
-                    alert( 'Welcome! We have detected that you are still using Internet Explorer or a similar browser. As a modern webapp, libreevent does NOT officially support Internet Explorer. If you run into problems whilst using this webapp, please switch to a modern browser like Firefox.' );
-                } else if ( window.webpage.engine.presto ) {
-                    alert( 'Welcome! We have detected that you are a very old version of Opera or related browser. As a modern webapp, libreevent does only support modern browsers. If you run into issues whilst using this webapp, please switch to a modern browser, like Firefox.' );
-                } else if ( window.webpage.engine.webkit ) {
-                    alert( 'Hello! Whilst tested with some versions of Webkit (the browser engine of Safari), support for this engine is still unofficial. Therefore we cannot guarantee that all the features of the seatplan editor function as they should. If you run into problems, please contact us through the link provided in the documentation.' );
-                }
+                // if ( window.webpage.engine.trident ) {
+                //     alert( 'Welcome! We have detected that you are still using Internet Explorer or a similar browser. As a modern webapp, libreevent does NOT officially support Internet Explorer. If you run into problems whilst using this webapp, please switch to a modern browser like Firefox.' );
+                // } else if ( window.webpage.engine.presto ) {
+                //     alert( 'Welcome! We have detected that you are a very old version of Opera or related browser. As a modern webapp, libreevent does only support modern browsers. If you run into issues whilst using this webapp, please switch to a modern browser, like Firefox.' );
+                // } else if ( window.webpage.engine.webkit ) {
+                //     alert( 'Hello! Whilst tested with some versions of Webkit (the browser engine of Safari), support for this engine is still unofficial. Therefore we cannot guarantee that all the features of the seatplan editor function as they should. If you run into problems, please contact us through the link provided in the documentation.' );
+                // }
                 this.save();
             },
             eventHandler ( e ) {

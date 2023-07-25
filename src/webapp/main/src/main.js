@@ -19,7 +19,7 @@ app.use( createPinia() );
 
 let userStore = useUserStore();
 
-let prod = true;
+let prod = false;
 
 if ( prod ) {
     fetch( '/api/getAuth' ).then( res => {

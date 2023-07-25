@@ -115,12 +115,14 @@
         margin-top: 2%;
     }
 
-    nav {
-        display: initial;
-    }
-
     #missing-email, #missing-password, #credentials-wrong {
         display: none;
         margin-bottom: 20px;
+    }
+</style>
+
+<style>
+    nav {
+        display: initial;
     }
 </style>

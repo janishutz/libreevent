@@ -256,9 +256,6 @@
                         this.draggables[ tickets[ ticket ].comp ][ 'data' ][ 'unavailableSeats' ][ ticket ] = 'sel';
                     }
                 }
-
-                console.log( this.draggables );
-                console.log( 'load' );
             },
             scaleUp ( valueArray ) {
                 const allowedAttributes = [ 'w', 'h', 'x', 'y' ];

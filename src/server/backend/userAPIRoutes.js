@@ -32,4 +32,12 @@ module.exports = ( app ) => {
             res.status( 500 ).send( error );
         } );
     } );
+
+    app.get( '/eventAssets/:image', ( req, res ) => {
+        res.sendFile( path.join( __dirname + '/../assets/events/' + req.params.image ) );
+    } );
+
+    app.get( '/otherAssets/:image', ( req, res ) => {
+        res.sendFile( path.join( __dirname + '/../assets/' + req.params.image ) );
+    } );
 };

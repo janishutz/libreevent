@@ -178,11 +178,11 @@ export default {
         }
     },
     created () {
-        if ( window.webpage.engine.trident ) {
-            alert( 'Welcome! We have detected that you are still using Internet Explorer or a similar browser. As a modern webapp, libreevent does NOT officially support Internet Explorer. If you run into problems whilst using this webapp, please switch to a modern browser like Firefox.' )
-        } else if ( window.webpage.engine.presto ) {
-            alert( 'Welcome! We have detected that you are a very old version of Opera or related browser. As a modern webapp, libreevent does only support modern browsers. If you run into issues whilst using this webapp, please switch to a modern browser, like Firefox.' )
-        }
+        // if ( window.webpage.engine.trident ) {
+        //     alert( 'Welcome! We have detected that you are still using Internet Explorer or a similar browser. As a modern webapp, libreevent does NOT officially support Internet Explorer. If you run into problems whilst using this webapp, please switch to a modern browser like Firefox.' )
+        // } else if ( window.webpage.engine.presto ) {
+        //     alert( 'Welcome! We have detected that you are a very old version of Opera or related browser. As a modern webapp, libreevent does only support modern browsers. If you run into issues whilst using this webapp, please switch to a modern browser, like Firefox.' )
+        // }
         this.theme = localStorage.getItem( 'theme' ) ? localStorage.getItem( 'theme' ) : '';
         if ( window.matchMedia( '(prefers-color-scheme: dark)' ).matches || this.theme === '&#9788;' ) {
             document.documentElement.classList.add( 'dark' );
