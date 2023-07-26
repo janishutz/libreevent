@@ -18,18 +18,25 @@ module.exports = ( app ) => {
     // Add specific routes here to have them be checked first to not get general handling
 
     app.get( '/getAPI/:call', ( req, res ) => {
-        getHandler.handleCall( req.params.call, req.query ).then( data => {
-            res.send( data );
+        getHandler.handleCall( req.params.call, req.query, req.session ).then( data => {
+            if ( req.params.call === 'getReservedSeats' ) {
+                let dat = data;
+                dat[ 'reserved' ] = postHandler.getReservedSeats();
+                res.send( dat );
+            } else {
+                res.send( data );
+            }
         } ).catch( error => {
-            res.status( 500 ).send( error );
+            res.status( error.code ).send( error.message );
         } );
     } );
 
     app.post( '/API/:call', ( req, res ) => {
-        postHandler.handleCall( req.params.call, req.body, req.query.lang, req.session ).then( data => {
+        // add lang in the future
+        postHandler.handleCall( req.params.call, req.body, req.session ).then( data => {
             res.send( data );
         } ).catch( error => {
-            res.status( 500 ).send( error );
+            res.status( error.code ).send( error.message );
         } );
     } );
 

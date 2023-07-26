@@ -14,18 +14,32 @@ class GETHandler {
 
     }
 
-    handleCall ( call, query ) {
+    handleCall ( call, query, session ) {
         return new Promise( ( resolve, reject ) => {
             if ( call === 'getSeatplan' ) {
                 db.getJSONDataSimple( 'seatplan', query.location ).then( data => {
                     if ( Object.keys( data ).length > 0 ) {
                         resolve( data[ 'save' ] );
                     } else {
-                        reject( 'No data found for this location' );
+                        reject( { 'code': 404, 'message': 'No data found for this location' } );
                     }
                 } ).catch( error => {
-                    reject( error );
+                    reject( { 'code': 500, 'message': error } );
                 } );
+            } else if ( call === 'getReservedSeats' ) {
+                if ( query.event ) {
+                    db.getJSONDataSimple( 'booked', query.event ).then( data => {
+                        db.getDataSimple( 'temp', 'user_id', session.id ).then( dat => {
+                            console.log( dat );
+                            resolve( { 'booked': data ?? {}, 'user': dat[ 0 ] ? JSON.parse( dat[ 0 ].data )[ query.event ] ?? {} : {} } );
+                        } );
+                    } ).catch( error => {
+                        console.error( error );
+                        reject( { 'code': 500, 'message': error } );
+                    } );
+                } else {
+                    reject( { 'code': 400, 'message': 'Bad request, missing event query' } );
+                }
             }
         } );
     }

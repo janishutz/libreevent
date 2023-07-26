@@ -12,12 +12,29 @@
         <!-- Load correct component depending on what the event's config is -->
         <seatplan :ticketID="eventID" v-if="hasSeatplan"></seatplan>
         <noseatplan :ticketID="eventID" v-else></noseatplan>
+        <router-link to="/tickets/details" class="back-button"><span class="material-symbols-outlined" style="font-size: 200%;">arrow_back</span></router-link>
     </div>
 </template>
 
 <style scoped>
     .details {
         flex-grow: 1;
+    }
+
+    .back-button {
+        color: white;
+        background-color: rgb(31, 31, 31);
+        padding: 10px;
+        border-radius: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: fit-content;
+        height: fit-content;
+        text-decoration: none;
+        position: fixed;
+        left: 2vh;
+        top: 2vh;
     }
 </style>
 

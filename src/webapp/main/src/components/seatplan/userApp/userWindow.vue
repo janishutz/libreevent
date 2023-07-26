@@ -43,7 +43,7 @@
             <button title="Zoom out [-]" @click="zoom( -0.2 )"><span class="material-symbols-outlined">zoom_out</span></button>
         </div>
         <sideCartView :cart="cart" ref="cart"></sideCartView>
-        <notifications ref="notification" location="topleft"></notifications>
+        <notifications ref="notification" location="topright"></notifications>
         <popups ref="popups" size="normal" @data="data => { reserveTicket( data ) }"
             @ticket="data => { standingTicketHandling( data ) }"></popups>
     </div>
@@ -154,30 +154,71 @@
                     this.draggables[ element ][ 'data' ] = { 'sector': this.draggables[ element ][ 'sector' ], 'unavailableSeats': {}, 'categoryInfo': { 'pricing': categoryDetails[ this.draggables[ element ][ 'category' ] ] } };
                 }
 
-                if ( this.cart[ this.event.name ] ) {
-                    let tickets = this.cart[ this.event.name ][ 'tickets' ];
-                    for ( let ticket in tickets ) {
-                        this.draggables[ tickets[ ticket ].comp ][ 'data' ][ 'unavailableSeats' ][ ticket ] = 'sel';
-                    }
-                }
-
-                // TODO: Check if all seats are available
-                let allSeatsAvailable = true;
-                // Method: Server sends all user selected seats + all selected seats. If seat is in both
-                // then selected, if just in all selected, taken, else available.
-
-                if ( !allSeatsAvailable ) {
-                    setTimeout( () => {
-                        self.$refs.popups.openPopup( 'We are sorry to tell you that since the last time the seat plan was refreshed, one or more of the seats you have selected has/have been taken.', {}, 'string' );
-                    }, 500 );
-                }
-
+                this.seatChecks();
                 // TODO: Optimise for odd screen sizes and aspect ratios and fucking webkit
-                sessionStorage.setItem( 'seatplan', JSON.stringify( this.scaleDown( this.draggables ) ) );
-
+                // TODO: Trim scroll box to about 200px more than seatplan size
                 window.addEventListener( 'visibilitychange', ( e ) => {
                     this.seatPlanInit();
                 }, 1 );
+            },
+            seatChecks () {
+                // TODO: Check if all seats are available
+                // Method: Server sends all user selected seats + all selected seats. If seat is in both
+                // then selected, if just in all selected, taken, else available.
+                let self = this;
+                let allSeatsAvailable = true;
+
+                fetch( localStorage.getItem( 'url' ) + '/getAPI/getReservedSeats?event=' + this.event.name ).then( res => {
+                    if ( res.status === 200 ) {
+                        res.json().then( data => {
+                            let tickets = {};
+                            if ( this.cart[ this.event.name ] ) {
+                                tickets = this.cart[ this.event.name ][ 'tickets' ];
+                            }
+                            if ( Object.keys( data.booked ).length > 0 && Object.keys( data.reserved ).length > 0 ) {
+                                for ( let ticket in data.booked ) {
+                                    this.draggables[ data.booked[ ticket ].component ][ 'data' ][ 'unavailableSeats' ][ ticket ] = 'nav';
+                                }
+                                for ( let ticket in data.reserved ) {
+                                    this.draggables[ data.reserved[ ticket ] ][ 'data' ][ 'unavailableSeats' ][ ticket ] = 'nav';
+                                }
+                            }
+
+                            if ( data.user ) {
+                                for ( let element in tickets ) {
+                                    if ( !data.user[ element ] ) {
+                                        allSeatsAvailable = false;
+                                        if ( Object.keys( this.cart[ this.event.name ][ 'tickets' ] ).length > 1 ) {
+                                            delete this.cart[ this.event.name ][ 'tickets' ][ element ];
+                                        } else {
+                                            delete this.cart[ this.event.name ];
+                                        }
+                                    }
+                                }
+                            } else {
+                                delete this.cart[ this.event.name ];
+                                allSeatsAvailable = false;
+                            }
+                            
+                            for ( let ticket in tickets ) {
+                                this.draggables[ tickets[ ticket ].comp ][ 'data' ][ 'unavailableSeats' ][ ticket ] = 'sel';
+                            }
+
+                            if ( !allSeatsAvailable ) {
+                                setTimeout( () => {
+                                    self.$refs.popups.openPopup( 'We are sorry to tell you that since the last time the seat plan was refreshed, one or more of the seats you have selected has/have been taken.', {}, 'string' );
+                                }, 500 );
+                                localStorage.setItem( 'cart', JSON.stringify( this.cart ) );
+                            }
+
+                            sessionStorage.setItem( 'seatplan', JSON.stringify( this.scaleDown( this.draggables ) ) );
+
+                            // this.loadSeatplan();
+                        } );
+                    } else {
+                        console.error( 'unable to load' );
+                    }
+                } );
             },
             eventHandler ( e ) {
                 if ( this.prevSize.h != window.innerHeight || this.prevSize.w != window.innerWidth ) {
@@ -314,10 +355,7 @@
                 localStorage.setItem( 'cart', JSON.stringify( this.cart ) );
             },
             reserveTicket ( option ) {
-                if ( option.status == 'ok' ) {
-                    this.$refs[ 'component' + this.selectedSeat.componentID ][ 0 ].validateSeatSelection( this.selectedSeat, option.data );
-                    this.cartHandling( 'select', option.data );
-
+                if ( option.status == 'ok' && option.data ) {
                     // Make call to server to reserve ticket to have server also keep track of reserved tickets
                     const options = {
                         method: 'post',
@@ -328,9 +366,14 @@
                         }
                     };
                     fetch( localStorage.getItem( 'url' ) + '/API/reserveTicket', options ).then( res => {
-                        res.text().then( text => {
-                            console.log( text );
-                        } );
+                        if ( res.status === 200 ) {
+                            this.$refs[ 'component' + this.selectedSeat.componentID ][ 0 ].validateSeatSelection( this.selectedSeat, option.data );
+                            this.cartHandling( 'select', option.data );
+                        } else if ( res.status === 409 ) {
+                            setTimeout( () => {
+                                this.$refs.popups.openPopup( 'Unfortunately, the seat you just tried to select was reserved by somebody else since the last time the seat plan was refreshed. Please select another one. We are sorry for the inconvenience.', {}, 'string' );
+                            }, 300 );
+                        }
                     } );
                 }
             },
@@ -394,7 +437,7 @@
                         }
                     }
                 }
-
+                // TODO: Make call to server to reserve ticket
                 if ( Object.keys( this.cart[ this.event.name ][ 'tickets' ] ).length < 1 ) {
                     delete this.cart[ this.event.name ];
                 }
@@ -416,8 +459,9 @@
 <style scoped>
     .parent {
         height: 80vh;
-        aspect-ratio: 16 / 9;
-        -webkit-aspect-ratio: 16 / 9;
+        /* aspect-ratio: 16 / 9; */
+        /* -webkit-aspect-ratio: 16 / 9; */
+        width: 70vw;
         top: 17vh;
         left: 5vw;
         position: absolute;
@@ -449,8 +493,9 @@
     }
 
     .content-parent {
-        aspect-ratio: 16 / 9;
-        height: 400%;
+        /* aspect-ratio: 16 / 9; */
+        width: 400vw;
+        height: 400vw;
     }
 
     .toolbar {

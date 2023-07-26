@@ -71,10 +71,14 @@ export default {
             type: String,
             "default": "rectangular",
         },
+        color: {
+            type: Object,
+            "default": { 'fg': '#FFFFFF', 'bg': '#999999' }
+        }
     },
     data() {
         return {
-            style: 'border-style: none none solid none',
+            style: 'border-style: none none solid none;',
             circularStyle: 'top: 0; left 100%;',
             trapezoidStyle: 'rotate: 45deg',
         }
@@ -82,18 +86,19 @@ export default {
     methods: {
         updateOrigin () {
             if ( this.origin === 1 ) {
-                this.style = 'border-style: none none solid none';
+                this.style = 'border-style: none none solid none;';
                 this.circularStyle = 'top: 0; right: 100%;';
             } else if ( this.origin === 2 ) {
-                this.style = 'border-style: none solid none none';
+                this.style = 'border-style: none solid none none;';
                 this.circularStyle = 'top: 0; right: 0;';
             } else if ( this.origin === 3 ) {
-                this.style = 'border-style: solid none none none';
+                this.style = 'border-style: solid none none none;';
                 this.circularStyle = 'top: -100%; right: 0;';
             } else if ( this.origin === 4 ) {
-                this.style = 'border-style: none none none solid';
+                this.style = 'border-style: none none none solid;';
                 this.circularStyle = 'top: -100%; right: 100%;';
             }
+            this.style += ` background-color: ${this.color.bg}; color: ${this.color.fg}`;
         },
     },
     watch: {
