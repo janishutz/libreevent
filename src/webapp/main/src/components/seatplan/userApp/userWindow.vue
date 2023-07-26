@@ -17,17 +17,17 @@
 
                     <circularSeatplanComponent v-if="draggable.shape == 'circular' && draggable.type == 'seat'" :ref="'component' + draggable.id" 
                     :scale-factor="scaleFactor" :w="draggable.w" :h="draggable.h" :origin="draggable.origin" :starting-row="draggable.startingRow" 
-                    :data="draggable.data" :id="draggable.id"
+                    :data="draggable.data" :id="draggable.id" :unavailable="unavailableSeats"
                     @seatSelected="( seat ) => { seatSelected( seat ) }" @seatDeselected="( seat ) => { seatDeselected( seat ) }"></circularSeatplanComponent>
 
                     <trapezoidSeatplanComponent v-else-if="draggable.shape == 'trapezoid' && draggable.type == 'seat'" :ref="'component' + draggable.id" 
                     :scale-factor="scaleFactor" :w="draggable.w" :h="draggable.h" :origin="draggable.origin" :starting-row="draggable.startingRow" 
-                    :data="draggable.data" :id="draggable.id"
+                    :data="draggable.data" :id="draggable.id" :unavailable="unavailableSeats"
                     @seatSelected="( seat ) => { seatSelected( seat ) }" @seatDeselected="( seat ) => { seatDeselected( seat ) }"></trapezoidSeatplanComponent>
 
                     <rectangularSeatplanComponent v-else-if="draggable.shape == 'rectangular' && draggable.type == 'seat'" :ref="'component' + draggable.id" 
                     :scale-factor="scaleFactor" :w="draggable.w" :h="draggable.h" :origin="draggable.origin" :starting-row="draggable.startingRow" 
-                    :data="draggable.data" :id="draggable.id" 
+                    :data="draggable.data" :id="draggable.id" :unavailable="unavailableSeats"
                     @seatSelected="( seat ) => { seatSelected( seat ) }" @seatDeselected="( seat ) => { seatDeselected( seat ) }"></rectangularSeatplanComponent>
 
                     <stagesSeatplanComponent :ref="'component' + draggable.id" v-else-if="draggable.type == 'stage'" :origin="draggable.origin" :shape="draggable.shape"></stagesSeatplanComponent>
@@ -90,6 +90,7 @@
                 generalSettings: { 'namingScheme': 'numeric' },
                 selectedSeat: {},
                 cart: {},
+                unavailableSeats: {},
             }
         },
         methods: {
@@ -151,7 +152,7 @@
                 }
 
                 for ( let element in this.draggables ) {
-                    this.draggables[ element ][ 'data' ] = { 'sector': this.draggables[ element ][ 'sector' ], 'unavailableSeats': {}, 'categoryInfo': { 'pricing': categoryDetails[ this.draggables[ element ][ 'category' ] ] } };
+                    this.draggables[ element ][ 'data' ] = { 'sector': this.draggables[ element ][ 'sector' ], 'categoryInfo': { 'pricing': categoryDetails[ this.draggables[ element ][ 'category' ] ] } };
                 }
 
                 this.seatChecks();
@@ -162,26 +163,37 @@
                 }, 1 );
             },
             seatChecks () {
-                // TODO: Check if all seats are available
-                // Method: Server sends all user selected seats + all selected seats. If seat is in both
-                // then selected, if just in all selected, taken, else available.
                 let self = this;
                 let allSeatsAvailable = true;
 
                 fetch( localStorage.getItem( 'url' ) + '/getAPI/getReservedSeats?event=' + this.event.name ).then( res => {
                     if ( res.status === 200 ) {
+                        let unavailableSeats = {};
                         res.json().then( data => {
+                            for ( let seat in data.booked ) {
+                                if ( !unavailableSeats[ data.booked[ seat ].component ] ) {
+                                    unavailableSeats[ data.booked[ seat ].component ];
+                                }
+                                unavailableSeats[ data.booked[ seat ].component ][ data.booked[ seat ].id ] = 'nav';
+                            }
+
+                            for ( let seat in data.reserved ) {
+                                if ( !unavailableSeats[ data.reserved[ seat ].component ] ) {
+                                    unavailableSeats[ data.reserved[ seat ].component ] = {};
+                                }
+                                unavailableSeats[ data.reserved[ seat ].component ][ data.reserved[ seat ].id ] = 'nav';
+                            }
+
+                            for ( let seat in data.user ) {
+                                if ( !unavailableSeats[ data.user[ seat ].component ] ) {
+                                    unavailableSeats[ data.reserved[ seat ].component ] = {};
+                                }
+                                unavailableSeats[ data.user[ seat ].component ][ data.user[ seat ].id ] = 'sel';
+                            }
+
                             let tickets = {};
                             if ( this.cart[ this.event.name ] ) {
                                 tickets = this.cart[ this.event.name ][ 'tickets' ];
-                            }
-                            if ( Object.keys( data.booked ).length > 0 && Object.keys( data.reserved ).length > 0 ) {
-                                for ( let ticket in data.booked ) {
-                                    this.draggables[ data.booked[ ticket ].component ][ 'data' ][ 'unavailableSeats' ][ ticket ] = 'nav';
-                                }
-                                for ( let ticket in data.reserved ) {
-                                    this.draggables[ data.reserved[ ticket ] ][ 'data' ][ 'unavailableSeats' ][ ticket ] = 'nav';
-                                }
                             }
 
                             if ( data.user ) {
@@ -199,10 +211,8 @@
                                 delete this.cart[ this.event.name ];
                                 allSeatsAvailable = false;
                             }
-                            
-                            for ( let ticket in tickets ) {
-                                this.draggables[ tickets[ ticket ].comp ][ 'data' ][ 'unavailableSeats' ][ ticket ] = 'sel';
-                            }
+
+                            this.unavailableSeats = unavailableSeats;
 
                             if ( !allSeatsAvailable ) {
                                 setTimeout( () => {
@@ -210,10 +220,6 @@
                                 }, 500 );
                                 localStorage.setItem( 'cart', JSON.stringify( this.cart ) );
                             }
-
-                            sessionStorage.setItem( 'seatplan', JSON.stringify( this.scaleDown( this.draggables ) ) );
-
-                            // this.loadSeatplan();
                         } );
                     } else {
                         console.error( 'unable to load' );

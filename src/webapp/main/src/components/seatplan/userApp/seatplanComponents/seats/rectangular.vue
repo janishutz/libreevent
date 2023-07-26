@@ -59,6 +59,10 @@ export default {
         id: {
             type: Number,
             "default": 1,
+        },
+        unavailable: {
+            type: Object,
+            "default": {}
         }
     },
     data () {
@@ -94,9 +98,9 @@ export default {
                         this.seats[ row ][ n ][ 'style' ] += `color: ${ this.data.categoryInfo.color.fg ? this.data.categoryInfo.color.fg : 'black' }; background-color: ${ this.data.categoryInfo.color.bg ? this.data.categoryInfo.color.bg : 'rgba( 0, 0, 0, 0 )' }`;
                     }
 
-                    if ( this.data.unavailableSeats ) {
-                        if ( this.data.unavailableSeats[ this.seats[ row ][ n ][ 'id' ] ] ) {
-                            this.seats[ row ][ n ][ 'status' ] = this.data.unavailableSeats[ this.seats[ row ][ n ][ 'id' ] ];
+                    if ( this.unavailable[ this.id ] ) {
+                        if ( this.unavailable[ this.id ][ this.seats[ row ][ n ][ 'id' ] ] ) {
+                            this.seats[ row ][ n ][ 'status' ] = this.unavailable[ this.id ][ this.seats[ row ][ n ][ 'id' ] ];
                         }
                     }
                 }
@@ -127,6 +131,7 @@ export default {
     },
     watch: {
         scaleFactor() {
+            console.log( 'scaleFactor' );
             this.setScaleFactor();
         },
         h() {
@@ -138,7 +143,8 @@ export default {
         origin() {
             this.calculateChairs();
         },
-        data () {
+        unavailable() {
+            console.log( 'updating' );
             this.calculateChairs();
         }
     },

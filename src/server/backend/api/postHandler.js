@@ -11,7 +11,7 @@ const db = require( '../db/db.js' );
 
 class POSTHandler {
     constructor () {
-        this.allSelectedSeats = { 'TestEvent2': [ 'secAr1s1' ] };
+        this.allSelectedSeats = { 'TestEvent2': [ { 'id': 'secAr1s1', 'component': 1 } ] };
     }
 
     // Add lang in the future
@@ -31,7 +31,7 @@ class POSTHandler {
                     if ( this.allSelectedSeats[ data.eventID ].includes( data.id ) ) {
                         reject( { 'code': 409, 'message': 'Seat already selected' } );
                     } else {
-                        this.allSelectedSeats[ data.eventID ].push( data.id );
+                        this.allSelectedSeats[ data.eventID ].push( { 'id': data.id, 'component': data.component } );
                         transmit[ data.eventID ][ data.id ] = data;
                         db.writeDataSimple( 'temp', 'user_id', session.id, { 'user_id': session.id, 'data': JSON.stringify( transmit ), 'timestamp': new Date().toString() } ).then( () => {
                             resolve( 'ok' );
@@ -69,8 +69,8 @@ class POSTHandler {
         } );
     }
 
-    getReservedSeats () {
-        return this.allSelectedSeats;
+    getReservedSeats ( event ) {
+        return this.allSelectedSeats[ event ];
     }
 }
 

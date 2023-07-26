@@ -21,7 +21,7 @@ module.exports = ( app ) => {
         getHandler.handleCall( req.params.call, req.query, req.session ).then( data => {
             if ( req.params.call === 'getReservedSeats' ) {
                 let dat = data;
-                dat[ 'reserved' ] = postHandler.getReservedSeats();
+                dat[ 'reserved' ] = postHandler.getReservedSeats( req.query.event );
                 res.send( dat );
             } else {
                 res.send( data );
