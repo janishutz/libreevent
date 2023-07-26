@@ -12,7 +12,7 @@ const fs = require( 'fs' );
 
 const settings = JSON.parse( fs.readFileSync( path.join( __dirname + '/../../config/settings.config.json' ) ) );
 
-const dbRef = { 'user': 'libreevent_users', 'admin': 'libreevent_admin', 'order': 'libreevent_orders' };
+const dbRef = { 'user': 'libreevent_users', 'admin': 'libreevent_admin', 'order': 'libreevent_orders', 'users': 'libreevent_users', 'orders': 'libreevent_orders', 'temp': 'libreevent_temp' };
 
 let dbh;
 
@@ -27,19 +27,35 @@ if ( settings.db === 'mysql' ) {
 }
 
 module.exports.getDataSimple = ( db, column, searchQuery ) => {
-    return new Promise( resolve => {
+    return new Promise( ( resolve, reject ) => {
         dbh.query( { 'command': 'getFilteredData', 'property': column, 'searchQuery': searchQuery }, dbRef[ db ] ).then( data => {
-            console.log( data );
+            resolve( data );
         } ).catch( error => {
-            console.error( error );
+            reject( error );
         } );
-        resolve( '$2b$05$ElMYWoMjk7567lXkIkee.e.6cxCrWU4gkfuNLB8gmGYLQQPm7gT3O' );
+        // resolve( '$2b$05$ElMYWoMjk7567lXkIkee.e.6cxCrWU4gkfuNLB8gmGYLQQPm7gT3O' );
     } );
 };
 
-module.exports.writeDataSimple = ( db, column, searchQuery ) => {
+module.exports.writeDataSimple = ( db, column, searchQuery, data ) => {
     return new Promise( ( resolve, reject ) => {
-        
+        dbh.query( { 'command': 'checkDataAvailability', 'property': column, 'searchQuery': searchQuery }, dbRef[ db ] ).then( res => {
+            if ( res.length > 0 ) {
+                dbh.query( { 'command': 'updateData', 'property': column, 'searchQuery': searchQuery, 'newValues': data }, dbRef[ db ] ).then( dat => {
+                    resolve( dat );
+                } ).catch( error => {
+                    reject( error );
+                } );
+            } else {
+                dbh.query( { 'command': 'addData', 'data': data }, dbRef[ db ] ).then( dat => {
+                    resolve( dat );
+                } ).catch( error => {
+                    reject( error );
+                } );
+            }
+        } ).catch( error => {
+            reject( error );
+        } );
     } );
 };
 

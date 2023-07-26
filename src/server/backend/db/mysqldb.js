@@ -61,8 +61,9 @@ class SQLDB {
                 if ( error ) if ( error.code !== 'ER_TABLE_EXISTS_ERROR' ) throw error;
                 this.sqlConnection.query( 'CREATE TABLE libreevent_admin ( account_id INT NOT NULL AUTO_INCREMENT, email TINYTEXT, pass TEXT, permissions VARCHAR( 1000 ), PRIMARY KEY ( account_id ) );', ( error ) => {
                     if ( error ) if ( error.code !== 'ER_TABLE_EXISTS_ERROR' ) throw error;
-                    this.sqlConnection.query( 'CREATE TABLE libreevent_temp ( entry_id INT NOT NULL AUTO_INCREMENT, user_id TINYTEXT, pass TEXT, data VARCHAR( 60000 ), PRIMARY KEY ( entry_id ) );', ( error ) => {
+                    this.sqlConnection.query( 'CREATE TABLE libreevent_temp ( entry_id INT NOT NULL AUTO_INCREMENT, user_id TINYTEXT, data VARCHAR( 60000 ), timestamp TINYTEXT, PRIMARY KEY ( entry_id ) );', ( error ) => {
                         if ( error ) if ( error.code !== 'ER_TABLE_EXISTS_ERROR' ) throw error;
+                        return 'DONE';
                     } );
                 } );
             } );
@@ -101,8 +102,7 @@ class SQLDB {
                         - operation.matchingParam (Which properties should be matched to get the data, e.g. order.user_id=users.id)
 
                     - addData:
-                        - operation.columns (the columns into which the data should be inserted (as a space separated string))
-                        - operation.values (the data to be inserted into the columns selected before (as a space separated string))
+                        - operation.data (key-value pair with all data as values and column to insert into as key)
                      
                     - updateData:
                         - operation.newValues (a object with keys being the column and value being the value to be inserted into that column, values are being
@@ -125,14 +125,22 @@ class SQLDB {
             } else if ( operation.command === 'fullCustomCommand' ) {
                 command = operation.query;
             } else if ( operation.command === 'addData' ) {
-                command = 'INSERT INTO ' + table + ' (' + operation.columns + ') VALUES (' + this.sqlConnection.escape( operation.values ) + ');';
+                let keys = '';
+                let values = '';
+                for ( let key in operation.data ) {
+                    keys += String( key ) + ', ';
+                    values += this.sqlConnection.escape( String( operation.data[ key ] ) ) + ', ' ;
+                }
+                command = 'INSERT INTO ' + table + ' (' + keys.slice( 0, keys.length - 2 ) + ') VALUES (' +  values.slice( 0, values.length - 2 ) + ');';
             } else if ( operation.command === 'updateData' ) {
                 if ( !operation.property || !operation.searchQuery ) reject( 'Refusing to run destructive command: Missing Constraints' );
                 else {
                     command = 'UPDATE ' + table + ' SET ';
+                    let updatedValues = '';
                     for ( let value in operation.newValues ) {
-                        command += value + ' = ' + this.sqlConnection.escape( operation.newValues[ value ] );
+                        updatedValues += value + ' = ' + this.sqlConnection.escape( operation.newValues[ value ] ) + ', ';
                     }
+                    command += updatedValues.slice( 0, updatedValues.length - 2 );
                     command += ' WHERE ' + operation.property + ' = ' + this.sqlConnection.escape( operation.searchQuery );
                 }
             } else if ( operation.command === 'deleteData' ) {

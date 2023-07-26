@@ -317,13 +317,41 @@
                 if ( option.status == 'ok' ) {
                     this.$refs[ 'component' + this.selectedSeat.componentID ][ 0 ].validateSeatSelection( this.selectedSeat, option.data );
                     this.cartHandling( 'select', option.data );
+
+                    // Make call to server to reserve ticket to have server also keep track of reserved tickets
+                    const options = {
+                        method: 'post',
+                        body: JSON.stringify( { 'id': this.selectedSeat[ 'id' ], 'component': this.selectedSeat[ 'componentID' ], 'ticketOption': option.data, 'eventID': this.event.name } ),
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'charset': 'utf-8'
+                        }
+                    };
+                    fetch( localStorage.getItem( 'url' ) + '/API/reserveTicket', options ).then( res => {
+                        res.text().then( text => {
+                            console.log( text );
+                        } );
+                    } );
                 }
-                // TODO: Make call to server to reserve ticket when data is returned
             },
             seatDeselected ( seat ) {
                 this.selectedSeat = seat;
                 this.cartHandling( 'deselect' );
-                // TODO: Make call to server to deselect ticket
+
+                // Make call to server to deselect ticket
+                const options = {
+                    method: 'post',
+                    body: JSON.stringify( { 'id': seat[ 'id' ], 'eventID': this.event.name } ),
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'charset': 'utf-8'
+                    }
+                };
+                fetch( localStorage.getItem( 'url' ) + '/API/deselectTicket', options ).then( res => {
+                    res.text().then( text => {
+                        console.log( text );
+                    } );
+                } );
             },
             standing ( id ) {
                 const d = this.draggables[ id ];

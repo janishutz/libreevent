@@ -26,7 +26,7 @@ module.exports = ( app ) => {
     } );
 
     app.post( '/API/:call', ( req, res ) => {
-        postHandler.handleCall( req.params.call, req.body, req.query.lang ).then( data => {
+        postHandler.handleCall( req.params.call, req.body, req.query.lang, req.session ).then( data => {
             res.send( data );
         } ).catch( error => {
             res.status( 500 ).send( error );

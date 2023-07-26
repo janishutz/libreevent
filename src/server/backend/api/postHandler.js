@@ -14,22 +14,46 @@ class POSTHandler {
 
     }
 
-    handleCall ( call, data, lang ) {
+    handleCall ( call, data, lang, session ) {
         return new Promise( ( resolve, reject ) => {
             console.log( lang );
-            if ( call === 'saveSeatplanDraft' ) {
-                db.getJSONDataSimple( 'seatplan', data.location ).then( res => {
-                    let dat = res;
-                    dat[ 'draft' ] = data.data;
-                    db.writeJSONDataSimple( 'seatplan', data.location, dat ).then( resp => { 
-                        resolve( resp );
+            if ( call === 'reserveTicket' ) {
+                db.getDataSimple( 'temp', 'user_id', session.id ).then( dat => {
+                    let transmit = {};
+                    if ( dat.length > 0 ) {
+                        transmit = JSON.parse( dat[ 0 ].data );
+                    } else {
+                        transmit[ data.eventID ] = {};
+                    }
+                    transmit[ data.eventID ][ data.id ] = data;
+                    db.writeDataSimple( 'temp', 'user_id', session.id, { 'user_id': session.id, 'data': JSON.stringify( transmit ), 'timestamp': new Date().toString() } ).then( ret => {
+                        resolve( ret );
                     } ).catch( error => {
                         reject( error );
                     } );
+                } ).catch( error => {
+                    reject( error );
                 } );
-            } else if ( call === 'saveSeatplan' ) {
-                db.writeJSONDataSimple( 'seatplan', data.location, { 'draft': {}, 'save': data.data } ).then( resp => { 
-                    resolve( resp );
+            } else if ( call === 'deselectTicket' ) {
+                db.getDataSimple( 'temp', 'user_id', session.id ).then( dat => {
+                    let transmit = JSON.parse( dat[ 0 ].data );
+                    if ( transmit[ data.eventID ] ) {
+                        if ( transmit[ data.eventID ][ data.id ] ) {
+                            delete transmit[ data.eventID ][ data.id ];
+                        } else {
+                            reject( 'ERR_DATA_NONE_EXISTENT' );
+                        }
+                        if ( Object.keys( transmit[ data.eventID ] ).length < 1 ) {
+                            delete transmit[ data.eventID ];
+                        }
+                    } else {
+                        reject( 'ERR_DATA_NONE_EXISTENT' );
+                    }
+                    db.writeDataSimple( 'temp', 'user_id', session.id, { 'user_id': session.id, 'data': JSON.stringify( transmit ) } ).then( ret => {
+                        resolve( ret );
+                    } ).catch( error => {
+                        reject( error );
+                    } );
                 } ).catch( error => {
                     reject( error );
                 } );
