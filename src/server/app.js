@@ -89,7 +89,7 @@ if ( settings.init ) {
 }
 
 console.log( '[ Server ] loading plugins' );
-pluginManager.load( app, settings );
+// pluginManager.load( app, settings );
 
 app.use( ( request, response ) => {
     response.sendFile( file );

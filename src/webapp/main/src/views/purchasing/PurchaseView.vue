@@ -255,6 +255,7 @@ export default {
                 user a link to download the ticket. A mail has been sent to user automatically.
             */
             let prep = this.$refs.notification.createNotification( 'Preparing payment...', 20, 'progress', 'high' );
+            
             setTimeout( () => {
                 this.$refs.notification.cancelNotification( prep );
                 this.$refs.notification.createNotification( 'Payment prepared, redirecting...', 5, 'progress', 'high' );
