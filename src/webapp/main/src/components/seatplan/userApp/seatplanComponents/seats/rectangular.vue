@@ -131,7 +131,6 @@ export default {
     },
     watch: {
         scaleFactor() {
-            console.log( 'scaleFactor' );
             this.setScaleFactor();
         },
         h() {
@@ -144,7 +143,6 @@ export default {
             this.calculateChairs();
         },
         unavailable() {
-            console.log( 'updating' );
             this.calculateChairs();
         }
     },

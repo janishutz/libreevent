@@ -61,15 +61,15 @@ if ( settings.init ) {
 
 console.log( '[ Server ] loading and initializing middlewares' );
 // initialise express with middlewares
-// TODO: Generate random token
+// TODO: Generate random secret
 app.use( expressSession( {
     secret: 'gaoevgoawefgo083tq2rfvöfaf0p8',
-    resave: true,
+    resave: false,
     saveUninitialized: true,
     cookie: {
         sameSite: 'none',
-        httpOnly: true,
-        secure: true,
+        httpOnly: false,
+        secure: false,
     }
 } ) );
 

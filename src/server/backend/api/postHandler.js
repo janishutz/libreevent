@@ -60,6 +60,7 @@ class POSTHandler {
                         } else {
                             this.allSelectedSeats[ data.eventID ].push( { 'id': data.id, 'component': data.component } );
                         }
+                        console.log( { 'user_id': session.id, 'data': JSON.stringify( transmit ), 'timestamp': new Date().toString() } );
                         db.writeDataSimple( 'temp', 'user_id', session.id, { 'user_id': session.id, 'data': JSON.stringify( transmit ), 'timestamp': new Date().toString() } ).then( () => {
                             resolve( 'ok' );
                         } ).catch( () => {

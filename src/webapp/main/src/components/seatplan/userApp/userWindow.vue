@@ -158,6 +158,7 @@
                 this.seatChecks();
                 // TODO: Optimise for odd screen sizes and aspect ratios and fucking webkit
                 // TODO: Trim scroll box to about 200px more than seatplan size
+                sessionStorage.setItem( 'seatplan', JSON.stringify( this.scaleDown( this.draggables ) ) );
                 window.addEventListener( 'visibilitychange', ( e ) => {
                     this.seatPlanInit();
                 }, 1 );
@@ -170,6 +171,7 @@
                     if ( res.status === 200 ) {
                         let unavailableSeats = {};
                         res.json().then( data => {
+                            console.log( data );
                             for ( let seat in data.booked ) {
                                 if ( !unavailableSeats[ data.booked[ seat ].component ] ) {
                                     unavailableSeats[ data.booked[ seat ].component ];
@@ -382,6 +384,10 @@
                         } else if ( res.status === 409 ) {
                             setTimeout( () => {
                                 this.$refs.popups.openPopup( 'Unfortunately, the seat you just tried to select was reserved by somebody else since the last time the seat plan was refreshed. Please select another one. We are sorry for the inconvenience.', {}, 'string' );
+                            }, 300 );
+                        } else if ( res.status === 418 ) {
+                            setTimeout( () => {
+                                this.$refs.popups.openPopup( 'We are sorry, but you have already selected the maximum amount of tickets you can buy.', {}, 'string' );
                             }, 300 );
                         }
                     } );
