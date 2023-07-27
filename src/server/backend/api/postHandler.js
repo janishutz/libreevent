@@ -12,7 +12,8 @@ const db = require( '../db/db.js' );
 class POSTHandler {
     constructor () {
         this.allSelectedSeats = { 'TestEvent2': [ { 'id': 'secAr1s1', 'component': 1 } ] };
-        this.ticketTotals = {};
+        this.ticketTotals = { 'TestEvent2': { 'ticket1': 5, 'ticket2': 5 } };
+        this.settings = { 'maxTickets': 10 };
     }
 
     // Add lang in the future
@@ -29,19 +30,47 @@ class POSTHandler {
                     if ( !this.allSelectedSeats[ data.eventID ] ) {
                         this.allSelectedSeats[ data.eventID ] = [];
                     }
-                    if ( this.allSelectedSeats[ data.eventID ].includes( data.id ) ) {
-                        reject( { 'code': 409, 'message': 'Seat already selected' } );
-                    } else {
-                        this.allSelectedSeats[ data.eventID ].push( { 'id': data.id, 'component': data.component } );
-                        transmit[ data.eventID ][ data.id ] = data;
+
+                    if ( this.allSelectedSeats[ data.eventID ].includes( data.id ) && !data.count ) {
+                        reject( { 'code': 409, 'message': 'ERR_SEAT_SELECTED' } );
+                        return;
+                    } 
+                    transmit[ data.eventID ][ data.id ] = data;
+                    // TODO: Respect max ticket count per user
+                    let totalUserTickets = 0;
+                    for ( let event in transmit ) {
+                        for ( let ticket in transmit[ event ] ) {
+                            totalUserTickets += transmit[ event ][ ticket ][ 'count' ] ?? 1;
+                        }
+                    }
+                    if ( totalUserTickets <= this.settings.maxTickets ) {
+                        if ( data.count ) {
+                            if ( this.ticketTotals[ data.eventID ] ) {
+                                if ( data.count <= ( this.ticketTotals[ data.eventID ][ data.id.slice( 0, data.id.indexOf( '_' ) ) ] ?? 1 ) ) {
+                                    transmit[ data.eventID ][ data.id ][ 'count' ] = data.count;
+                                    this.allSelectedSeats[ data.eventID ].push( { 'id': data.id, 'component': data.component, 'count': data.count } );
+                                } else {
+                                    reject( { 'code': 409, 'message': this.ticketTotals[ data.eventID ] ?? 1 } );
+                                    return;
+                                }
+                            } else {
+                                reject( { 'code': 400, 'message': 'ERR_UNKNOWN_EVENT' } );
+                                return;
+                            }
+                        } else {
+                            this.allSelectedSeats[ data.eventID ].push( { 'id': data.id, 'component': data.component } );
+                        }
                         db.writeDataSimple( 'temp', 'user_id', session.id, { 'user_id': session.id, 'data': JSON.stringify( transmit ), 'timestamp': new Date().toString() } ).then( () => {
                             resolve( 'ok' );
-                        } ).catch( error => {
-                            reject( { 'code': 500, 'message': error } );
+                        } ).catch( () => {
+                            reject( { 'code': 500, 'message': 'ERR_DB' } );
                         } );
+                    } else {
+                        reject( { 'code': 418, 'message': 'ERR_TOO_MANY_TICKETS' } );
+                        return;
                     }
-                } ).catch( error => {
-                    reject( { 'code': 500, 'message': error } );
+                } ).catch( () => {
+                    reject( { 'code': 500, 'message': 'ERR_DB' } );
                 } );
             } else if ( call === 'deselectTicket' ) {
                 db.getDataSimple( 'temp', 'user_id', session.id ).then( dat => {
@@ -60,11 +89,11 @@ class POSTHandler {
                     }
                     db.writeDataSimple( 'temp', 'user_id', session.id, { 'user_id': session.id, 'data': JSON.stringify( transmit ) } ).then( () => {
                         resolve( 'ok' );
-                    } ).catch( error => {
-                        reject( { 'code': 500, 'message': error } );
+                    } ).catch( () => {
+                        reject( { 'code': 500, 'message': 'ERR_DB' } );
                     } );
-                } ).catch( error => {
-                    reject( { 'code': 500, 'message': error } );
+                } ).catch( () => {
+                    reject( { 'code': 500, 'message': 'ERR_DB' } );
                 } );
             }
         } );
