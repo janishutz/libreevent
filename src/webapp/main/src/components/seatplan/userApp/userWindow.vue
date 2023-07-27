@@ -299,10 +299,14 @@
 
                 if ( this.cart[ this.event.name ] ) {
                     let tickets = this.cart[ this.event.name ][ 'tickets' ];
-                    for ( let ticket in tickets ) {
-                        this.draggables[ tickets[ ticket ].comp ][ 'data' ][ 'unavailableSeats' ][ ticket ] = 'sel';
+                    for ( let seat in tickets ) {
+                        if ( !unavailableSeats[ data.user[ seat ].component ] ) {
+                            unavailableSeats[ data.reserved[ seat ].component ] = {};
+                        }
+                        unavailableSeats[ tickets[ seat ].component ][ tickets[ seat ].id ] = 'sel';
                     }
                 }
+
             },
             scaleUp ( valueArray ) {
                 const allowedAttributes = [ 'w', 'h', 'x', 'y' ];
@@ -433,23 +437,51 @@
                 if ( !this.cart[ this.event.name ] ) {
                     this.cart[ this.event.name ] = { 'displayName': this.event.name, 'tickets': {} };
                 }
-
+                
                 for ( let group in data.data ) {
                     if ( !this.cart[ this.event.name ][ 'tickets' ][ 'ticket' + data.component + '_' + group ] ) {
                         if ( data.data[ group ] > 0 ) {
-                            this.cart[ this.event.name ][ 'tickets' ][ 'ticket' + data.component + '_' + group ] = { 'displayName': 'Ticket ' + data.component + ' (' + this.event.ageGroups[ group ].name + ')', 'price': this.event.categories[ this.draggables[ data.component ].category ].price[ group ], 'id': 'ticket' + data.component + '_' + group, 'count': data.data[ group ], 'comp': data.component };
+                            const options = {
+                                method: 'post',
+                                body: JSON.stringify( { 'id': 'ticket' + data.component + '_' + group, 'component': data.component, 'ticketOption': '', 'eventID': this.event.name, 'count': data.data[ group ] } ),
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    'charset': 'utf-8'
+                                }
+                            };
+                            fetch( localStorage.getItem( 'url' ) + '/API/reserveTicket', options ).then( res => {
+                                if ( res.status === 200 ) {
+                                    this.cart[ this.event.name ][ 'tickets' ][ 'ticket' + data.component + '_' + group ] = { 'displayName': 'Ticket ' + data.component + ' (' + this.event.ageGroups[ group ].name + ')', 'price': this.event.categories[ this.draggables[ data.component ].category ].price[ group ], 'id': 'ticket' + data.component + '_' + group, 'count': data.data[ group ], 'comp': data.component };
+                                } else if ( res.status === 409 ) {
+                                    setTimeout( () => {
+                                        this.$refs.popups.openPopup( 'Unfortunately, the seat you just tried to select was reserved by somebody else since the last time the seat plan was refreshed. Please select another one. We are sorry for the inconvenience.', {}, 'string' );
+                                    }, 300 );
+                                }
+                                if ( Object.keys( this.cart[ this.event.name ][ 'tickets' ] ).length < 1 ) {
+                                    delete this.cart[ this.event.name ];
+                                }
+
+                                this.$refs.cart.calculateTotal();
+                                localStorage.setItem( 'cart', JSON.stringify( this.cart ) );
+                            } );
                         } else {
                             delete this.cart[ this.event.name ][ 'tickets' ][ 'ticket' + data.component + '_' + group ];
+                            const options = {
+                                method: 'post',
+                                body: JSON.stringify( { 'id': 'ticket' + data.component + '_' + group, 'eventID': this.event.name } ),
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    'charset': 'utf-8'
+                                }
+                            };
+                            fetch( localStorage.getItem( 'url' ) + '/API/deselectTicket', options ).then( res => {
+                                res.text().then( text => {
+                                    console.log( text );
+                                } );
+                            } );
                         }
                     }
                 }
-                // TODO: Make call to server to reserve ticket
-                if ( Object.keys( this.cart[ this.event.name ][ 'tickets' ] ).length < 1 ) {
-                    delete this.cart[ this.event.name ];
-                }
-
-                this.$refs.cart.calculateTotal();
-                localStorage.setItem( 'cart', JSON.stringify( this.cart ) );
             }
         },
         created () {

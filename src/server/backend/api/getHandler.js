@@ -30,10 +30,9 @@ class GETHandler {
                 if ( query.event ) {
                     db.getJSONDataSimple( 'booked', query.event ).then( data => {
                         db.getDataSimple( 'temp', 'user_id', session.id ).then( dat => {
-                            resolve( { 'booked': data ?? {}, 'user': dat[ 0 ] ? JSON.parse( dat[ 0 ].data )[ query.event ] ?? {} : {} } );
+                            resolve( { 'booked': data ? data.booked : {}, 'user': dat[ 0 ] ? JSON.parse( dat[ 0 ].data )[ query.event ] ?? {} : {} } );
                         } );
                     } ).catch( error => {
-                        console.error( error );
                         reject( { 'code': 500, 'message': error } );
                     } );
                 } else {

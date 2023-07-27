@@ -12,6 +12,7 @@ const db = require( '../db/db.js' );
 class POSTHandler {
     constructor () {
         this.allSelectedSeats = { 'TestEvent2': [ { 'id': 'secAr1s1', 'component': 1 } ] };
+        this.ticketTotals = {};
     }
 
     // Add lang in the future

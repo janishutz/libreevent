@@ -59,9 +59,6 @@
                 this.$router.push( '/tickets' );
             }
             this.eventID = sessionStorage.getItem( 'selectedTicket' );
-            // if ( this.eventID == 'test2' ) {
-            //     this.hasSeatplan = false;
-            // }
         }
     };
 </script>

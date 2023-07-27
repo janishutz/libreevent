@@ -65,6 +65,7 @@ export default {
             } else {
                 this.cartHandling( 'select', this.tickets[ id ], option );
             }
+            // TODO: make call to server to reserve ticket
         },
         cartHandling ( operation, data, option ) {
             if ( operation === 'select' ) {
@@ -99,6 +100,7 @@ export default {
                     }
                 }
             }
+            // TODO: Make call to server to deselect ticket
         },
         loadTickets () {
             // TODO: Load from server
