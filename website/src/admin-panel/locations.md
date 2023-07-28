@@ -1,0 +1,3 @@
+# Locations
+
+libreevent allows you to create an infinite amount of locations where you can host events in. These locations all can have a seat plan - or not. This is entirely your choice. You may use libreevent's powerful seat plan editor to edit the seat plan if you choose to add one. All of the locations can be assigned to one or multiple events such that you do not waste any time creating seat plans when it is not necessary.

@@ -12,15 +12,35 @@ This setting can be changed individually for admin and user accounts and 2FA can
 ## User account passwords
 Here you may set password requirements for the user accounts. The system will always be offering the users to generate a password that is strong for them to facilitate the process of setting a password.
 
-## Guest purchase
-Choose if a user may purchase a ticket without creating an account. An email address is always required as the system sends the tickets via email to the customers for easier access.
-
-## Allow overbooking
-Activate this and set a percentage of overbooking, if you want to enable overbooking of the event to ensure that every single spot is occupied even if somebody does not show up. Use is strongly discouraged and currently only works with events that have no seating plan.
-
-## Special requirements
-Here you may set a special requirement that a person booking a ticket has to fulfill, like the email address has to be ending in @yourdomain.com or they need to live in a certain street / town / city / country in order for them to be allowed to buy a ticket. You may also require that they provide a certain number, code or similar. Finally, you may choose to limit the amount of tickets a single person may reserve. 
-
 
 ## Change organisation name
 This should be self explanatory, but keep in mind that this change will only take effect after the next restart of the node app.
+
+
+# Admin Accounts
+On this page you may add, modify or remove admin accounts. Note that in order for you to see this page, you'll need to be logged in as the user root.
+
+## Adding an account
+
+### Privileges
+libreevent features a privilege system where you can choose to what group of users you want to add a user you are currently creating. Possible values are:
+
+Group           | Allowed settings
+----------------|------------------
+Root            | All pages. Can only be one account (the root account)
+Admin           | Can access all pages and settings except for Admin Accounts
+Event-Manager   | Access the events & pages page
+Event-Handler   | Can log into the apps to do entry control
+
+
+### Email
+An Email address is required for account activation and to recover a password in case it gets lost. The system will automatically send an activation email so the user can confirm that the email address is valid. 
+
+
+### 2FA
+With this checkbox you can choose if this user needs to do two factor authentication, meaning, if the user needs to authorise the login using a link. In the [Settings](&/admin-panel/settings#2fa) you may choose between the two different 2FA modes that libreevent offers.
+
+
+## Modifying an account
+
+## Removing an account
