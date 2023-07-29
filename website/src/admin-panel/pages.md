@@ -1,1 +1,3 @@
 # Pages
+
+With the page editor you can easily create the start page (the landing page, so the page that gets displayed when the user visits the website). You may select one of a few templates which you can choose [here](TODO: ADD LINK). Then you should upload the promotional text and a few images. The image count depends on the template selected. If you want to use a more feature rich start page, please consider moving libreevent to a sub-domain and building a complete website on the main domain. You can get beautiful fully custom websites built for you [here](https://development.janishutz.com).

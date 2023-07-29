@@ -1,1 +1,3 @@
 # Plugins
+
+libreevent can be extended easily with plugins. Plugins add additional features and can be official or community made. You can see which plugins are official by their badge. When installing plugins, you need to remember that a server restart is required to activate the plugins as libreevent does not feature hot module loading (yet). You then can manage the plugins using their built-in settings page that they ship with. 
