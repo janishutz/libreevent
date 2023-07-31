@@ -9,19 +9,27 @@
 
 
 const pdfme = require( '@pdfme/generator' );
+const db = require( '../db/db.js' );
 
 class TicketGenerator {
     constructor () {
         this.ticketQueue = {};
     }
 
-    generateTicket (  ) {
+    generateTicket ( data ) {
 
     }
 
-    ticketGenerator () {
+    ticketGenerator ( event, data ) {
         return new Promise( ( resolve, reject ) => {
-            
+            db.getJSONDataSimple( event ).then( template => {
+                pdfme.generate( { template, data } ).then( pdf => {
+                    resolve( pdf );
+                    // TODO: Maybe write to disk
+                } ).catch( error => {
+                    reject( error );
+                } );
+            } );
         } );
     }
 }

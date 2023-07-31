@@ -15,8 +15,9 @@ const bodyParser = require( 'body-parser' );
 const cookieParser = require( 'cookie-parser' );
 const http = require( 'http' );
 const fs = require( 'fs' );
-const pm = require( './backend/plugins/manager.js' );
-const pluginManager = new pm();
+const token = require( './backend/token.js' );
+// const pm = require( './backend/plugins/manager.js' );
+// const pluginManager = new pm();
 
 
 console.log( `
@@ -59,11 +60,10 @@ if ( settings.init ) {
     app.use( express.static( '../webapp/setup/dist' ) );
 }
 
-console.log( '[ Server ] loading and initializing middlewares' );
 // initialise express with middlewares
-// TODO: Generate random secret
+console.log( '[ Server ] loading and initializing middlewares' );
 app.use( expressSession( {
-    secret: 'gaoevgoawefgo083tq2rfvöfaf0p8',
+    secret: token.generateToken( 60 ),
     resave: false,
     saveUninitialized: true,
     cookie: {

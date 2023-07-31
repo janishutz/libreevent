@@ -9,7 +9,6 @@
 
 <template>
     <div id="window">
-        <!-- TODO: Add additional div with v-if to check if a location has been selected and warn if not so. -->
         <properties class="properties" v-model:draggables="draggables" @updated="handleUpdate" :scale-factor="scaleFactor" :active="active" :history-pos="historyPos" :zoom-factor="zoomFactor" v-model:general-settings="generalSettings"></properties>
         <div class="parent" id="parent">
             <div class="content-parent">
@@ -80,6 +79,7 @@
                 historyPos: 0,
                 generalSettings: { 'namingScheme': 'numeric' },
                 seatCountInfo: { 'data': {}, 'count': 0 },
+                autoSave: null,
             }
         },
         methods: {
@@ -93,6 +93,9 @@
                 reliably according to testing done.
             */
             runHook () {
+                if ( !sessionStorage.getItem( 'locationID' ) ) {
+                    this.$router.push( '/admin/events' );
+                }
                 let self = this;
                 this.zoomFactor = sessionStorage.getItem( 'zoom' ) ? parseFloat( sessionStorage.getItem( 'zoom' ) ) : 1;
 
@@ -128,7 +131,8 @@
                     }
                 };
 
-                // TODO: Create 1min interval saving
+                // Auto save every 60s (60K ms)
+                this.autoSave = setInterval( this.saveDraft(), 60000 );
                 
                 /* 
                 Calculate scale factor (this adds support for differently sized screens)
@@ -165,7 +169,7 @@
                 } );
 
                 if ( !sessionStorage.getItem( 'seatplan-history' ) ) {
-                    sessionStorage.setItem( 'seatplan-history', JSON.stringify( { '1': this.scaleDown( this.draggables ) } ) );
+                    sessionStorage.setItem( 'seatplaTODO:n-history', JSON.stringify( { '1': this.scaleDown( this.draggables ) } ) );
                 }
 
                 let history = sessionStorage.getItem( 'seatplan-history' ) ? JSON.parse( sessionStorage.getItem( 'seatplan-history' ) ) : {};
@@ -407,6 +411,7 @@
         },
         unmounted() {
             clearInterval( this.sizePoll );
+            clearInterval( this.autoSave );
         },
     }
 </script>
