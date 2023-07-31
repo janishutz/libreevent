@@ -14,10 +14,25 @@ const db = require( '../db/db.js' );
 class TicketGenerator {
     constructor () {
         this.ticketQueue = {};
+        this.isRunning = false;
     }
 
-    generateTicket ( data ) {
+    generateTicket ( event, data ) {
+        
+    }
 
+    // TODO: Maybe move to subprocesses
+    queueHandler () {
+        if ( !this.isRunning ) {
+            this.isRunning = true;
+            this.ticketGenerator( this.ticketQueue[ Object.keys( this.ticketQueue )[ 0 ] ] ).then( res => {
+                // TODO: Maybe write to disk
+                this.isRunning = false;
+            } ).catch( error => {
+                this.isRunning = false;
+                // TODO: Add to FAILED db
+            } );
+        }
     }
 
     ticketGenerator ( event, data ) {
@@ -25,7 +40,6 @@ class TicketGenerator {
             db.getJSONDataSimple( event ).then( template => {
                 pdfme.generate( { template, data } ).then( pdf => {
                     resolve( pdf );
-                    // TODO: Maybe write to disk
                 } ).catch( error => {
                     reject( error );
                 } );
