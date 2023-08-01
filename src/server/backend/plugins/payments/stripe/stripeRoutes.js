@@ -19,7 +19,7 @@ module.exports = ( app, settings ) => {
             'success_url': settings.yourDomain + '/payments/success',
             'cancel_url': settings.yourDomain + '/payments/canceled',
             'submit_type': 'book',
-            'customer_email': req.body.customer.mail
+            'customer_email': req.body.mail
         };
 
         for ( let item in req.body.products ) {

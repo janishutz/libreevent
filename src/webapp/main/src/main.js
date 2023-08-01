@@ -27,16 +27,21 @@ if ( prod ) {
         res.json().then( data => {
             userStore.setUserAuth( data.user );
             userStore.setAdminAuth( data.admin );
-            
-            app.use( router );
-            app.mount( '#app' );
+            localStorage.setItem( 'url', '' );
+            fetch( '/getAPI/getName' ).then( res => {
+                res.json().then( data => {
+                    userStore.setPageName( data.name );
+                    app.use( router );
+                    app.mount( '#app' );
+                } );
+            } );
         } );
     } );
-    localStorage.setItem( 'url', '' );
 } else {
     localStorage.setItem( 'url', 'http://localhost:8081' );
     userStore.setUserAuth( true );
     userStore.setAdminAuth( true );
+    localStorage.setItem( 'name', 'libreevent' );
     app.use( router );
     app.mount( '#app' );
 }

@@ -14,6 +14,7 @@ const twoFA = new auth();
 const path = require( 'path' );
 
 let responseObjects = {};
+let authOk = {};
 
 module.exports = ( app, settings ) => {
     app.post( '/api/reserveTicket', ( request, response ) => {
@@ -55,7 +56,11 @@ module.exports = ( app, settings ) => {
         let tokType = twoFA.verifySimple( request.query.token );
         if ( tokType === 'standard' ) {
             request.session.loggedInUser = true;
-            responseObjects[ request.query.token ].write( 'data: authenticated\n\n' );
+            if ( responseObjects[ request.query.token ] ) {
+                responseObjects[ request.query.token ].write( 'data: authenticated\n\n' );
+            } else {
+                authOk[ request.query.token ] = 'ok';
+            }
             response.sendFile( path.join( __dirname + '/../ui/en/2fa/2faSimple.html' ) );
         } else if ( tokType === 'enhanced' ) {
             response.sendFile( path.join( __dirname + '/../ui/en/2fa/2faEnhanced.html' ) );
@@ -68,7 +73,11 @@ module.exports = ( app, settings ) => {
         let verified = twoFA.verifyEnhanced( request.body.token, request.body.code );
         if ( verified ) {
             request.session.loggedInUser = true;
-            responseObjects[ request.body.token ].write( 'data: authenticated\n\n' );
+            if ( responseObjects[ request.body.token ] ) {
+                responseObjects[ request.body.token ].write( 'data: authenticated\n\n' );
+            } else {
+                authOk[ request.body.token ] = 'ok';
+            }
             response.send( 'ok' );
         } else response.send( 'wrong' );
     } );
@@ -85,8 +94,20 @@ module.exports = ( app, settings ) => {
         responseObjects[ request.session.token ] = response;
     } );
 
+    app.get( '/user/2fa/ping', ( request, response ) => {
+        if ( authOk[ request.session.token ] === 'ok' ) {
+            response.send( { 'status': 'ok' } );
+        } else {
+            response.send( '' );
+        }
+    } );
+
     app.get( '/user/logout', ( request, response ) => {
         request.session.loggedInUser = false;
         response.send( 'logoutOk' );
+    } );
+
+    app.post( '/user/signup', ( request, response ) => {
+        response.send( 'ok' );
     } );
 };

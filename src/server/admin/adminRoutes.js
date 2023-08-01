@@ -14,6 +14,7 @@ const twoFA = new auth();
 const path = require( 'path' );
 
 let responseObjects = {};
+let authOk = {};
 
 module.exports = ( app, settings ) => {
     /* 
@@ -83,6 +84,14 @@ module.exports = ( app, settings ) => {
         response.flushHeaders();
         response.write( 'data: connected\n\n' );
         responseObjects[ request.session.token ] = response;
+    } );
+
+    app.get( '/admin/2fa/ping', ( request, response ) => {
+        if ( authOk[ request.session.token ] === 'ok' ) {
+            response.send( { 'status': 'ok' } );
+        } else {
+            response.send( '' );
+        }
     } );
 
     app.get( '/test/login', ( request, response ) => {

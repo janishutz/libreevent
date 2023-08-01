@@ -66,6 +66,27 @@
                 setTimeout( () => {
                     this.$refs.notification.createNotification( 'Unsupported browser detected. Redirection might take longer to occur!', 20, 'warning', 'normal' );
                 }, 300 );
+                // ping server every 5s to check if logged in
+                this.serverPing = setInterval( () => {
+                    fetch( '/admin/2fa/ping' ).then( res => {
+                        if ( res.status === 200 ) {
+                            res.json().then( data => {
+                                if ( data ) {
+                                    if ( data.status === 'ok' ) {
+                                        this.userStore.setUserAuth( true );
+                                        this.$router.push( sessionStorage.getItem( 'redirect' ) ?? '/account' );
+                                    }
+                                }
+                            } );
+                        } else {
+                            console.error( 'Request failed' );
+                            this.$refs.notification.createNotification( 'We are sorry, but an error occurred. You will not be redirected automatically', 300, 'error', 'normal' );
+                        }
+                    } ).catch( error => {
+                        console.error( error );
+                        this.$refs.notification.createNotification( 'We are sorry, but an error occurred. You will not be redirected automatically', 300, 'error', 'normal' );
+                    } );
+                }, 5000 );
             }
             let code = sessionStorage.getItem( '2faCode' ) ? sessionStorage.getItem( '2faCode' ) : '';
             this.code = { '1': code.slice( 0, 3 ), '2': code.substring( 3 ) };

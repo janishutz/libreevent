@@ -14,7 +14,7 @@ class GETHandler {
 
     }
 
-    handleCall ( call, query, session ) {
+    handleCall ( call, query, session, settings ) {
         return new Promise( ( resolve, reject ) => {
             if ( call === 'getSeatplan' ) {
                 db.getJSONDataSimple( 'seatplan', query.location ).then( data => {
@@ -40,6 +40,8 @@ class GETHandler {
                 } else {
                     reject( { 'code': 400, 'message': 'Bad request, missing event query' } );
                 }
+            } else if ( call === 'getName' ) {
+                resolve( { 'name': settings.name } );
             }
         } );
     }

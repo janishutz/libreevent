@@ -14,11 +14,11 @@ const getHandler = new geth();
 const path = require( 'path' );
 
 // settings is missing in arguments which shouldn't pose any problem
-module.exports = ( app ) => {
+module.exports = ( app, settings ) => {
     // Add specific routes here to have them be checked first to not get general handling
 
     app.get( '/getAPI/:call', ( req, res ) => {
-        getHandler.handleCall( req.params.call, req.query, req.session ).then( data => {
+        getHandler.handleCall( req.params.call, req.query, req.session, settings ).then( data => {
             if ( req.params.call === 'getReservedSeats' ) {
                 let dat = data;
                 dat[ 'reserved' ] = postHandler.getReservedSeats( req.query.event );

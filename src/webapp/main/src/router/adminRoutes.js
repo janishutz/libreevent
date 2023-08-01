@@ -12,7 +12,7 @@ export default {
     name: 'admin',
     component: () => import( '../views/admin/AdminView.vue' ),
     meta: {
-        title: 'Admin - libreevent',
+        title: 'Admin - ',
         adminAuthRequired: true,
     },
     children: [
@@ -21,7 +21,7 @@ export default {
             name: 'adminHome',
             component: () => import( '../views/admin/HomeView.vue' ),
             meta: {
-                title: 'Home :: Admin - libreevent',
+                title: 'Home :: Admin - ',
                 adminAuthRequired: true,
             }
         },
@@ -30,7 +30,7 @@ export default {
             name: 'adminLocations',
             component: () => import( '../views/admin/LocationsView.vue' ),
             meta: {
-                title: 'Accounts :: Admin - libreevent',
+                title: 'Accounts :: Admin - ',
                 adminAuthRequired: true,
                 permissions: 'root'
             }
@@ -40,7 +40,7 @@ export default {
             name: 'adminPages',
             component: () => import( '../views/admin/PagesView.vue' ),
             meta: {
-                title: 'Pages :: Admin - libreevent',
+                title: 'Pages :: Admin - ',
                 adminAuthRequired: true,
             }
         },
@@ -49,7 +49,7 @@ export default {
             name: 'adminEvents',
             component: () => import( '../views/admin/EventsView.vue' ),
             meta: {
-                title: 'Events :: Admin - libreevent',
+                title: 'Events :: Admin - ',
                 adminAuthRequired: true,
             },
         },
@@ -58,7 +58,7 @@ export default {
             name: 'adminPlugins',
             component: () => import( '../views/admin/PluginsView.vue' ),
             meta: {
-                title: 'Plugins :: Admin - libreevent',
+                title: 'Plugins :: Admin - ',
                 adminAuthRequired: true,
             }
         },
@@ -67,7 +67,7 @@ export default {
             name: 'adminSettings',
             component: () => import( '../views/admin/SettingsView.vue' ),
             meta: {
-                title: 'Admin - libreevent',
+                title: 'Admin - ',
                 adminAuthRequired: true,
             }
         },
@@ -76,7 +76,7 @@ export default {
             name: 'eventDetails',
             component: () => import( '../views/admin/events/EventsDetailsView.vue' ),
             meta: {
-                title: 'Event details :: Admin - libreevent',
+                title: 'Event details :: Admin - ',
                 adminAuthRequired: true,
             }
         },
@@ -85,7 +85,7 @@ export default {
             name: 'eventAnalytics',
             component: () => import( '../views/admin/events/AnalyticsView.vue' ),
             meta: {
-                title: 'Event analytics :: Admin - libreevent',
+                title: 'Event analytics :: Admin - ',
                 adminAuthRequired: true,
             }
         },

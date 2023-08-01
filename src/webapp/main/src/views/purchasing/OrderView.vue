@@ -10,7 +10,7 @@
 <template>
     <div class="order">
         <h1>Order tickets</h1>
-        <div class="order-app" v-if="events">
+        <div class="order-app" v-if="Object.keys( orderedEvents ).length">
             <ul>
                 <li v-for="event in orderedEvents">
                     <router-link to="/tickets/details" class="ticket" @click="setActiveTicket( event.eventID );">
@@ -95,7 +95,7 @@
         },
         data () {
             return {
-                events: { 'test':{ 'name': 'TestEvent', 'description': 'This is a description for the TestEvent to test multiline support and proper positioning of the Fields', 'freeSeats': 2, 'maxSeats': 2, 'date':'2023-07-31T09:00:00Z', 'startingPrice':15, 'location': 'TestLocation', 'eventID': 'test', 'currency': 'CHF', 'logo': new URL( '/src/assets/logo.png', import.meta.url ).href }, 'test2':{ 'name': 'TestEvent2', 'description': 'This is a description for the TestEvent to test multiline support and proper positioning of the Fields', 'freeSeats': 2, 'maxSeats': 2, 'date':'2023-08-01T09:00:00Z', 'startingPrice':15, 'location': 'TestLocation', 'eventID': 'test2', 'currency': 'CHF', 'logo': new URL( '/src/assets/logo.png', import.meta.url ).href } },
+                events: { 'test':{ 'name': 'TestEvent', 'description': 'This is a description for the TestEvent to test multiline support and proper positioning of the Fields', 'freeSeats': 2, 'maxSeats': 2, 'date':'2023-08-31T09:00:00Z', 'startingPrice':15, 'location': 'TestLocation', 'eventID': 'test', 'currency': 'CHF', 'logo': new URL( '/src/assets/logo.png', import.meta.url ).href }, 'test2':{ 'name': 'TestEvent2', 'description': 'This is a description for the TestEvent to test multiline support and proper positioning of the Fields', 'freeSeats': 2, 'maxSeats': 2, 'date':'2023-08-15T09:00:00Z', 'startingPrice':15, 'location': 'TestLocation', 'eventID': 'test2', 'currency': 'CHF', 'logo': new URL( '/src/assets/logo.png', import.meta.url ).href } },
                 today: new Date().getTime()
             }
         },

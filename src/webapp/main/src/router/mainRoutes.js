@@ -21,7 +21,7 @@ export default [
         name: 'home',
         component: HomeView,
         meta: {
-            title: 'Home - libreevent'
+            title: 'Home - '
         }
     },
     {
@@ -29,7 +29,7 @@ export default [
         name: 'tickets',
         component: () => import( '../views/purchasing/OrderView.vue' ),
         meta: {
-            title: 'Order ticket - libreevent'
+            title: 'Order ticket - '
         }
     },
     {
@@ -37,7 +37,7 @@ export default [
         name: 'login',
         component: () => import( '../views/user/LoginView.vue' ),
         meta: {
-            title: 'Login - libreevent'
+            title: 'Login - '
         }
     },
     {
@@ -45,7 +45,7 @@ export default [
         name: 'adminLogin',
         component: () => import( '../views/admin/AdminLoginView.vue' ),
         meta: {
-            title: 'Login :: Admin - libreevent'
+            title: 'Login :: Admin - '
         }
     },
     {
@@ -53,7 +53,7 @@ export default [
         name: 'admin2FA',
         component: () => import( '../views/admin/TwoFA.vue' ),
         meta: {
-            title: 'Two Factor Authentication :: Admin - libreevent'
+            title: 'Two Factor Authentication :: Admin - '
         }
     },
     {
@@ -61,7 +61,7 @@ export default [
         name: 'signup',
         component: () => import( '../views/user/SignupView.vue' ),
         meta: {
-            title: 'Signup - libreevent'
+            title: 'Signup - '
         }
     },
     {
@@ -69,7 +69,7 @@ export default [
         name: 'account',
         component: () => import( '../views/user/AccountView.vue' ),
         meta: {
-            title: 'Account - libreevent'
+            title: 'Account - '
         }
     },
     {
@@ -77,7 +77,7 @@ export default [
         name: '2fa',
         component: () => import( '../views/user/TwoFA.vue' ),
         meta: {
-            title: 'Two Factor Authentication - libreevent'
+            title: 'Two Factor Authentication - '
         }
     },
     {
@@ -85,7 +85,7 @@ export default [
         name: 'ticketDetails',
         component: () => import( '../views/purchasing/TicketsDetailsView.vue' ),
         meta: {
-            title: 'Details - libreevent',
+            title: 'Details - ',
             transition: 'scale'
         }
     },
@@ -94,7 +94,7 @@ export default [
         name: 'ticketOrder',
         component: () => import( '../views/purchasing/TicketsOrderingView.vue' ),
         meta: {
-            title: 'Order ticket - libreevent',
+            title: 'Order ticket - ',
             transition: 'scale'
         }
     },
@@ -103,7 +103,7 @@ export default [
         name: 'cart',
         component: () => import( '../views/purchasing/CartView.vue' ),
         meta: {
-            title: 'Cart - libreevent',
+            title: 'Cart - ',
             transition: 'scale'
         }
     },
@@ -112,7 +112,7 @@ export default [
         name: 'purchase',
         component: () => import( '@/views/purchasing/PurchaseView.vue' ),
         meta: {
-            title: 'Purchase - libreevent',
+            title: 'Purchase - ',
             transition: 'scale'
         }
     },
@@ -121,7 +121,7 @@ export default [
         name: 'adminSeatplanEditor',
         component: () => import( '@/views/admin/events/EditorView.vue' ),
         meta: {
-            title: 'Seatplan Editor :: Admin - libreevent',
+            title: 'Seatplan Editor :: Admin - ',
             adminAuthRequired: true,
         }
     },
@@ -130,7 +130,7 @@ export default [
         name: 'adminTicketEditor',
         component: () => import( '@/views/admin/events/TicketEditorView.vue' ),
         meta: {
-            title: 'Ticket Editor :: Admin - libreevent',
+            title: 'Ticket Editor :: Admin - ',
             adminAuthRequired: true,
         }
     },
@@ -139,7 +139,7 @@ export default [
         name: 'NotFound', 
         component: () => import( '@/views/404.vue' ),
         meta: {
-            title: '404 - Page not found :: libreevent',
+            title: '404 - Page not found :: ',
             transition: 'scale',
         }
     },

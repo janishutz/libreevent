@@ -8,7 +8,7 @@
 -->
 
 <template>
-    <div id="sideCartView" :style="'width: ' + width + 'vw; top: ' + height + 'vh;'">
+    <div id="sideCartView">
         <h2>Cart</h2>
         <div v-if="Object.keys( cart ).length > 0" style="height: 100%; width: 100%;">
             <div class="scroll-wrapper">
@@ -92,6 +92,8 @@ export default {
         position: fixed;
         right: 0;
         height: 100vh;
+        top: 17vh;
+        width: 25vw;
         background-color: var( --accent-background );
         color: var( --secondary-color );
     }

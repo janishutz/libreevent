@@ -10,12 +10,13 @@
 import { defineStore } from "pinia";
 
 export const useUserStore = defineStore ( 'user', {
-    state: () => ( { 'isUserAuth': false, 'isAdminAuth': false, 'userData': {}, 'isTwoFACompliantUser': false, 'isTwoFACompliantAdmin': false } ),
+    state: () => ( { 'isUserAuth': false, 'isAdminAuth': false, 'userData': {}, 'isTwoFACompliantUser': false, 'isTwoFACompliantAdmin': false, 'pageName': 'libreevent' } ),
     getters: {
         getUserAuthenticated: ( state ) => state.isUserAuth,
         getAdminAuthenticated: ( state ) => state.isAdminAuth,
         getUserTwoFACompliant: ( state ) => state.isTwoFACompliantUser,
         getAdminTwoFACompliant: ( state ) => state.isTwoFACompliantAdmin,
+        getPageName: ( state ) => state.pageName,
     },
     actions: { 
         setUserAuth ( auth ) {
@@ -29,6 +30,9 @@ export const useUserStore = defineStore ( 'user', {
         },
         setAdmin2fa ( auth ) {
             this.isTwoFACompliantAdmin = auth;
+        },
+        setPageName ( name ) {
+            this.pageName = name;
         }
     }
 } );

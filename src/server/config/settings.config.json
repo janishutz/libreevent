@@ -3,5 +3,6 @@
     "twoFA": "enhanced",
     "db": "mysql",
     "payments": "stripe",
+    "name": "libreevent",
     "yourDomain": "http://localhost:8081"
 }

@@ -1,6 +1,4 @@
 # Account view:
-- set page title based on settings
-
 - make pricing groups changeable in UI (event categories)
 
 - Fix text field overflow (text too big for box)
@@ -8,6 +6,7 @@
 
 - Implement Permission system
 
+- Seat numbering
 
 
-- add webpack to project website to decrease file size
+- add webpack (or any other minifying tool) to project website to decrease file size (OPTIONAL)

@@ -27,14 +27,13 @@ const router = createRouter( {
     routes,
 } );
 
-
 router.afterEach( ( to, from ) => {
-    document.title = to.meta.title ? to.meta.title : 'libreevent';
+    let userStore = useUserStore();
+    document.title = to.meta.title ? to.meta.title + userStore.getPageName : 'libreevent';
 } );
 
 let UserAccountPages = [ 'account' ];
 
-let authRequired = false;
 
 router.beforeEach( ( to, from ) => {
     let userStore = useUserStore();
