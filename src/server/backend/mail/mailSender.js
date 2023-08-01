@@ -37,7 +37,7 @@ class MailManager {
 
         transporter.sendMail( mailOptions, function ( error ) {
             if ( error ) {
-                console.log( error );
+                console.error( error );
             }
         } );
     }
@@ -55,7 +55,7 @@ class MailManager {
 
         transporter.sendMail( mailOptions, function ( error ) {
             if ( error ) {
-                console.log( error );
+                console.error( error );
             }
         } );
     }
