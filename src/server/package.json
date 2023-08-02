@@ -54,7 +54,8 @@
     "nodemailer": "^6.9.3",
     "serve-favicon": "^2.5.0",
     "serve-static": "^1.15.0",
-    "stripe": "^12.14.0"
+    "stripe": "^12.14.0",
+    "vue": "^3.3.4"
   },
   "scripts": {
     "test": "test.js"

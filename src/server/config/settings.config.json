@@ -4,5 +4,6 @@
     "db": "mysql",
     "payments": "stripe",
     "name": "libreevent",
-    "yourDomain": "http://localhost:8081"
+    "yourDomain": "http://localhost:8081",
+    "mailSender": "libreevent <info@libreevent.janishutz.com>"
 }

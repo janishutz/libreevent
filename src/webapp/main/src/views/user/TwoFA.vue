@@ -33,62 +33,70 @@
             ...mapStores( useUserStore ),
         },
         created () {
-            if ( !!window.EventSource ) {
-                setTimeout( () => {
-                    let startNotification = this.$refs.notification.createNotification( 'Connecting to status service', 20, 'progress', 'normal' );
-                    let source = new EventSource( localStorage.getItem( 'url' ) + '/user/2fa/check', { withCredentials: true } );
-                    
-                    let self = this;
+            if ( this.userStore.getUserTwoFACompliant ) {
+                if ( !!window.EventSource ) {
+                    setTimeout( () => {
+                        let startNotification = this.$refs.notification.createNotification( 'Connecting to status service', 20, 'progress', 'normal' );
+                        let source = new EventSource( localStorage.getItem( 'url' ) + '/user/2fa/check', { withCredentials: true } );
+                        
+                        let self = this;
 
-                    source.onmessage = ( e ) => {
-                        if ( e.data === 'authenticated' ) {
-                            self.userStore.setUserAuth( true );
-                            self.$router.push( sessionStorage.getItem( 'redirect' ) ?? '/account' );
+                        source.onmessage = ( e ) => {
+                            if ( e.data === 'authenticated' ) {
+                                self.userStore.setUserAuth( true );
+                                self.$router.push( sessionStorage.getItem( 'redirect' ) ?? '/account' );
+                            }
                         }
-                    }
 
-                    source.onopen = e => {
-                        self.$refs.notification.createNotification( 'Connected to status service', 5, 'ok', 'normal' );
-                        self.$refs.notification.cancelNotification( startNotification );
-                    };
-                    
-                    source.addEventListener( 'error', function( e ) {
-                        if ( e.eventPhase == EventSource.CLOSED ) source.close();
-
-                        if ( e.target.readyState == EventSource.CLOSED ) {
+                        source.onopen = e => {
+                            self.$refs.notification.createNotification( 'Connected to status service', 5, 'ok', 'normal' );
                             self.$refs.notification.cancelNotification( startNotification );
-                            self.$refs.notification.createNotification( 'Could not connect to status service', 5, 'error', 'normal' );
-                        }
-                    }, false)
-                }, 300 );
-            } else {
-                setTimeout( () => {
-                    this.$refs.notification.createNotification( 'Unsupported browser detected. Redirection might take longer to occur!', 20, 'warning', 'normal' );
-                }, 300 );
-                // ping server every 5s to check if logged in
-                this.serverPing = setInterval( () => {
-                    fetch( '/user/2fa/ping' ).then( res => {
-                        if ( res.status === 200 ) {
-                            res.json().then( data => {
-                                if ( data ) {
-                                    if ( data.status === 'ok' ) {
-                                        this.userStore.setUserAuth( true );
-                                        this.$router.push( sessionStorage.getItem( 'redirect' ) ?? '/account' );
+                        };
+                        
+                        source.addEventListener( 'error', function( e ) {
+                            if ( e.eventPhase == EventSource.CLOSED ) source.close();
+
+                            if ( e.target.readyState == EventSource.CLOSED ) {
+                                self.$refs.notification.cancelNotification( startNotification );
+                                self.$refs.notification.createNotification( 'Could not connect to status service', 5, 'error', 'normal' );
+                            }
+                        }, false)
+                    }, 300 );
+                } else {
+                    setTimeout( () => {
+                        this.$refs.notification.createNotification( 'Unsupported browser detected. Redirection might take longer to occur!', 20, 'warning', 'normal' );
+                    }, 300 );
+                    // ping server every 5s to check if logged in
+                    this.serverPing = setInterval( () => {
+                        fetch( '/user/2fa/ping' ).then( res => {
+                            if ( res.status === 200 ) {
+                                res.json().then( data => {
+                                    if ( data ) {
+                                        if ( data.status === 'ok' ) {
+                                            this.userStore.setUserAuth( true );
+                                            this.$router.push( sessionStorage.getItem( 'redirect' ) ?? '/account' );
+                                        }
                                     }
-                                }
-                            } );
-                        } else {
-                            console.error( 'Request failed' );
+                                } );
+                            } else {
+                                console.error( 'Request failed' );
+                                this.$refs.notification.createNotification( 'We are sorry, but an error occurred. You will not be redirected automatically', 300, 'error', 'normal' );
+                            }
+                        } ).catch( error => {
+                            console.error( error );
                             this.$refs.notification.createNotification( 'We are sorry, but an error occurred. You will not be redirected automatically', 300, 'error', 'normal' );
-                        }
-                    } ).catch( error => {
-                        console.error( error );
-                        this.$refs.notification.createNotification( 'We are sorry, but an error occurred. You will not be redirected automatically', 300, 'error', 'normal' );
-                    } );
-                }, 5000 );
+                        } );
+                    }, 5000 );
+                }
+                let code = sessionStorage.getItem( '2faCode' ) ? sessionStorage.getItem( '2faCode' ) : '';
+                this.code = { '1': code.slice( 0, 3 ), '2': code.substring( 3 ) };
+            } else {
+                if ( this.userStore.getUserAuthenticated ) { 
+                    this.$router.push( '/account' );
+                } else {
+                    this.$router.push( '/login' );
+                }
             }
-            let code = sessionStorage.getItem( '2faCode' ) ? sessionStorage.getItem( '2faCode' ) : '';
-            this.code = { '1': code.slice( 0, 3 ), '2': code.substring( 3 ) };
         },
         unmounted() {
             clearInterval( this.serverPing );

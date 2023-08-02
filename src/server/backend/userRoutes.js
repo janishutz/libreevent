@@ -12,32 +12,61 @@ const pwdmanager = require( './credentials/pwdmanager.js' );
 const auth = require( './credentials/2fa.js' );
 const twoFA = new auth();
 const path = require( 'path' );
+const mail = require( './mail/mailSender.js' );
+const mailManager = new mail();
 
 let responseObjects = {};
 let authOk = {};
 
 module.exports = ( app, settings ) => {
-    app.post( '/api/reserveTicket', ( request, response ) => {
-        db.getData( 'test', request.body );
-        response.send( 'ok' );
+    app.get( '/user/details', ( request, response ) => {
+        if ( request.session.loggedInUser ) {
+            db.getDataSimple( 'users', 'email', request.session.username ).then( data => {
+                if ( data[ 0 ] ) {
+                    let dat = data[ 0 ];
+                    delete dat[ 'pass' ];
+                    response.send( { 'data': dat, 'status': true } );
+                } else {
+                    response.send( { 'data': 'This user does not exist', 'status': false } );
+                }
+            } ).catch( () => {
+                response.send( { 'data': 'There was an error reading data from the database. If this error persists, please contact the administrators', 'status': false } );
+            } );
+        } else {
+            response.status( 403 ).send( path.join( __dirname + '/../ui/en/errors/403.html' ) );
+        }
+    } );
+
+    app.get( '/test/user', ( req, res ) => {
+        req.session.loggedInUser = true;
+        req.session.username = 'info@janishutz.com';
+        res.send( 'ok' );
     } );
 
     app.post( '/user/login', ( request, response ) => {
         if ( request.body.mail && request.body.password ) {
             pwdmanager.checkpassword( request.body.mail, request.body.password ).then( data => {
                 request.session.username = request.body.mail;
+                // TODO: Check if user has 2fa enabled
                 if ( data ) {
-                    // TODO: Send mails
                     if ( settings.twoFA === 'standard' ) {
-                        let tok = twoFA.registerStandardAuthentication()[ 'token' ];
-                        request.session.token = tok;
-                        console.log( 'http://localhost:8081/user/2fa?token=' + tok );
-                        response.send( { 'status': '2fa' } );
+                        ( async () => {
+                            let tok = twoFA.registerStandardAuthentication()[ 'token' ];
+                            let ipRetrieved = request.headers[ 'x-forwarded-for' ];
+                            let ip = ipRetrieved ? ipRetrieved.split( /, / )[ 0 ] : request.connection.remoteAddress;
+                            mailManager.sendMail( request.body.mail, await twoFA.generateTwoFAMail( tok, ip, settings.yourDomain, settings.name ), 'Verify login', settings.mailSender );
+                            request.session.token = tok;
+                            response.send( { 'status': '2fa' } );
+                        } )();
                     } else if ( settings.twoFA === 'enhanced' ) {
-                        let res = twoFA.registerEnhancedAuthentication();
-                        console.log( 'http://localhost:8081/user/2fa?token=' + res.token );
-                        request.session.token = res.token;
-                        response.send( { 'status': '2fa+', 'code': res.code } );
+                        ( async () => {
+                            let res = twoFA.registerEnhancedAuthentication();
+                            let ipRetrieved = request.headers[ 'x-forwarded-for' ];
+                            let ip = ipRetrieved ? ipRetrieved.split( /, / )[ 0 ] : request.connection.remoteAddress;
+                            mailManager.sendMail( request.body.mail, await twoFA.generateTwoFAMail( res.token, ip, settings.yourDomain, settings.name ), 'Verify login', settings.mailSender );
+                            request.session.token = res.token;
+                            response.send( { 'status': '2fa+', 'code': res.code } );
+                        } )();
                     } else {
                         request.session.loggedInUser = true;
                         response.send( { 'status': 'ok' } );
@@ -108,6 +137,11 @@ module.exports = ( app, settings ) => {
     } );
 
     app.post( '/user/signup', ( request, response ) => {
+        // TODO: Make sure that user does not exist yet first and if user 
+        // exists, send back info that it is that way
         response.send( 'ok' );
+        db.writeDataSimple( 'users', 'email', request.body.email, { 'pass': pwdmanager.hashPassword( request.query.password ), 'street': '', 'house_number': '', 'country': request.query.country, 'first_name': request.query.firstName, 'name': request.query.name, 'two_fa': String( request.query.twoFA ) } ).then( res => {
+            console.log( res );
+        } );
     } );
 };

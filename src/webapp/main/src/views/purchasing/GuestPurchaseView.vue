@@ -6,3 +6,15 @@
 *
 *
 -->
+
+<template>
+    <div>
+        <h1>Guest purchase</h1>
+    </div>
+</template>
+
+<script>
+    export default {
+
+    }
+</script>

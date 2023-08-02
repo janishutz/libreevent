@@ -8,13 +8,16 @@
 */
 
 const token = require( '../token.js' );
-// let createSSRApp = require( 'vue' ).createSSRApp;
-// let renderToString = require( 'vue/server-renderer' ).renderToString;
+let createSSRApp = require( 'vue' ).createSSRApp;
+let renderToString = require( 'vue/server-renderer' ).renderToString;
+const fs = require( 'fs' );
+const path = require( 'path' );
 
 class TwoFA {
     constructor () {
         this.tokenStore = {};
         this.references = {};
+        this.pwdChangeTokens = {};
     }
 
     registerStandardAuthentication () {
@@ -60,6 +63,29 @@ class TwoFA {
             return 'standard';
         } else if ( this.tokenStore[ token ]?.mode === 'enhanced' ) return 'enhanced';
         else return 'invalid';
+    }
+
+    generatePwdChangeToken () {
+        // TODO: Gen token and store in store
+        return 'test';
+    }
+
+    async generateTwoFAMail ( token, ip, domain, pageName ) {
+        const tok = this.generatePwdChangeToken();
+        const app = createSSRApp( {
+            data() {
+                return {
+                    token: token,
+                    ip: ip,
+                    host: domain,
+                    pageName: pageName,
+                    pwdChangeToken: tok,
+                };
+            },
+            template: '' + fs.readFileSync( path.join( __dirname + '/twoFAMail.html' ) )
+        } );
+
+        return await renderToString( app );
     }
 }
 

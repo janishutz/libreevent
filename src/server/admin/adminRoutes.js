@@ -12,13 +12,15 @@ const pwdmanager = require( './pwdmanager.js' );
 const auth = require( './2fa.js' );
 const twoFA = new auth();
 const path = require( 'path' );
+const mail = require( '../backend/mail/mailSender.js' );
+const mailManager = new mail();
 
 let responseObjects = {};
 let authOk = {};
 
 module.exports = ( app, settings ) => {
     /* 
-        Admin login route that checks the password
+    Admin login route that checks the password
     */
    
     app.post( '/admin/auth', ( request, response ) => {
@@ -26,18 +28,26 @@ module.exports = ( app, settings ) => {
             pwdmanager.checkpassword( request.body.mail, request.body.password ).then( data => {
                 request.session.username = request.body.mail;
                 if ( data ) {
-                    // TODO: Send mails
+                    request.session.username = request.body.mail;
                     // TODO: Check if user has 2fa enabled
                     if ( settings.twoFA === 'standard' ) {
-                        let tok = twoFA.registerStandardAuthentication()[ 'token' ];
-                        request.session.token = tok;
-                        console.log( 'http://localhost:8081/admin/2fa?token=' + tok );
-                        response.send( { 'status': '2fa' } );
+                        ( async () => {
+                            let tok = twoFA.registerStandardAuthentication()[ 'token' ];
+                            let ipRetrieved = request.headers[ 'x-forwarded-for' ];
+                            let ip = ipRetrieved ? ipRetrieved.split( /, / )[ 0 ] : request.connection.remoteAddress;
+                            mailManager.sendMail( request.body.mail, await twoFA.generateTwoFAMail( tok, ip, settings.yourDomain, settings.name ), 'Verify admin account login', settings.mailSender );
+                            request.session.token = tok;
+                            response.send( { 'status': '2fa' } );
+                        } )();
                     } else if ( settings.twoFA === 'enhanced' ) {
-                        let res = twoFA.registerEnhancedAuthentication();
-                        console.log( 'http://localhost:8081/admin/2fa?token=' + res.token );
-                        request.session.token = res.token;
-                        response.send( { 'status': '2fa+', 'code': res.code } );
+                        ( async () => {
+                            let res = twoFA.registerEnhancedAuthentication();
+                            let ipRetrieved = request.headers[ 'x-forwarded-for' ];
+                            let ip = ipRetrieved ? ipRetrieved.split( /, / )[ 0 ] : request.connection.remoteAddress;
+                            mailManager.sendMail( request.body.mail, await twoFA.generateTwoFAMail( res.token, ip, settings.yourDomain, settings.name ), 'Verify admin account login', settings.mailSender );
+                            request.session.token = res.token;
+                            response.send( { 'status': '2fa+', 'code': res.code } );
+                        } )();
                     } else {
                         request.session.loggedInUser = true;
                         response.send( { 'status': 'ok' } );

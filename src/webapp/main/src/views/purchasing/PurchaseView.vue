@@ -217,6 +217,7 @@ export default {
     },
     methods: {
         loadData () {
+            // TODO: Also load the customer data from server!
             this.cartNotEmpty = false;
             let cart = JSON.parse( localStorage.getItem( 'cart' ) );
 

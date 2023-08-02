@@ -21,7 +21,17 @@ const db = require( '../backend/db/db.js' );
 module.exports.checkpassword = ( username, password ) => {
     return new Promise( resolve => {
         db.getDataSimple( 'admin', 'email', username ).then( data => {
-            resolve( bcrypt.compareSync( password, data ) );
+            if ( data ) {
+                if ( data[ 0 ] ) {
+                    bcrypt.compare( password, data[ 0 ].pass ).then( res => {
+                        resolve( res );
+                    } );
+                } else {
+                    resolve( false );
+                }
+            } else {
+                resolve( false );
+            }
         } );
     } );
 };

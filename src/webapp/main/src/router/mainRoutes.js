@@ -117,6 +117,15 @@ export default [
         }
     },
     {
+        path: '/guest',
+        name: 'guestPurchase',
+        component: () => import( '@/views/purchasing/GuestPurchaseView.vue' ),
+        meta: {
+            title: 'Guest purchase - ',
+            transition: 'scale'
+        }
+    },
+    {
         path: '/admin/seatplan',
         name: 'adminSeatplanEditor',
         component: () => import( '@/views/admin/events/EditorView.vue' ),

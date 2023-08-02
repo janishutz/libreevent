@@ -21,7 +21,9 @@ In the database, all the userdata is stored. libreevent currently supports two d
 
 Generally MySQL, except:
 - If your organisation is small and does only sell a few tickets at a time, the JSON based database works perfectly fine. 
-- Your web hosting plan does not includes MySQL and you've got no access to MySQL in any other way. *NOTE: Free MySQL services should NEVER be used in such an application, as most hosting plans include MySQL which is much more reliable and if you lose access to the database, you can only access the root account and all other data (and therefore all user accounts) is lost.*
+- Your web hosting plan does not includes MySQL and you've got no access to MySQL in any other way. *NOTE: Free MySQL services should NEVER be used in such an application, as most hosting plans include MySQL which is much more reliable and if you lose access to the database, you can only access the root account and all other user data (and therefore all user accounts) is lost. The event data is always stored in JSON format as it is more efficient.*
+
+**NOTE: The JSON database is really slow and should only be used if you have a small event where you expect to sell less than 5 ticket per minute! The amount of tickets sold per minute that the system can handle really depends on the speed of the server the website runs on.**
 
 MySQL generally is more difficult to set up, but we'll run you through the process here to make the process easier for you. If you chose the JSON based database, skip ahead to the next chapter.
 

@@ -19,9 +19,17 @@ const db = require( '../db/db.js' );
 module.exports.checkpassword = function checkpassword ( email, password ) {
     return new Promise( resolve => {
         db.getDataSimple( 'user', 'email', email ).then( data => {
-            bcrypt.compare( password, data ).then( data => {
-                resolve( data );
-            } );
+            if ( data ) {
+                if ( data[ 0 ] ) {
+                    bcrypt.compare( password, data[ 0 ].pass ).then( res => {
+                        resolve( res );
+                    } );
+                } else {
+                    resolve( false );
+                }
+            } else {
+                resolve( false );
+            }
         } );
     } );
 };
