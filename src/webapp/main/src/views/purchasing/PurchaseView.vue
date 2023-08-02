@@ -10,7 +10,7 @@
 <template>
     <div class="purchase">
         <h1>Purchase</h1>
-        <div class="purchase-app">
+        <div class="purchase-app" v-if="cartNotEmpty">
             <div v-if="!isAuthenticated" class="wrapper-buttons">
                 <router-link to="/login" class="option-button" @click="setRedirect()">Log in with an existing account</router-link><br>
                 <router-link to="/signup" class="option-button" @click="setRedirect()">Create new account</router-link><br>
@@ -65,6 +65,12 @@
                         </div>
                     </div>
                 </div>
+            </div>
+        </div>
+        <div v-else>
+            Cart is empty. Please add tickets <router-link to="/tickets">here</router-link>
+            <div class="empty-cart-wrapper">
+                <span class="material-symbols-outlined empty-cart">remove_shopping_cart</span>
             </div>
         </div>
         <notifications ref="notification" location="topleft" size="bigger"></notifications>
@@ -188,6 +194,19 @@
         margin: 0;
         padding: 0;
     }
+
+    .empty-cart-wrapper {
+        width: 100%;
+        height: 70vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .empty-cart {
+        display: block;
+        font-size: 20rem;
+    }
 </style>
 
 <script>
@@ -226,7 +245,6 @@ export default {
                     this.cartNotEmpty = true;
                 };
             }
-
             
             if ( this.cartNotEmpty ) {
                 this.cart = cart;
@@ -255,12 +273,32 @@ export default {
                 route (plain HTML document) which then awaits processing completion and gives the
                 user a link to download the ticket. A mail has been sent to user automatically.
             */
-            let prep = this.$refs.notification.createNotification( 'Preparing payment...', 20, 'progress', 'high' );
-            
-            setTimeout( () => {
+            let prep = this.$refs.notification.createNotification( 'Preparing payment...', 20, 'progress', 'normal' );
+
+            let fetchOptions = {
+                method: 'post',
+                body: JSON.stringify( this.userData ),
+                headers: {
+                    'Content-Type': 'application/json',
+                    'charset': 'utf-8'
+                }
+            };
+
+            fetch( '/payments/prepare', fetchOptions ).then( res => {
+                if ( res.status === 200 ) {
+                    this.$refs.notification.cancelNotification( prep );
+                    this.$refs.notification.createNotification( 'Payment prepared, redirecting...', 5, 'progress', 'high' );
+                    res.text().then( text => {
+                        setTimeout( () => {
+                            window.location.href = text;
+                        }, 300 );
+                    } );
+                }
+            } ).catch( err => {
+                console.error( err );
                 this.$refs.notification.cancelNotification( prep );
-                this.$refs.notification.createNotification( 'Payment prepared, redirecting...', 5, 'progress', 'high' );
-            }, 5000 );
+                this.$refs.notification.createNotification( 'An error occurred during preparation of payments. Please try again.', 10, 'error', 'high' );
+            } );
         }
     },
     created () {

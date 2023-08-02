@@ -79,7 +79,7 @@
         data() {
             return {
                 draggables: { 1: { 'x': 100, 'y':100, 'h': 100, 'w': 250, 'active': false, 'draggable': true, 'resizable': true, 'id': 1, 'origin': 1, 'shape':'rectangular', 'type': 'seat', 'startingRow': 1, 'seatCountingStartingPoint': 1, 'sector': 'A', 'text': { 'text': 'TestText', 'textSize': 20, 'colour': '#20FFFF' }, 'ticketCount': 1, 'category': 1 } },
-                event: { 'name': 'TestEvent2', 'location': 'TestLocation2', 'date': '2023-07-15', 'currency': 'CHF', 'categories': { '1': { 'price': { '1':25, '2':35 }, 'bg': 'black', 'fg': 'white', 'name': 'Category 1' }, '2': { 'price': { '1':15, '2':20 }, 'bg': 'green', 'fg': 'white', 'name': 'Category 2' } }, 'ageGroups': { '1':{ 'id': 1, 'name':'Child', 'age':'0 - 15.99' }, '2':{ 'id': 2, 'name': 'Adult' } }, 'maxTickets': 2 },
+                event: { 'name': 'TestEvent2', 'location': 'TestLocation2', 'eventID': 'test2', 'date': '2023-07-15', 'currency': 'CHF', 'categories': { '1': { 'price': { '1':25, '2':35 }, 'bg': 'black', 'fg': 'white', 'name': 'Category 1' }, '2': { 'price': { '1':15, '2':20 }, 'bg': 'green', 'fg': 'white', 'name': 'Category 2' } }, 'ageGroups': { '1':{ 'id': 1, 'name':'Child', 'age':'0 - 15.99' }, '2':{ 'id': 2, 'name': 'Adult' } }, 'maxTickets': 2 },
                 available: { 'redo': false, 'undo': false },
                 scaleFactor: 1,
                 sizePoll: null,
@@ -167,7 +167,7 @@
                 let self = this;
                 let allSeatsAvailable = true;
 
-                fetch( localStorage.getItem( 'url' ) + '/getAPI/getReservedSeats?event=' + this.event.name ).then( res => {
+                fetch( localStorage.getItem( 'url' ) + '/getAPI/getReservedSeats?event=' + this.event.eventID ).then( res => {
                     if ( res.status === 200 ) {
                         let unavailableSeats = {};
                         res.json().then( data => {
@@ -194,23 +194,23 @@
                             }
 
                             let tickets = {};
-                            if ( this.cart[ this.event.name ] ) {
-                                tickets = this.cart[ this.event.name ][ 'tickets' ];
+                            if ( this.cart[ this.event.eventID ] ) {
+                                tickets = this.cart[ this.event.eventID ][ 'tickets' ];
                             }
 
                             if ( data.user ) {
                                 for ( let element in tickets ) {
                                     if ( !data.user[ element ] ) {
                                         allSeatsAvailable = false;
-                                        if ( Object.keys( this.cart[ this.event.name ][ 'tickets' ] ).length > 1 ) {
-                                            delete this.cart[ this.event.name ][ 'tickets' ][ element ];
+                                        if ( Object.keys( this.cart[ this.event.eventID ][ 'tickets' ] ).length > 1 ) {
+                                            delete this.cart[ this.event.eventID ][ 'tickets' ][ element ];
                                         } else {
-                                            delete this.cart[ this.event.name ];
+                                            delete this.cart[ this.event.eventID ];
                                         }
                                     }
                                 }
                             } else {
-                                delete this.cart[ this.event.name ];
+                                delete this.cart[ this.event.eventID ];
                                 allSeatsAvailable = false;
                             }
 
@@ -299,8 +299,8 @@
                     this.draggables = this.scaleUp( JSON.parse( sessionStorage.getItem( 'seatplan' ) ) );
                 }
 
-                if ( this.cart[ this.event.name ] ) {
-                    let tickets = this.cart[ this.event.name ][ 'tickets' ];
+                if ( this.cart[ this.event.eventID ] ) {
+                    let tickets = this.cart[ this.event.eventID ][ 'tickets' ];
                     for ( let seat in tickets ) {
                         if ( !unavailableSeats[ data.user[ seat ].component ] ) {
                             unavailableSeats[ data.reserved[ seat ].component ] = {};
@@ -350,17 +350,17 @@
             },
             cartHandling ( operation, data ) {
                 if ( operation === 'select' ) {
-                    if ( this.cart[ this.event.name ] ) {
-                        this.cart[ this.event.name ][ 'tickets' ][ this.selectedSeat.id ] = { 'displayName': this.selectedSeat.displayName, 'price': this.selectedSeat.option[ data ].price, 'id': this.selectedSeat.id, 'option': data, 'comp': this.selectedSeat.componentID };
+                    if ( this.cart[ this.event.eventID ] ) {
+                        this.cart[ this.event.eventID ][ 'tickets' ][ this.selectedSeat.id ] = { 'displayName': this.selectedSeat.displayName, 'price': this.selectedSeat.option[ data ].price, 'id': this.selectedSeat.id, 'option': data, 'comp': this.selectedSeat.componentID };
                     } else {
-                        this.cart[ this.event.name ] = { 'displayName': this.event.name, 'tickets': {} };
-                        this.cart[ this.event.name ][ 'tickets' ][ this.selectedSeat.id ] = { 'displayName': this.selectedSeat.displayName, 'price': this.selectedSeat.option[ data ].price, 'id': this.selectedSeat.id, 'option': data, 'comp': this.selectedSeat.componentID };
+                        this.cart[ this.event.eventID ] = { 'displayName': this.event.name, 'tickets': {}, 'eventID': this.event.eventID };
+                        this.cart[ this.event.eventID ][ 'tickets' ][ this.selectedSeat.id ] = { 'displayName': this.selectedSeat.displayName, 'price': this.selectedSeat.option[ data ].price, 'id': this.selectedSeat.id, 'option': data, 'comp': this.selectedSeat.componentID };
                     }
                 } else if ( operation === 'deselect' ) {
-                    if ( Object.keys( this.cart[ this.event.name ][ 'tickets' ] ).length > 1 ) {
-                        delete this.cart[ this.event.name ][ 'tickets' ][ this.selectedSeat.id ];
+                    if ( Object.keys( this.cart[ this.event.eventID ][ 'tickets' ] ).length > 1 ) {
+                        delete this.cart[ this.event.eventID ][ 'tickets' ][ this.selectedSeat.id ];
                     } else {
-                        delete this.cart[ this.event.name ];
+                        delete this.cart[ this.event.eventID ];
                     }
                 }
                 this.$refs.cart.calculateTotal();
@@ -371,7 +371,7 @@
                     // Make call to server to reserve ticket to have server also keep track of reserved tickets
                     const options = {
                         method: 'post',
-                        body: JSON.stringify( { 'id': this.selectedSeat[ 'id' ], 'component': this.selectedSeat[ 'componentID' ], 'ticketOption': option.data, 'eventID': this.event.name } ),
+                        body: JSON.stringify( { 'id': this.selectedSeat[ 'id' ], 'component': this.selectedSeat[ 'componentID' ], 'ticketOption': option.data, 'eventID': this.event.eventID, 'category': this.draggables[ this.selectedSeat[ 'componentID' ] ].category, 'name': this.selectedSeat.displayName } ),
                         headers: {
                             'Content-Type': 'application/json',
                             'charset': 'utf-8'
@@ -400,7 +400,7 @@
                 // Make call to server to deselect ticket
                 const options = {
                     method: 'post',
-                    body: JSON.stringify( { 'id': seat[ 'id' ], 'eventID': this.event.name } ),
+                    body: JSON.stringify( { 'id': seat[ 'id' ], 'eventID': this.event.eventID } ),
                     headers: {
                         'Content-Type': 'application/json',
                         'charset': 'utf-8'
@@ -416,10 +416,10 @@
                 const d = this.draggables[ id ];
                 const evG = this.event.ageGroups;
                 let count = {};
-                if ( this.cart[ this.event.name ] ) {
+                if ( this.cart[ this.event.eventID ] ) {
                     for ( let ageGroup in evG ) {
-                        if ( this.cart[ this.event.name ][ 'tickets' ][ 'ticket' + id + '_' + ageGroup ] ) {
-                            count[ ageGroup ] = this.cart[ this.event.name ][ 'tickets' ][ 'ticket' + id + '_' + ageGroup ].count;
+                        if ( this.cart[ this.event.eventID ][ 'tickets' ][ 'ticket' + id + '_' + ageGroup ] ) {
+                            count[ ageGroup ] = this.cart[ this.event.eventID ][ 'tickets' ][ 'ticket' + id + '_' + ageGroup ].count;
                         } else {
                             count[ ageGroup ] = 0;
                         }
@@ -440,16 +440,17 @@
                 }, 'tickets' );
             },
             standingTicketHandling ( data ) {
-                if ( !this.cart[ this.event.name ] ) {
-                    this.cart[ this.event.name ] = { 'displayName': this.event.name, 'tickets': {} };
+                if ( !this.cart[ this.event.eventID ] ) {
+                    this.cart[ this.event.eventID ] = { 'displayName': this.event.name, 'tickets': {}, 'eventID': this.event.eventID };
                 }
                 
                 for ( let group in data.data ) {
-                    if ( !this.cart[ this.event.name ][ 'tickets' ][ 'ticket' + data.component + '_' + group ] ) {
+                    if ( !this.cart[ this.event.eventID ][ 'tickets' ][ 'ticket' + data.component + '_' + group ] ) {
                         if ( data.data[ group ] > 0 ) {
                             const options = {
                                 method: 'post',
-                                body: JSON.stringify( { 'id': 'ticket' + data.component + '_' + group, 'component': data.component, 'ticketOption': '', 'eventID': this.event.name, 'count': data.data[ group ] } ),
+                                // TODO: Add correct name here as well once it is working at all
+                                body: JSON.stringify( { 'id': 'ticket' + data.component + '_' + group, 'component': data.component, 'ticketOption': '', 'eventID': this.event.eventID, 'count': data.data[ group ], 'category': this.draggables[ data.component ].category, 'name': 'Ticket ' } ),
                                 headers: {
                                     'Content-Type': 'application/json',
                                     'charset': 'utf-8'
@@ -457,24 +458,24 @@
                             };
                             fetch( localStorage.getItem( 'url' ) + '/API/reserveTicket', options ).then( res => {
                                 if ( res.status === 200 ) {
-                                    this.cart[ this.event.name ][ 'tickets' ][ 'ticket' + data.component + '_' + group ] = { 'displayName': 'Ticket ' + data.component + ' (' + this.event.ageGroups[ group ].name + ')', 'price': this.event.categories[ this.draggables[ data.component ].category ].price[ group ], 'id': 'ticket' + data.component + '_' + group, 'count': data.data[ group ], 'comp': data.component };
+                                    this.cart[ this.event.eventID ][ 'tickets' ][ 'ticket' + data.component + '_' + group ] = { 'displayName': 'Ticket ' + data.component + ' (' + this.event.ageGroups[ group ].name + ')', 'price': this.event.categories[ this.draggables[ data.component ].category ].price[ group ], 'id': 'ticket' + data.component + '_' + group, 'count': data.data[ group ], 'comp': data.component };
                                 } else if ( res.status === 409 ) {
                                     setTimeout( () => {
                                         this.$refs.popups.openPopup( 'Unfortunately, the seat you just tried to select was reserved by somebody else since the last time the seat plan was refreshed. Please select another one. We are sorry for the inconvenience.', {}, 'string' );
                                     }, 300 );
                                 }
-                                if ( Object.keys( this.cart[ this.event.name ][ 'tickets' ] ).length < 1 ) {
-                                    delete this.cart[ this.event.name ];
+                                if ( Object.keys( this.cart[ this.event.eventID ][ 'tickets' ] ).length < 1 ) {
+                                    delete this.cart[ this.event.eventID ];
                                 }
 
                                 this.$refs.cart.calculateTotal();
                                 localStorage.setItem( 'cart', JSON.stringify( this.cart ) );
                             } );
                         } else {
-                            delete this.cart[ this.event.name ][ 'tickets' ][ 'ticket' + data.component + '_' + group ];
+                            delete this.cart[ this.event.eventID ][ 'tickets' ][ 'ticket' + data.component + '_' + group ];
                             const options = {
                                 method: 'post',
-                                body: JSON.stringify( { 'id': 'ticket' + data.component + '_' + group, 'eventID': this.event.name } ),
+                                body: JSON.stringify( { 'id': 'ticket' + data.component + '_' + group, 'eventID': this.event.eventID } ),
                                 headers: {
                                     'Content-Type': 'application/json',
                                     'charset': 'utf-8'

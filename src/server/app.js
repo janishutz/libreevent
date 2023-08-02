@@ -91,7 +91,8 @@ if ( settings.init ) {
 }
 
 console.log( '[ Server ] loading plugins' );
-// pluginManager.load( app, settings );
+// TODO: load dynamically
+require( './backend/plugins/payments/stripe/stripeRoutes.js' )( app, settings ); // setup routes
 
 app.use( ( request, response ) => {
     response.sendFile( file );

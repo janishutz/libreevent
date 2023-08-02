@@ -48,12 +48,12 @@ export default {
     methods: {
         selectTicket( id, option ) {
             let totalTicketsPerID = 0;
-            if ( this.cart[ this.event.name ] ) {
-                if ( this.cart[ this.event.name ][ 'tickets' ][ id + '_' + option ] ) {
-                    const tickets = this.cart[ this.event.name ][ 'tickets' ];
+            if ( this.cart[ this.event.eventID ] ) {
+                if ( this.cart[ this.event.eventID ][ 'tickets' ][ id + '_' + option ] ) {
+                    const tickets = this.cart[ this.event.eventID ][ 'tickets' ];
                     for ( let ticket in tickets ) {
                         if ( tickets[ ticket ][ 'id' ].split( '_' )[ 0 ] === id ) {
-                            totalTicketsPerID += this.cart[ this.event.name ][ 'tickets' ][ tickets[ ticket ][ 'id' ] ][ 'count' ];
+                            totalTicketsPerID += this.cart[ this.event.eventID ][ 'tickets' ][ tickets[ ticket ][ 'id' ] ][ 'count' ];
                         }
                     }
                     if ( totalTicketsPerID < this.tickets[ id ].free ) {
@@ -69,33 +69,33 @@ export default {
         },
         cartHandling ( operation, data, option ) {
             if ( operation === 'select' ) {
-                if ( this.cart[ this.event.name ] ) {
-                    if ( this.cart[ this.event.name ][ 'tickets' ][ data.id + '_' + option ] ) {
-                        this.cart[ this.event.name ][ 'tickets' ][ data.id + '_' + option ][ 'count' ] += 1;
+                if ( this.cart[ this.event.eventID ] ) {
+                    if ( this.cart[ this.event.eventID ][ 'tickets' ][ data.id + '_' + option ] ) {
+                        this.cart[ this.event.eventID ][ 'tickets' ][ data.id + '_' + option ][ 'count' ] += 1;
                     } else {
-                        this.cart[ this.event.name ][ 'tickets' ][ data.id + '_' + option ] = { 'displayName': data.name + ' (' + this.event.ageGroups[ option ].name + ')', 'price': this.event.categories[ data.category ].price[ option ], 'id': data.id + '_' + option, 'count': 1 };
+                        this.cart[ this.event.eventID ][ 'tickets' ][ data.id + '_' + option ] = { 'displayName': data.name + ' (' + this.event.ageGroups[ option ].name + ')', 'price': this.event.categories[ data.category ].price[ option ], 'id': data.id + '_' + option, 'count': 1 };
                     }
                 } else {
-                    this.cart[ this.event.name ] = { 'displayName': this.event.name, 'tickets': {} };
-                    this.cart[ this.event.name ][ 'tickets' ][ data.id + '_' + option ] = { 'displayName': data.name + ' (' + this.event.ageGroups[ option ].name + ')', 'price': this.event.categories[ data.category ].price[ option ], 'id': data.id + '_' + option, 'count': 1 };
+                    this.cart[ this.event.eventID ] = { 'displayName': this.event.name, 'tickets': {} };
+                    this.cart[ this.event.eventID ][ 'tickets' ][ data.id + '_' + option ] = { 'displayName': data.name + ' (' + this.event.ageGroups[ option ].name + ')', 'price': this.event.categories[ data.category ].price[ option ], 'id': data.id + '_' + option, 'count': 1 };
                 }
             } else if ( operation === 'deselect' ) {
-                if ( this.cart[ this.event.name ][ 'tickets' ][ data + '_' + option ][ 'count' ] === 1 ) {
-                    delete this.cart[ this.event.name ][ 'tickets' ][ data + '_' + option ];
+                if ( this.cart[ this.event.eventID ][ 'tickets' ][ data + '_' + option ][ 'count' ] === 1 ) {
+                    delete this.cart[ this.event.eventID ][ 'tickets' ][ data + '_' + option ];
                 } else {
-                    this.cart[ this.event.name ][ 'tickets' ][ data + '_' + option ][ 'count' ] -= 1;
+                    this.cart[ this.event.eventID ][ 'tickets' ][ data + '_' + option ][ 'count' ] -= 1;
                 }
-                if ( Object.keys( this.cart[ this.event.name ][ 'tickets' ] ).length < 1 ) {
-                    delete this.cart[ this.event.name ];
+                if ( Object.keys( this.cart[ this.event.eventID ][ 'tickets' ] ).length < 1 ) {
+                    delete this.cart[ this.event.eventID ];
                 }
             }
             this.$refs.cart.calculateTotal();
             localStorage.setItem( 'cart', JSON.stringify( this.cart ) );
         },
         deselectTicket( id, option ) {
-            if ( this.cart[ this.event.name ] ) {
-                if ( this.cart[ this.event.name ][ 'tickets' ][ id + '_' + option ] ) {
-                    if ( this.cart[ this.event.name ][ 'tickets' ][ id + '_' + option ][ 'count' ] > 0 ) {
+            if ( this.cart[ this.event.eventID ] ) {
+                if ( this.cart[ this.event.eventID ][ 'tickets' ][ id + '_' + option ] ) {
+                    if ( this.cart[ this.event.eventID ][ 'tickets' ][ id + '_' + option ][ 'count' ] > 0 ) {
                         this.cartHandling( 'deselect', id, option );
                     }
                 }

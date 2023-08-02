@@ -55,7 +55,7 @@ class SQLDB {
             if ( error ) throw error;
             if ( results[ 0 ][ '@@default_storage_engine' ] !== 'InnoDB' ) return 'DB HAS TO USE InnoDB!';
         } );
-        this.sqlConnection.query( 'CREATE TABLE libreevent_users ( account_id INT ( 10 ) NOT NULL AUTO_INCREMENT, email TINYTEXT NOT NULL, pass TEXT, street TEXT, house_number TINYTEXT, country TEXT, phone TEXT, name TEXT, first_name TEXT, two_fa TINYTEXT, PRIMARY KEY ( account_id ) ) ENGINE=INNODB;', ( error ) => {
+        this.sqlConnection.query( 'CREATE TABLE libreevent_users ( account_id INT ( 10 ) NOT NULL AUTO_INCREMENT, email TINYTEXT NOT NULL, pass TEXT, name TEXT, first_name TEXT, two_fa TINYTEXT, user_data VARCHAR( 60000 ), PRIMARY KEY ( account_id ) ) ENGINE=INNODB;', ( error ) => {
             if ( error ) if ( error.code !== 'ER_TABLE_EXISTS_ERROR' ) throw error;
             this.sqlConnection.query( 'CREATE TABLE libreevent_orders ( order_id INT ( 10 ) NOT NULL AUTO_INCREMENT, account_id INT ( 10 ) NOT NULL, seats VARCHAR( 60000 ), PRIMARY KEY ( order_id ), FOREIGN KEY ( account_id ) REFERENCES libreevent_users( account_id ) ) ENGINE=INNODB;', ( error ) => {
                 if ( error ) if ( error.code !== 'ER_TABLE_EXISTS_ERROR' ) throw error;

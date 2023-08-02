@@ -9,10 +9,16 @@
 
 const fs = require( 'fs' );
 const path = require( 'path' );
-const stripe = require( 'stripe' )( fs.readFileSync( path.join( __dirname + '/../../../../config/payments.config.secret.json' ) )[ 'stripe' ][ 'APIKey' ] );
+const db = require( '../../../db/db.js' );
+const stripConfig = JSON.parse( fs.readFileSync( path.join( __dirname + '/../../../../config/payments.config.secret.json' ) ) )[ 'stripe' ];
+const stripe = require( 'stripe' )( stripConfig[ 'APIKey' ] );
+
+const endpointSecret = stripConfig[ 'endpointSecret' ];
+
+// TODO: Remove all selected tickets if timestamp more than user defined amount ago
 
 module.exports = ( app, settings ) => {
-    app.post( '/payments/prepare', async ( req, res ) => {
+    app.post( '/payments/prepare', ( req, res ) => {
         let purchase = {
             'line_items': [],
             'mode': 'payment',
@@ -22,20 +28,36 @@ module.exports = ( app, settings ) => {
             'customer_email': req.body.mail
         };
 
-        for ( let item in req.body.products ) {
-            purchase[ 'line_items' ].push( {
-                'price_data': {
-                    'currency': req.body.currency,
-                    'product_data': {
-                        'name': req.body.products[ item ].name,
-                    },
-                    'unit_amount': req.body.products[ item ].price
-                },
-                'quantity': req.body.products[ item ].count ?? 1,
-            } );
-        }
-        const session = await stripe.checkout.sessions.create( purchase );
-        res.send( session.url );
+        db.getDataSimple( 'temp', 'user_id', req.session.id ).then( dat => {
+            if ( dat[ 0 ] ) {
+                db.getJSONData( 'events' ).then( events => {
+                    let data = JSON.parse( dat[ 0 ].data );
+                    ( async () => {
+                        for ( let event in data ) {
+                            for ( let item in data[ event ] ) {
+                                purchase[ 'line_items' ].push( {
+                                    'price_data': {
+                                        'product_data': {
+                                            'name': data[ event ][ item ].name,
+                                        },
+                                        'currency': events[ event ].currency,
+                                        'unit_amount': Math.round( parseFloat( events[ event ][ 'categories' ][ data[ event ][ item ].category ].price[ data[ event ][ item ][ 'ticketOption' ] ] ) * 100 ),
+                                    },
+                                    'quantity': data[ event ][ item ].count ?? 1,
+                                } );
+                            }
+                        }
+                        const session = await stripe.checkout.sessions.create( purchase );
+                        res.send( session.url );
+                    } )();
+                } );
+            } else {
+                res.status( 400 ).send( 'ERR_UID_NOT_FOUND' );
+            }
+        } ).catch( error => {
+            console.error( '[ STRIPE ] DB ERROR: ' + error );
+            res.status( 500 ).send( 'ERR_DB' );
+        } );
     } );
 
     app.get( '/payments/status', ( request, response ) => {
@@ -50,6 +72,17 @@ module.exports = ( app, settings ) => {
     } );
 
     app.post( '/payments/webhook', ( req, res ) => {
-        // The webhook stripe sends data to
+        const payload = req.body;
+        const sig = req.headers[ 'stripe-signature' ];
+        
+        let event;
+
+        try {
+            event = stripe.webhooks.constructEvent( payload, sig, endpointSecret );
+        } catch ( err ) {
+            return res.status( 400 ).send( 'Webhook Error' );
+        }
+
+        res.status( 200 ).end();
     } );
 };
