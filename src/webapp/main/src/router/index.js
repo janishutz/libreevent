@@ -48,8 +48,6 @@ router.beforeEach( ( to, from ) => {
         return { name: 'login' };
     } else if ( isUserAuthenticated && to.name === 'login' ) {
         return { name: 'account' };
-    } else if ( !isUserAuthenticated && to.name === 'pay' ) {
-        return { name: 'purchase' };
     } else if ( to.name === '2fa' && !userStore.getUserTwoFACompliant ) {
         return { name: 'login' };
     } else if ( to.name === 'Admin2fa' && !userStore.getAdminTwoFACompliant ) {
