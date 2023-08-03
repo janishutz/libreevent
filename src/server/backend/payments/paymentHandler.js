@@ -8,7 +8,17 @@
 */
 
 class PaymentHandler {
-    constructor () {}
+    constructor () {
+        this.canceledTransactions = {};
+    }
+
+    async handleSuccess ( token ) {
+        console.log( token );
+    }
+
+    async handleError ( token ) {
+        
+    }
 }
 
 module.exports = PaymentHandler;

@@ -73,8 +73,8 @@ app.use( expressSession( {
     }
 } ) );
 
-app.use( bodyParser.urlencoded( { extended: false } ) );
-app.use( bodyParser.json() );
+// app.use( bodyParser.urlencoded( { extended: false } ) );
+// app.use( bodyParser.json() );
 app.use( cookieParser() );
 
 let file = path.join( __dirname + '/../webapp/main/dist/index.html' );

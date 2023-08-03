@@ -12,6 +12,8 @@ const geth = require( './api/getHandler.js' );
 const postHandler = new posth();
 const getHandler = new geth();
 const path = require( 'path' );
+const bodyParser = require( 'body-parser' );
+
 
 // settings is missing in arguments which shouldn't pose any problem
 module.exports = ( app ) => {
@@ -29,7 +31,7 @@ module.exports = ( app ) => {
         }
     } );
 
-    app.post( '/admin/API/:call', ( req, res ) => {
+    app.post( '/admin/API/:call', bodyParser.json(), ( req, res ) => {
         if ( req.session.loggedInAdmin ) {
             postHandler.handleCall( req.params.call, req.body, req.query.lang ).then( data => {
                 res.send( data );

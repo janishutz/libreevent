@@ -14,6 +14,7 @@ const twoFA = new auth();
 const path = require( 'path' );
 const mail = require( '../backend/mail/mailSender.js' );
 const mailManager = new mail();
+const bodyParser = require( 'body-parser' );
 
 let responseObjects = {};
 let authOk = {};
@@ -23,7 +24,7 @@ module.exports = ( app, settings ) => {
     Admin login route that checks the password
     */
    
-    app.post( '/admin/auth', ( request, response ) => {
+    app.post( '/admin/auth', bodyParser.json(), ( request, response ) => {
         if ( request.body.mail && request.body.password ) {
             pwdmanager.checkpassword( request.body.mail, request.body.password ).then( data => {
                 request.session.username = request.body.mail;
@@ -75,7 +76,7 @@ module.exports = ( app, settings ) => {
         }
     } );
 
-    app.post( '/admin/2fa/verify', ( request, response ) => {
+    app.post( '/admin/2fa/verify', bodyParser.json(), ( request, response ) => {
         let verified = twoFA.verifyEnhanced( request.body.token, request.body.code );
         if ( verified ) {
             request.session.loggedInAdmin = true;

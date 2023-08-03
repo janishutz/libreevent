@@ -12,6 +12,7 @@ const geth = require( './api/getHandler.js' );
 const postHandler = new posth();
 const getHandler = new geth();
 const path = require( 'path' );
+const bodyParser = require( 'body-parser' );
 
 // settings is missing in arguments which shouldn't pose any problem
 module.exports = ( app, settings ) => {
@@ -31,7 +32,7 @@ module.exports = ( app, settings ) => {
         } );
     } );
 
-    app.post( '/API/:call', ( req, res ) => {
+    app.post( '/API/:call', bodyParser.json(), ( req, res ) => {
         // add lang in the future
         postHandler.handleCall( req.params.call, req.body, req.session ).then( data => {
             res.send( data );

@@ -12,13 +12,18 @@ const path = require( 'path' );
 const db = require( '../../../db/db.js' );
 const stripConfig = JSON.parse( fs.readFileSync( path.join( __dirname + '/../../../../config/payments.config.secret.json' ) ) )[ 'stripe' ];
 const stripe = require( 'stripe' )( stripConfig[ 'APIKey' ] );
+const bodyParser = require( 'body-parser' );
+const ph = require( '../../../payments/paymentHandler.js' );
+const paymentHandler = new ph();
 
 const endpointSecret = stripConfig[ 'endpointSecret' ];
+
+let sessionReference = {};
 
 // TODO: Remove all selected tickets if timestamp more than user defined amount ago
 
 module.exports = ( app, settings ) => {
-    app.post( '/payments/prepare', ( req, res ) => {
+    app.post( '/payments/prepare', bodyParser.json(), ( req, res ) => {
         let purchase = {
             'line_items': [],
             'mode': 'payment',
@@ -48,6 +53,7 @@ module.exports = ( app, settings ) => {
                             }
                         }
                         const session = await stripe.checkout.sessions.create( purchase );
+                        sessionReference[ session.id ] = req.session.id;
                         res.send( session.url );
                     } )();
                 } );
@@ -69,9 +75,10 @@ module.exports = ( app, settings ) => {
         response.status( 200 );
         response.flushHeaders();
         response.write( 'data: connected\n\n' );
+        // TODO: Finish up
     } );
 
-    app.post( '/payments/webhook', ( req, res ) => {
+    app.post( '/payments/webhook', bodyParser.raw( { type: 'application/json' } ), ( req, res ) => {
         const payload = req.body;
         const sig = req.headers[ 'stripe-signature' ];
         
@@ -80,7 +87,12 @@ module.exports = ( app, settings ) => {
         try {
             event = stripe.webhooks.constructEvent( payload, sig, endpointSecret );
         } catch ( err ) {
+            console.error( err );
             return res.status( 400 ).send( 'Webhook Error' );
+        }
+
+        if ( event.type === 'checkout.session.completed' ) {
+            paymentHandler.handleSuccess( sessionReference[ event.data.object.id ] );
         }
 
         res.status( 200 ).end();
