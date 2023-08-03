@@ -11,8 +11,8 @@ const db = require( '../db/db.js' );
 
 class POSTHandler {
     constructor () {
-        this.allSelectedSeats = { 'TestEvent2': [ { 'id': 'secAr1s1', 'component': 1 } ] };
-        this.ticketTotals = { 'TestEvent2': { 'ticket1': 5, 'ticket2': 5 } };
+        this.allSelectedSeats = { 'test2': [ { 'id': 'secAr1s1', 'component': 1 } ] };
+        this.ticketTotals = { 'test2': { 'ticket1': 5, 'ticket2': 5 } };
         this.settings = { 'maxTickets': 10 };
     }
 
@@ -24,11 +24,14 @@ class POSTHandler {
                     let transmit = {};
                     if ( dat.length > 0 ) {
                         transmit = JSON.parse( dat[ 0 ].data );
-                    } else {
-                        transmit[ data.eventID ] = {};
                     }
+
                     if ( !this.allSelectedSeats[ data.eventID ] ) {
                         this.allSelectedSeats[ data.eventID ] = [];
+                    }
+
+                    if ( !transmit[ data.eventID ] ) {
+                        transmit[ data.eventID ] = {};
                     }
 
                     if ( this.allSelectedSeats[ data.eventID ].includes( data.id ) && !data.count ) {
@@ -62,37 +65,59 @@ class POSTHandler {
                         }
                         db.writeDataSimple( 'temp', 'user_id', session.id, { 'user_id': session.id, 'data': JSON.stringify( transmit ), 'timestamp': new Date().toString() } ).then( () => {
                             resolve( 'ok' );
-                        } ).catch( () => {
+                        } ).catch( error => {
+                            console.error( error );
                             reject( { 'code': 500, 'message': 'ERR_DB' } );
                         } );
                     } else {
                         reject( { 'code': 418, 'message': 'ERR_TOO_MANY_TICKETS' } );
                         return;
                     }
-                } ).catch( () => {
+                } ).catch( error => {
+                    console.error( error );
                     reject( { 'code': 500, 'message': 'ERR_DB' } );
                 } );
             } else if ( call === 'deselectTicket' ) {
                 db.getDataSimple( 'temp', 'user_id', session.id ).then( dat => {
-                    let transmit = JSON.parse( dat[ 0 ].data );
-                    if ( transmit[ data.eventID ] ) {
-                        if ( transmit[ data.eventID ][ data.id ] ) {
-                            delete transmit[ data.eventID ][ data.id ];
+                    let transmit = {};
+                    if ( dat[ 0 ] ) {
+                        transmit = JSON.parse( dat[ 0 ].data );
+                        if ( transmit[ data.eventID ] ) {
+                            if ( transmit[ data.eventID ][ data.id ] ) {
+                                delete transmit[ data.eventID ][ data.id ];
+                            } else {
+                                reject( { 'code': 404, 'message': 'ERR_DATA_NOT_FOUND' } );
+                            }
+                            if ( Object.keys( transmit[ data.eventID ] ).length < 1 ) {
+                                delete transmit[ data.eventID ];
+                            }
                         } else {
                             reject( { 'code': 404, 'message': 'ERR_DATA_NOT_FOUND' } );
                         }
-                        if ( Object.keys( transmit[ data.eventID ] ).length < 1 ) {
-                            delete transmit[ data.eventID ];
+
+                        const allSeats = this.allSelectedSeats[ data.eventID ];
+                        for ( let seat in allSeats ) {
+                            if ( allSeats[ seat ].component === data.component ) {
+                                if ( allSeats[ seat ].id === data.id ) {
+                                    delete this.allSelectedSeats[ data.eventID ][ seat ];
+                                }
+                            }
                         }
                     } else {
                         reject( { 'code': 404, 'message': 'ERR_DATA_NOT_FOUND' } );
+                        return;
                     }
+
+                    
+
                     db.writeDataSimple( 'temp', 'user_id', session.id, { 'user_id': session.id, 'data': JSON.stringify( transmit ) } ).then( () => {
                         resolve( 'ok' );
-                    } ).catch( () => {
+                    } ).catch( error => {
+                        console.error( error );
                         reject( { 'code': 500, 'message': 'ERR_DB' } );
                     } );
-                } ).catch( () => {
+                } ).catch( error => {
+                    console.error( error );
                     reject( { 'code': 500, 'message': 'ERR_DB' } );
                 } );
             }

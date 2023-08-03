@@ -20,7 +20,7 @@
                             <h4 class="price"><div style="display: inline;" v-if="ticket.count">{{ ticket.count }}x</div> {{ ticket.displayName }}: </h4>
                         </td>
                         <td>
-                            {{ backend.currency }} {{ ticket.price }} <span class="material-symbols-outlined deleteButton" @click="deleteTicket( ticket.id, event.eventID )" title="Delete ticket">delete</span>
+                            {{ backend.currency }} {{ ticket.price }} <span class="material-symbols-outlined deleteButton" @click="deleteTicket( ticket.id, event.eventID, ticket.comp )" title="Delete ticket">delete</span>
                         </td>
                     </tr>
                 </table>
@@ -114,9 +114,10 @@
                     }
                 }
             },
-            deleteTicket ( ticketID, event ) {
+            deleteTicket ( ticketID, event, component ) {
                 this.ticketToDelete[ 'event' ] = event;
                 this.ticketToDelete[ 'id' ] = ticketID;
+                this.ticketToDelete[ 'component' ] = component;
                 this.$refs.popups.openPopup( 'Do you really want to delete this ticket?', {}, 'confirm' );
             },
             verifyTicketDelete ( status ) {
@@ -126,6 +127,15 @@
                     } else {
                         delete this.cart[ this.ticketToDelete.event ];
                     }
+                    const options = {
+                        method: 'post',
+                        body: JSON.stringify( { 'id': this.ticketToDelete[ 'id' ], 'eventID': this.ticketToDelete[ 'event' ], 'component': this.ticketToDelete[ 'component' ] } ),
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'charset': 'utf-8'
+                        }
+                    };
+                    fetch( localStorage.getItem( 'url' ) + '/API/deselectTicket', options );
                 }
                 localStorage.setItem( 'cart', JSON.stringify( this.cart ) );
             },
