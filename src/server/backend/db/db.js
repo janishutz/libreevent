@@ -59,6 +59,21 @@ module.exports.writeDataSimple = ( db, column, searchQuery, data ) => {
     } );
 };
 
+module.exports.checkDataAvailability = ( db, column, searchQuery ) => {
+    return new Promise( ( resolve, reject ) => {
+        dbh.query( { 'command': 'checkDataAvailability', 'property': column, 'searchQuery': searchQuery }, dbRef[ db ] ).then( res => {
+            if ( res.length > 0 ) {
+                resolve( true );
+            } else {
+                resolve( false );
+            }
+        } ).catch( error => {
+            reject( error );
+        } );
+    } );
+};
+
+
 module.exports.getJSONData = ( file ) => {
     return new Promise( ( resolve, reject ) => {
         fs.readFile( path.join( __dirname + '/data/' + file + '.json' ), ( error, data ) => {

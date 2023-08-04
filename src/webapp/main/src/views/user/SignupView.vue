@@ -12,15 +12,40 @@
         <div class="login-app">
             <h1>Sign up</h1>
             <form>
-                <label for="mail">Email</label><br>
-                <input type="email" v-model="formData[ 'mail' ]" name="mail" id="mail" required><br><br>
-                <label for="name">Full name</label><br>
-                <input type="text" v-model="formData[ 'name' ]" name="name" id="name" required><br><br>
-                <label for="password">Password</label><br>
-                <input type="password" v-model="formData[ 'password' ]" name="password" id="password" required><br><br>
-                <label for="password2">Confirm password</label><br>
-                <input type="password" v-model="formData[ 'password2' ]" name="password2" id="password2" required>
+                <table>
+                    <tr>
+                        <td>
+                            <label for="mail">Email</label><br>
+                            <input type="email" v-model="formData[ 'mail' ]" name="mail" id="mail" required><br><br>
+                        </td>
+                        <td>
+                            <label for="country">Country</label><br>
+                            <input type="text" v-model="formData[ 'country' ]" name="country" id="country" required><br><br>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label for="firstName">First name</label><br>
+                            <input type="text" v-model="formData[ 'firstName' ]" name="firstName" id="firstName" required><br><br>
+                        </td>
+                        <td>
+                            <label for="name">Last name</label><br>
+                            <input type="text" v-model="formData[ 'name' ]" name="name" id="name" required><br><br>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label for="password">Password</label><br>
+                            <input type="password" v-model="formData[ 'password' ]" name="password" id="password" required><br><br>
+                        </td>
+                        <td>
+                            <label for="password2">Confirm password</label><br>
+                            <input type="password" v-model="formData[ 'password2' ]" name="password2" id="password2" required><br><br>
+                        </td>
+                    </tr>
+                </table>
             </form>
+            <notifications ref="notification" location="topright" size="bigger"></notifications>
             <button @click="signup();" class="button">Sign up</button>
             <router-link to="/login" class="button">Log in instead</router-link>
         </div>
@@ -28,15 +53,73 @@
 </template>
 
 <script>
+    import { useUserStore } from '@/stores/userStore';
+    import { mapStores } from 'pinia';
+    import notifications from '@/components/notifications/notifications.vue';
+
     export default {
         data () {
             return {
                 formData: {}
             }
         },
+        components: {
+            notifications,
+        },
+        computed: {
+            ...mapStores( useUserStore )
+        },
         methods: {
             signup () {
-
+                if ( !this.formData.mail ) {
+                    this.$refs.notification.createNotification( 'An email address is required to sign up', 5, 'error', 'normal' );
+                    return;
+                }
+                if ( !this.formData.password ) {
+                    this.$refs.notification.createNotification( 'A password is required to sign up', 5, 'error', 'normal' );
+                    return;
+                }
+                if ( !this.formData.password2 ) {
+                    this.$refs.notification.createNotification( 'Please confirm your password using the "Confirm password field"', 5, 'error', 'normal' );
+                    return;
+                }
+                if ( this.formData.password !== this.formData.password2 ) {
+                    this.$refs.notification.createNotification( 'The passwords provided do not match. Please ensure they are the same', 5, 'error', 'normal' );
+                    return;
+                }
+                if ( !this.formData.country ) {
+                    this.$refs.notification.createNotification( 'Please provide the country you live in.', 5, 'error', 'normal' );
+                    return;
+                }
+                if ( !this.formData.name && !this.formData.firstName ) {
+                    this.$refs.notification.createNotification( 'Please provide your first and last name!', 5, 'error', 'normal' );
+                    return;
+                }
+                let progress = this.$refs.notification.createNotification( 'Signing up...', 20, 'progress', 'normal' );
+                let fetchOptions = {
+                    method: 'post',
+                    body: JSON.stringify( this.formData ),
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'charset': 'utf-8'
+                    }
+                };
+                fetch( localStorage.getItem( 'url' ) + '/user/signup', fetchOptions ).then( res => {
+                    console.log( res );
+                    res.text().then( status => {
+                        if ( status === 'ok' ) {
+                            this.userStore.setUserAuth( true );
+                            this.$router.push( sessionStorage.getItem( 'redirect' ) ?? '/account' );
+                            sessionStorage.removeItem( 'redirect' );
+                        } else if ( status === 'exists' ) {
+                            this.$refs.notification.cancelNotification( progress );
+                            this.$refs.notification.createNotification( 'An account with this email address already exists. Please log in using it.', 5, 'error', 'normal' );
+                            this.$refs.notification.createNotification( 'If you do not remember your password, reset it!', 5, 'error', 'normal' );
+                        } else {
+                            console.log( status );
+                        }
+                    } );
+                } );
             }
         },
     }

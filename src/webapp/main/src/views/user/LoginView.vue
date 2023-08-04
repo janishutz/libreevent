@@ -19,6 +19,7 @@
             </form>
             <button @click="login();" class="button">Log in</button>
             <router-link to="/signup" class="button">Sign up instead</router-link>
+            <router-link to="/password-reset" class="button">Reset password</router-link>
         </div>
         <notifications ref="notification" location="topright" size="bigger"></notifications>
     </div>

@@ -140,9 +140,20 @@ module.exports = ( app, settings ) => {
     app.post( '/user/signup', bodyParser.json(), ( request, response ) => {
         // TODO: Make sure that user does not exist yet first and if user 
         // exists, send back info that it is that way
-        response.send( 'ok' );
-        db.writeDataSimple( 'users', 'email', request.body.email, { 'pass': pwdmanager.hashPassword( request.query.password ), 'street': '', 'house_number': '', 'country': request.query.country, 'first_name': request.query.firstName, 'name': request.query.name, 'two_fa': String( request.query.twoFA ) } ).then( res => {
-            console.log( res );
-        } );
+        // TODO: check for 2fa
+        // TODO: Send mail to confirm email address
+        if ( request.body.password && request.body.password === request.body.password2 && request.body.firstName && request.body.name && request.body.country && request.body.mail ) {
+            db.checkDataAvailability( 'users', 'email', request.body.mail ).then( status => {
+                if ( status ) {
+                    response.send( 'exists' );
+                } else {
+                    db.writeDataSimple( 'users', 'email', request.body.mail, { 'pass': pwdmanager.hashPassword( request.body.password ), 'first_name': request.body.firstName, 'name': request.body.name, 'two_fa': String( request.body.twoFA ), 'user_data': { 'country': request.body.country } } ).then( () => {
+                        response.send( 'ok' );
+                    } );
+                }
+            } );
+        } else {
+            response.status( 400 ).send( 'incomplete' );
+        }
     } );
 };
