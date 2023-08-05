@@ -87,6 +87,21 @@ class TwoFA {
 
         return await renderToString( app );
     }
+
+    async generateSignupEmail ( token, domain, pageName ) {
+        const app = createSSRApp( {
+            data() {
+                return {
+                    token: token,
+                    host: domain,
+                    pageName: pageName,
+                };
+            },
+            template: '' + fs.readFileSync( path.join( __dirname + '/../../ui/en/signup/signupMail.html' ) )
+        } );
+
+        return await renderToString( app );
+    }
 }
 
 module.exports = TwoFA;

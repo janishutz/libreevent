@@ -15,6 +15,7 @@ const path = require( 'path' );
 const mail = require( './mail/mailSender.js' );
 const mailManager = new mail();
 const bodyParser = require( 'body-parser' );
+const generator = require( './token.js' );
 
 let responseObjects = {};
 let authOk = {};
@@ -146,6 +147,11 @@ module.exports = ( app, settings ) => {
                 if ( status ) {
                     response.send( 'exists' );
                 } else {
+                    ( async () => {
+                        let tok = generator.generateToken( 60 );
+                        mailTokens[ tok ] = request.body.mail;
+                        mailManager.sendMail( request.body.mail, await twoFA.generateSignupEmail( tok, settings.yourDomain, settings.name ), 'Confirm your email', settings.mailSender );
+                    } )();
                     pwdmanager.hashPassword( request.body.password ).then( hash => {
                         db.writeDataSimple( 'users', 'email', request.body.mail, { 'email': request.body.mail, 'pass': hash, 'first_name': request.body.firstName, 'name': request.body.name, 'two_fa': 'disabled', 'user_data': JSON.stringify( { 'country': request.body.country } ) } ).then( () => {
                             request.session.loggedInUser = true;

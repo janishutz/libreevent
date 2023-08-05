@@ -71,11 +71,12 @@
     <body>
         <div class="content">
             <h1>Email Verification</h1>
-            <p id="text">This website requires you to use Two-Factor Authentication. Please choose your mode below. By default, the enhanced mode is enabled which requires you to type a 6-character code into a field after confirming the mail address. You can change this setting at any point later.</p>
+            <p id="text">We strongly encourage you to enable Two-Factor authentication for your account. Below you have the choice between not enabling it, enabling a mode where you just have to click the link in the email and you're in (simple) and a mode where you have to click the link in the mail and confirm the login by typing the code displayed on the main window (enhanced).</p>
             <form onsubmit="return submitFunction()" id="form">
                 <select name="2fa" id="2fa">
                     <option value="enhanced">Enhanced</option>
                     <option value="simple">Simple</option>
+                    <option value="disabled">Disabled</option>
                 </select><br>
                 <input type="submit" value="Submit" class="submit">
             </form>
@@ -93,7 +94,7 @@
                 let data = '';
                 let fetchOptions = {
                     method: 'post',
-                    body: JSON.stringify( { 'code': data, 'token': location.search.substring( 7 ) } ),
+                    body: JSON.stringify( { 'twoFA': data } ),
                     headers: {
                         'Content-Type': 'application/json',
                         'charset': 'utf-8'
