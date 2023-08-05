@@ -50,6 +50,7 @@
                     res.json().then( data => {
                         if ( data.status ) {
                             this.accountData = data.data;
+                            console.log( data );
                             if ( !data.data.mail_confirmed ) {
                                 setTimeout( () => {
                                     this.$refs.notification.createNotification( 'Your account is unverified. Please confirm your email using the link we have sent to your email!', 20, 'info', 'normal' );

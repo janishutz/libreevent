@@ -15,6 +15,14 @@
 
 <script>
     export default {
+        methods: {
 
+        },
+        data() {
+            return {}
+        },
+        created() {
+            
+        }
     }
 </script>

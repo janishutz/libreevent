@@ -50,9 +50,8 @@ module.exports = ( app, settings ) => {
         if ( request.body.mail && request.body.password ) {
             pwdmanager.checkpassword( request.body.mail, request.body.password ).then( data => {
                 request.session.username = request.body.mail;
-                // TODO: Check if user has 2fa enabled
-                if ( data ) {
-                    if ( settings.twoFA === 'standard' ) {
+                if ( data.status ) {
+                    if ( data.twoFA === 'simple' ) {
                         ( async () => {
                             let tok = twoFA.registerStandardAuthentication()[ 'token' ];
                             let ipRetrieved = request.headers[ 'x-forwarded-for' ];
@@ -61,7 +60,7 @@ module.exports = ( app, settings ) => {
                             request.session.token = tok;
                             response.send( { 'status': '2fa' } );
                         } )();
-                    } else if ( settings.twoFA === 'enhanced' ) {
+                    } else if ( data.twoFA === 'enhanced' ) {
                         ( async () => {
                             let res = twoFA.registerEnhancedAuthentication();
                             let ipRetrieved = request.headers[ 'x-forwarded-for' ];
@@ -141,7 +140,6 @@ module.exports = ( app, settings ) => {
     } );
 
     app.post( '/user/signup', bodyParser.json(), ( request, response ) => {
-        // TODO: Send mail to confirm email address
         if ( request.body.password && request.body.password === request.body.password2 && request.body.firstName && request.body.name && request.body.country && request.body.mail ) {
             db.checkDataAvailability( 'users', 'email', request.body.mail ).then( status => {
                 if ( status ) {

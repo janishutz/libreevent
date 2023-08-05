@@ -22,7 +22,7 @@ module.exports.checkpassword = function checkpassword ( email, password ) {
             if ( data ) {
                 if ( data[ 0 ] ) {
                     bcrypt.compare( password, data[ 0 ].pass ).then( res => {
-                        resolve( res );
+                        resolve( { 'status': res, 'twoFA': data[ 0 ].two_fa } );
                     } );
                 } else {
                     resolve( false );
