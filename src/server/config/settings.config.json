@@ -1,6 +1,7 @@
 {
     "init": true,
-    "twoFA": "enhanced",
+    "twoFA": "allow",
+    "twoFAMode": "enhanced",
     "db": "mysql",
     "payments": "stripe",
     "name": "libreevent",

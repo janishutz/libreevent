@@ -5,6 +5,8 @@
 
 - create function that parses DB every 15 minutes and clears out junk
 
+- Require user to confirm email before purchasing
+
 - Create password changing endpoint (to reset forgotten pwd)
 - Add Admin profile (page to change account settings per person like changing pwd)
 

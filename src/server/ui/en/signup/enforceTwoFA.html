@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Email verification</title>
+        <style>
+            body, html {
+                width: 100%;
+                height: 100%;
+                margin: 0;
+                padding: 0;
+            }
+
+            body {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                flex-direction: column;
+                font-family: Avenir, Helvetica, Arial, sans-serif;
+                text-align: center;
+                background-color: rgb(41, 40, 40);
+                color: white;
+                font-size: 150%;
+            }
+
+            .content {
+                width: 70%;
+            }
+
+            #code {
+                padding: 0.75%;
+                border: solid white 1px;
+                border-radius: 7px;
+                font-size: 100%;
+                text-align: center;
+            }
+
+            .submit {
+                margin-top: 2%;
+                background: linear-gradient(90deg, rgb(30, 36, 131), rgb(87, 66, 184), rgb(105, 115, 214), rgb(30, 36, 131), rgb(41, 128, 109), rgb(146, 50, 47));
+                background-size: 300px;
+                padding: 10px 20px;
+                border: none;
+                border-radius: 20px;
+                cursor: pointer;
+                transition: all 3s;
+                font-size: 75%;
+                color: white;
+            }
+
+            .submit:hover {
+                background-size: 200%;
+                background-position: -100%;
+            }
+
+            #popup {
+                border: none;
+                border-radius: 20px;
+                padding: 5%;
+                background-color: rgb(34, 34, 34);
+                color: white;
+                max-width: 70%;
+            }
+
+            #popup::backdrop {
+                background-color: rgba( 0, 0, 0, 0.8 );
+            }
+        </style>
+    </head>
+    <body>
+        <div class="content">
+            <h1>Email Verification</h1>
+            <p id="text">We strongly encourage you to enable Two-Factor authentication for your account. Below you have the choice between not enabling it, enabling a mode where you just have to click the link in the email and you're in (simple) and a mode where you have to click the link in the mail and confirm the login by typing the code displayed on the main window (enhanced).</p>
+            <form onsubmit="return submitFunction()" id="form">
+                <select name="2fa" id="2fa">
+                    <option value="enhanced">Enhanced</option>
+                    <option value="simple">Simple</option>
+                    <option value="disabled">Disabled</option>
+                </select><br>
+                <input type="submit" value="Submit" class="submit">
+            </form>
+            <dialog id="popup">
+                <p id="popup-message"></p>
+                <form method="dialog">
+                    <input type="submit" value="Ok" class="submit">
+                </form>
+            </dialog>
+        </div>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+        <script>
+            function submitFunction () {
+                let code = document.getElementById( '2fa' ).value;
+                let data = '';
+                let fetchOptions = {
+                    method: 'post',
+                    body: JSON.stringify( { 'code': data, 'token': location.search.substring( 7 ) } ),
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'charset': 'utf-8'
+                    }
+                };
+                fetch( '/user/settings/2fa', fetchOptions ).then( res => {
+                    res.text().then( data => {
+                        if ( data === 'ok' ) {
+                            document.getElementById( 'text' ).innerText = 'Your settings have been saved! You may change them at any point. You may now close this tab.';
+                            document.getElementById( 'form' ).innerHTML = '';
+                            openPopup( 'Your settings have been saved! You may change them at any point. You may now close this tab.' );
+                        } else {
+                            openPopup( 'An error occurred whilst saving your settings. Please try again. If it does not work, you can change this setting later at any point in the account page.' );
+                        }
+                    } );
+                } );
+                return false;
+            }
+
+            function openPopup ( message ) {
+                document.getElementById( 'popup-message' ).innerHTML = message;
+                document.getElementById( 'popup' ).showModal();
+            }
+        </script>
+    </body>
+</html>

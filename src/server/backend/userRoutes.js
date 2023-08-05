@@ -18,6 +18,7 @@ const bodyParser = require( 'body-parser' );
 
 let responseObjects = {};
 let authOk = {};
+let mailTokens = {};
 
 module.exports = ( app, settings ) => {
     app.get( '/user/details', ( request, response ) => {
@@ -134,26 +135,61 @@ module.exports = ( app, settings ) => {
 
     app.get( '/user/logout', ( request, response ) => {
         request.session.loggedInUser = false;
+        request.session.username = '';
         response.send( 'logoutOk' );
     } );
 
     app.post( '/user/signup', bodyParser.json(), ( request, response ) => {
-        // TODO: Make sure that user does not exist yet first and if user 
-        // exists, send back info that it is that way
-        // TODO: check for 2fa
         // TODO: Send mail to confirm email address
         if ( request.body.password && request.body.password === request.body.password2 && request.body.firstName && request.body.name && request.body.country && request.body.mail ) {
             db.checkDataAvailability( 'users', 'email', request.body.mail ).then( status => {
                 if ( status ) {
                     response.send( 'exists' );
                 } else {
-                    db.writeDataSimple( 'users', 'email', request.body.mail, { 'pass': pwdmanager.hashPassword( request.body.password ), 'first_name': request.body.firstName, 'name': request.body.name, 'two_fa': String( request.body.twoFA ), 'user_data': { 'country': request.body.country } } ).then( () => {
-                        response.send( 'ok' );
+                    pwdmanager.hashPassword( request.body.password ).then( hash => {
+                        db.writeDataSimple( 'users', 'email', request.body.mail, { 'email': request.body.mail, 'pass': hash, 'first_name': request.body.firstName, 'name': request.body.name, 'two_fa': 'disabled', 'user_data': JSON.stringify( { 'country': request.body.country } ) } ).then( () => {
+                            request.session.loggedInUser = true;
+                            request.session.username = request.body.mail;
+                            response.send( 'ok' );
+                        } );
                     } );
                 }
             } );
         } else {
             response.status( 400 ).send( 'incomplete' );
         }
+    } );
+
+    app.get( '/user/signup/confirm', ( request, response ) => {
+        if ( Object.keys( mailTokens ).includes( request.query.token ) ) {
+            request.session.username = mailTokens[ request.query.token ];
+            db.writeDataSimple( 'users', 'email', request.session.username, { 'mail_confirmed': 'true' } );
+            delete mailTokens[ request.query.token ];
+            if ( settings.twoFA === 'allow' ) {
+                response.sendFile( path.join( __dirname + '/../ui/en/signup/allowTwoFA.html' ) );
+            } else if ( settings.twoFA === 'enforce' ) {
+                response.sendFile( path.join( __dirname + '/../ui/en/signup/enforceTwoFA.html' ) );
+            } else {
+                response.sendFile( path.join( __dirname + '/../ui/en/signup/disallowTwoFA.html' ) );
+            }
+        } else {
+            response.sendFile( path.join( __dirname + '/../ui/en/signup/invalid.html' ) );
+        }
+    } );
+    
+    app.post( '/user/settings/:setting', bodyParser.json(), ( request, response ) => {
+        let call = request.params.setting;
+        if ( request.session.username ) {
+            if ( call === '2fa' ) {
+                db.writeDataSimple( 'users', 'email', request.session.username, { 'two_fa': request.body.twoFA } );
+                response.send( 'ok' );
+            }
+        } else {
+            response.send( 'unauthorised' );
+        }
+    } );
+    
+    app.get( '/settings/2fa', ( request, response ) => {
+        response.send( settings.twoFA );
     } );
 };

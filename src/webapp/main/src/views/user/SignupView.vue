@@ -108,9 +108,13 @@
                     console.log( res );
                     res.text().then( status => {
                         if ( status === 'ok' ) {
-                            this.userStore.setUserAuth( true );
-                            this.$router.push( sessionStorage.getItem( 'redirect' ) ?? '/account' );
-                            sessionStorage.removeItem( 'redirect' );
+                            this.$refs.notification.cancelNotification( progress );
+                            this.$refs.notification.createNotification( 'Signed up successfully. We have sent you an email. Please confirm it to finish sign-up', 5, 'ok', 'normal' );
+                            setTimeout( () => {
+                                this.userStore.setUserAuth( true );
+                                this.$router.push( sessionStorage.getItem( 'redirect' ) ?? '/account' );
+                                sessionStorage.removeItem( 'redirect' );
+                            }, 5000 );
                         } else if ( status === 'exists' ) {
                             this.$refs.notification.cancelNotification( progress );
                             this.$refs.notification.createNotification( 'An account with this email address already exists. Please log in using it.', 5, 'error', 'normal' );
