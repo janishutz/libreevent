@@ -33,7 +33,24 @@
             saveTemplate() {
                 // Save to server instead
                 this.$refs.notification.createNotification( 'Saving...', 5, 'progress', 'normal' );
-                this.$refs.notification.createNotification( 'Saved successfully', 5, 'ok', 'normal' );
+                let fetchOptions = {
+                    method: 'post',
+                    body: JSON.stringify( { 'location': sessionStorage.getItem( 'selectedTicket' ), 'data': this.designer.getTemplate() } ),
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'charset': 'utf-8'
+                    }
+                };
+
+                fetch( '/admin/api/saveTickets', fetchOptions ).then( res => {
+                    if ( res.status === 200 ) {
+                        res.text().then( text => {
+                            // TODO: Finish up
+                            console.log( text );
+                            this.$refs.notification.createNotification( 'Saved successfully', 5, 'ok', 'normal' );
+                        } );
+                    }
+                } );
                 console.log( this.designer.getTemplate() );
             },
             testNotifications () {

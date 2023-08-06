@@ -106,6 +106,8 @@ module.exports = ( app, settings ) => {
             request.session.loggedInUser = true;
             if ( responseObjects[ request.body.token ] ) {
                 responseObjects[ request.body.token ].write( 'data: authenticated\n\n' );
+                responseObjects[ request.body.token ].end();
+                delete responseObjects[ request.body.token ];
             } else {
                 authOk[ request.body.token ] = 'ok';
             }
@@ -127,6 +129,7 @@ module.exports = ( app, settings ) => {
 
     app.get( '/user/2fa/ping', ( request, response ) => {
         if ( authOk[ request.session.token ] === 'ok' ) {
+            delete authOk[ request.session.token ];
             response.send( { 'status': 'ok' } );
         } else {
             response.send( '' );

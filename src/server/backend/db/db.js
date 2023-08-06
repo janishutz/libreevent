@@ -33,7 +33,6 @@ module.exports.getDataSimple = ( db, column, searchQuery ) => {
         } ).catch( error => {
             reject( error );
         } );
-        // resolve( '$2b$05$ElMYWoMjk7567lXkIkee.e.6cxCrWU4gkfuNLB8gmGYLQQPm7gT3O' );
     } );
 };
 

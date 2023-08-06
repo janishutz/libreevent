@@ -31,7 +31,7 @@ module.exports = ( app ) => {
         }
     } );
 
-    app.post( '/admin/API/:call', bodyParser.json(), ( req, res ) => {
+    app.post( '/admin/API/:call', bodyParser.json( { limit: '20mb' } ), ( req, res ) => {
         if ( req.session.loggedInAdmin ) {
             postHandler.handleCall( req.params.call, req.body, req.query.lang ).then( data => {
                 res.send( data );

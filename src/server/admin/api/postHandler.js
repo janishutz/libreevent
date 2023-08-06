@@ -54,6 +54,12 @@ class POSTHandler {
                 } ).catch( error => {
                     reject( { 'code': 500, 'error': error } );
                 } );
+            } else if ( call === 'saveTickets' ) {
+                db.writeJSONDataSimple( 'tickets', data.location, data.data ).then( resp => { 
+                    resolve( resp );
+                } ).catch( error => {
+                    reject( { 'code': 500, 'error': error } );
+                } );
             } else {
                 reject( { 'code': 404, 'error': 'Route not found' } );
             }

@@ -126,6 +126,15 @@ export default [
         }
     },
     {
+        path: '/payments/success',
+        name: 'paymentSuccess',
+        component: () => import( '@/views/purchasing/PaymentSuccessView.vue' ),
+        meta: {
+            title: 'Payment successful - ',
+            transition: 'scale'
+        }
+    },
+    {
         path: '/admin/seatplan',
         name: 'adminSeatplanEditor',
         component: () => import( '@/views/admin/events/EditorView.vue' ),

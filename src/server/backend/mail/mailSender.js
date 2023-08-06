@@ -43,6 +43,7 @@ class MailManager {
     }
 
     sendMailWithAttachment ( recipient, html, subject, attachments, from ) {
+        // Attachments have to be an array of objects that have filename and path as their keys
         let text = html2text.convert( html, this.options );
         let mailOptions = {
             from: from,

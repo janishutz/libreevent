@@ -37,6 +37,8 @@ Visit our [website](https://libreevent.janishutz.com)
 You may download this project using the GitHub releases page or the direct links on the [libreevent website](https://libreevent.janishutz.com/download) as this only downloads the ready-to-distribute version, not the development version.
 Alternatively, you may download the project directly from GitHub (by cloning it or downloading the code) but you'll have to compile and package the project [manually](https://libreevent.janishutz.com/docs/contributing/packaging).
 
+THIS IS FREE SOFTWARE. IT IS PROVIDED "AS IS" AND AS SUCH COMES WITH ABSOLUTELY NO WARRANTY TO THE EXTENT PERMITTED BY APPLICABLE LAW. If anything does not work, please report it back, but do not expect it to be fixed immediately, as this software is developed by volunteers in their free time.
+
 # Contributing
 If you want to contribute to this project, please read more [here](https://libreevent.janishutz.com/docs/contributing). Until the end of October 2023, no contributions can be accepted into master. 
 

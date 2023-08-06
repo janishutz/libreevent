@@ -13,7 +13,7 @@
 
 class DataHelper {
     constructor () {
-
+        
     }
 }
 

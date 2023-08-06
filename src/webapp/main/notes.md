@@ -7,6 +7,8 @@
 
 - Require user to confirm email before purchasing
 
+- Guest purchase in the future (remove from matura shit)
+
 - Create password changing endpoint (to reset forgotten pwd)
 - Add Admin profile (page to change account settings per person like changing pwd)
 

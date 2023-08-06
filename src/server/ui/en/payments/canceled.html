@@ -4,11 +4,56 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Payment Canceled</title>
+        <style>
+            body, html {
+                width: 100%;
+                height: 100%;
+                margin: 0;
+                padding: 0;
+            }
+
+            body {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                flex-direction: column;
+                font-family: Avenir, Helvetica, Arial, sans-serif;
+                text-align: center;
+                background-color: rgb(41, 40, 40);
+                color: white;
+                font-size: 150%;
+            }
+
+            .content {
+                width: 70%;
+            }
+
+            .submit {
+                margin-top: 2%;
+                background: linear-gradient(90deg, rgb(30, 36, 131), rgb(87, 66, 184), rgb(105, 115, 214), rgb(30, 36, 131), rgb(41, 128, 109), rgb(146, 50, 47));
+                background-size: 300px;
+                padding: 10px 20px;
+                border: none;
+                border-radius: 20px;
+                cursor: pointer;
+                transition: all 3s;
+                font-size: 75%;
+                color: white;
+            }
+
+            .submit:hover {
+                background-size: 200%;
+                background-position: -100%;
+            }
+        </style>
     </head>
     <body>
-        <h1>Payment Canceled</h1>
-        <p>You have canceled your payment!</p>
-        <p>This was a mistake? Head back to the payment page!</p>
-        <button onclick="history.back()">Back to payment</button>
+        <div class="content">
+            <h1>Payment Canceled</h1>
+            <p>You have canceled your payment!</p>
+            <p>This was a mistake? Head back to the payment page!</p>
+            <button onclick="history.back()" class="submit">Back to payment</button>
+            <button onclick="location.href = '/cart'" class="submit">Back to the cart</button>
+        </div>
     </body>
 </html>
