@@ -82,14 +82,37 @@ module.exports = ( app, settings ) => {
         response.flushHeaders();
         response.write( 'data: connected\n\n' );
         waitingClients[ request.session.id ] = response;
+        const ping = setInterval( () => {
+            const stat = TicketGenerator.getGenerationStatus( request.session.id );
+            if ( stat === 'done' ) {
+                clearInterval( ping );
+                setTimeout( () => {
+                    response.write( 'data: ready\n\n' );
+                    response.end();
+                    delete waitingClients[ request.session.id ];
+                }, 2000 );
+            } else if ( stat === 'noTicket' ) {
+                clearInterval( ping );
+                response.write( 'data: noData\n\n' );
+                response.end();
+                delete waitingClients[ request.session.id ];
+            }
+        }, 2000 );
     } );
 
     app.get( '/user/2fa/ping', ( request, response ) => {
-        if ( paymentOk[ request.session.token ] === 'ok' ) {
-            delete paymentOk[ request.session.token ];
-            response.send( { 'status': 'ok' } );
-        } else {
-            response.send( '' );
+        if ( paymentOk[ request.session.id ] === 'ok' ) {
+            delete paymentOk[ request.session.id ];
+            response.send( { 'status': 'paymentOk' } );
+        } else { 
+            const stat = TicketGenerator.getGenerationStatus( request.session.id );
+            if ( stat === 'done' ) {
+                response.send( { 'status': 'ticketOk' } );
+            } else if ( stat === 'noTicket' ) {
+                response.send( { 'status': 'noTicket' } );
+            } else {
+                response.send( '' );
+            }
         }
     } );
 
@@ -108,8 +131,10 @@ module.exports = ( app, settings ) => {
 
         if ( event.type === 'checkout.session.completed' ) {
             setTimeout( () => {
-                waitingClients[ sessionReference[ event.data.object.id ][ 'tok' ] ].write( 'data: paymentOk\n\n' );
-            }, 2000 );
+                if ( waitingClients[ sessionReference[ event.data.object.id ][ 'tok' ] ] ) {
+                    waitingClients[ sessionReference[ event.data.object.id ][ 'tok' ] ].write( 'data: paymentOk\n\n' );
+                }
+            }, 1000 );
             db.getDataSimple( 'temp', 'user_id', sessionReference[ event.data.object.id ][ 'tok' ] ).then( dat => {
                 db.getDataSimple( 'users', 'email', sessionReference[ event.data.object.id ][ 'email' ] ).then( user => {
                     if ( user[ 0 ] ) {

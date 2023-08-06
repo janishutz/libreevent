@@ -32,14 +32,29 @@ class TicketGenerator {
         db.getJSONData( 'events' ).then( events => {
             this.events = events;
         } );
+        this.runningTickets = {};
     }
 
     // TODO: Save to disk in case of crash of server / reboot / whatever
     // and continue processing once back online
     generateTickets ( order ) {
-        this.ticketQueue [ this.jobId ] = { 'order': order };
+        this.ticketQueue[ this.jobId ] = { 'order': order };
+        this.runningTickets[ order ] = 'processing';
         this.jobId += 1;
         this.queueHandler();
+    }
+
+    getGenerationStatus ( order ) {
+        if ( this.runningTickets[ order ] ) {
+            if ( this.runningTickets[ order ] === 'done' ) {
+                delete this.runningTickets[ order ];
+                return 'done';
+            } else {
+                return 'processing';
+            }
+        } else {
+            return 'noTicket';
+        }
     }
 
     // TODO: Maybe move to subprocesses
@@ -63,7 +78,8 @@ class TicketGenerator {
                                         template: '' + fs.readFileSync( path.join( __dirname + '/../../ui/en/payments/ticketMail.html' ) )
                                     } );
                                     
-                                    console.log( dat[ 0 ].email );
+                                    this.runningTickets[ res.order ] = 'done';
+                                    
                                     mailManager.sendMailWithAttachment( dat[ 0 ].email, await renderToString( app ), 'Thank you for your order', [
                                         {
                                             'filename': 'tickets.pdf',
@@ -71,7 +87,7 @@ class TicketGenerator {
                                         }
                                     ], settings.mailSender
                                     );
-                                    // db.writeDataSimple( 'orders', 'order_name', res.order, { 'processed': 'true' } );
+                                    db.writeDataSimple( 'orders', 'order_name', res.order, { 'processed': 'true' } );
                                 } )();
                             }
                         } );
