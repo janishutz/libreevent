@@ -58,6 +58,16 @@ module.exports.writeDataSimple = ( db, column, searchQuery, data ) => {
     } );
 };
 
+module.exports.deleteDataSimple = ( db, column, searchQuery ) => {
+    return new Promise( ( resolve, reject ) => {
+        dbh.query( { 'command': 'deleteData', 'property': column, 'searchQuery': searchQuery }, dbRef[ db ] ).then( dat => {
+            resolve( dat );
+        } ).catch( error => {
+            reject( error );
+        } );
+    } );
+};
+
 module.exports.checkDataAvailability = ( db, column, searchQuery ) => {
     return new Promise( ( resolve, reject ) => {
         dbh.query( { 'command': 'checkDataAvailability', 'property': column, 'searchQuery': searchQuery }, dbRef[ db ] ).then( res => {

@@ -169,7 +169,7 @@
                 } );
 
                 if ( !sessionStorage.getItem( 'seatplan-history' ) ) {
-                    sessionStorage.setItem( 'seatplaTODO:n-history', JSON.stringify( { '1': this.scaleDown( this.draggables ) } ) );
+                    sessionStorage.setItem( 'seatplan-history', JSON.stringify( { '1': this.scaleDown( this.draggables ) } ) );
                 }
 
                 let history = sessionStorage.getItem( 'seatplan-history' ) ? JSON.parse( sessionStorage.getItem( 'seatplan-history' ) ) : {};

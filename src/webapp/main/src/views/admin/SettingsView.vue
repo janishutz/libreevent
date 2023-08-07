@@ -21,7 +21,7 @@
                 </td>
             </tr>
         </table>
-        <p>Detailed explanation of payment gateways can be found <a href="https://libreevent.janishutz.com/docs/payments" target="_blank">here</a>. You may install more payment gateway integrations in the plugins section.</p>
+        <p>Detailed explanation of payment gateways can be found <a href="https://libreevent.janishutz.com/docs/payments" target="_blank">here</a>. You may install more payment gateway integrations in the plugins section. Only one may be used at any given time.</p>
 
         <div class="admin-settings">
             <h2>Admin Accounts</h2>
@@ -103,8 +103,8 @@
                                 'value': 'stripe'
                             },
                             'adyen': { 
-                                'displayName':'Adyen',
-                                'value': 'adyen'
+                                'displayName':'Payrexx',
+                                'value': 'payrexx'
                             },
                         }
                     },

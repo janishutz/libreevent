@@ -17,3 +17,10 @@ node_modules
 /dist
 
 *.secret.json
+
+# ignore all latex files except .tex
+*.aux
+*.fls
+*.synctex.gz
+*.fdb_latexmk
+._wordcount_selection.tex

@@ -42,7 +42,13 @@ class GETHandler {
                 } );
             } else if ( call === 'getLocations' ) {
                 db.getJSONData( 'locations' ).then( data => {
-                    resolve( data );
+                    resolve( data ?? {} );
+                } ).catch( error => {
+                    reject( { 'code': 500, 'error': error } );
+                } );
+            } else if ( call === 'getTicketTemplate' ) {
+                db.getJSONDataSimple( 'tickets', query.ticket ).then( data => {
+                    resolve( data ?? {} );
                 } ).catch( error => {
                     reject( { 'code': 500, 'error': error } );
                 } );

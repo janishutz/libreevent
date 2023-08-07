@@ -3,11 +3,13 @@
 
 - make pricing groups changeable in UI (event categories)
 
-- create function that parses DB every 15 minutes and clears out junk
+- create function that parses DB every 15 minutes and clears out junk --> Also update data in db when user goes to purchase to prevent clearing during purchase
 
 - Require user to confirm email before purchasing
 
-- Guest purchase in the future (remove from matura shit)
+
+
+- Guest purchase in the future (maybe remove from matura)
 
 - Create password changing endpoint (to reset forgotten pwd)
 - Add Admin profile (page to change account settings per person like changing pwd)
@@ -19,7 +21,9 @@
 
 - Implement Permission system
 
-- Seat numbering
+- Seat numbering!!
+
+- Add localization for date
 
 
 - add webpack (or any other minifying tool) to project website to decrease file size (OPTIONAL)

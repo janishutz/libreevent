@@ -35,7 +35,7 @@ class TicketGenerator {
         this.runningTickets = {};
     }
 
-    // TODO: Save to disk in case of crash of server / reboot / whatever
+    // TODO: Save to disk / DB in case of crash of server / reboot / whatever
     // and continue processing once back online
     generateTickets ( order ) {
         this.ticketQueue[ this.jobId ] = { 'order': order };
@@ -114,15 +114,18 @@ class TicketGenerator {
                         for ( let event in order ) {
                             const template = this.tickets[ event ];
                             for ( let ticket in order[ event ] ) {
-                                const data = [ { 
-                                    'locationAndTime': this.events[ event ][ 'date' ], 
-                                    'ticketName': order[ event ][ ticket ][ 'name' ], 
-                                    'ticketQRCode': ord[ 0 ].order_name + '_' + order[ event ][ ticket ][ 'id' ],
-                                } ];
-                                const page = await pdfLib.PDFDocument.load( await pdfme.generate( { 'template': template, 'inputs': data } ) );
-                                const p = await doc.copyPages( page, page.getPageIndices() );
-                                pages.push( p );
-                                p.forEach( ( page ) => doc.addPage( page ) );
+                                for ( let tik = 0; tik < ( order[ event ][ ticket ].count ?? 1 ); tik++ ) {
+                                    const data = [ { 
+                                        'eventName': this.events[ event ][ 'name' ],
+                                        'locationAndTime': new Date( this.events[ event ][ 'date' ] ).toLocaleString(),
+                                        'ticketName': order[ event ][ ticket ][ 'name' ], 
+                                        'ticketQRCode': ord[ 0 ].order_name + '_' + order[ event ][ ticket ][ 'id' ],
+                                    } ];
+                                    const page = await pdfLib.PDFDocument.load( await pdfme.generate( { 'template': template, 'inputs': data } ) );
+                                    const p = await doc.copyPages( page, page.getPageIndices() );
+                                    pages.push( p );
+                                    p.forEach( ( page ) => doc.addPage( page ) );
+                                }
                             }
                         }
                         const f = path.join( __dirname + '/store/' + ord[ 0 ].order_name + '.pdf' );

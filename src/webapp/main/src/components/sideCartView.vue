@@ -9,6 +9,7 @@
 
 <template>
     <div id="sideCartView">
+        <h1>Seat plan: {{ name }}</h1>
         <h2>Cart</h2>
         <div v-if="Object.keys( cart ).length > 0" style="height: 100%; width: 100%;">
             <div class="scroll-wrapper">
@@ -64,6 +65,10 @@ export default {
         'height': {
             type: Number,
             default: 17
+        },
+        'name': {
+            type: String,
+            default: ''
         }
     },
     data() {
@@ -92,7 +97,7 @@ export default {
         position: fixed;
         right: 0;
         height: 100vh;
-        top: 17vh;
+        top: 90px;
         width: 25vw;
         background-color: var( --accent-background );
         color: var( --secondary-color );

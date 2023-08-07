@@ -39,7 +39,9 @@ class POSTHandler {
                         return;
                     } 
                     transmit[ data.eventID ][ data.id ] = data;
+                    // TODO: Prevent seat selection if already taken (also if in booked!)
                     // TODO: Respect max ticket count per user
+                    // TODO: maybe move to per event setting
                     let totalUserTickets = 0;
                     for ( let event in transmit ) {
                         for ( let ticket in transmit[ event ] ) {

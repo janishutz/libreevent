@@ -43,6 +43,12 @@
                             <input type="password" v-model="formData[ 'password2' ]" name="password2" id="password2" required><br><br>
                         </td>
                     </tr>
+                    <tr>
+                        <td>
+                            <label for="news">Do you want to potentially get newsletter?</label><br>
+                            <input type="checkbox" v-model="formData[ 'newsletter' ]" name="news" id="news"><br><br>
+                        </td>
+                    </tr>
                 </table>
                 <!-- TODO: Ask for permission to send emails (Make question sound really optional) -->
             </form>

@@ -49,8 +49,8 @@ module.exports = ( app, settings ) => {
     app.post( '/user/login', bodyParser.json(), ( request, response ) => {
         if ( request.body.mail && request.body.password ) {
             pwdmanager.checkpassword( request.body.mail, request.body.password ).then( data => {
-                request.session.username = request.body.mail;
                 if ( data.status ) {
+                    request.session.username = request.body.mail;
                     if ( data.twoFA === 'simple' ) {
                         ( async () => {
                             let tok = twoFA.registerStandardAuthentication()[ 'token' ];
@@ -83,7 +83,6 @@ module.exports = ( app, settings ) => {
     } );
 
     app.get( '/user/2fa', ( request, response ) => {
-        // TODO: Add multi language
         let tokType = twoFA.verifySimple( request.query.token );
         if ( tokType === 'standard' ) {
             request.session.loggedInUser = true;
@@ -154,7 +153,7 @@ module.exports = ( app, settings ) => {
                         mailManager.sendMail( request.body.mail, await twoFA.generateSignupEmail( tok, settings.yourDomain, settings.name ), 'Confirm your email', settings.mailSender );
                     } )();
                     pwdmanager.hashPassword( request.body.password ).then( hash => {
-                        db.writeDataSimple( 'users', 'email', request.body.mail, { 'email': request.body.mail, 'pass': hash, 'first_name': request.body.firstName, 'name': request.body.name, 'two_fa': 'disabled', 'user_data': JSON.stringify( { 'country': request.body.country } ) } ).then( () => {
+                        db.writeDataSimple( 'users', 'email', request.body.mail, { 'email': request.body.mail, 'pass': hash, 'first_name': request.body.firstName, 'name': request.body.name, 'two_fa': 'disabled', 'user_data': JSON.stringify( { 'country': request.body.country } ), 'marketing': request.body.newsletter ? generator.generateToken( 60 ) : null } ).then( () => {
                             request.session.loggedInUser = true;
                             request.session.username = request.body.mail;
                             response.send( 'ok' );

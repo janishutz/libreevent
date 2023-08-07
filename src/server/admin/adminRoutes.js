@@ -28,10 +28,9 @@ module.exports = ( app, settings ) => {
         if ( request.body.mail && request.body.password ) {
             pwdmanager.checkpassword( request.body.mail, request.body.password ).then( data => {
                 request.session.username = request.body.mail;
-                if ( data ) {
+                if ( data.status ) {
                     request.session.username = request.body.mail;
-                    // TODO: Check if user has 2fa enabled
-                    if ( settings.twoFA === 'standard' ) {
+                    if ( data.twoFA === 'simple' ) {
                         ( async () => {
                             let tok = twoFA.registerStandardAuthentication()[ 'token' ];
                             let ipRetrieved = request.headers[ 'x-forwarded-for' ];
@@ -40,7 +39,7 @@ module.exports = ( app, settings ) => {
                             request.session.token = tok;
                             response.send( { 'status': '2fa' } );
                         } )();
-                    } else if ( settings.twoFA === 'enhanced' ) {
+                    } else if ( data.twoFA === 'enhanced' ) {
                         ( async () => {
                             let res = twoFA.registerEnhancedAuthentication();
                             let ipRetrieved = request.headers[ 'x-forwarded-for' ];
@@ -50,7 +49,7 @@ module.exports = ( app, settings ) => {
                             response.send( { 'status': '2fa+', 'code': res.code } );
                         } )();
                     } else {
-                        request.session.loggedInUser = true;
+                        request.session.loggedInAdmin = true;
                         response.send( { 'status': 'ok' } );
                     }
                 } else {
@@ -63,7 +62,6 @@ module.exports = ( app, settings ) => {
     } );
 
     app.get( '/admin/2fa', ( request, response ) => {
-        // TODO: Add multi language
         let tokType = twoFA.verifySimple( request.query.token );
         if ( tokType === 'standard' ) {
             request.session.loggedInAdmin = true;

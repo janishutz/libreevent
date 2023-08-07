@@ -40,6 +40,7 @@ module.exports = ( app, settings ) => {
                 if ( dat[ 0 ] ) {
                     db.getJSONData( 'events' ).then( events => {
                         let data = JSON.parse( dat[ 0 ].data );
+                        console.log( data );
                         ( async () => {
                             for ( let event in data ) {
                                 for ( let item in data[ event ] ) {
@@ -116,7 +117,7 @@ module.exports = ( app, settings ) => {
         }
     } );
 
-    app.post( '/payments/webhook', bodyParser.raw( { type: 'application/json' } ), ( req, res ) => {
+    app.post( '/payments/webhook', bodyParser.raw( { type: 'application/json' } ), async ( req, res ) => {
         const payload = req.body;
         const sig = req.headers[ 'stripe-signature' ];
         
@@ -139,8 +140,25 @@ module.exports = ( app, settings ) => {
                 db.getDataSimple( 'users', 'email', sessionReference[ event.data.object.id ][ 'email' ] ).then( user => {
                     if ( user[ 0 ] ) {
                         console.log( sessionReference[ event.data.object.id ][ 'tok' ] );
+                        const tickets = JSON.parse( dat[ 0 ].data );
                         db.writeDataSimple( 'orders', 'account_id', user[ 0 ].account_id, { 'account_id': user[ 0 ].account_id, 'tickets': dat[ 0 ].data, 'order_name': sessionReference[ event.data.object.id ][ 'tok' ] } ).then( () => {
                             TicketGenerator.generateTickets( sessionReference[ event.data.object.id ] );
+                        } );
+                        db.getJSONData( 'booked' ).then( ret => {
+                            let booked = ret ?? {};
+                            for ( let event in tickets ) {
+                                if ( !booked[ String( event ) ] ) {
+                                    booked[ String( event ) ] = {};
+                                }
+                                for ( let tik in tickets[ event ] ) {
+                                    booked[ event ][ tik ] = tickets[ event ][ tik ];
+                                }
+                            }
+                            db.writeJSONData( 'booked', booked );
+                        } );
+
+                        db.deleteDataSimple( 'temp', 'user_id', sessionReference[ event.data.object.id ][ 'tok' ] ).catch( error => {
+                            console.error( '[ STRIPE ] ERROR whilst deleting data from DB: ' + error );
                         } );
                     } else {
                         console.log( sessionReference[ event.data.object.id ][ 'email' ] );

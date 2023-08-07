@@ -9,7 +9,6 @@
 
 <template>
     <div id="window">
-        <h2>Seat plan: {{ event.name }}</h2>
         <div class="parent" id="parent" @wheel="( e ) => { handleScroll( e ); }" @mousemove="( e ) => { handleDrag( e ); }" @mousedown="( e ) => { setOffset( e ); }">
             <div class="content-parent">
                 <Vue3DraggableResizable v-for="draggable in draggables" :initW="draggable.w" :initH="draggable.h" :x="draggable.x" :y="draggable.y" :w="draggable.w" :h="draggable.h"
@@ -42,7 +41,7 @@
             <button title="Reset zoom [=]" @click="zoom( 1 );"><span class="material-symbols-outlined">center_focus_strong</span></button>
             <button title="Zoom out [-]" @click="zoom( -0.2 )"><span class="material-symbols-outlined">zoom_out</span></button>
         </div>
-        <sideCartView :cart="cart" ref="cart"></sideCartView>
+        <sideCartView :cart="cart" :name="event.name" ref="cart"></sideCartView>
         <notifications ref="notification" location="topright"></notifications>
         <popups ref="popups" size="normal" @data="data => { reserveTicket( data ) }"
             @ticket="data => { standingTicketHandling( data ) }"></popups>
@@ -156,7 +155,6 @@
                 }
 
                 this.seatChecks();
-                // TODO: Optimise for odd screen sizes and aspect ratios and fucking webkit
                 // TODO: Trim scroll box to about 200px more than seatplan size
                 sessionStorage.setItem( 'seatplan', JSON.stringify( this.scaleDown( this.draggables ) ) );
                 window.addEventListener( 'visibilitychange', ( e ) => {
@@ -171,15 +169,6 @@
                     if ( res.status === 200 ) {
                         let unavailableSeats = {};
                         res.json().then( data => {
-                            for ( let seat in data.booked ) {
-                                if ( data.booked[ seat ] ) {
-                                    if ( !unavailableSeats[ data.booked[ seat ].component ] ) {
-                                        unavailableSeats[ data.booked[ seat ].component ];
-                                    }
-                                    unavailableSeats[ data.booked[ seat ].component ][ data.booked[ seat ].id ] = 'nav';
-                                }
-                            }
-
                             for ( let seat in data.reserved ) {
                                 if ( data.reserved[ seat ] ) {
                                     if ( !unavailableSeats[ data.reserved[ seat ].component ] ) {
@@ -195,6 +184,15 @@
                                         unavailableSeats[ data.reserved[ seat ].component ] = {};
                                     }
                                     unavailableSeats[ data.user[ seat ].component ][ data.user[ seat ].id ] = 'sel';
+                                }
+                            }
+
+                            for ( let seat in data.booked ) {
+                                if ( data.booked[ seat ] ) {
+                                    if ( !unavailableSeats[ data.booked[ seat ].component ] ) {
+                                        unavailableSeats[ data.booked[ seat ].component ];
+                                    }
+                                    unavailableSeats[ data.booked[ seat ].component ][ data.booked[ seat ].id ] = 'nav';
                                 }
                             }
 
@@ -449,8 +447,7 @@
                     if ( data.data[ group ] > 0 ) {
                         const options = {
                             method: 'post',
-                            // TODO: Add correct name here as well once it is working at all
-                            body: JSON.stringify( { 'id': 'ticket' + data.component + '_' + group, 'component': data.component, 'ticketOption': '', 'eventID': this.event.eventID, 'count': data.data[ group ], 'category': this.draggables[ data.component ].category, 'name': 'Ticket ' } ),
+                            body: JSON.stringify( { 'id': 'ticket' + data.component + '_' + group, 'component': data.component, 'ticketOption': group, 'eventID': this.event.eventID, 'count': data.data[ group ], 'category': this.draggables[ data.component ].category, 'name': 'Ticket ' + data.component + ' (' + this.event.ageGroups[ group ].name + ')' } ),
                             headers: {
                                 'Content-Type': 'application/json',
                                 'charset': 'utf-8'
@@ -510,7 +507,7 @@
     .parent {
         height: 80vh;
         width: 70vw;
-        top: 17vh;
+        top: 90px;
         left: 5vw;
         position: absolute;
         border: black 1px solid;
@@ -548,7 +545,7 @@
     .toolbar {
         display: flex;
         position: fixed;
-        top: 17vh;
+        top: 90px;
         left: 5.5vw;
     }
     .toolbar button {

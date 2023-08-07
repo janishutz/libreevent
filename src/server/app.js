@@ -101,6 +101,6 @@ app.use( ( request, response ) => {
 
 console.log( '\n\n[ Server ] loading complete!\n\n' );
 
-const PORT = process.env.PORT || 8081;
+const PORT = process.env.PORT || 8080;
 console.log( '[ Server ] listening on port ' + PORT );
 http.createServer( app ).listen( PORT );
