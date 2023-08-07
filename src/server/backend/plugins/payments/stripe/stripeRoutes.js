@@ -133,6 +133,7 @@ module.exports = ( app, settings ) => {
             return res.status( 400 ).send( 'Webhook Error' );
         }
 
+        res.status( 200 ).end();
         if ( event.type === 'checkout.session.completed' ) {
             setTimeout( () => {
                 if ( waitingClients[ sessionReference[ event.data.object.id ][ 'tok' ] ] ) {
@@ -172,7 +173,5 @@ module.exports = ( app, settings ) => {
                 console.error( err );
             } );
         }
-
-        res.status( 200 ).end();
     } );
 };
