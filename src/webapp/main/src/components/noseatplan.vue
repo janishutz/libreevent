@@ -16,7 +16,7 @@
                             </td>
                             <td>
                                 <span class="material-symbols-outlined controls" @click="selectTicket( ticket.id, ticketOption.id )">add</span> 
-                                {{ cart[ event.name ] ? ( cart[ event.name ][ 'tickets' ][ ticket.id + '_' + ticketOption.id ] ? cart[ event.name ][ 'tickets' ][ ticket.id + '_' + ticketOption.id ][ 'count' ] : 0 ) : 0 }}
+                                {{ cart[ event.eventID ] ? ( cart[ event.eventID ][ 'tickets' ][ ticket.id + '_' + ticketOption.id ] ? cart[ event.eventID ][ 'tickets' ][ ticket.id + '_' + ticketOption.id ][ 'count' ] : 0 ) : 0 }}
                                 <span class="material-symbols-outlined controls" @click="deselectTicket( ticket.id, ticketOption.id )">remove</span>
                             </td>
                         </tr>
@@ -41,7 +41,7 @@ export default {
     data () {
         return {
             tickets: { 'ticket1': { 'name': 'Ticket 1', 'id': 'ticket1', 'category': 1, 'free': 20 }, 'ticket2': { 'name': 'Ticket 2', 'id': 'ticket2', 'category': 2, 'free': 20 } },
-            event: { 'name': 'TestEvent', 'location': 'TestLocation', 'date': 'TestDate', 'RoomName': 'TestRoom', 'currency': 'CHF', 'categories': { '1': { 'price': { '1':25, '2':35 }, 'bg': 'black', 'fg': 'white', 'name': 'Category 1' }, '2': { 'price': { '1':15, '2':20 }, 'bg': 'green', 'fg': 'white', 'name': 'Category 2' } }, 'ageGroups': { '1':{ 'id': 1, 'name':'Child', 'age':'0 - 15.99 years' }, '2':{ 'id': 2, 'name': 'Adult', 'age': null } }, 'stage': true },
+            event: { 'name': 'TestEvent2', 'location': 'TestLocation2', 'eventID': 'test2', 'date': '2023-07-15', 'currency': 'CHF', 'categories': { '1': { 'price': { '1':25, '2':35 }, 'bg': 'black', 'fg': 'white', 'name': 'Category 1' }, '2': { 'price': { '1':15, '2':20 }, 'bg': 'green', 'fg': 'white', 'name': 'Category 2' } }, 'ageGroups': { '1':{ 'id': 1, 'name':'Child', 'age':'0 - 15.99' }, '2':{ 'id': 2, 'name': 'Adult' } }, 'maxTickets': 2 },
             cart: {},
         }
     },
@@ -65,20 +65,41 @@ export default {
             } else {
                 this.cartHandling( 'select', this.tickets[ id ], option );
             }
-            // TODO: make call to server to reserve ticket
         },
         cartHandling ( operation, data, option ) {
             if ( operation === 'select' ) {
-                if ( this.cart[ this.event.eventID ] ) {
-                    if ( this.cart[ this.event.eventID ][ 'tickets' ][ data.id + '_' + option ] ) {
-                        this.cart[ this.event.eventID ][ 'tickets' ][ data.id + '_' + option ][ 'count' ] += 1;
-                    } else {
-                        this.cart[ this.event.eventID ][ 'tickets' ][ data.id + '_' + option ] = { 'displayName': data.name + ' (' + this.event.ageGroups[ option ].name + ')', 'price': this.event.categories[ data.category ].price[ option ], 'id': data.id + '_' + option, 'count': 1 };
+                const options = {
+                    method: 'post',
+                    body: JSON.stringify( { 'id': data.id + '_' + option, 'component': data.category, 'ticketOption': option, 'eventID': this.event.eventID, 'count': ( this.cart[ this.event.eventID ] ? ( this.cart[ this.event.eventID ][ 'tickets' ][ data.id + '_' + option ] ? this.cart[ this.event.eventID ][ 'tickets' ][ data.id + '_' + option ][ 'count' ] : 0 ) : 0 ) + 1, 'category': data.category, 'name': 'Ticket ' + data.category + ' (' + this.event.ageGroups[ option ].name + ')' } ),
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'charset': 'utf-8'
                     }
-                } else {
-                    this.cart[ this.event.eventID ] = { 'displayName': this.event.name, 'tickets': {} };
-                    this.cart[ this.event.eventID ][ 'tickets' ][ data.id + '_' + option ] = { 'displayName': data.name + ' (' + this.event.ageGroups[ option ].name + ')', 'price': this.event.categories[ data.category ].price[ option ], 'id': data.id + '_' + option, 'count': 1 };
-                }
+                };
+                fetch( localStorage.getItem( 'url' ) + '/API/reserveTicket', options ).then( res => {
+                    if ( res.status === 200 ) {
+                        if ( this.cart[ this.event.eventID ] ) {
+                            if ( this.cart[ this.event.eventID ][ 'tickets' ][ data.id + '_' + option ] ) {
+                                this.cart[ this.event.eventID ][ 'tickets' ][ data.id + '_' + option ][ 'count' ] += 1;
+                            } else {
+                                this.cart[ this.event.eventID ][ 'tickets' ][ data.id + '_' + option ] = { 'displayName': data.name + ' (' + this.event.ageGroups[ option ].name + ')', 'price': this.event.categories[ data.category ].price[ option ], 'id': data.id + '_' + option, 'count': 1 };
+                            }
+                        } else {
+                            this.cart[ this.event.eventID ] = { 'displayName': this.event.name, 'tickets': {} };
+                            this.cart[ this.event.eventID ][ 'tickets' ][ data.id + '_' + option ] = { 'displayName': data.name + ' (' + this.event.ageGroups[ option ].name + ')', 'price': this.event.categories[ data.category ].price[ option ], 'id': data.id + '_' + option, 'count': 1 };
+                        }
+                    } else if ( res.status === 409 ) {
+                        setTimeout( () => {
+                            this.$refs.popups.openPopup( 'Unfortunately, the seat you just tried to select was reserved by somebody else since the last time the seat plan was refreshed. Please select another one. We are sorry for the inconvenience.', {}, 'string' );
+                        }, 300 );
+                    }
+                    if ( Object.keys( this.cart[ this.event.eventID ][ 'tickets' ] ).length < 1 ) {
+                        delete this.cart[ this.event.eventID ];
+                    }
+
+                    this.$refs.cart.calculateTotal();
+                    localStorage.setItem( 'cart', JSON.stringify( this.cart ) );
+                } );
             } else if ( operation === 'deselect' ) {
                 if ( this.cart[ this.event.eventID ][ 'tickets' ][ data + '_' + option ][ 'count' ] === 1 ) {
                     delete this.cart[ this.event.eventID ][ 'tickets' ][ data + '_' + option ];

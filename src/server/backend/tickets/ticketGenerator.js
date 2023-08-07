@@ -35,11 +35,10 @@ class TicketGenerator {
         this.runningTickets = {};
     }
 
-    // TODO: Save to disk / DB in case of crash of server / reboot / whatever
-    // and continue processing once back online
+    // TODO: continue processing once back online
     generateTickets ( order ) {
         this.ticketQueue[ this.jobId ] = { 'order': order };
-        this.runningTickets[ order ] = 'processing';
+        this.runningTickets[ order.tok ] = 'processing';
         this.jobId += 1;
         this.queueHandler();
     }

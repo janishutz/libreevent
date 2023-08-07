@@ -20,6 +20,7 @@ const endpointSecret = stripConfig[ 'endpointSecret' ];
 
 let sessionReference = {};
 let waitingClients = {};
+let pendingPayments = {};
 let paymentOk = {};
 
 // TODO: Remove all selected tickets if timestamp more than user defined amount ago
@@ -40,7 +41,6 @@ module.exports = ( app, settings ) => {
                 if ( dat[ 0 ] ) {
                     db.getJSONData( 'events' ).then( events => {
                         let data = JSON.parse( dat[ 0 ].data );
-                        console.log( data );
                         ( async () => {
                             for ( let event in data ) {
                                 for ( let item in data[ event ] ) {
@@ -58,6 +58,7 @@ module.exports = ( app, settings ) => {
                             }
                             const session = await stripe.checkout.sessions.create( purchase );
                             sessionReference[ session.id ] = { 'tok': req.session.id, 'email': req.session.username };
+                            pendingPayments[ req.session.id ] = true;
                             res.send( session.url );
                         } )();
                     } );
@@ -84,19 +85,21 @@ module.exports = ( app, settings ) => {
         response.write( 'data: connected\n\n' );
         waitingClients[ request.session.id ] = response;
         const ping = setInterval( () => {
-            const stat = TicketGenerator.getGenerationStatus( request.session.id );
-            if ( stat === 'done' ) {
-                clearInterval( ping );
-                setTimeout( () => {
-                    response.write( 'data: ready\n\n' );
+            if ( !pendingPayments[ request.session.id ] ) {
+                const stat = TicketGenerator.getGenerationStatus( request.session.id );
+                if ( stat === 'done' ) {
+                    clearInterval( ping );
+                    setTimeout( () => {
+                        response.write( 'data: ready\n\n' );
+                        response.end();
+                        delete waitingClients[ request.session.id ];
+                    }, 2000 );
+                } else if ( stat === 'noTicket' ) {
+                    clearInterval( ping );
+                    response.write( 'data: noData\n\n' );
                     response.end();
                     delete waitingClients[ request.session.id ];
-                }, 2000 );
-            } else if ( stat === 'noTicket' ) {
-                clearInterval( ping );
-                response.write( 'data: noData\n\n' );
-                response.end();
-                delete waitingClients[ request.session.id ];
+                }
             }
         }, 2000 );
     } );
@@ -139,26 +142,26 @@ module.exports = ( app, settings ) => {
             db.getDataSimple( 'temp', 'user_id', sessionReference[ event.data.object.id ][ 'tok' ] ).then( dat => {
                 db.getDataSimple( 'users', 'email', sessionReference[ event.data.object.id ][ 'email' ] ).then( user => {
                     if ( user[ 0 ] ) {
-                        console.log( sessionReference[ event.data.object.id ][ 'tok' ] );
                         const tickets = JSON.parse( dat[ 0 ].data );
                         db.writeDataSimple( 'orders', 'account_id', user[ 0 ].account_id, { 'account_id': user[ 0 ].account_id, 'tickets': dat[ 0 ].data, 'order_name': sessionReference[ event.data.object.id ][ 'tok' ] } ).then( () => {
+                            console.log( sessionReference[ event.data.object.id ][ 'tok' ] );
+                            delete pendingPayments[ sessionReference[ event.data.object.id ][ 'tok' ] ];
                             TicketGenerator.generateTickets( sessionReference[ event.data.object.id ] );
-                        } );
-                        db.getJSONData( 'booked' ).then( ret => {
-                            let booked = ret ?? {};
-                            for ( let event in tickets ) {
-                                if ( !booked[ String( event ) ] ) {
-                                    booked[ String( event ) ] = {};
+                            db.getJSONData( 'booked' ).then( ret => {
+                                let booked = ret ?? {};
+                                for ( let event in tickets ) {
+                                    if ( !booked[ String( event ) ] ) {
+                                        booked[ String( event ) ] = {};
+                                    }
+                                    for ( let tik in tickets[ event ] ) {
+                                        booked[ event ][ tik ] = tickets[ event ][ tik ];
+                                    }
                                 }
-                                for ( let tik in tickets[ event ] ) {
-                                    booked[ event ][ tik ] = tickets[ event ][ tik ];
-                                }
-                            }
-                            db.writeJSONData( 'booked', booked );
-                        } );
-
-                        db.deleteDataSimple( 'temp', 'user_id', sessionReference[ event.data.object.id ][ 'tok' ] ).catch( error => {
-                            console.error( '[ STRIPE ] ERROR whilst deleting data from DB: ' + error );
+                                db.writeJSONData( 'booked', booked );
+                                db.deleteDataSimple( 'temp', 'user_id', sessionReference[ event.data.object.id ][ 'tok' ] ).catch( error => {
+                                    console.error( '[ STRIPE ] ERROR whilst deleting data from DB: ' + error );
+                                } );
+                            } );
                         } );
                     } else {
                         console.log( sessionReference[ event.data.object.id ][ 'email' ] );
