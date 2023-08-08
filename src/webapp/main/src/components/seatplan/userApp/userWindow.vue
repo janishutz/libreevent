@@ -187,15 +187,6 @@
                                 }
                             }
 
-                            for ( let seat in data.booked ) {
-                                if ( data.booked[ seat ] ) {
-                                    if ( !unavailableSeats[ data.booked[ seat ].component ] ) {
-                                        unavailableSeats[ data.booked[ seat ].component ];
-                                    }
-                                    unavailableSeats[ data.booked[ seat ].component ][ data.booked[ seat ].id ] = 'nav';
-                                }
-                            }
-
                             let tickets = {};
                             if ( this.cart[ this.event.eventID ] ) {
                                 tickets = this.cart[ this.event.eventID ][ 'tickets' ];

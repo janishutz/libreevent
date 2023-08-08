@@ -28,12 +28,10 @@ class GETHandler {
                 } );
             } else if ( call === 'getReservedSeats' ) {
                 if ( query.event ) {
-                    db.getJSONDataSimple( 'booked', query.event ).then( data => {
-                        db.getDataSimple( 'temp', 'user_id', session.id ).then( dat => {
-                            resolve( { 'booked': data ?? {}, 'user': dat[ 0 ] ? JSON.parse( dat[ 0 ].data )[ query.event ] ?? {} : {} } );
-                        } );
-                    } ).catch( error => {
-                        reject( { 'code': 500, 'message': error } );
+                    db.getDataSimple( 'temp', 'user_id', session.id ).then( dat => {
+                        resolve( { 'user': dat[ 0 ] ? JSON.parse( dat[ 0 ].data )[ query.event ] ?? {} : {} } );
+                    } ).catch( () => {
+                        reject( { 'code': 500, 'message': 'ERR_DB' } );
                     } );
                 } else {
                     reject( { 'code': 400, 'message': 'Bad request, missing event query' } );

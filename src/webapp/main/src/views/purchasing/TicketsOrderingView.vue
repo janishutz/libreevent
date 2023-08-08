@@ -50,7 +50,7 @@
         },
         data() {
             return {
-                hasSeatplan: false,
+                hasSeatplan: true,
                 eventID: '',
             }
         },

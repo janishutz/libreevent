@@ -1,23 +1,24 @@
 <template>
     <div class="seatingWrapper">
-        <sideCartView :cart="cart" ref="cart"></sideCartView>
+        <sideCartView :cart="cart" :name="event.name" ref="cart"></sideCartView>
         <div class="noseatplan">
-            <h3>Available tickets</h3>
+            <h2>Available tickets</h2>
+            <button @click="cartHandling()">Add selected tickets to cart</button>
             <div class="wrapper">
                 <div v-for="ticket in tickets">
                     {{ event[ 'categories' ][ ticket.category ][ 'name' ] }}
                     <table>
                         <tr v-for="ticketOption in event[ 'ageGroups' ]">
                             <td>
-                                {{ ticketOption.name }} <div style="display: inline" v-if="ticketOption.age">({{ ticketOption.age }})</div> 
+                                {{ ticketOption.name }} <div style="display: inline" v-if="ticketOption.age">({{ ticketOption.age }} years)</div> 
                             </td>
                             <td>
                                 {{ event.currency }} {{ event[ 'categories' ][ ticket.category ][ 'price' ][ ticketOption.id ] }} 
                             </td>
                             <td>
-                                <span class="material-symbols-outlined controls" @click="selectTicket( ticket.id, ticketOption.id )">add</span> 
-                                {{ cart[ event.eventID ] ? ( cart[ event.eventID ][ 'tickets' ][ ticket.id + '_' + ticketOption.id ] ? cart[ event.eventID ][ 'tickets' ][ ticket.id + '_' + ticketOption.id ][ 'count' ] : 0 ) : 0 }}
-                                <span class="material-symbols-outlined controls" @click="deselectTicket( ticket.id, ticketOption.id )">remove</span>
+                                <span class="material-symbols-outlined controls" @click="ticketHandling( ticket.id, ticketOption.id, 'select' )">add</span> 
+                                {{ selectedTickets[ ticket.id + '_' + ticketOption.id ] ?? 0 }}
+                                <span class="material-symbols-outlined controls" @click="ticketHandling( ticket.id, ticketOption.id, 'deselect' )">remove</span>
                             </td>
                         </tr>
                     </table>
@@ -46,59 +47,108 @@ export default {
             tickets: { 'ticket1': { 'name': 'Ticket 1', 'id': 'ticket1', 'category': 1, 'free': 20 }, 'ticket2': { 'name': 'Ticket 2', 'id': 'ticket2', 'category': 2, 'free': 20 } },
             event: { 'name': 'TestEvent2', 'location': 'TestLocation2', 'eventID': 'test2', 'date': '2023-07-15', 'currency': 'CHF', 'categories': { '1': { 'price': { '1':25, '2':35 }, 'bg': 'black', 'fg': 'white', 'name': 'Category 1' }, '2': { 'price': { '1':15, '2':20 }, 'bg': 'green', 'fg': 'white', 'name': 'Category 2' } }, 'ageGroups': { '1':{ 'id': 1, 'name':'Child', 'age':'0 - 15.99' }, '2':{ 'id': 2, 'name': 'Adult' } }, 'maxTickets': 2 },
             cart: {},
+            selectedTickets: {},
+            maxTickets: 10,
         }
     },
     methods: {
-        selectTicket( id, option ) {
-            let totalTicketsPerID = 0;
-            if ( this.cart[ this.event.eventID ] ) {
-                if ( this.cart[ this.event.eventID ][ 'tickets' ][ id + '_' + option ] ) {
-                    const tickets = this.cart[ this.event.eventID ][ 'tickets' ];
-                    for ( let ticket in tickets ) {
-                        if ( tickets[ ticket ][ 'id' ].split( '_' )[ 0 ] === id ) {
-                            totalTicketsPerID += this.cart[ this.event.eventID ][ 'tickets' ][ tickets[ ticket ][ 'id' ] ][ 'count' ];
-                        }
+        ticketHandling( id, option, operation ) {
+            if ( operation === 'select' ) {
+                let totalTicketsPerID = {};
+                // sum up total of tickets per category (based on a sliced ID of the ticket selected,
+                // as ticketID is based on category and ageGroup)
+                for ( let ticket in this.selectedTickets ) {
+                    if ( !totalTicketsPerID[ ticket.slice( 0, ticket.indexOf( '_' ) ) ] ) {
+                        totalTicketsPerID[ ticket.slice( 0, ticket.indexOf( '_' ) ) ] = 0;
                     }
-                    if ( totalTicketsPerID < this.tickets[ id ].free ) {
-                        this.cartHandling( 'select', this.tickets[ id ], option );
+                    totalTicketsPerID[ ticket.slice( 0, ticket.indexOf( '_' ) ) ] += this.selectedTickets[ ticket ];
+                }
+
+                if ( !totalTicketsPerID[ id ] ) {
+                    totalTicketsPerID[ id ] = 0;
+                }
+                totalTicketsPerID[ id ] += 1;
+
+                let totalTickets = 0;
+                for ( let category in totalTicketsPerID ) {
+                    totalTickets += totalTicketsPerID[ category ];
+                }
+
+                if ( totalTickets <= this.maxTickets ) {
+                    if ( totalTicketsPerID[ id ] <= this.tickets[ id ][ 'free' ] ) {
+                        if ( !this.selectedTickets[ id + '_' + option ] ) {
+                            this.selectedTickets[ id + '_' + option ] = 0;
+                        }
+                        this.selectedTickets[ id + '_' + option ] += 1;
                     }
                 } else {
-                    this.cartHandling( 'select', this.tickets[ id ], option );
+                    this.$refs.popups.openPopup( 'We are sorry, but you have already selected the maximum amount of tickets you can buy at once.', {}, 'string' );
                 }
             } else {
-                this.cartHandling( 'select', this.tickets[ id ], option );
+                if ( !this.selectedTickets[ id + '_' + option ] || this.selectedTickets[ id + '_' + option ] === 0 ) {
+                    this.selectedTickets[ id + '_' + option ] = 0;
+                } else {
+                    this.selectedTickets[ id + '_' + option ] -= 1;
+                }
             }
         },
-        cartHandling ( operation, data, option ) {
-            if ( operation === 'select' ) {
-                // TODO: Redo to optimize speed and server load
+        cartHandling () {
+            for ( let ticket in this.selectedTickets ) {
                 const options = {
                     method: 'post',
-                    body: JSON.stringify( { 'id': data.id + '_' + option, 'component': data.category, 'ticketOption': option, 'eventID': this.event.eventID, 'count': ( this.cart[ this.event.eventID ] ? ( this.cart[ this.event.eventID ][ 'tickets' ][ data.id + '_' + option ] ? this.cart[ this.event.eventID ][ 'tickets' ][ data.id + '_' + option ][ 'count' ] : 0 ) : 0 ) + 1, 'category': data.category, 'name': 'Ticket ' + data.category + ' (' + this.event.ageGroups[ option ].name + ')' } ),
+                    body: JSON.stringify( { 
+                        'id': ticket, 
+                        'component': 1, 
+                        'ticketOption': ticket.substring( ticket.indexOf( '_' ) + 1 ), 
+                        'eventID': this.event.eventID, 
+                        'count': this.selectedTickets[ ticket ], 
+                        'category': this.tickets[ ticket.slice( 0, ticket.indexOf( '_' ) ) ].category, 
+                        'name': this.tickets[ ticket.slice( 0, ticket.indexOf( '_' ) ) ].name + ' (' + this.event.ageGroups[ ticket.substring( ticket.indexOf( '_' ) + 1 ) ].name + ')',
+                    } ),
                     headers: {
                         'Content-Type': 'application/json',
                         'charset': 'utf-8'
                     }
                 };
                 fetch( localStorage.getItem( 'url' ) + '/API/reserveTicket', options ).then( res => {
+                    if ( !this.cart[ this.event.eventID ] ) {
+                        this.cart[ this.event.eventID ] = { 'displayName': this.event.name, 'tickets': {}, 'eventID': this.event.eventID };
+                    }
                     if ( res.status === 200 ) {
-                        if ( this.cart[ this.event.eventID ] ) {
-                            if ( this.cart[ this.event.eventID ][ 'tickets' ][ data.id + '_' + option ] ) {
-                                this.cart[ this.event.eventID ][ 'tickets' ][ data.id + '_' + option ][ 'count' ] += 1;
+                        // add item to cart
+                        if ( this.selectedTickets[ ticket ] < 1 ) {
+                            if ( Object.keys( this.cart[ this.event.eventID ][ 'tickets' ] ).length < 1 ) {
+                                try {
+                                    delete this.cart[ this.event.eventID ];
+                                } catch {}
                             } else {
-                                this.cart[ this.event.eventID ][ 'tickets' ][ data.id + '_' + option ] = { 'displayName': data.name + ' (' + this.event.ageGroups[ option ].name + ')', 'price': this.event.categories[ data.category ].price[ option ], 'id': data.id + '_' + option, 'count': 1 };
+                                delete this.cart[ this.event.eventID ][ 'tickets' ][ ticket ];
                             }
                         } else {
-                            this.cart[ this.event.eventID ] = { 'displayName': this.event.name, 'tickets': {} };
-                            this.cart[ this.event.eventID ][ 'tickets' ][ data.id + '_' + option ] = { 'displayName': data.name + ' (' + this.event.ageGroups[ option ].name + ')', 'price': this.event.categories[ data.category ].price[ option ], 'id': data.id + '_' + option, 'count': 1 };
+                            this.cart[ this.event.eventID ][ 'tickets' ][ ticket ] = { 
+                                'displayName': this.tickets[ ticket.slice( 0, ticket.indexOf( '_' ) ) ].name + ' (' + this.event.ageGroups[ ticket.substring( ticket.indexOf( '_' ) + 1 ) ].name + ')', 
+                                'price': this.event.categories[ this.tickets[ ticket.slice( 0, ticket.indexOf( '_' ) ) ].category ].price[ ticket.substring( ticket.indexOf( '_' ) + 1 ) ], 
+                                'id': ticket, 
+                                'count': this.selectedTickets[ ticket ], 
+                                'comp': 1,
+                            };
                         }
                     } else if ( res.status === 409 ) {
+                        res.json().then( dat => {
+                            this.cart[ this.event.eventID ][ 'tickets' ][ ticket ] = { 
+                                'displayName': this.tickets[ ticket.slice( 0, ticket.indexOf( '_' ) ) ].name + ' (' + this.event.ageGroups[ ticket.substring( ticket.indexOf( '_' ) + 1 ) ].name + ')', 
+                                'price': this.event.categories[ this.tickets[ ticket.slice( 0, ticket.indexOf( '_' ) ) ].category ].price[ ticket.substring( ticket.indexOf( '_' ) + 1 ) ], 
+                                'id': ticket,
+                                'count': dat.count, 
+                                'comp': 1,
+                            };
+                        } );
                         setTimeout( () => {
-                            this.$refs.popups.openPopup( 'Unfortunately, the ticket you just tried to select was reserved by somebody else since the last time the free ticket counts were refreshed. Please select a ticket from another price category. We are sorry for the inconvenience.', {}, 'string' );
+                            this.$refs.popups.openPopup( 'Unfortunately, you have selected more tickets than were still available. The maximum amount of tickets that are available have been selected for you automatically. We are sorry for the inconvenience.', {}, 'string' );
                         }, 300 );
                     } else if ( res.status === 418 ) {
                         setTimeout( () => {
-                            this.$refs.popups.openPopup( 'You have reached the maximum amount of tickets allowed for a single purchase.', {}, 'string' );
+                            this.$refs.popups.openPopup( 'We are sorry, but you have already selected the maximum amount of tickets you can buy at once.', {}, 'string' );
                         }, 300 );
                     }
                     if ( Object.keys( this.cart[ this.event.eventID ][ 'tickets' ] ).length < 1 ) {
@@ -108,28 +158,7 @@ export default {
                     this.$refs.cart.calculateTotal();
                     localStorage.setItem( 'cart', JSON.stringify( this.cart ) );
                 } );
-            } else if ( operation === 'deselect' ) {
-                if ( this.cart[ this.event.eventID ][ 'tickets' ][ data + '_' + option ][ 'count' ] === 1 ) {
-                    delete this.cart[ this.event.eventID ][ 'tickets' ][ data + '_' + option ];
-                } else {
-                    this.cart[ this.event.eventID ][ 'tickets' ][ data + '_' + option ][ 'count' ] -= 1;
-                }
-                if ( Object.keys( this.cart[ this.event.eventID ][ 'tickets' ] ).length < 1 ) {
-                    delete this.cart[ this.event.eventID ];
-                }
             }
-            this.$refs.cart.calculateTotal();
-            localStorage.setItem( 'cart', JSON.stringify( this.cart ) );
-        },
-        deselectTicket( id, option ) {
-            if ( this.cart[ this.event.eventID ] ) {
-                if ( this.cart[ this.event.eventID ][ 'tickets' ][ id + '_' + option ] ) {
-                    if ( this.cart[ this.event.eventID ][ 'tickets' ][ id + '_' + option ][ 'count' ] > 0 ) {
-                        this.cartHandling( 'deselect', id, option );
-                    }
-                }
-            }
-            // TODO: Make call to server to deselect ticket
         },
         loadTickets () {
             // TODO: Load from server
