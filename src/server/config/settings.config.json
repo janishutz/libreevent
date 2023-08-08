@@ -6,5 +6,6 @@
     "payments": "stripe",
     "name": "libreevent",
     "yourDomain": "http://localhost:8080",
-    "mailSender": "libreevent <info@libreevent.janishutz.com>"
+    "mailSender": "libreevent <info@libreevent.janishutz.com>",
+    "maxTickets": 3
 }

@@ -11,7 +11,7 @@ const db = require( '../db/db.js' );
 
 class POSTHandler {
     constructor () {
-        this.allSelectedSeats = { 'test2': [ { 'id': 'secAr1s1', 'component': 1 } ] };
+        this.allSelectedSeats = { 'test2': { 'secAr1s1': { 'id': 'secAr1s1', 'component': 1 } } };
         this.ticketTotals = { 'test2': { 'ticket1': 5, 'ticket2': 5 } };
         this.settings = { 'maxTickets': 10 };
     }
@@ -20,6 +20,7 @@ class POSTHandler {
     handleCall ( call, data, session ) {
         return new Promise( ( resolve, reject ) => {
             if ( call === 'reserveTicket' ) {
+                // TODO: Completely rework to optimize for speed.
                 db.getDataSimple( 'temp', 'user_id', session.id ).then( dat => {
                     let transmit = {};
                     if ( dat.length > 0 ) {
@@ -27,54 +28,56 @@ class POSTHandler {
                     }
 
                     if ( !this.allSelectedSeats[ data.eventID ] ) {
-                        this.allSelectedSeats[ data.eventID ] = [];
+                        this.allSelectedSeats[ data.eventID ] = {};
                     }
 
                     if ( !transmit[ data.eventID ] ) {
                         transmit[ data.eventID ] = {};
                     }
 
-                    if ( this.allSelectedSeats[ data.eventID ].includes( data.id ) && !data.count ) {
+                    if ( this.allSelectedSeats[ data.eventID ][ data.id ] && !data.count ) {
                         reject( { 'code': 409, 'message': 'ERR_SEAT_SELECTED' } );
                         return;
-                    } 
-                    transmit[ data.eventID ][ data.id ] = data;
-                    // TODO: Prevent seat selection if already taken (also if in booked!)
-                    // TODO: Respect max ticket count per user
-                    // TODO: maybe move to per event setting
-                    let totalUserTickets = 0;
-                    for ( let event in transmit ) {
-                        for ( let ticket in transmit[ event ] ) {
-                            totalUserTickets += transmit[ event ][ ticket ][ 'count' ] ?? 1;
-                        }
                     }
-                    if ( totalUserTickets <= this.settings.maxTickets ) {
-                        if ( data.count ) {
-                            if ( this.ticketTotals[ data.eventID ] ) {
-                                if ( data.count <= ( this.ticketTotals[ data.eventID ][ data.id.slice( 0, data.id.indexOf( '_' ) ) ] ?? 1 ) ) {
-                                    transmit[ data.eventID ][ data.id ][ 'count' ] = data.count;
-                                    this.allSelectedSeats[ data.eventID ].push( { 'id': data.id, 'component': data.component, 'count': data.count } );
+                    db.getJSONDataSimple( 'booked', data.eventID ).then( booked => {
+                        transmit[ data.eventID ][ data.id ] = data;
+                        // TODO: Prevent seat selection if already taken (also if in booked!)
+                        // TODO: Respect max ticket count per user
+                        // TODO: maybe move to per event setting
+                        let totalUserTickets = 0;
+                        for ( let event in transmit ) {
+                            for ( let ticket in transmit[ event ] ) {
+                                totalUserTickets += transmit[ event ][ ticket ][ 'count' ] ?? 1;
+                            }
+                        }
+                        if ( totalUserTickets <= this.settings.maxTickets ) {
+                            if ( data.count ) {
+                                if ( this.ticketTotals[ data.eventID ] ) {
+                                    if ( data.count <= ( this.ticketTotals[ data.eventID ][ data.id.slice( 0, data.id.indexOf( '_' ) ) ] ?? 1 ) ) {
+                                        transmit[ data.eventID ][ data.id ][ 'count' ] = data.count;
+                                        this.allSelectedSeats[ data.eventID ].push( { 'id': data.id, 'component': data.component, 'count': data.count } );
+                                    } else {
+                                        reject( { 'code': 409, 'message': this.ticketTotals[ data.eventID ] ?? 1 } );
+                                        return;
+                                    }
                                 } else {
-                                    reject( { 'code': 409, 'message': this.ticketTotals[ data.eventID ] ?? 1 } );
+                                    reject( { 'code': 400, 'message': 'ERR_UNKNOWN_EVENT' } );
                                     return;
                                 }
                             } else {
-                                reject( { 'code': 400, 'message': 'ERR_UNKNOWN_EVENT' } );
-                                return;
+                                this.allSelectedSeats[ data.eventID ].push( { 'id': data.id, 'component': data.component } );
                             }
+                            db.writeDataSimple( 'temp', 'user_id', session.id, { 'user_id': session.id, 'data': JSON.stringify( transmit ), 'timestamp': new Date().toString() } ).then( () => {
+                                resolve( 'ok' );
+                            } ).catch( error => {
+                                console.error( error );
+                                reject( { 'code': 500, 'message': 'ERR_DB' } );
+                            } );
                         } else {
-                            this.allSelectedSeats[ data.eventID ].push( { 'id': data.id, 'component': data.component } );
+                            reject( { 'code': 418, 'message': 'ERR_TOO_MANY_TICKETS' } );
+                            return;
                         }
-                        db.writeDataSimple( 'temp', 'user_id', session.id, { 'user_id': session.id, 'data': JSON.stringify( transmit ), 'timestamp': new Date().toString() } ).then( () => {
-                            resolve( 'ok' );
-                        } ).catch( error => {
-                            console.error( error );
-                            reject( { 'code': 500, 'message': 'ERR_DB' } );
-                        } );
-                    } else {
-                        reject( { 'code': 418, 'message': 'ERR_TOO_MANY_TICKETS' } );
-                        return;
-                    }
+                    } );
                 } ).catch( error => {
                     console.error( error );
                     reject( { 'code': 500, 'message': 'ERR_DB' } );
@@ -127,7 +130,7 @@ class POSTHandler {
     }
 
     getReservedSeats ( event ) {
-        return this.allSelectedSeats[ event ];
+        return Object.values( this.allSelectedSeats[ event ] );
     }
 }
 

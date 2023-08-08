@@ -24,11 +24,13 @@
                 </div>
             </div>
         </div>
+        <popups ref="popups" size="normal"></popups>
     </div>
 </template>
 
 <script>
 import sideCartView from '@/components/sideCartView.vue';
+import popups from '@/components/notifications/popups.vue';
 
 export default {
     name: 'noseatplan',
@@ -37,6 +39,7 @@ export default {
     },
     components: {
         sideCartView,
+        popups,
     },
     data () {
         return {
@@ -68,6 +71,7 @@ export default {
         },
         cartHandling ( operation, data, option ) {
             if ( operation === 'select' ) {
+                // TODO: Redo to optimize speed and server load
                 const options = {
                     method: 'post',
                     body: JSON.stringify( { 'id': data.id + '_' + option, 'component': data.category, 'ticketOption': option, 'eventID': this.event.eventID, 'count': ( this.cart[ this.event.eventID ] ? ( this.cart[ this.event.eventID ][ 'tickets' ][ data.id + '_' + option ] ? this.cart[ this.event.eventID ][ 'tickets' ][ data.id + '_' + option ][ 'count' ] : 0 ) : 0 ) + 1, 'category': data.category, 'name': 'Ticket ' + data.category + ' (' + this.event.ageGroups[ option ].name + ')' } ),
@@ -90,7 +94,11 @@ export default {
                         }
                     } else if ( res.status === 409 ) {
                         setTimeout( () => {
-                            this.$refs.popups.openPopup( 'Unfortunately, the seat you just tried to select was reserved by somebody else since the last time the seat plan was refreshed. Please select another one. We are sorry for the inconvenience.', {}, 'string' );
+                            this.$refs.popups.openPopup( 'Unfortunately, the ticket you just tried to select was reserved by somebody else since the last time the free ticket counts were refreshed. Please select a ticket from another price category. We are sorry for the inconvenience.', {}, 'string' );
+                        }, 300 );
+                    } else if ( res.status === 418 ) {
+                        setTimeout( () => {
+                            this.$refs.popups.openPopup( 'You have reached the maximum amount of tickets allowed for a single purchase.', {}, 'string' );
                         }, 300 );
                     }
                     if ( Object.keys( this.cart[ this.event.eventID ][ 'tickets' ] ).length < 1 ) {

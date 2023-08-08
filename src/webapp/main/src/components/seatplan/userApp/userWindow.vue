@@ -390,7 +390,7 @@
                             }, 300 );
                         } else if ( res.status === 418 ) {
                             setTimeout( () => {
-                                this.$refs.popups.openPopup( 'We are sorry, but you have already selected the maximum amount of tickets you can buy.', {}, 'string' );
+                                this.$refs.popups.openPopup( 'We are sorry, but you have already selected the maximum amount of tickets you can buy at once.', {}, 'string' );
                             }, 300 );
                         }
                     } );
@@ -457,8 +457,15 @@
                             if ( res.status === 200 ) {
                                 this.cart[ this.event.eventID ][ 'tickets' ][ 'ticket' + data.component + '_' + group ] = { 'displayName': 'Ticket ' + data.component + ' (' + this.event.ageGroups[ group ].name + ')', 'price': this.event.categories[ this.draggables[ data.component ].category ].price[ group ], 'id': 'ticket' + data.component + '_' + group, 'count': data.data[ group ], 'comp': data.component };
                             } else if ( res.status === 409 ) {
+                                res.json().then( dat => {
+                                    this.cart[ this.event.eventID ][ 'tickets' ][ 'ticket' + data.component + '_' + group ] = { 'displayName': 'Ticket ' + data.component + ' (' + this.event.ageGroups[ group ].name + ')', 'price': this.event.categories[ this.draggables[ data.component ].category ].price[ group ], 'id': 'ticket' + data.component + '_' + group, 'count': dat.count, 'comp': data.component };
+                                } );
                                 setTimeout( () => {
-                                    this.$refs.popups.openPopup( 'Unfortunately, the seat you just tried to select was reserved by somebody else since the last time the seat plan was refreshed. Please select another one. We are sorry for the inconvenience.', {}, 'string' );
+                                    this.$refs.popups.openPopup( 'Unfortunately, you have selected more tickets than were still available. The maximum amount of tickets that are available have been selected for you automatically. We are sorry for the inconvenience.', {}, 'string' );
+                                }, 300 );
+                            } else if ( res.status === 418 ) {
+                                setTimeout( () => {
+                                    this.$refs.popups.openPopup( 'We are sorry, but you have already selected the maximum amount of tickets you can buy at once.', {}, 'string' );
                                 }, 300 );
                             }
                             if ( Object.keys( this.cart[ this.event.eventID ][ 'tickets' ] ).length < 1 ) {
