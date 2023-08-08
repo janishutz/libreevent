@@ -109,11 +109,15 @@ module.exports = ( app, settings ) => {
             delete paymentOk[ request.session.id ];
             response.send( { 'status': 'paymentOk' } );
         } else { 
-            const stat = TicketGenerator.getGenerationStatus( request.session.id );
-            if ( stat === 'done' ) {
-                response.send( { 'status': 'ticketOk' } );
-            } else if ( stat === 'noTicket' ) {
-                response.send( { 'status': 'noTicket' } );
+            if ( !pendingPayments[ request.session.id ] ) {
+                const stat = TicketGenerator.getGenerationStatus( request.session.id );
+                if ( stat === 'done' ) {
+                    response.send( { 'status': 'ticketOk' } );
+                } else if ( stat === 'noTicket' ) {
+                    response.send( { 'status': 'noTicket' } );
+                } else {
+                    response.send( '' );
+                }
             } else {
                 response.send( '' );
             }
@@ -146,7 +150,6 @@ module.exports = ( app, settings ) => {
                         const tickets = JSON.parse( dat[ 0 ].data );
                         db.writeDataSimple( 'orders', 'account_id', user[ 0 ].account_id, { 'account_id': user[ 0 ].account_id, 'tickets': dat[ 0 ].data, 'order_name': sessionReference[ event.data.object.id ][ 'tok' ] } ).then( () => {
                             console.log( sessionReference[ event.data.object.id ][ 'tok' ] );
-                            delete pendingPayments[ sessionReference[ event.data.object.id ][ 'tok' ] ];
                             TicketGenerator.generateTickets( sessionReference[ event.data.object.id ] );
                             db.getJSONData( 'booked' ).then( ret => {
                                 let booked = ret ?? {};
@@ -158,7 +161,9 @@ module.exports = ( app, settings ) => {
                                         booked[ event ][ tik ] = tickets[ event ][ tik ];
                                     }
                                 }
-                                db.writeJSONData( 'booked', booked );
+                                db.writeJSONData( 'booked', booked ).then( () => {
+                                    delete pendingPayments[ sessionReference[ event.data.object.id ][ 'tok' ] ];
+                                } );
                                 db.deleteDataSimple( 'temp', 'user_id', sessionReference[ event.data.object.id ][ 'tok' ] ).catch( error => {
                                     console.error( '[ STRIPE ] ERROR whilst deleting data from DB: ' + error );
                                 } );

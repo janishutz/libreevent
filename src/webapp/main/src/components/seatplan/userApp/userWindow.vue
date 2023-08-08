@@ -177,11 +177,10 @@
                                     unavailableSeats[ data.reserved[ seat ].component ][ data.reserved[ seat ].id ] = 'nav';
                                 }
                             }
-
                             for ( let seat in data.user ) {
                                 if ( data.user[ seat ] ) {
                                     if ( !unavailableSeats[ data.user[ seat ].component ] ) {
-                                        unavailableSeats[ data.reserved[ seat ].component ] = {};
+                                        unavailableSeats[ data.user[ seat ].component ] = {};
                                     }
                                     unavailableSeats[ data.user[ seat ].component ][ data.user[ seat ].id ] = 'sel';
                                 }
@@ -293,15 +292,15 @@
                     this.draggables = this.scaleUp( JSON.parse( sessionStorage.getItem( 'seatplan' ) ) );
                 }
 
-                if ( this.cart[ this.event.eventID ] ) {
-                    let tickets = this.cart[ this.event.eventID ][ 'tickets' ];
-                    for ( let seat in tickets ) {
-                        if ( !this.unavailableSeats[ data.user[ seat ].component ] ) {
-                            this.unavailableSeats[ data.reserved[ seat ].component ] = {};
-                        }
-                        this.unavailableSeats[ tickets[ seat ].component ][ tickets[ seat ].id ] = 'sel';
-                    }
-                }
+                // if ( this.cart[ this.event.eventID ] ) {
+                //     let tickets = this.cart[ this.event.eventID ][ 'tickets' ];
+                //     for ( let seat in tickets ) {
+                //         if ( !this.unavailableSeats[ data.user[ seat ].component ] ) {
+                //             this.unavailableSeats[ data.reserved[ seat ].component ] = {};
+                //         }
+                //         this.unavailableSeats[ tickets[ seat ].component ][ tickets[ seat ].id ] = 'sel';
+                //     }
+                // }
 
             },
             scaleUp ( valueArray ) {

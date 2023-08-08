@@ -70,7 +70,7 @@ class POSTHandler {
                                         ticketCount = maxTickets;
                                     }
                                     if ( maxTickets > 0 ) {
-                                        db.writeDataSimple( 'temp', 'user_id', session.id, { 'user_id': session.id, 'timestamp': new Date().toDateString(), 'data': JSON.stringify( info ) } );
+                                        db.writeDataSimple( 'temp', 'user_id', session.id, { 'user_id': session.id, 'timestamp': new Date().toString(), 'data': JSON.stringify( info ) } );
                                         resolve( { 'status': 'ok', 'ticketCount': ticketCount } );
                                     } else {
                                         reject( { 'code': 409, 'message': 'ERR_ALL_OCCUPIED' } );
@@ -89,7 +89,7 @@ class POSTHandler {
                                 ticketCount = maxTickets;
                             }
                             if ( maxTickets > 0 ) {
-                                db.writeDataSimple( 'temp', 'user_id', session.id, { 'user_id': session.id, 'timestamp': new Date().toDateString(), 'data': JSON.stringify( info ) } );
+                                db.writeDataSimple( 'temp', 'user_id', session.id, { 'user_id': session.id, 'timestamp': new Date().toString(), 'data': JSON.stringify( info ) } );
                                 resolve( { 'status': 'ok', 'ticketCount': ticketCount } );
                             } else {
                                 reject( { 'code': 409, 'message': 'ERR_ALL_OCCUPIED' } );
@@ -106,7 +106,7 @@ class POSTHandler {
                         let info = {};
                         info[ data.eventID ] = {};
                         info[ data.eventID ][ data.id ] = data;
-                        db.writeDataSimple( 'temp', 'user_id', session.id, { 'user_id': session.id, 'timestamp': new Date().toDateString(), 'data': JSON.stringify( info ) } ).catch( err => {
+                        db.writeDataSimple( 'temp', 'user_id', session.id, { 'user_id': session.id, 'timestamp': new Date().toString(), 'data': JSON.stringify( info ) } ).catch( err => {
                             console.error( err );
                         } );
                         resolve( 'ok' );
