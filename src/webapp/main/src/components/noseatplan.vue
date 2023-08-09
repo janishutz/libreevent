@@ -5,20 +5,20 @@
             <h2>Available tickets</h2>
             <button @click="cartHandling()">Add selected tickets to cart</button>
             <div class="wrapper">
-                <div v-for="ticket in tickets">
-                    {{ event[ 'categories' ][ ticket.category ][ 'name' ] }}
+                <div v-for="ticket in event.categories">
+                    {{ event[ 'categories' ][ ticket.id ][ 'name' ] }}
                     <table>
                         <tr v-for="ticketOption in event[ 'ageGroups' ]">
                             <td>
                                 {{ ticketOption.name }} <div style="display: inline" v-if="ticketOption.age">({{ ticketOption.age }} years)</div> 
                             </td>
                             <td>
-                                {{ event.currency }} {{ event[ 'categories' ][ ticket.category ][ 'price' ][ ticketOption.id ] }} 
+                                {{ event.currency }} {{ event[ 'categories' ][ ticket.id ][ 'price' ][ ticketOption.id ] }} 
                             </td>
                             <td>
-                                <span class="material-symbols-outlined controls" @click="ticketHandling( ticket.id, ticketOption.id, 'select' )">add</span> 
-                                {{ selectedTickets[ ticket.id + '_' + ticketOption.id ] ?? 0 }}
-                                <span class="material-symbols-outlined controls" @click="ticketHandling( ticket.id, ticketOption.id, 'deselect' )">remove</span>
+                                <span class="material-symbols-outlined controls" @click="ticketHandling( 'ticket' + ticket.id, ticketOption.id, 'select' )">add</span> 
+                                {{ selectedTickets[ 'ticket' + ticket.id + '_' + ticketOption.id ] ?? 0 }}
+                                <span class="material-symbols-outlined controls" @click="ticketHandling( 'ticket' + ticket.id, ticketOption.id, 'deselect' )">remove</span>
                             </td>
                         </tr>
                     </table>
@@ -44,8 +44,8 @@ export default {
     },
     data () {
         return {
-            tickets: { 'ticket1': { 'name': 'Ticket 1', 'id': 'ticket1', 'category': 1, 'free': 20 }, 'ticket2': { 'name': 'Ticket 2', 'id': 'ticket2', 'category': 2, 'free': 20 } },
-            event: { 'name': 'TestEvent2', 'location': 'TestLocation2', 'eventID': 'test2', 'date': '2023-07-15', 'currency': 'CHF', 'categories': { '1': { 'price': { '1':25, '2':35 }, 'bg': 'black', 'fg': 'white', 'name': 'Category 1' }, '2': { 'price': { '1':15, '2':20 }, 'bg': 'green', 'fg': 'white', 'name': 'Category 2' } }, 'ageGroups': { '1':{ 'id': 1, 'name':'Child', 'age':'0 - 15.99' }, '2':{ 'id': 2, 'name': 'Adult' } }, 'maxTickets': 2 },
+            tickets: { 'ticket1': 20, 'ticket2': 20 },
+            event: { 'name': 'TestEvent2', 'location': 'TestLocation2', 'eventID': 'test2', 'date': '2023-07-15', 'currency': 'CHF', 'categories': { '1': { 'price': { '1':25, '2':35 }, 'bg': 'black', 'fg': 'white', 'name': 'Category 1', 'id': 1 }, '2': { 'price': { '1':15, '2':20 }, 'bg': 'green', 'fg': 'white', 'name': 'Category 2', 'id': 2 } }, 'ageGroups': { '1':{ 'id': 1, 'name':'Child', 'age':'0 - 15.99' }, '2':{ 'id': 2, 'name': 'Adult' } }, 'maxTickets': 2 },
             cart: {},
             selectedTickets: {},
             maxTickets: 10,
@@ -75,7 +75,7 @@ export default {
                 }
 
                 if ( totalTickets <= this.maxTickets ) {
-                    if ( totalTicketsPerID[ id ] <= this.tickets[ id ][ 'free' ] ) {
+                    if ( totalTicketsPerID[ id ] <= this.tickets[ id ] ) {
                         if ( !this.selectedTickets[ id + '_' + option ] ) {
                             this.selectedTickets[ id + '_' + option ] = 0;
                         }
@@ -102,8 +102,8 @@ export default {
                         'ticketOption': ticket.substring( ticket.indexOf( '_' ) + 1 ), 
                         'eventID': this.event.eventID, 
                         'count': this.selectedTickets[ ticket ], 
-                        'category': this.tickets[ ticket.slice( 0, ticket.indexOf( '_' ) ) ].category, 
-                        'name': this.tickets[ ticket.slice( 0, ticket.indexOf( '_' ) ) ].name + ' (' + this.event.ageGroups[ ticket.substring( ticket.indexOf( '_' ) + 1 ) ].name + ')',
+                        'category': ticket.slice( 0, ticket.indexOf( '_' ) ), 
+                        'name': this.event.categories[ ticket.slice( ticket.indexOf( '_' ) - 1, ticket.indexOf( '_' ) ) ].name + ' (' + this.event.ageGroups[ ticket.substring( ticket.indexOf( '_' ) + 1 ) ].name + ')',
                     } ),
                     headers: {
                         'Content-Type': 'application/json',
@@ -126,8 +126,8 @@ export default {
                             }
                         } else {
                             this.cart[ this.event.eventID ][ 'tickets' ][ ticket ] = { 
-                                'displayName': this.tickets[ ticket.slice( 0, ticket.indexOf( '_' ) ) ].name + ' (' + this.event.ageGroups[ ticket.substring( ticket.indexOf( '_' ) + 1 ) ].name + ')', 
-                                'price': this.event.categories[ this.tickets[ ticket.slice( 0, ticket.indexOf( '_' ) ) ].category ].price[ ticket.substring( ticket.indexOf( '_' ) + 1 ) ], 
+                                'displayName': this.event.categories[ ticket.slice( ticket.indexOf( '_' ) - 1, ticket.indexOf( '_' ) ) ].name + ' (' + this.event.ageGroups[ ticket.substring( ticket.indexOf( '_' ) + 1 ) ].name + ')', 
+                                'price': this.event.categories[ ticket.slice( ticket.indexOf( '_' ) - 1, ticket.indexOf( '_' ) ) ].price[ ticket.substring( ticket.indexOf( '_' ) + 1 ) ], 
                                 'id': ticket, 
                                 'count': this.selectedTickets[ ticket ], 
                                 'comp': 1,
@@ -136,8 +136,8 @@ export default {
                     } else if ( res.status === 409 ) {
                         res.json().then( dat => {
                             this.cart[ this.event.eventID ][ 'tickets' ][ ticket ] = { 
-                                'displayName': this.tickets[ ticket.slice( 0, ticket.indexOf( '_' ) ) ].name + ' (' + this.event.ageGroups[ ticket.substring( ticket.indexOf( '_' ) + 1 ) ].name + ')', 
-                                'price': this.event.categories[ this.tickets[ ticket.slice( 0, ticket.indexOf( '_' ) ) ].category ].price[ ticket.substring( ticket.indexOf( '_' ) + 1 ) ], 
+                                'displayName': this.event.categories[ ticket.slice( ticket.indexOf( '_' ) - 1, ticket.indexOf( '_' ) ) ].name + ' (' + this.event.ageGroups[ ticket.substring( ticket.indexOf( '_' ) + 1 ) ].name + ')', 
+                                'price': this.event.categories[ ticket.slice( ticket.indexOf( '_' ) - 1, ticket.indexOf( '_' ) ) ].price[ ticket.substring( ticket.indexOf( '_' ) + 1 ) ], 
                                 'id': ticket,
                                 'count': dat.count, 
                                 'comp': 1,
