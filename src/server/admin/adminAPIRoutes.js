@@ -13,6 +13,9 @@ const postHandler = new posth();
 const getHandler = new geth();
 const path = require( 'path' );
 const bodyParser = require( 'body-parser' );
+const mlt = require( 'multer' );
+const multer = mlt();
+const fs = require( 'fs' );
 
 
 // settings is missing in arguments which shouldn't pose any problem
@@ -40,6 +43,21 @@ module.exports = ( app ) => {
             } );
         } else {
             res.status( 403 ).sendFile( path.join( __dirname + '/../ui/' + ( req.query.lang ?? 'en' ) + '/errors/403.html' ) );
+        }
+    } );
+
+    app.post( '/admin/events/uploadImages', multer.array( 'image', 2 ), ( req, res ) => {
+        if ( req.query.event.includes( '/' ) || req.query.event.includes( '.' ) ) {
+            res.status( 400 ).send( 'fp_wrong' );
+        } else {
+            for ( let file in req.files ) {
+                if ( req.files[ file ].originalname === req.body.logo ) {
+                    fs.writeFileSync( path.join( __dirname + '/../assets/events/' + req.query.event + 'Logo.jpg' ), req.files[ file ].buffer );
+                } else {
+                    fs.writeFileSync( path.join( __dirname + '/../assets/events/' + req.query.event + 'Banner.jpg' ), req.files[ file ].buffer );
+                }
+            }
+            res.send( 'ok' );
         }
     } );
 };

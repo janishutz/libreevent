@@ -33,10 +33,6 @@
                     <router-link to="/admin/ticketEditor">Edit ticket layout</router-link>
                 </tr>
             </table>
-            <div>
-                <h3>Assets</h3>
-                <p>Here you can view and change the event assets, meaning the images</p>
-            </div>
         </div>
         <div class="ticket-settings">
             <h3>Ticket Settings</h3>
@@ -66,6 +62,39 @@
                     </tr>
                 </table>
             </div>
+        </div>
+        <div>
+            <h3>Assets</h3>
+            <p>Here you can view and change all the marketing images for your event. All assets have to be jpg images.</p>
+            <div style="display: flex;">
+                <picture-input
+                    ref="logo"
+                    :width="200"
+                    :removable="false"
+                    removeButtonClass="ui red button"
+                    :height="200"
+                    accept="image/jpeg"
+                    buttonClass="ui button primary"
+                    :customStrings="{
+                        upload: '<h1>Upload your image!</h1>',
+                        drag: 'Drag and drop your event logo here'
+                    }">
+                </picture-input>
+                <picture-input
+                    ref="banner"
+                    :width="355"
+                    :removable="false"
+                    removeButtonClass="ui red button"
+                    :height="200"
+                    accept="image/jpeg"
+                    buttonClass="ui button primary"
+                    :customStrings="{
+                        upload: '<h1>Upload your image!</h1>',
+                        drag: 'Drag and drop your event banner here'
+                    }">
+                </picture-input>
+            </div>
+            <button @click="saveImages()">Upload</button>
         </div>
         <div class="special-settings">
             <h3>General Settings</h3>
@@ -109,6 +138,7 @@
 <script>
     import settings from '@/components/settings/settings.vue';
     import notifications from '@/components/notifications/notifications.vue';
+    import PictureInput from 'vue-picture-input';
 
     // TODO: When loading data form server, also load categories of this seat plan 
     // and from it construct the array, if not set already.
@@ -118,6 +148,7 @@
         components: {
             settings,
             notifications,
+            PictureInput,
         },
         created () {
             if ( !sessionStorage.getItem( 'selectedTicket' ) ) {
@@ -205,6 +236,26 @@
             }
         },
         methods: {
+            saveImages() {
+                if ( this.$refs.logo.file && this.$refs.banner.file ) {
+                    let fd = new FormData();
+                    console.log( this.$refs.logo.file );
+                    fd.append( 'image', this.$refs.logo.file );
+                    fd.append( 'image', this.$refs.banner.file );
+                    fd.append( 'logo', this.$refs.logo.file.name );
+                    let fetchOptions = {
+                        method: 'post',
+                        body: fd,
+                    };
+                    fetch( localStorage.getItem( 'url' ) + '/admin/events/uploadImages?event=' + sessionStorage.getItem( 'selectedTicket' ) + '&image=' + 'logo', fetchOptions ).then( res => {
+                        console.log( res );
+                    } ).catch( err => {
+                        console.error( err );
+                    } );
+                } else {
+                    this.$refs.notification.createNotification( 'No image selected!', 5, 'error', 'normal' );
+                }
+            },
             save () {
                 
             }

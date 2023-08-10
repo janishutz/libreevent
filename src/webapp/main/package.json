@@ -12,6 +12,7 @@
     "@pdfme/ui": "^1.2.3",
     "pinia": "^2.0.34",
     "vue": "^3.2.13",
+    "vue-picture-input": "^3.0.1",
     "vue-router": "^4.0.3",
     "vue3-draggable-resizable": "^1.6.5"
   },
