@@ -1,6 +1,7 @@
 {
-    "init": true,
+    "init": false,
     "twoFA": "allow",
+    "setupKey": "hello world",
     "twoFAMode": "enhanced",
     "db": "mysql",
     "payments": "stripe",

@@ -29,7 +29,7 @@
     export default {
         data () {
             return {
-                options: { 'default': { 'id': 'default', 'name': 'Default' }},
+                options: { 'default': { 'id': 'default', 'name': 'Default' } },
             }
         },
         computed: {
@@ -37,8 +37,8 @@
         },
         methods: {
             submit () {
-                this.backendStore.addVisitedSetupPages( 'payments', true );
-                this.$router.push( '/setup/payments' );
+                this.backendStore.addVisitedSetupPages( 'complete', true );
+                this.$router.push( '/setup/complete' );
             }
         },
     };

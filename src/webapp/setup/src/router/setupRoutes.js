@@ -44,33 +44,6 @@ export default {
             }
         },
         {
-            path: 'payments',
-            name: 'setupPayments',
-            component: () => import( '../views/SetupPaymentsView.vue' ),
-            meta: {
-                title: 'Payments :: Setup - libreevent',
-                setupAuthRequired: true,
-            }
-        },
-        {
-            path: 'events',
-            name: 'setupEvents',
-            component: () => import( '../views/SetupEventsView.vue' ),
-            meta: {
-                title: 'Events :: Setup - libreevent',
-                setupAuthRequired: true,
-            }
-        },
-        {
-            path: 'tos',
-            name: 'setupTOS',
-            component: () => import( '../views/SetupTOSView.vue' ),
-            meta: {
-                title: 'TOS (Optional) :: Setup - libreevent',
-                setupAuthRequired: true,
-            }
-        },
-        {
             path: 'complete',
             name: 'setupComplete',
             component: () => import( '../views/SetupCompleteView.vue' ),

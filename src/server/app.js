@@ -54,9 +54,9 @@ const settings = JSON.parse( fs.readFileSync( path.join( __dirname + '/config/se
 
 console.log( '[ Server ] Setting up static routes' );
 if ( settings.init ) {
-    app.use( express.static( '../webapp/main/dist' ) );
+    app.use( express.static( 'webapp/main/dist' ) );
 } else {
-    app.use( express.static( '../webapp/setup/dist' ) );
+    app.use( express.static( 'webapp/setup/dist' ) );
 }
 
 // initialise express with middlewares
@@ -76,7 +76,7 @@ app.use( expressSession( {
 // app.use( bodyParser.json() );
 app.use( cookieParser() );
 
-let file = path.join( __dirname + '/webapp/index.html' );
+let file = path.join( __dirname + '/webapp/main/dist/index.html' );
 
 console.log( '[ Server ] loading backend components' );
 if ( settings.init ) {
@@ -86,7 +86,7 @@ if ( settings.init ) {
     require( './backend/userRoutes.js' )( app, settings ); // user routes
 } else {
     require( './setup/setupRoutes.js' )( app, settings ); // setup routes
-    file = path.join( __dirname + '/../webapp/setup/dist/index.html' );
+    file = path.join( __dirname + '/webapp/setup/dist/index.html' );
 }
 
 console.log( '[ Server ] loading plugins' );

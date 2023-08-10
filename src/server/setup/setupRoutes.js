@@ -7,11 +7,19 @@
 *
 */
 
+const db = require( '../backend/db/db.js' );
+
 module.exports = ( app, settings ) => {
     /* 
         Admin login route that checks the password
     */
    
-    app.get( '/setup/start', ( request, response ) => {} );
+    app.get( '/setup/start', ( request, response ) => {
+        if ( request.query.token === settings.setupToken ) {
+            response.send( 'ok' );
+        } else {
+            response.send( 'incorrect' );
+        }
+    } );
 
 }

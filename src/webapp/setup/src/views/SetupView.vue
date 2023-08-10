@@ -15,12 +15,6 @@
             <a v-else class="inactive">Root account</a> | 
             <router-link to="/setup/page" v-if="backendStore.getVisitedSetupPages[ 'page' ]">Landing page</router-link>
             <a v-else class="inactive">Landing page</a> | 
-            <router-link to="/setup/payments" v-if="backendStore.getVisitedSetupPages[ 'payments' ]">Payments</router-link>
-            <a v-else class="inactive">Payments</a> | 
-            <router-link to="/setup/events" v-if="backendStore.getVisitedSetupPages[ 'events' ]">Events</router-link>
-            <a v-else class="inactive">Events</a> | 
-            <router-link to="/setup/tos" v-if="backendStore.getVisitedSetupPages[ 'tos' ]" @click="unlock( 'complete' )">TOS</router-link>
-            <a v-else class="inactive">TOS</a> | 
             <router-link to="/setup/complete" v-if="backendStore.getVisitedSetupPages[ 'complete' ]">Complete</router-link>
             <a v-else class="inactive">Complete</a>
         </nav>
@@ -50,11 +44,6 @@
         created () {
             this.backendStore.loadVisitedSetupPages();
         },
-        methods: {
-            unlock ( page ) {
-                this.backendStore.addVisitedSetupPages( page, true );
-            }
-        }
     };
 </script>
 
