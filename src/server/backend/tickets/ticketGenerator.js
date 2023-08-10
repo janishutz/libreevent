@@ -56,7 +56,7 @@ class TicketGenerator {
         }
     }
 
-    // TODO: Maybe move to subprocesses
+    // TODO: FUTURE: move to subprocesses
     queueHandler () {
         if ( !this.isRunning ) {
             this.isRunning = true;

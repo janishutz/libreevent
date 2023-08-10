@@ -25,8 +25,8 @@
                     <td v-else>No locations configured yet. Configure one <router-link to="/admin/locations">here</router-link></td>
                 </tr>
                 <tr>
-                    <td>Event date</td>
-                    <td><input v-model="event.date" class="small-text" type="date"></td>
+                    <td>Event date and time</td>
+                    <td><input v-model="event.date" class="small-text" type="date"><input v-model="event.time" class="small-text" type="time"></td>
                 </tr>
                 <tr>
                     <td>Ticket editor</td>
@@ -35,6 +35,12 @@
             </table>
         </div>
         <div class="ticket-settings">
+            <!-- TODO: Finish -->
+            <h3>Age Groups</h3>
+            <p>With these settings you can manage and create different age categories which have to be set for every ticket.</p>
+        </div>
+        <div class="ticket-settings">
+            <!-- TODO: Load automatically -->
             <h3>Ticket Settings</h3>
             <p>The foreground and background colours of the seats are used to show the customer to which category the seats belong.</p>
             <div class="category-wrapper">
@@ -98,12 +104,16 @@
         </div>
         <div class="special-settings">
             <h3>General Settings</h3>
-            <p>Currency codes used must be valid ISO 4217 codes. Read more on <a href="https://libreevent.janishutz.com/docs/admin-panel/events#currency" target="_blank">this page</a> of the documentation <!-- https://en.wikipedia.org/wiki/ISO_4217#List_of_ISO_4217_currency_codes"--></p>
             <settings v-model:settings="specialSettings"></settings>
         </div>
         <div>
-            <p>Please read the documentation of this section if you want to use the requirements. It requires specific syntax to work. See <a href="https://libreevent.janishutz.com/docs/admin-panel/events#special-requirements" target="_blank">here</a> for more information</p>
+            <h3>Danger Zone</h3>
+            <button>Go Live</button><button>Delete</button><br><br><br>
+            <!-- TODO: Add functions -->
         </div>
+        <!-- <div>
+            <p>Please read the documentation of this section if you want to use the requirements. It requires specific syntax to work. See <a href="https://libreevent.janishutz.com/docs/admin-panel/events#special-requirements" target="_blank">here</a> for more information</p>
+        </div> -->
         <notifications ref="notification" location="topright"></notifications>
     </div>
 </template>
@@ -143,12 +153,79 @@
     // TODO: When loading data form server, also load categories of this seat plan 
     // and from it construct the array, if not set already.
 
+    // TODO: Save info if draft or live
+
     export default {
         name: 'TicketsDetailsView',
         components: {
             settings,
             notifications,
             PictureInput,
+        },
+        data() {
+            return {
+                locations: {},
+                event: { 'name': 'TestEvent', 'description': 'This is a description for the TestEvent to test multiline support and proper positioning of the Fields', 'location': 'test', 'date': '2023-07-15', 'currency': 'CHF', 'categories': { '1': { 'price': { '1':25, '2':35 }, 'bg': 'black', 'fg': 'white', 'name': 'Category 1' }, '2': { 'price': { '1':15, '2':20 }, 'bg': 'green', 'fg': 'white', 'name': 'Category 2' } }, 'ageGroups': { '1':{ 'id': 1, 'name':'Child', 'age':'0 - 15.99' }, '2':{ 'id': 2, 'name': 'Adult' } }, 'maxTickets': 2 },
+                specialSettings: {
+                    // 'guest-purchase': { 
+                    //     'display': 'Enable guest purchase', 
+                    //     'id': 'guest-purchase', 
+                    //     'tooltip':'Allowing guest purchase means that a user does not have to create an account in order for them to be able to make a purchase. Default: On', 
+                    //     'value': true,
+                    //     'type': 'toggle'
+                    // },
+                    // 'overbooking': { 
+                    //     'display': 'Enable overbooking of event', 
+                    //     'id': 'overbooking', 
+                    //     'tooltip':'Allow more ticket reservations than you have tickets available. Currently only available for events without seatplans. Default: Off', 
+                    //     'value': false,
+                    //     'type': 'toggle'
+                    // },
+                    'maxTickets': { 
+                        'display': 'Maximum ticket count per account', 
+                        'id': 'maxTickets', 
+                        'tooltip':'With this setting you can control how many tickets a person can buy. Defaults to 0, which means do not limit.', 
+                        'value': 0,
+                        'type': 'number',
+                        'restrictions': {
+                            'min': 0,
+                            'max': 100,
+                        }
+                    },
+                    // 'requiredParameter': { 
+                    //     'display': 'Special requirements', 
+                    //     'id': 'requiredParameter', 
+                    //     'tooltip':'Set this parameter to require the user to provide a certain email domain, a special number or special string of characters. Defaults to None', 
+                    //     'value': 'none',
+                    //     'type': 'select',
+                    //     'restrictions': {
+                    //         'none': { 
+                    //             'displayName':'None',
+                    //             'value': 'none'
+                    //         },
+                    //         'email': { 
+                    //             'displayName':'Email domain',
+                    //             'value': 'email'
+                    //         },
+                    //         'numbers': { 
+                    //             'displayName':'Number sequence',
+                    //             'value': 'numbers'
+                    //         },
+                    //         'string': { 
+                    //             'displayName':'Text sequence',
+                    //             'value': 'string'
+                    //         },
+                    //     }
+                    // },
+                    // 'requiredParameterValue': { 
+                    //     'display': 'Special requirements values ', 
+                    //     'id': 'requiredParameterValue', 
+                    //     'tooltip':'Put a filter here, corresponding to your selection above. Please read the documentation on our website. See link below!', 
+                    //     'value': '',
+                    //     'type': 'text',
+                    // },
+                }
+            }
         },
         created () {
             if ( !sessionStorage.getItem( 'selectedTicket' ) ) {
@@ -162,78 +239,8 @@
                     console.error( error );
                 } );
             } );
-        },
-        data() {
-            return {
-                locations: {},
-                event: { 'name': 'TestEvent', 'description': 'This is a description for the TestEvent to test multiline support and proper positioning of the Fields', 'location': 'test', 'date': '2023-07-15', 'currency': 'CHF', 'categories': { '1': { 'price': { '1':25, '2':35 }, 'bg': 'black', 'fg': 'white', 'name': 'Category 1' }, '2': { 'price': { '1':15, '2':20 }, 'bg': 'green', 'fg': 'white', 'name': 'Category 2' } }, 'ageGroups': { '1':{ 'id': 1, 'name':'Child', 'age':'0 - 15.99' }, '2':{ 'id': 2, 'name': 'Adult' } }, 'maxTickets': 2 },
-                specialSettings: {
-                    'currency': { 
-                        'display': 'Currency', 
-                        'id': 'currency', 
-                        'tooltip':'Specify a currency in which the prices are displayed to the customer. Defaults to USD. Please use valid currency codes.', 
-                        'value': 'USD',
-                        'type': 'text',
-                    },
-                    'guest-purchase': { 
-                        'display': 'Enable guest purchase', 
-                        'id': 'guest-purchase', 
-                        'tooltip':'Allowing guest purchase means that a user does not have to create an account in order for them to be able to make a purchase. Default: On', 
-                        'value': true,
-                        'type': 'toggle'
-                    },
-                    'overbooking': { 
-                        'display': 'Enable overbooking of event', 
-                        'id': 'overbooking', 
-                        'tooltip':'Allow more ticket reservations than you have tickets available. Currently only available for events without seatplans. Default: Off', 
-                        'value': false,
-                        'type': 'toggle'
-                    },
-                    'maxTickets': { 
-                        'display': 'Maximum ticket count per account', 
-                        'id': 'maxTickets', 
-                        'tooltip':'With this setting you can control how many tickets a person can buy. Defaults to 0, which means do not limit.', 
-                        'value': 0,
-                        'type': 'number',
-                        'restrictions': {
-                            'min': 0,
-                            'max': 100,
-                        }
-                    },
-                    'requiredParameter': { 
-                        'display': 'Special requirements', 
-                        'id': 'requiredParameter', 
-                        'tooltip':'Set this parameter to require the user to provide a certain email domain, a special number or special string of characters. Defaults to None', 
-                        'value': 'none',
-                        'type': 'select',
-                        'restrictions': {
-                            'none': { 
-                                'displayName':'None',
-                                'value': 'none'
-                            },
-                            'email': { 
-                                'displayName':'Email domain',
-                                'value': 'email'
-                            },
-                            'numbers': { 
-                                'displayName':'Number sequence',
-                                'value': 'numbers'
-                            },
-                            'string': { 
-                                'displayName':'Text sequence',
-                                'value': 'string'
-                            },
-                        }
-                    },
-                    'requiredParameterValue': { 
-                        'display': 'Special requirements values ', 
-                        'id': 'requiredParameterValue', 
-                        'tooltip':'Put a filter here, corresponding to your selection above. Please read the documentation on our website. See link below!', 
-                        'value': '',
-                        'type': 'text',
-                    },
-                }
-            }
+
+            // TODO: Load data from server
         },
         methods: {
             saveImages() {
@@ -255,6 +262,9 @@
                 } else {
                     this.$refs.notification.createNotification( 'No image selected!', 5, 'error', 'normal' );
                 }
+            },
+            loadLocationData() {
+
             },
             save () {
                 

@@ -49,7 +49,7 @@ module.exports = ( app, settings ) => {
                                             'product_data': {
                                                 'name': data[ event ][ item ].name,
                                             },
-                                            'currency': events[ event ].currency,
+                                            'currency': settings.currency,
                                             'unit_amount': Math.round( parseFloat( events[ event ][ 'categories' ][ data[ event ][ item ].category ].price[ data[ event ][ item ][ 'ticketOption' ] ] ) * 100 ),
                                         },
                                         'quantity': data[ event ][ item ].count ?? 1,

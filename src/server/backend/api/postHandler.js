@@ -17,7 +17,7 @@ class POSTHandler {
         db.getJSONData( 'booked' ).then( dat => {
             this.allSelectedSeats = dat;
         } );
-        // this.allSelectedSeats = { 'test2': { 'secAr1s1': { 'id': 'secAr1s1', 'component': 1 } } };
+        // TODO: Load from event db
         this.ticketTotals = { 'test2': { 'ticket1': 5, 'ticket2': 5 } };
         this.settings = JSON.parse( fs.readFileSync( path.join( __dirname + '/../../config/settings.config.json' ) ) );
     }

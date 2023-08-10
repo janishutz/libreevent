@@ -10,6 +10,7 @@
 <template>
     <div>
         <h2>Settings</h2>
+        <p>Currency codes used must be valid ISO 4217 codes. Read more on <a href="https://libreevent.janishutz.com/docs/admin-panel/settings#currency" target="_blank">this page</a> of the documentation <!-- https://en.wikipedia.org/wiki/ISO_4217#List_of_ISO_4217_currency_codes"--></p>
         <settings v-model:settings="settings"></settings>
         <table class="gateway-settings">
             <tr>
@@ -98,6 +99,13 @@
                         'tooltip':'With this toggle you may specify whether or not a user has to provide their date of birth when purchasing something. (Keep GDPR in mind when processing data!)', 
                         'value': false,
                         'type': 'toggle',
+                    },
+                    'currency': { 
+                        'display': 'Currency', 
+                        'id': 'currency', 
+                        'tooltip':'Specify a currency in which the prices are displayed to the customer. Defaults to USD. Please use valid currency codes.', 
+                        'value': 'USD',
+                        'type': 'text',
                     },
                     'paymentGateway': { 
                         'display': 'Select the payment gateway to use', 

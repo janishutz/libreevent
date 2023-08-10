@@ -52,7 +52,6 @@
                         </td>
                     </tr>
                 </table>
-                <!-- TODO: Ask for permission to send emails (Make question sound really optional) -->
             </form>
             <notifications ref="notification" location="topright" size="bigger"></notifications>
             <button @click="signup();" class="button">Sign up</button>

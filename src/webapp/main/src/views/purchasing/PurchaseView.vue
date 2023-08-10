@@ -39,7 +39,7 @@
                     </table>
 
                     <div v-if="settings.requiresSpecialToken">
-                        <!-- TODO: Implement -->
+                        <!-- TODO: FUTURE: Implement -->
                     </div>
                     <button id="buy-button" @click="preparePayment();">Buy now</button>
                 </div>
