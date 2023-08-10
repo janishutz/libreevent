@@ -117,6 +117,15 @@ export default [
         }
     },
     {
+        path: '/password-reset',
+        name: 'passwordReset',
+        component: () => import( '@/views/user/PasswordResetView.vue' ),
+        meta: {
+            title: 'Reset password - ',
+            transition: 'scale'
+        }
+    },
+    {
         path: '/guest',
         name: 'guestPurchase',
         component: () => import( '@/views/purchasing/GuestPurchaseView.vue' ),

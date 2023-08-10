@@ -64,6 +64,9 @@
                             <button @click="closePopup( 'cancel' )" title="Cancel changes">Cancel</button>
                         </div>
                     </div>
+                    <div v-else-if="contentType === 'iframe'" class="options iframe-wrapper">
+                        <iframe :src="data.options.link" frameborder="0" class="popup-iframe"></iframe>
+                    </div>
                 </div>
             </div>
         </div>
@@ -191,6 +194,15 @@
         border: none;
         border-radius: 20px;
         background-color: var( --popup-color );
+    }
+
+    .popup-iframe {
+        width: 100%;
+        height: 100%;
+    }
+
+    .iframe-wrapper {
+        height: 100%;
     }
 
     .small {

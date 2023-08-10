@@ -1,0 +1,42 @@
+<!--
+*				libreevent - PasswordResetView.vue
+*
+*	Created by Janis Hutz 08/10/2023, Licensed under the GPL V3 License
+*			https://janishutz.com, development@janishutz.com
+*
+*
+-->
+
+<template>
+    <div>
+        <h1>Password Reset</h1>
+        <p>Please enter the email address connected to your account to begin the password reset process.</p>
+        <input type="email" v-model="email"><br>
+        <button @click="reset()">Reset</button>
+        <notifications ref="notification" location="topright" size="bigger"></notifications>
+    </div>
+</template>
+
+<script>
+    import notifications from '@/components/notifications/notifications.vue';
+
+    export default {
+        data () {
+            return {
+                email: '',
+            }
+        },
+        components: {
+            notifications,
+        },
+        methods: {
+            reset() {
+                const startNotification = this.$refs.notification.createNotification( 'Starting password reset', 20, 'progress', 'normal' );
+                this.$refs.notification.cancelNotification( startNotification );
+                this.$refs.notification.createNotification( 'An account with this email address does not exist.', 5, 'error', 'normal' );
+                this.$refs.notification.cancelNotification( startNotification );
+                this.$refs.notification.createNotification( 'Password reset email sent. Please follow the instructions given there.', 30, 'ok', 'normal' );
+            }
+        }
+    }
+</script>

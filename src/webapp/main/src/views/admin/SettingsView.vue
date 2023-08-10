@@ -25,6 +25,7 @@
 
         <div class="admin-settings">
             <h2>Admin Accounts</h2>
+            <button @click="createAccount()">Create new account</button>
             <p>Before setting or editing permissions here, please read the corresponding section of the documentation <a href="https://libreevent.janishutz.com/docs/admin-panel/settings/admin-accounts#permissions" target="_blank">here</a>.
             <br>Usually, the permissions automatically set by the system on account creation should be appropriate.</p>
             <div v-for="account in adminAccounts" class="account" @click="showAccountSettings( account.username );" title="Edit permissions of this account (right click for more options)" @contextmenu="( e ) => { e.preventDefault(); openRightClickMenu( account.username, e ); }">
@@ -85,9 +86,16 @@
                         'type': 'toggle',
                     },
                     'phoneNumberRequired': { 
-                        'display': 'Require user to provide address?', 
+                        'display': 'Require user to provide phone number?', 
                         'id': 'phoneNumberRequired', 
-                        'tooltip':'With this toggle you may specify whether or not a user has to provide their address when purchasing something. (Keep GDPR in mind when processing data!)', 
+                        'tooltip':'With this toggle you may specify whether or not a user has to provide their phone number when purchasing something. (Keep GDPR in mind when processing data!)', 
+                        'value': false,
+                        'type': 'toggle',
+                    },
+                    'dobRequired': { 
+                        'display': 'Require user to provide their birth date?', 
+                        'id': 'dobRequired', 
+                        'tooltip':'With this toggle you may specify whether or not a user has to provide their date of birth when purchasing something. (Keep GDPR in mind when processing data!)', 
                         'value': false,
                         'type': 'toggle',
                     },
@@ -154,40 +162,46 @@
             },
             showPaymentSettings () {
                 this.$refs.popup.openPopup( 'Payment gateway settings', {
+                    'link': '/payments/settings',
+                }
+            , 'iframe' );
+            },
+            createAccount() {
+                this.$refs.popup.openPopup( 'Create new admin user', {
                     'pagesSettings': { 
-                        'display': 'Modify pages', 
-                        'id': 'pagesSettings', 
-                        'tooltip':'Change this setting to allow or disallow the selected user to access and change any settings of pages like the start page.', 
-                        'value': false,
-                        'type': 'toggle',
+                        'display': 'Modify pages',
+                        'id': 'pagesSettings',
+                        'tooltip':'With this setting you can choose one of the preset permissions for users. Account management is only allowed for the root user.', 
+                        'value': 'eventManager',
+                        'type': 'select',
+                        'restrictions': {
+                            'fullAccess': { 
+                                'value': 'fullAccess',
+                                'displayName': 'Full Access'
+                            },
+                            'eventManager': { 
+                                'value': 'eventManager',
+                                'displayName': 'Event Manager'
+                            },
+                            'entryControl': { 
+                                'value': 'entryControl',
+                                'displayName': 'Entry Control'
+                            }
+                        }
                     },
-                    'locationsSettings': { 
-                        'display': 'Location settings and seat plans', 
-                        'id': 'locationsSettings', 
-                        'tooltip':'Change this setting to allow or disallow the selected user to modify, delete or create locations with their corresponding seat plans.', 
-                        'value': false,
-                        'type': 'toggle',
+                    'username': { 
+                        'display': 'Username', 
+                        'id': 'username', 
+                        'tooltip':'Add a username for this user', 
+                        'value': '',
+                        'type': 'text',
                     },
-                    'plugins': { 
-                        'display': 'Plugin management', 
-                        'id': 'plugins', 
-                        'tooltip':'Change this setting to allow or disallow the selected user to install or uninstall plugins. Some plugins might allow you to set extra permissions inside of their settings panels', 
-                        'value': false,
-                        'type': 'toggle',
-                    },
-                    'events': { 
-                        'display': 'Event management', 
-                        'id': 'events', 
-                        'tooltip':'Change this setting to allow or disallow the selected user to install or uninstall plugins. Some plugins might allow you to set extra permissions inside of their settings panels', 
-                        'value': false,
-                        'type': 'toggle',
-                    },
-                    'entryControl': { 
-                        'display': 'Entry control', 
-                        'id': 'entryControl', 
-                        'tooltip':'Change this setting to allow or disallow the selected user to execute entry control at the entrance to your event location.', 
-                        'value': true,
-                        'type': 'toggle',
+                    'email': { 
+                        'display': 'Email', 
+                        'id': 'email', 
+                        'tooltip':'Add an email-address for this user', 
+                        'value': '',
+                        'type': 'text',
                     },
                 }
             , 'settings' );

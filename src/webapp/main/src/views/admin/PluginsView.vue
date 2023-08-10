@@ -10,8 +10,9 @@
 <template>
     <div>
         <h2>Plugins</h2>
-        <p>Here you can manage installed plugins and install more</p>
+        <p>Here you can manage installed plugins. If you want to install more plugins, please follow the guide <a href="https://librevent.janishutz.com/docs/plugins/install">here</a></p>
         <div class="bigButtons"></div>
+        <!-- TODO: Get all installed plugins -->
     </div>
 </template>
 
