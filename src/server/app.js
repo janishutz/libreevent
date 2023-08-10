@@ -11,7 +11,6 @@ const express = require( 'express' );
 let app = express();
 const path = require( 'path' );
 const expressSession = require( 'express-session' );
-const bodyParser = require( 'body-parser' );
 const cookieParser = require( 'cookie-parser' );
 const http = require( 'http' );
 const fs = require( 'fs' );
@@ -77,7 +76,7 @@ app.use( expressSession( {
 // app.use( bodyParser.json() );
 app.use( cookieParser() );
 
-let file = path.join( __dirname + '/../webapp/main/dist/index.html' );
+let file = path.join( __dirname + '/webapp/index.html' );
 
 console.log( '[ Server ] loading backend components' );
 if ( settings.init ) {

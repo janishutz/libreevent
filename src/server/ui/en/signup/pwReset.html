@@ -61,10 +61,10 @@
     <body>
         <div class="content">
             <img :src="host + '/otherAssets/logo.png'" alt="Logo" class="logo">
-            <h1>Welcome back!</h1>
-            <p>It looks like someone is trying to sign in to your account at {{ pageName }}. If it was you, please click the button below to confirm the login. If not, please change your password immediately.</p>
-            <p class="ip">Logging in from IP {{ ip }}.</p>
-            <a :href="host + '/user/2fa?token=' + token" class="verify">Verify</a>
+            <h1>Password reset</h1>
+            <p>Your new password is:</p>
+            <p>{{ password }}</p>
+            <p>Use it to sign into your account now and change it as soon as you have logged in.</p>
         </div>
     </body>
 </html>

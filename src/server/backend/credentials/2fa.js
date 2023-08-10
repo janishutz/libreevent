@@ -65,13 +65,7 @@ class TwoFA {
         else return 'invalid';
     }
 
-    generatePwdChangeToken () {
-        // TODO: Gen token and store in store
-        return 'test';
-    }
-
     async generateTwoFAMail ( token, ip, domain, pageName ) {
-        const tok = this.generatePwdChangeToken();
         const app = createSSRApp( {
             data() {
                 return {
@@ -79,7 +73,6 @@ class TwoFA {
                     ip: ip,
                     host: domain,
                     pageName: pageName,
-                    pwdChangeToken: tok,
                 };
             },
             template: '' + fs.readFileSync( path.join( __dirname + '/twoFAMail.html' ) )

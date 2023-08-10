@@ -10,6 +10,7 @@
 const path = require( 'path' );
 const db = require( '../db/db.js' );
 const fs = require( 'fs' );
+const pwHandler = require( '../credentials/pwdmanager.js' );
 
 class POSTHandler {
     constructor () {
@@ -153,6 +154,18 @@ class POSTHandler {
                     console.error( error );
                     reject( { 'code': 500, 'message': 'ERR_DB' } );
                 } );
+            } else if ( call === 'resetPW' ) {
+                pwHandler.resetPassword( data.email ).then( () => {
+                    resolve( 'ok' );
+                } ).catch( error => {
+                    if ( error.code ) {
+                        reject( error );
+                    } else {
+                        reject( { 'code': 500, 'message': error } );
+                    }
+                } );
+            } else {
+                reject( { 'code': 404, 'message': 'Route not found' } );
             }
         } );
     }

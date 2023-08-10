@@ -46,6 +46,8 @@
                     <tr>
                         <td>
                             <label for="news">Do you want to potentially get newsletter?</label><br>
+                        </td>
+                        <td>
                             <input type="checkbox" v-model="formData[ 'newsletter' ]" name="news" id="news"><br><br>
                         </td>
                     </tr>

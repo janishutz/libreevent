@@ -38,6 +38,8 @@ class GETHandler {
                 }
             } else if ( call === 'getName' ) {
                 resolve( { 'name': settings.name } );
+            } else {
+                reject( { 'code': 404, 'message': 'Route not found' } );
             }
         } );
     }
