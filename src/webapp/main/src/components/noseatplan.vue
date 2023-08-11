@@ -162,7 +162,11 @@ export default {
         },
         loadTickets () {
             fetch( '/getAPI/getEvent?event=' + sessionStorage.getItem( 'selectedTicket' ) ).then( res => {
-                
+                if ( res.status === 200 ) {
+                    res.json().then( json => {
+                        this.event = json ?? {};
+                    } );
+                }
             } );
         }
     },
@@ -171,7 +175,7 @@ export default {
             this.cart = localStorage.getItem( 'cart' ) ? JSON.parse( localStorage.getItem( 'cart' ) ): {};
         }, 1 );
         this.cart = localStorage.getItem( 'cart' ) ? JSON.parse( localStorage.getItem( 'cart' ) ): {};
-        // this.loadTickets();
+        this.loadTickets();
     }
 }
 </script>

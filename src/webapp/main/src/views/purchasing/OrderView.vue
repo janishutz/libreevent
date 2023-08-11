@@ -91,6 +91,8 @@
         methods: {
             setActiveTicket ( id ) {
                 sessionStorage.setItem( 'selectedTicket', id );
+                sessionStorage.setItem( 'ticketData', { 'description': this.events[ id ][ 'description' ], 'name': this.events[ id ][ 'name' ], 'locationName': this.events[ id ][ 'locationName' ] } );
+                sessionStorage.setItem( 'hasSeatplan', this.events[ id ][ 'hasSeatplan' ] );
             },
             loadEvents () {
                 fetch( '/getAPI/getAllEvents' ).then( res => {

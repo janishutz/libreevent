@@ -124,17 +124,24 @@
                 // Load seatplan from server
                 let height = $( document ).height() * 0.8;
                 this.scaleFactor = ( height / 900 ) * this.zoomFactor;
-                fetch( localStorage.getItem( 'url' ) + '/getAPI/getSeatplan?location=' + sessionStorage.getItem( 'selectedTicket' ) ).then( res => { 
+                fetch( '/getAPI/getEvent?event=' + sessionStorage.getItem( 'selectedTicket' ) ).then( res => {
                     if ( res.status === 200 ) {
-                        res.json().then( data => {
-                            this.draggables = this.scaleUp( data.data );
-                            this.prepSeatplan();
+                        res.json().then( json => {
+                            this.event = json ?? {};
+                            fetch( localStorage.getItem( 'url' ) + '/getAPI/getSeatplan?location=' + this.event.location ).then( res => { 
+                                if ( res.status === 200 ) {
+                                    res.json().then( data => {
+                                        this.draggables = this.scaleUp( data.data );
+                                        this.prepSeatplan();
+                                    } );
+                                } else if ( res.status === 500 ) {
+                                    if ( sessionStorage.getItem( 'seatplan' ) ) {
+                                        this.draggables = this.scaleUp( JSON.parse( sessionStorage.getItem( 'seatplan' ) ) );
+                                        this.prepSeatplan();
+                                    }
+                                }
+                            } );
                         } );
-                    } else if ( res.status === 500 ) {
-                        if ( sessionStorage.getItem( 'seatplan' ) ) {
-                            this.draggables = this.scaleUp( JSON.parse( sessionStorage.getItem( 'seatplan' ) ) );
-                            this.prepSeatplan();
-                        }
                     }
                 } );
             },

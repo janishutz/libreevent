@@ -59,6 +59,7 @@
                 this.$router.push( '/tickets' );
             }
             this.eventID = sessionStorage.getItem( 'selectedTicket' );
+            this.hasSeatplan = sessionStorage.getItem( 'hasSeatplan' );
         }
     };
 </script>

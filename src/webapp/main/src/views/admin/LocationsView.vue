@@ -128,12 +128,12 @@
             , 'settings' );
             },
             openRightClickMenu( id, event, hasSeatplan ) {
+                this.currentlyOpenMenu = id;
                 if ( hasSeatplan ) {
                     this.$refs.rclk.openRightClickMenu( event, { 'edit': { 'command': 'editLocation', 'symbol': 'edit', 'display': 'Edit location' }, 'editor': { 'command': 'openEditor', 'symbol': 'tune', 'display': 'Edit seatplan' }, 'delete': { 'command': 'deleteLocation', 'symbol': 'delete', 'display': 'Delete location' } } )
                 } else {
                     this.$refs.rclk.openRightClickMenu( event, { 'edit': { 'command': 'editLocation', 'symbol': 'edit', 'display': 'Edit location' }, 'delete': { 'command': 'deleteLocation', 'symbol': 'delete', 'display': 'Delete location' } } )
                 }
-                this.currentlyOpenMenu = id;
             },
             executeCommand( command ) {
                 if ( command === 'editLocation' ) {
