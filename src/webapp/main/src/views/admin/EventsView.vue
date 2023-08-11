@@ -14,7 +14,7 @@
         <div class="order-app" v-if="events">
             <ul v-for="timeframe in eventList">
                 <h3>{{ timeframe.name }}</h3>
-                <li v-for="event in timeframe.content">
+                <li v-for="event in timeframe.content" @contextmenu="( e ) => { e.preventDefault(); openRightClickMenu( event.eventID, e ); }">
                     <router-link to="/admin/events/view" class="ticket" @click="setActiveTicket( event.eventID );" v-if="new Date( event.date ).getTime() > currentDate || timeframe.name === 'Drafts'">
                         <div class="ticket-name">
                             <h3>{{ event.name }}</h3>
@@ -119,26 +119,29 @@
         methods: {
             loadData () {
                 fetch( '/admin/getAPI/getAllEvents' ).then( res => {
-                res.json().then( dat => {
-                    this.events = dat[ 'live' ] ?? {};
-                    this.eventList.drafts[ 'content' ] = dat[ 'drafts' ] ?? {};
-                    let sortable = [];
-                    for ( let event in this.events ) {
-                        sortable.push( [ this.events[ event ][ 'eventID' ], new Date( this.events[ event ][ 'date' ] ).getTime() ] );
-                    }
-                    sortable.sort( function( a, b ) {
-                        return a[ 1 ] - b[ 1 ];
-                    } );
-
-                    for ( let element in sortable ) {
-                        if ( sortable[ element ][ 1 ] > this.currentDate ) {
-                            this.eventList.upcoming.content[ sortable[ element ][ 0 ] ] = this.events[ sortable[ element ][ 0 ] ];
-                        } else {
-                            this.eventList.past.content[ sortable[ element ][ 0 ] ] = this.events[ sortable[ element ][ 0 ] ];
+                    res.json().then( dat => {
+                        this.events = dat[ 'live' ] ?? {};
+                        this.eventList.drafts[ 'content' ] = dat[ 'drafts' ] ?? {};
+                        let sortable = [];
+                        for ( let event in this.events ) {
+                            sortable.push( [ this.events[ event ][ 'eventID' ], new Date( this.events[ event ][ 'date' ] ).getTime() ] );
                         }
-                    }
+                        sortable.sort( function( a, b ) {
+                            return a[ 1 ] - b[ 1 ];
+                        } );
+
+                        for ( let element in sortable ) {
+                            if ( this.eventList.drafts[ 'content' ][ sortable[ element ][ 0 ] ] ) {
+                                delete this.eventList.drafts[ 'content' ][ sortable[ element ][ 0 ] ];
+                            }
+                            if ( sortable[ element ][ 1 ] > this.currentDate ) {
+                                this.eventList.upcoming.content[ sortable[ element ][ 0 ] ] = this.events[ sortable[ element ][ 0 ] ];
+                            } else {
+                                this.eventList.past.content[ sortable[ element ][ 0 ] ] = this.events[ sortable[ element ][ 0 ] ];
+                            }
+                        }
+                    } );
                 } );
-            } );
             },
             openRightClickMenu( id, event ) {
                 this.$refs.rclk.openRightClickMenu( event, { 'edit': { 'command': 'editEvent', 'symbol': 'edit', 'display': 'Edit event' }, 'delete': { 'command': 'deleteEvent', 'symbol': 'delete', 'display': 'Delete event' } } )
@@ -161,12 +164,7 @@
                 sessionStorage.setItem( 'selectedTicket', id );
             },
             handleData ( data ) {
-                if ( this.currentPopup === 'delete' ) {
-                    this.currentPopup = '';
-                    if ( data.status === 'ok' ) {
-                        delete this.events[ this.currentlyOpenMenu ];
-                    }
-                } else if ( this.currentPopup === 'add' ) {
+                if ( this.currentPopup === 'add' ) {
                     if ( data.status === 'ok' ) {
                         const options = {
                             method: 'post',
@@ -188,10 +186,11 @@
                         } );
                     }
                 } else if ( this.currentPopup === 'delete' ) {
+                    console.log( data );
                     if ( data.status === 'ok' ) {
                         const options = {
                             method: 'post',
-                            body: JSON.stringify( { 'event': data.data } ),
+                            body: JSON.stringify( { 'event': this.currentlyOpenMenu } ),
                             headers: {
                                 'Content-Type': 'application/json',
                                 'charset': 'utf-8'
@@ -199,9 +198,9 @@
                         };
                         fetch( localStorage.getItem( 'url' ) + '/admin/api/deleteEvent', options ).then( res => {
                             if ( res.status === 200 ) {
-                                res.text().then( text => {
+                                res.text().then( () => {
                                     this.currentlyOpenMenu = '';
-                                    console.log( text );
+                                    this.loadData();
                                 } );
                             }
                         } );

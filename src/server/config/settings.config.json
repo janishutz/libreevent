@@ -9,5 +9,5 @@
     "yourDomain": "http://localhost:8080",
     "mailSender": "libreevent <info@libreevent.janishutz.com>",
     "maxTickets": 10,
-    "currency": "USD"
+    "currency": "CHF"
 }

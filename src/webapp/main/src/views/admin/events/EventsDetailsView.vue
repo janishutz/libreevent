@@ -271,35 +271,47 @@
                 currency: 'USD',
                 hasLiveVersion: false,
                 hasSeatPlan: true,
+                totalSeats: 0,
             }
         },
         created () {
-            if ( !sessionStorage.getItem( 'selectedTicket' ) ) {
-                this.$router.push( '/admin/events' );
-            }
-            this.eventID = sessionStorage.getItem( 'selectedTicket' );
-            fetch( localStorage.getItem( 'url' ) + '/admin/getAPI/getLocations' ).then( res => {
-                res.json().then( data => {
-                    this.locations = data;
-                    fetch( localStorage.getItem( 'url' ) + '/admin/getAPI/getEvent?event=' + this.eventID ).then( res => {
-                        if ( res.status === 200 ) {
-                            res.json().then( data => {
-                                this.event = data;
-                                this.currentLocation = this.event.location;
-                                this.hasSeatPlan = this.locations[ this.event.location ] ? ( this.locations[ this.event.location ][ 'seatplan-enabled' ] ?? false ) : false;
-                            } ).catch( error => {
-                                console.error( error );
-                            } );
-                        } else if ( res.status === 404 ) {
-                            this.$router.push( '/admin/events' );
-                        }
-                    } );
-                } ).catch( error => {
-                    console.error( error );
-                } );
-            } );
+            this.loadData();
         },
         methods: {
+            loadData () {
+                fetch( localStorage.getItem( 'url' ) + '/admin/getAPI/getCurrency' ).then( res => {
+                    res.text().then( currency => {
+                        this.currency = currency;
+                    } );
+                } );
+                if ( !sessionStorage.getItem( 'selectedTicket' ) ) {
+                    this.$router.push( '/admin/events' );
+                }
+                this.eventID = sessionStorage.getItem( 'selectedTicket' );
+                fetch( localStorage.getItem( 'url' ) + '/admin/getAPI/getLocations' ).then( res => {
+                    res.json().then( data => {
+                        this.locations = data;
+                        fetch( localStorage.getItem( 'url' ) + '/admin/getAPI/getEvent?event=' + this.eventID ).then( res => {
+                            if ( res.status === 200 ) {
+                                res.json().then( data => {
+                                    this.event = data;
+                                    this.currentLocation = this.event.location;
+                                    const dt = this.event.date.split( 'T' );
+                                    this.event.date = dt[ 0 ];
+                                    this.event.time = dt[ 1 ].slice( 0, dt[ 1 ].length - 1 );
+                                    this.hasSeatPlan = this.locations[ this.event.location ] ? ( this.locations[ this.event.location ][ 'seatplan-enabled' ] ?? false ) : false;
+                                } ).catch( error => {
+                                    console.error( error );
+                                } );
+                            } else if ( res.status === 404 ) {
+                                this.$router.push( '/admin/events' );
+                            }
+                        } );
+                    } ).catch( error => {
+                        console.error( error );
+                    } );
+                } );
+            },
             saveImages() {
                 if ( this.$refs.logo.file && this.$refs.banner.file ) {
                     let fd = new FormData();
@@ -312,7 +324,9 @@
                         body: fd,
                     };
                     fetch( localStorage.getItem( 'url' ) + '/admin/events/uploadImages?event=' + sessionStorage.getItem( 'selectedTicket' ) + '&image=' + 'logo', fetchOptions ).then( res => {
-                        console.log( res );
+                        if ( res.status === 200 ) {
+                            this.$refs.notification.createNotification( 'Images saved successfully!', 5, 'ok', 'normal' );
+                        }
                     } ).catch( err => {
                         console.error( err );
                     } );
@@ -328,16 +342,29 @@
                             return;
                         }
                     }
+
+                    let lowestPrice = 1000000;
                     for ( let category in this.event.categories ) {
                         for ( let price in this.event.categories[ category ].price ) {
                             if ( this.event.categories[ category ].price[ price ] < 0.5 || ( !this.event.categories[ category ].ticketCount && this.hasSeatPlan ) ) {
                                 this.$refs.popups.openPopup( 'At least one of the prices for at least one of the categories is below the minimum of ' + this.currency + ' 0.5', {}, 'string' );
                                 return;
                             }
+                            if ( this.event.categories[ category ].price[ price ] < lowestPrice ) {
+                                lowestPrice = this.event.categories[ category ].price[ price ];
+                            };
                         }
                     }
+
+                    this.event[ 'startingPrice' ] = lowestPrice;
                     this.event[ 'currency' ] = this.currency;
-                    this.event[ 'isDraft' ] = true;
+                    this.event[ 'locationName' ] = this.locations[ this.event.location ].name;
+                    this.event[ 'hasSeatplan' ] = this.hasSeatPlan;
+                    const fullDate = new Date( this.event.date + 'T' + this.event.time +'Z' );
+                    this.event.date = fullDate.toISOString();
+                    if ( !this.event.maxTickets ) {
+                        this.event.maxTickets = this.totalSeats;
+                    }
                     this.event.maxTickets = this.specialSettings[ 'maxTickets' ].value;
                     let url = localStorage.getItem( 'url' ) + '/admin/api/saveEvent';
                     if ( action === 'deploy' ) {
@@ -354,11 +381,12 @@
                     fetch( url, options ).then( res => {
                         if ( res.status === 200 ) {
                             if ( action === 'deploy' ) {
-                                this.$refs.notification.createNotification( 'Your event has been set to be live successfully!', 5, 'ok', 'normal' );
+                                this.$refs.notification.createNotification( 'Your event has been published successfully.', 5, 'ok', 'normal' );
                                 this.hasLiveVersion = true;
                             } else {
                                 this.$refs.notification.createNotification( 'Saved as draft successfully!', 5, 'ok', 'normal' );
                             }
+                            this.loadData();
                         }
                     } );
                 } else {
@@ -434,6 +462,8 @@
                                     res.json().then( json => {
                                         this.hasSeatPlan = this.locations[ this.event.location ][ 'seatplan-enabled' ] ?? false;
                                         this.event.categories = {};
+                                        this.totalSeats = json.seatInfo.count;
+                                        // TODO: Make sure ticket counting actually works from the seat plan editor
                                         for ( let element in json.data ) {
                                             if ( json.data[ element ][ 'type' ] === 'seat' || json.data[ element ][ 'type' ] === 'stand' ) {
                                                 this.event.categories[ json.data[ element ][ 'category' ] ] = { 'price': {}, 'bg': '#FFFFFF', 'fg': '#000000', 'name': 'Category ' + json.data[ element ][ 'category' ], 'id': json.data[ element ][ 'category' ], 'ticketCount': 1 };

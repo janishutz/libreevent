@@ -161,7 +161,9 @@ export default {
             }
         },
         loadTickets () {
-            // TODO: Load from server
+            fetch( '/getAPI/getEvent?event=' + sessionStorage.getItem( 'selectedTicket' ) ).then( res => {
+                
+            } );
         }
     },
     created () {

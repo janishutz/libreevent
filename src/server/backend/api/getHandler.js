@@ -46,6 +46,12 @@ class GETHandler {
                 } ).catch( error => {
                     reject( { 'code': 500, 'error': error } );
                 } );
+            } else if ( call === 'getAllEvents' ) {
+                db.getJSONData( 'events' ).then( data => {
+                    resolve( data ?? {} );
+                } ).catch( error => {
+                    reject( { 'code': 500, 'error': error } );
+                } );
             } else if ( call === 'getName' ) {
                 resolve( { 'name': settings.name } );
             } else {

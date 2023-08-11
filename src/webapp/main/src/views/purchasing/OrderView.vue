@@ -19,8 +19,8 @@
                             <p>{{ event.description }}</p>
                         </div>
                         <div class="ticket-info">
-                            <p>Free seats: {{ event.freeSeats }} / {{ event.maxSeats }}</p>
-                            <p>{{ event.location }}, {{ event.dateString }}</p>
+                            <p>Free seats: {{ event.free }} / {{ event.maxTickets }}</p>
+                            <p>{{ event.locationName }}, {{ event.dateString }}</p>
                             <h4>Starting at {{ event.currency }} {{ event.startingPrice }}</h4>
                         </div>
                         <img :src="event.logo" alt="event logo" class="ticket-logo">
@@ -91,12 +91,26 @@
         methods: {
             setActiveTicket ( id ) {
                 sessionStorage.setItem( 'selectedTicket', id );
+            },
+            loadEvents () {
+                fetch( '/getAPI/getAllEvents' ).then( res => {
+                    res.json().then( dat => {
+                        this.events = dat ?? {};
+                        for ( let event in dat ) {
+                            this.events[ event ][ 'logo' ] = new URL( location.protocol + '//' + location.hostname + ':' + location.port + '/eventAssets/' + this.events[ event ].eventID + 'Logo.jpg' );
+                        }
+                    } );
+                } );
             }
+        },
+        created() {
+            this.loadEvents();
         },
         data () {
             return {
-                events: { 'test':{ 'name': 'TestEvent', 'description': 'This is a description for the TestEvent to test multiline support and proper positioning of the Fields', 'freeSeats': 2, 'maxSeats': 2, 'date':'2023-08-31T09:00:00Z', 'startingPrice':15, 'location': 'TestLocation', 'eventID': 'test', 'currency': 'CHF', 'logo': new URL( '/src/assets/logo.png', import.meta.url ).href }, 'test2':{ 'name': 'TestEvent2', 'description': 'This is a description for the TestEvent to test multiline support and proper positioning of the Fields', 'freeSeats': 2, 'maxSeats': 2, 'date':'2023-08-15T09:00:00Z', 'startingPrice':15, 'location': 'TestLocation', 'eventID': 'test2', 'currency': 'CHF', 'logo': new URL( '/src/assets/logo.png', import.meta.url ).href } },
-                today: new Date().getTime()
+                events: { 'test':{ 'name': 'TestEvent', 'description': 'This is a description for the TestEvent to test multiline support and proper positioning of the Fields', 'free': 2, 'maxTickets': 2, 'date':'2023-08-31T09:00:00Z', 'startingPrice':15, 'location': 'TestLocation', 'eventID': 'test', 'currency': 'CHF', 'logo': new URL( '/src/assets/logo.png', import.meta.url ).href }, 'test2':{ 'name': 'TestEvent2', 'description': 'This is a description for the TestEvent to test multiline support and proper positioning of the Fields', 'freeSeats': 2, 'maxSeats': 2, 'date':'2023-08-15T09:00:00Z', 'startingPrice':15, 'location': 'TestLocation', 'eventID': 'test2', 'currency': 'CHF', 'logo': new URL( '/src/assets/logo.png', import.meta.url ).href } },
+                today: new Date().getTime(),
+                locations: {},
             }
         },
         computed: {

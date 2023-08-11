@@ -10,8 +10,8 @@
 const db = require( '../../backend/db/db.js' );
 
 class GETHandler {
-    constructor () {
-
+    constructor ( settings ) {
+        this.settings = settings;
     }
 
     handleCall ( call, query ) {
@@ -72,6 +72,8 @@ class GETHandler {
                 } ).catch( error => {
                     reject( { 'code': 500, 'error': error } );
                 } );
+            } else if ( call === 'getCurrency' ) {
+                resolve( this.settings.currency );
             } else {
                 reject( { 'code': 404, 'error': 'Route not found' } );
             }

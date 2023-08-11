@@ -10,12 +10,12 @@
 const posth = require( './api/postHandler.js' );
 const geth = require( './api/getHandler.js' );
 const postHandler = new posth();
-const getHandler = new geth();
 const path = require( 'path' );
 const bodyParser = require( 'body-parser' );
 const mlt = require( 'multer' );
 const multer = mlt();
 const fs = require( 'fs' );
+const getHandler = new geth( JSON.parse( fs.readFileSync( path.join( __dirname + '/../config/settings.config.json' ) ) ) );
 
 
 // settings is missing in arguments which shouldn't pose any problem
