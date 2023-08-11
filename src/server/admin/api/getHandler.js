@@ -52,6 +52,26 @@ class GETHandler {
                 } ).catch( error => {
                     reject( { 'code': 500, 'error': error } );
                 } );
+            } else if ( call === 'getEvent' ) {
+                db.getJSONDataSimple( 'eventDrafts', query.event ).then( data => {
+                    if ( Object.keys( data ).length > 1 ) {
+                        resolve( data );
+                    } else {
+                        reject( { 'code': 404, 'error': 'EventNotFound' } );
+                    }
+                } ).catch( error => {
+                    reject( { 'code': 500, 'error': error } );
+                } );
+            } else if ( call === 'getAllEvents' ) {
+                db.getJSONData( 'eventDrafts' ).then( data => {
+                    db.getJSONData( 'events' ).then( dat => {
+                        resolve( { 'live': dat ?? {}, 'drafts': data ?? {} } );
+                    } ).catch( error => {
+                        reject( { 'code': 500, 'error': error } );
+                    } );
+                } ).catch( error => {
+                    reject( { 'code': 500, 'error': error } );
+                } );
             } else {
                 reject( { 'code': 404, 'error': 'Route not found' } );
             }

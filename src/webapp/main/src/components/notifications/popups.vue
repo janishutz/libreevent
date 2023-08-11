@@ -11,6 +11,22 @@
                         </div>
                     </div>
                     <div v-else-if="contentType === 'html'" v-html="data.message" class="options"></div>
+                    <div v-else-if="contentType === 'text'" class="options">
+                        <h3>{{ data.message }}</h3>
+                        <input type="text" v-model="data.selected">
+                        <div class="button-wrapper">
+                            <button @click="closePopup( 'ok' )" title="Save changes">Save</button>
+                            <button @click="closePopup( 'cancel' )" title="Cancel changes">Cancel</button>
+                        </div>
+                    </div>
+                    <div v-else-if="contentType === 'number'" class="options">
+                        <h3>{{ data.message }}</h3>
+                        <input type="number" v-model="data.selected">
+                        <div class="button-wrapper">
+                            <button @click="closePopup( 'ok' )" title="Save changes">Save</button>
+                            <button @click="closePopup( 'cancel' )" title="Cancel changes">Cancel</button>
+                        </div>
+                    </div>
                     <div v-else-if="contentType === 'settings'" class="options">
                         <h3>{{ data.message }}</h3>
                         <settings v-model:settings="data.options"></settings>

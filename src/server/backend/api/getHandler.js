@@ -36,6 +36,16 @@ class GETHandler {
                 } else {
                     reject( { 'code': 400, 'message': 'Bad request, missing event query' } );
                 }
+            } else if ( call === 'getEvent' ) {
+                db.getJSONDataSimple( 'events', query.event ).then( data => {
+                    if ( Object.keys( data ) ) {
+                        resolve( data );
+                    } else {
+                        reject( { 'code': 404, 'error': 'EventNotFound' } );
+                    }
+                } ).catch( error => {
+                    reject( { 'code': 500, 'error': error } );
+                } );
             } else if ( call === 'getName' ) {
                 resolve( { 'name': settings.name } );
             } else {

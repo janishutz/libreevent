@@ -17,10 +17,10 @@
             <div class="side-nav-wrapper">
                 <img src="@/assets/logo.png" alt="libreevent logo" style="width: 80%; margin-left: 10%; margin-bottom: 5%;">
                 <router-link to="/admin" class="admin-menu" @click="navMenu( 'hide' )" title="The home page of the admin panel">Home</router-link>
-                <router-link to="/admin/pages" class="admin-menu" @click="navMenu( 'hide' )" title="Modify your landing page, your terms of service, etc.">Pages</router-link>
-                <router-link to="/admin/events" class="admin-menu" @click="navMenu( 'hide' )" title="Change, view and analyse everything about your events">Events</router-link>
+                <router-link to="/admin/pages" class="admin-menu" @click="navMenu( 'hide' )" title="Modify your landing page">Pages</router-link>
+                <router-link to="/admin/events" class="admin-menu" @click="navMenu( 'hide' )" title="Change and view everything about your events">Events</router-link>
                 <router-link to="/admin/locations" class="admin-menu" @click="navMenu( 'hide' )" title="Change settings about your event locations">Locations</router-link>
-                <router-link to="/admin/plugins" class="admin-menu" @click="navMenu( 'hide' )" title="Install, Uninstall and manage plugins">Plugins</router-link>
+                <router-link to="/admin/plugins" class="admin-menu" @click="navMenu( 'hide' )" title="Manage plugins">Plugins</router-link>
                 <router-link to="/admin/settings" class="admin-menu" @click="navMenu( 'hide' )" title="Change global settings for libreevent">Settings</router-link>
                 <button to="/admin/login" class="admin-menu" @click="logout()" title="Log out of the admin panel">Logout</button>
             </div>

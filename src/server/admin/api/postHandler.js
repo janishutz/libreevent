@@ -54,6 +54,52 @@ class POSTHandler {
                 } ).catch( error => {
                     reject( { 'code': 500, 'error': error } );
                 } );
+            } else if ( call === 'deleteLocation' ) {
+                db.deleteJSONDataSimple( 'locations', data.location ).then( () => {
+                    resolve( 'ok' );
+                } ).catch( error => {
+                    reject( { 'code': 500, 'error': error } );
+                } );
+            } else if ( call === 'createEvent' ) {
+                db.getJSONDataSimple( 'eventDrafts', data.event ).then( dat => {
+                    if ( Object.keys( dat ).length < 1 ) {
+                        db.writeJSONDataSimple( 'eventDrafts', data.event, { 'name': 'Unnamed event', 'description': '', 'location': '', 'date': '', 'categories': {}, 'ageGroups': { '1': { 'id': 1, 'name': 'Child', 'age': '0 - 15.99' }, '2': { 'id': 2, 'name': 'Adult' } }, 'maxTickets': 2, 'eventID': data.event } ).then( () => {
+                            resolve( 'ok' );
+                        } ).catch( error => {
+                            reject( { 'code': 500, 'error': error } );
+                        } );
+                    } else {
+                        reject( { 'code': 409, 'error': 'ExistsAlready' } );
+                    }
+                } );
+            } else if ( call === 'saveEvent' ) {
+                db.writeJSONDataSimple( 'eventDrafts', data.event, data.eventData ).then( () => {
+                    resolve( 'ok' );
+                } ).catch( error => {
+                    reject( { 'code': 500, 'error': error } );
+                } );
+            } else if ( call === 'deployEvent' ) {
+                db.writeJSONDataSimple( 'events', data.event, data.eventData ).then( () => {
+                    resolve( 'ok' );
+                } ).catch( error => {
+                    reject( { 'code': 500, 'error': error } );
+                } );
+            } else if ( call === 'deleteEvent' ) {
+                db.deleteJSONDataSimple( 'eventDrafts', data.event ).then( () => {
+                    db.deleteJSONDataSimple( 'events', data.event ).then( () => {
+                        resolve( 'ok' );
+                    } ).catch( error => {
+                        reject( { 'code': 500, 'error': error } );
+                    } );
+                } ).catch( error => {
+                    reject( { 'code': 500, 'error': error } );
+                } );
+            } else if ( call === 'undeployEvent' ) {
+                db.deleteJSONDataSimple( 'events', data.event ).then( () => {
+                    resolve( 'ok' );
+                } ).catch( error => {
+                    reject( { 'code': 500, 'error': error } );
+                } );
             } else if ( call === 'saveTickets' ) {
                 db.writeJSONDataSimple( 'tickets', data.location, data.data ).then( resp => { 
                     resolve( resp );

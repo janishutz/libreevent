@@ -17,7 +17,8 @@ class POSTHandler {
         db.getJSONData( 'booked' ).then( dat => {
             this.allSelectedSeats = dat;
         } );
-        // TODO: Load from event db
+        // TODO: Load from event db subtract all occupied seats from the ordered db from it.
+        // TODO: When loading event data, also add currency to it from settings
         this.ticketTotals = { 'test2': { 'ticket1': 5, 'ticket2': 5 } };
         this.settings = JSON.parse( fs.readFileSync( path.join( __dirname + '/../../config/settings.config.json' ) ) );
     }

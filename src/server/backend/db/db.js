@@ -152,3 +152,25 @@ module.exports.writeJSONData = ( db, data ) => {
         } );
     } );
 };
+
+module.exports.deleteJSONDataSimple = ( db, identifier ) => {
+    return new Promise( ( resolve, reject ) => {
+        fs.readFile( path.join( __dirname + '/data/' + db + '.json' ), ( error, data ) => {
+            if ( error ) {
+                reject( 'Error occurred: Error trace: ' + error );
+            } else {
+                let dat = {};
+                if ( data.byteLength > 0 ) {
+                    dat = JSON.parse( data ) ?? {};
+                }
+                delete dat[ identifier ];
+                fs.writeFile( path.join( __dirname + '/data/' + db + '.json' ), JSON.stringify( dat ), ( error ) => {
+                    if ( error ) {
+                        reject( 'Error occurred: Error trace: ' + error );
+                    }
+                    resolve( true );
+                } );
+            }
+        } );
+    } );
+};

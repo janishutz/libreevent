@@ -10,6 +10,7 @@
 <template>
     <div>
         <h2>Settings</h2>
+        <p>Changing any of these settings requires a restart of libreevent.</p>
         <p>Currency codes used must be valid ISO 4217 codes. Read more on <a href="https://libreevent.janishutz.com/docs/admin-panel/settings#currency" target="_blank">this page</a> of the documentation <!-- https://en.wikipedia.org/wiki/ISO_4217#List_of_ISO_4217_currency_codes"--></p>
         <settings v-model:settings="settings"></settings>
         <table class="gateway-settings">
@@ -37,7 +38,7 @@
             </div>
         </div>
         <rightClickMenu ref="rclk" @command="( command ) => { executeCommand( command ) }"></rightClickMenu>
-        <popups ref="popup" size="big"></popups>
+        <popups ref="popup" size="big" @data="( data ) => { handlePopupReturns( data ); }"></popups>
     </div>
 </template>
 
@@ -221,8 +222,16 @@
                     this.$refs.popup.openPopup( 'Do you really want to delete the user ' + this.currentlyOpenMenu + '?', {}, 'confirm' );
                 }
             },
-            handlePopupReturns( message, data ) {
-
+            handlePopupReturns( data ) {
+                console.log( data );
+                if ( data.status === 'cancel' ) {
+                    console.log( 'user canceled' );
+                    return;
+                } else if ( data.status === 'settings' ) {
+                    console.log( 'settings processing' )
+                } else {
+                    console.log( 'hi' );
+                }
             },
             openRightClickMenu( id, event ) {
                 this.$refs.rclk.openRightClickMenu( event, { 'edit': { 'command': 'openPermissions', 'symbol': 'edit', 'display': 'Edit permissions' }, 'delete': { 'command': 'deleteUser', 'symbol': 'delete', 'display': 'Delete User' } } )

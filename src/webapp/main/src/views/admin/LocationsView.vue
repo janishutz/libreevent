@@ -15,7 +15,7 @@
         <div class="location-app" v-if="Object.keys( locations ).length">
             <ul>
                 <li v-for="location in locations">
-                    <div class="location" @click="selectLocation( location.locationID );" title="Edit this location" @contextmenu="( e ) => { e.preventDefault(); openRightClickMenu( location.locationID, e ); }">
+                    <div class="location" @click="selectLocation( location.locationID );" title="Edit this location" @contextmenu="( e ) => { e.preventDefault(); openRightClickMenu( location.locationID, e, location['seatplan-enabled'] ); }">
                         <div class="location-name">
                             <h3>{{ location.locationID }} ({{ location.name }})</h3>
                             <p v-if="location['seatplan-enabled']">This location has a seatplan.</p>
@@ -127,8 +127,12 @@
                 }
             , 'settings' );
             },
-            openRightClickMenu( id, event ) {
-                this.$refs.rclk.openRightClickMenu( event, { 'edit': { 'command': 'editLocation', 'symbol': 'edit', 'display': 'Edit location' }, 'editor': { 'command': 'openEditor', 'symbol': 'tune', 'display': 'Edit seatplan' }, 'delete': { 'command': 'deleteLocation', 'symbol': 'delete', 'display': 'Delete location' } } )
+            openRightClickMenu( id, event, hasSeatplan ) {
+                if ( hasSeatplan ) {
+                    this.$refs.rclk.openRightClickMenu( event, { 'edit': { 'command': 'editLocation', 'symbol': 'edit', 'display': 'Edit location' }, 'editor': { 'command': 'openEditor', 'symbol': 'tune', 'display': 'Edit seatplan' }, 'delete': { 'command': 'deleteLocation', 'symbol': 'delete', 'display': 'Delete location' } } )
+                } else {
+                    this.$refs.rclk.openRightClickMenu( event, { 'edit': { 'command': 'editLocation', 'symbol': 'edit', 'display': 'Edit location' }, 'delete': { 'command': 'deleteLocation', 'symbol': 'delete', 'display': 'Delete location' } } )
+                }
                 this.currentlyOpenMenu = id;
             },
             executeCommand( command ) {
@@ -147,6 +151,21 @@
                     this.currentPopup = '';
                     if ( data.status === 'ok' ) {
                         delete this.locations[ this.currentlyOpenMenu ];
+                        const options = {
+                            method: 'post',
+                            body: JSON.stringify( { 'location': this.currentlyOpenMenu } ),
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'charset': 'utf-8'
+                            }
+                        };
+                        fetch( localStorage.getItem( 'url' ) + '/admin/api/deleteLocation', options ).then( res => {
+                            if ( res.status === 200 ) {
+                                res.text().then( text => {
+                                    console.log( text );
+                                } );
+                            }
+                        } );
                     }
                 } else {
                     if ( data.status === 'settings' ) {
