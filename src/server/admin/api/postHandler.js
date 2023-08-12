@@ -8,10 +8,12 @@
 */
 
 const db = require( '../../backend/db/db.js' );
+const fs = require( 'fs' );
+const path = require( 'path' );
 
 class POSTHandler {
-    constructor () {
-
+    constructor ( settings ) {
+        this.settings = settings;
     }
 
     handleCall ( call, data, lang ) {
@@ -113,8 +115,12 @@ class POSTHandler {
             } else if ( call === 'deleteAdminAccount' ) {
                 // TODO: Finish
             } else if ( call === 'updateSettings' ) {
-                // TODO: Finish
+                this.settings[ 'twoFA' ] = data.twoFA;
+                this.settings[ 'currency' ] = data.currency;
+                this.settings[ 'payments' ] = data.payments;
+                fs.writeFileSync( path.join( __dirname + '/../../config/settings.config.json' ), JSON.stringify( this.settings ) );
                 // TODO: Parse all events and update currency
+                resolve( 'ok' );
             } else {
                 reject( { 'code': 404, 'error': 'Route not found' } );
             }

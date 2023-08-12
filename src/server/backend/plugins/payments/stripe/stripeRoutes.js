@@ -10,7 +10,8 @@
 const fs = require( 'fs' );
 const path = require( 'path' );
 const db = require( '../../../db/db.js' );
-const stripeConfig = JSON.parse( fs.readFileSync( path.join( __dirname + '/../../../../config/payments.config.secret.json' ) ) )[ 'stripe' ];
+// TODO: update config files to non-secret version for final version
+const stripeConfig = JSON.parse( fs.readFileSync( path.join( __dirname + '/config.payments.secret.json' ) ) );
 const stripe = require( 'stripe' )( stripeConfig[ 'APIKey' ] );
 const bodyParser = require( 'body-parser' );
 const ticket = require( '../../../tickets/ticketGenerator.js' );

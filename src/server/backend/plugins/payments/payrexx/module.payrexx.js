@@ -13,7 +13,7 @@ const qs = require( 'qs' );
 const axios = require( 'axios' );
 const Base64 = require( 'crypto-js/enc-base64' );
 const hmacSHA256 = require( 'crypto-js/hmac-sha256' );
-const payrexxConfig = JSON.parse( fs.readFileSync( path.join( __dirname + '/../../../../config/payments.config.secret.json' ) ) )[ 'payrexx' ];
+const payrexxConfig = JSON.parse( fs.readFileSync( path.join( __dirname + '/config.payments.secret.json' ) ) );
 
 const baseUrl = 'https://api.payrexx.com/v1.0/';
 const instance = payrexxConfig.instance;

@@ -26,6 +26,7 @@
                 </td>
             </tr>
         </table>
+        <button @click="save()">Save</button>
         <p>Detailed explanation of payment gateways can be found <a href="https://libreevent.janishutz.com/docs/payments" target="_blank">here</a>. You may install more payment gateway integrations in the plugins section. Only one may be used at any given time.</p>
 
         <div class="admin-settings">
@@ -42,6 +43,7 @@
         </div>
         <rightClickMenu ref="rclk" @command="( command ) => { executeCommand( command ) }"></rightClickMenu>
         <popups ref="popup" size="big" @data="( data ) => { handlePopupReturns( data ); }"></popups>
+        <notifications ref="notification" location="topright" size="bigger"></notifications>
     </div>
 </template>
 
@@ -49,6 +51,7 @@
     import settings from '@/components/settings/settings.vue';
     import popups from '@/components/notifications/popups.vue';
     import rightClickMenu from '@/components/settings/rightClickMenu.vue';
+    import notifications from '@/components/notifications/notifications.vue';
 
     export default {
         name: 'adminSettingsView',
@@ -56,6 +59,7 @@
             settings,
             popups,
             rightClickMenu,
+            notifications,
         },
         data () {
             return {
@@ -66,44 +70,44 @@
                         'display': 'Require Two-Factor-Authentication of user', 
                         'id': '2fa', 
                         'tooltip':'Control whether or not users are required to use Two-Factor-Authentication. Defaults to "User can decide", which is recommended', 
-                        'value': 'always',
+                        'value': 'enforce',
                         'type': 'select',
                         'restrictions': {
-                            'always': { 
+                            'enforce': { 
                                 'displayName':'Always require',
-                                'value': 'always'
+                                'value': 'enforce'
                             },
-                            'userDecided': { 
+                            'allow': { 
                                 'displayName':'User can decide',
-                                'value': 'userDecided'
+                                'value': 'allow'
                             },
-                            'never': { 
+                            'disable': { 
                                 'displayName':'Disable',
-                                'value': 'never'
+                                'value': 'disable'
                             },
                         }
                     },
-                    'addressRequired': { 
-                        'display': 'Require user to provide address?', 
-                        'id': 'addressRequired', 
-                        'tooltip':'With this toggle you may specify whether or not a user has to provide their address when purchasing something. (Keep GDPR in mind when processing data!)', 
-                        'value': false,
-                        'type': 'toggle',
-                    },
-                    'phoneNumberRequired': { 
-                        'display': 'Require user to provide phone number?', 
-                        'id': 'phoneNumberRequired', 
-                        'tooltip':'With this toggle you may specify whether or not a user has to provide their phone number when purchasing something. (Keep GDPR in mind when processing data!)', 
-                        'value': false,
-                        'type': 'toggle',
-                    },
-                    'dobRequired': { 
-                        'display': 'Require user to provide their birth date?', 
-                        'id': 'dobRequired', 
-                        'tooltip':'With this toggle you may specify whether or not a user has to provide their date of birth when purchasing something. (Keep GDPR in mind when processing data!)', 
-                        'value': false,
-                        'type': 'toggle',
-                    },
+                    // 'addressRequired': { 
+                    //     'display': 'Require user to provide address?', 
+                    //     'id': 'addressRequired', 
+                    //     'tooltip':'With this toggle you may specify whether or not a user has to provide their address when purchasing something. (Keep GDPR in mind when processing data!)', 
+                    //     'value': false,
+                    //     'type': 'toggle',
+                    // },
+                    // 'phoneNumberRequired': { 
+                    //     'display': 'Require user to provide phone number?', 
+                    //     'id': 'phoneNumberRequired', 
+                    //     'tooltip':'With this toggle you may specify whether or not a user has to provide their phone number when purchasing something. (Keep GDPR in mind when processing data!)', 
+                    //     'value': false,
+                    //     'type': 'toggle',
+                    // },
+                    // 'dobRequired': { 
+                    //     'display': 'Require user to provide their birth date?', 
+                    //     'id': 'dobRequired', 
+                    //     'tooltip':'With this toggle you may specify whether or not a user has to provide their date of birth when purchasing something. (Keep GDPR in mind when processing data!)', 
+                    //     'value': false,
+                    //     'type': 'toggle',
+                    // },
                     'currency': { 
                         'display': 'Currency', 
                         'id': 'currency', 
@@ -118,13 +122,13 @@
                         'value': 'stripe',
                         'type': 'select',
                         'restrictions': {
+                            'payrexx': { 
+                                'displayName':'Payrexx',
+                                'value': 'payrexx'
+                            },
                             'stripe': { 
                                 'displayName':'Stripe',
                                 'value': 'stripe'
-                            },
-                            'adyen': { 
-                                'displayName':'Payrexx',
-                                'value': 'payrexx'
                             },
                         }
                     },
@@ -162,21 +166,12 @@
                         'value': false,
                         'type': 'toggle',
                     },
-                    'entryControl': { 
-                        'display': 'Entry control', 
-                        'id': 'entryControl', 
-                        'tooltip':'Change this setting to allow or disallow the selected user to execute entry control at the entrance to your event location.', 
-                        'value': true,
-                        'type': 'toggle',
-                    },
                 }
             , 'settings' );
             },
             showPaymentSettings () {
-                this.$refs.popup.openPopup( 'Payment gateway settings', {
-                        'link': '/payments/settings',
-                    }
-                , 'iframe' );
+                // TODO: Load payment gateway settings from server
+                this.$refs.popup.openPopup( 'Payment gateway settings', {}, 'string' );
             },
             createAccount() {
                 this.$refs.popup.openPopup( 'Create new admin user', {
@@ -240,7 +235,37 @@
             openRightClickMenu( id, event ) {
                 this.$refs.rclk.openRightClickMenu( event, { 'edit': { 'command': 'openPermissions', 'symbol': 'edit', 'display': 'Edit permissions' }, 'delete': { 'command': 'deleteUser', 'symbol': 'delete', 'display': 'Delete User' } } )
                 this.currentlyOpenMenu = id;
+            },
+            loadData() {
+                fetch( '/admin/getAPI/getSettings' ).then( res => {
+                    if ( res.status === 200 ) {
+                        res.json().then( json => {
+                            this.settings[ '2fa' ].value = json.twoFA;
+                            this.settings.currency.value = json.currency;
+                            this.settings.paymentGateway.value = json.payments;
+                        } );
+                    }
+                } );
+            },
+            save() {
+                let fetchOptions = {
+                    method: 'post',
+                    body: JSON.stringify( { 'twoFA': this.settings[ '2fa' ].value, 'currency': this.settings.currency.value, 'payments': this.settings.paymentGateway.value } ),
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'charset': 'utf-8'
+                    }
+                };
+                fetch( localStorage.getItem( 'url' ) + '/admin/API/updateSettings', fetchOptions ).then( res => {
+                    if ( res.status === 200 ) {
+                        this.$refs.notification.createNotification( 'Saved settings successfully. Restart libreevent to apply changes', 20, 'ok', 'normal' );
+                        this.loadData();
+                    }
+                } );
             }
+        },
+        created () {
+            this.loadData();
         }
     };
     // TODO: Load gateways and settings in general from server.

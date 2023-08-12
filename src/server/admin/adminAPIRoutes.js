@@ -9,13 +9,14 @@
 
 const posth = require( './api/postHandler.js' );
 const geth = require( './api/getHandler.js' );
-const postHandler = new posth();
 const path = require( 'path' );
 const bodyParser = require( 'body-parser' );
 const mlt = require( 'multer' );
 const multer = mlt();
 const fs = require( 'fs' );
-const getHandler = new geth( JSON.parse( fs.readFileSync( path.join( __dirname + '/../config/settings.config.json' ) ) ) );
+const settings = JSON.parse( fs.readFileSync( path.join( __dirname + '/../config/settings.config.json' ) ) );
+const getHandler = new geth( settings );
+const postHandler = new posth( settings );
 
 
 // settings is missing in arguments which shouldn't pose any problem
@@ -39,6 +40,7 @@ module.exports = ( app ) => {
             postHandler.handleCall( req.params.call, req.body, req.query.lang ).then( data => {
                 res.send( data );
             } ).catch( error => {
+                console.error( error );
                 res.status( error.code ).send( error.error );
             } );
         } else {

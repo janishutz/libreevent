@@ -7,10 +7,11 @@
 *
 */
 
-const fs = require( 'fs' );
-const path = require( 'path' );
 const db = require( '../../../db/db.js' );
-const payrexxConfig = JSON.parse( fs.readFileSync( path.join( __dirname + '/../../../../config/payments.config.secret.json' ) ) )[ 'payrexx' ];
+// const fs = require( 'fs' );
+// const path = require( 'path' );
+// const payrexxConfig = JSON.parse( fs.readFileSync( path.join( __dirname + '/../../../../config/payments.config.secret.json' ) ) )[ 'payrexx' ];
+// TODO: Verify that it works with temporary site on webhosting account
 const bodyParser = require( 'body-parser' );
 const ticket = require( '../../../tickets/ticketGenerator.js' );
 const payrexxModule = require( './module.payrexx.js' );
@@ -32,7 +33,6 @@ module.exports = ( app, settings ) => {
                 'failedRedirectUrl': settings.yourDomain + '/payments/failed',
                 'currency': settings.currency,
                 'basket': [],
-                'pm': payrexxConfig.paymentMethods,
                 'amount': 0,
             };
 
