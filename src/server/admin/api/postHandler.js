@@ -106,6 +106,15 @@ class POSTHandler {
                 } ).catch( error => {
                     reject( { 'code': 500, 'error': error } );
                 } );
+            } else if ( call === 'createAdminAccount' ) {
+                // TODO: Finish
+            } else if ( call === 'updateAdminAccount' ) {
+                // TODO: Finish
+            } else if ( call === 'deleteAdminAccount' ) {
+                // TODO: Finish
+            } else if ( call === 'updateSettings' ) {
+                // TODO: Finish
+                // TODO: Parse all events and update currency
             } else {
                 reject( { 'code': 404, 'error': 'Route not found' } );
             }

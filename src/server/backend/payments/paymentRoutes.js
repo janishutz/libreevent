@@ -17,6 +17,10 @@ module.exports = ( app, settings ) => {
         res.sendFile( path.join( __dirname + '/../../ui/en/payments/canceled.html' ) );
     } );
 
+    app.get( '/payments/failed', ( req, res ) => {
+        res.sendFile( path.join( __dirname + '/../../ui/en/payments/failed.html' ) );
+    } );
+
     app.get( '/tickets/tickets.pdf', ( req, res ) => {
         if ( req.session.id ) {
             fs.readFile( path.join( __dirname + '/../tickets/store/' + req.session.id + '.pdf' ), ( error, data ) => {

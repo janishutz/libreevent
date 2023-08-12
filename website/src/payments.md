@@ -3,13 +3,11 @@ Including many payment methods can help the user choose the one that fits them b
 
 ## Advantages / Disadvantages of each payment gateway
 
+### payrexx
+Payrexx is a lesser known payment gateway and it is not ideal for you if you expect to have a low sales volume, as their basic plan costs you EUR 15 a month. If your sales volume is fairly high, it may be worth is as their per-transaction fees are quite a bit lower than Stripe's and they offer more payment options.
+See payrexx [pricing here](https://www.payrexx.com/en/pricing/) and sign up [here](https://signup.payrexx.com). You can find a full list of supported payment methods as they should be entered in the GUI [here](https://docs.payrexx.com/developer/general-info/payment-method)
+
 ### Stripe
-Stripe is one of the most well known payment gateways out there, but is also fairly expensive, but easy to set up.
+Stripe is one of the most well known payment gateways out there and it is really easy to get started.
 See [here](https://stripe.com/en-gb/pricing) for pricing information and sign up [here](https://dashboard.stripe.com/register)
 
-### adyen
-Adyen is used by small and huge businesses alike, but you have to email their support team for account creation, which is easy to do, but takes longer to complete. adyen is fairly cheap, "*only*" charging 0.10$ per transaction plus payment method costs. Detailed pricing information can be found [here](https://www.adyen.com/pricing) and you may sign up [here](https://www.adyen.com/contact/sales)
-
-
-### payrexx
-https://www.payrexx.com/en/pricing/

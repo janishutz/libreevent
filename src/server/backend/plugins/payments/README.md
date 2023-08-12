@@ -4,28 +4,7 @@ All payment gateway integration plugins have to be in their own folders. This fo
 You will also need to add documentation for the user to set up the payment gateway. Read on below to find out how.
 
 ## Setting up the routes.js file
-In the routes.js file you should have at least the following code:
-
-```
-module.exports = ( app, settings ) => {
-    app.post( '/payments/prepare', ( req, res ) => {
-
-    } );
-
-    app.get( '/payments/status', ( request, response ) => {
-        response.writeHead( 200, {
-            'Content-Type': 'text/event-stream',
-            'Cache-Control': 'no-cache',
-            'Connection': 'keep-alive',
-        } );
-        response.status( 200 );
-        response.flushHeaders();
-        response.write( 'data: connected\n\n' );
-    } );
-}
-```
-
-Take some inspiration of the stripe or adyen setup as these are officially supported by the system and have been developed by the original creator.
+Take some inspiration of the stripe or payrexx setup as these are officially supported by the system and have been developed by the original creator.
 
 The express.js routes it has to expose are the following:
 
@@ -37,3 +16,7 @@ It can contain any number of (not interfering) routes. Please always use the /pa
 
 ## The plugin.json file
 The plugin.json file should look as follows:
+
+## configOption.json
+This file contains the settings that should be available in the settings page of libreevent. It should contain the following fields, as required by the settings.vue module. 
+

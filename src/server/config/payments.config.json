@@ -1,5 +1,11 @@
 {
     "stripe": {
-        "APIKey": ""
+        "APIKey": "",
+        "endpointSecret": ""
+    },
+    "payrexx": {
+        "APISecret": "",
+        "instance": "",
+        "pm": []
     }
 }

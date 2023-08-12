@@ -74,6 +74,10 @@ class GETHandler {
                 } );
             } else if ( call === 'getCurrency' ) {
                 resolve( this.settings.currency );
+            } else if ( call === 'getAdminAccounts' ) {
+                // TODO: Finish
+            } else if ( call === 'getSettings' ) {
+                resolve( this.settings );
             } else {
                 reject( { 'code': 404, 'error': 'Route not found' } );
             }

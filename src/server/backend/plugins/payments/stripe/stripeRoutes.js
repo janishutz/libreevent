@@ -10,20 +10,18 @@
 const fs = require( 'fs' );
 const path = require( 'path' );
 const db = require( '../../../db/db.js' );
-const stripConfig = JSON.parse( fs.readFileSync( path.join( __dirname + '/../../../../config/payments.config.secret.json' ) ) )[ 'stripe' ];
-const stripe = require( 'stripe' )( stripConfig[ 'APIKey' ] );
+const stripeConfig = JSON.parse( fs.readFileSync( path.join( __dirname + '/../../../../config/payments.config.secret.json' ) ) )[ 'stripe' ];
+const stripe = require( 'stripe' )( stripeConfig[ 'APIKey' ] );
 const bodyParser = require( 'body-parser' );
 const ticket = require( '../../../tickets/ticketGenerator.js' );
 const TicketGenerator = new ticket();
 
-const endpointSecret = stripConfig[ 'endpointSecret' ];
+const endpointSecret = stripeConfig[ 'endpointSecret' ];
 
 let sessionReference = {};
 let waitingClients = {};
 let pendingPayments = {};
 let paymentOk = {};
-
-// TODO: Remove all selected tickets if timestamp more than user defined amount ago
 
 module.exports = ( app, settings ) => {
     app.post( '/payments/prepare', bodyParser.json(), ( req, res ) => {
