@@ -84,16 +84,17 @@ if ( settings.init ) {
     require( './admin/adminAPIRoutes.js' )( app, settings ); // admin api routes
     require( './backend/userAPIRoutes.js' )( app, settings ); // admin api routes
     require( './backend/userRoutes.js' )( app, settings ); // user routes
+    require( './backend/payments/paymentRoutes.js' )( app, settings ); // payment routes
+    console.log( '[ Server ] loading plugins' );
+    require( './backend/plugins/pluginLoader.js' )( app, settings );
 } else {
     require( './setup/setupRoutes.js' )( app, settings ); // setup routes
     file = path.join( __dirname + '/webapp/setup/dist/index.html' );
 }
 
-console.log( '[ Server ] loading plugins' );
 // TODO: load dynamically
 // require( './backend/plugins/payments/stripe/stripeRoutes.js' )( app, settings ); // stripe routes
-require( './backend/plugins/payments/payrexx/payrexxRoutes.js' )( app, settings ); // payrexx routes
-require( './backend/payments/paymentRoutes.js' )( app, settings ); // payment routes
+// require( './backend/plugins/payments/payrexx/payrexxRoutes.js' )( app, settings ); // payrexx routes
 
 app.use( ( request, response ) => {
     response.sendFile( file );

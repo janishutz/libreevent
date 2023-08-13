@@ -13,10 +13,6 @@ The express.js routes it has to expose are the following:
 
 It can contain any number of (not interfering) routes. Please always use the /payments/ route as a base to avoid running into problems.
 
-
-## The plugin.json file
-The plugin.json file should look as follows:
-
 ## configOption.json
 This file contains the settings that should be available in the settings page of libreevent. It should contain the following fields, as required by the settings.vue module. 
 

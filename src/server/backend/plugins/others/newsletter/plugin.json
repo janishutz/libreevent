@@ -1,0 +1,12 @@
+{
+    "pluginName": "Newsletter",
+    "pluginDescription": "Send newsletters to your customers using a file editor",
+    "creator": "Janis Hutz",
+    "maintainer": "Janis Hutz",
+    "pluginWebsite": "https://libreevent.janishutz.com/plugins/newsletter",
+    "pluginDocs": "https://libreevent.janishutz.com/docs/plugins/newsletter",
+    "gitURL": "https://github.com/simplePCBuilding/libreevent/tree/master/src/server/backend/plugins/others/newsletter",
+    "settingsURL": "/admin/plugins/newsletter/settings",
+    "mainPluginURL": "/admin/plugins/newsletter",
+    "version": "1.0.0"
+}
