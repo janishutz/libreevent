@@ -20,12 +20,20 @@ class SQLDB {
     }
 
     connect ( ) {
+        const self = this;
         this.sqlConnection.connect( function( err ) {
             if ( err ) {
                 console.error( '[ SQL ]: An error ocurred whilst connecting: ' + err.stack );
                 return;
             }
             console.log( '[ SQL ] Connected to database successfully' );
+            self.sqlConnection.query( 'TRUNCATE libreevent_temp;', error => {
+                if ( error ) {
+                    console.error( '[ SQL ] Unable to truncate libreevent_temp table due to the following error: ' + error.code );
+                } else {
+                    console.log( '[ SQL ] Truncated temporary data table successfully' );
+                }
+            } );
             return 'connection';
         } );
     }

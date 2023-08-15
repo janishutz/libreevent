@@ -14,13 +14,11 @@
 class PluginManager {
     constructor () {}
 
-    install ( plugin ) {
+    loadSettings ( plugin ) {
 
     }
 
-    update () {}
-
-    uninstall ( plugin ) {
+    saveSettings ( plugin, settings ) {
         
     }
 }

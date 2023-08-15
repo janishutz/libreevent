@@ -15,9 +15,6 @@ const cookieParser = require( 'cookie-parser' );
 const http = require( 'http' );
 const fs = require( 'fs' );
 const token = require( './backend/token.js' );
-// const pm = require( './backend/plugins/manager.js' );
-// const pluginManager = new pm();
-
 
 console.log( `
 
@@ -38,19 +35,17 @@ _ _ _                                   _
 
     ==> You are running Version V1.0.0
 
-    ==> You should deploy this on a server!
-
 Below you can see all important things that happen during operation.
 libreevent logs all errors in the console such that they appear in the
-log files when running it with an output pipe.
+log files when running it with an output pipe (which you should definitely do)
+
+To do this run the following command when starting libreevent:
+'node app.js > libreevent_log.txt'
 
 ` );
 
 console.log( '[ Server ] loading settings' );
 const settings = JSON.parse( fs.readFileSync( path.join( __dirname + '/config/settings.config.json' ) ) );
-
-// const mail = require( './backend/mail/mailSender.js' );
-// const mailManager = new mail();
 
 console.log( '[ Server ] Setting up static routes' );
 if ( settings.init ) {
@@ -72,8 +67,6 @@ app.use( expressSession( {
     }
 } ) );
 
-// app.use( bodyParser.urlencoded( { extended: false } ) );
-// app.use( bodyParser.json() );
 app.use( cookieParser() );
 
 let file = path.join( __dirname + '/webapp/main/dist/index.html' );
@@ -85,16 +78,11 @@ if ( settings.init ) {
     require( './backend/userAPIRoutes.js' )( app, settings ); // admin api routes
     require( './backend/userRoutes.js' )( app, settings ); // user routes
     require( './backend/payments/paymentRoutes.js' )( app, settings ); // payment routes
-    console.log( '[ Server ] loading plugins' );
-    require( './backend/plugins/pluginLoader.js' )( app, settings );
+    require( './backend/plugins/pluginLoader.js' )( app, settings ); // plugin loader
 } else {
     require( './setup/setupRoutes.js' )( app, settings ); // setup routes
     file = path.join( __dirname + '/webapp/setup/dist/index.html' );
 }
-
-// TODO: load dynamically
-// require( './backend/plugins/payments/stripe/stripeRoutes.js' )( app, settings ); // stripe routes
-// require( './backend/plugins/payments/payrexx/payrexxRoutes.js' )( app, settings ); // payrexx routes
 
 app.use( ( request, response ) => {
     response.sendFile( file );

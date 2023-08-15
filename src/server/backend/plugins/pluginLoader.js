@@ -11,11 +11,11 @@ const fs = require( 'fs' );
 const path = require( 'path' );
 
 module.exports = ( app, settings ) => {
+    console.log( '\n\n[ Plugin Loader ] Loading plugins\n' );
     let otherPlugins = fs.readdirSync( path.join( __dirname + '/others' ) );
-    console.log( '\n\n' );
     for ( let plugin in otherPlugins ) {
-        console.log( '[ Plugin Loader ] Loaded plugin "' + otherPlugins[ plugin ] + '"' );
         require( './others/' + otherPlugins[ plugin ] + '/' + otherPlugins[ plugin ] + 'Routes.js' )( app, settings );
+        console.log( '[ Plugin Loader ] Loaded plugin "' + otherPlugins[ plugin ] + '"' );
     }
 
     require( './payments/' + settings.payments + '/' + settings.payments + 'Routes.js' )( app, settings );

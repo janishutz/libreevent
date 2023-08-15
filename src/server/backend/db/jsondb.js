@@ -15,13 +15,24 @@ class JSONDB {
         this.db = {};
     }
 
-    connect ( ) {
+    connect () {
         this.db = JSON.parse( fs.readFileSync( path.join( __dirname + '/data/db.json' ) ) );
+        this.db[ 'libreevent_temp' ] = {};
         setInterval( async () => {
             fs.writeFile( path.join( __dirname + '/data/db.json' ), JSON.stringify( this.db ) );
         }, 10000 );
         console.log( '[ JSON-DB ] Database initialized successfully' );
         return 'connection';
+    }
+
+    async resetDB () {
+        this.db = {};
+        fs.writeFile( path.join( __dirname + '/data/db.json' ), JSON.stringify( this.db ) );
+    }
+
+    async setupDB () {
+        this.db = { 'libreevent_temp': {}, 'libreevent_admin': {}, 'libreevent_orders': {}, 'libreevent_users': {} };
+        fs.writeFile( path.join( __dirname + '/data/db.json' ), JSON.stringify( this.db ) );
     }
 
     query ( operation, table ) {
@@ -67,17 +78,18 @@ class JSONDB {
                     - checkDataAvailability:
                         - operation.property (the column to search for the value), 
                         - operation.searchQuery (the value to search for [will be sanitised by method])
-
-                    - fullCustomCommand:
-                        - operation.query (the SQL instruction to be executed) --> NOTE: This command will not be sanitised, so use only with proper sanitisation!
             */
             
             if ( operation.command === 'getAllData' ) {
                 resolve( this.db[ table ] );
             } else if ( operation.command === 'getFilteredData' ) {
-                // 
-            } else if ( operation.command === 'fullCustomCommand' ) {
-                //
+                let ret = {};
+                for ( let entry in this.db[ table ] ) {
+                    if ( this.db[ table ][ entry ][ operation.property ] == operation.searchQuery ) {
+                        ret[ entry ] = this.db[ table ][ entry ];
+                    }
+                }
+                return ret;
             } else if ( operation.command === 'addData' ) {
                 //
             } else if ( operation.command === 'updateData' ) {
@@ -102,3 +114,5 @@ class JSONDB {
         } );
     }
 }
+
+module.exports = JSONDB;
