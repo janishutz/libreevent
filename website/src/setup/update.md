@@ -1,3 +1,5 @@
 # Updating
 
-Updating libreǝvent is important to keep it secure, performant and bug-free. You can update libreevent automatically using the update tool on the settings page in the admin panel. The tool will automatically fetch all files that have been changed since the last version update. For this, it will have to make a webrequest to GitHub to fetch the JSON file with the update information. After that, many webrequests have to be performed to GitHub to download the new version. Before installing, the tool will show you the full changelog of the new version of libreevent. After the install has completed, you will need to restart libreevent such that the changes can be applied. 
+Updating libreǝvent is important to keep it secure, performant and bug-free. Currently, updating libreevent involves manually uploading the new files. 
+
+**IMPORTANT: make sure to ALWAYS download the data and config directories before updating to not lose any data in case something goes wrong! When uploading, do NOT upload the data and config directories except the release note tell you anything else. Please also always follow any notes detailed in the release notes.**

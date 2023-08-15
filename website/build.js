@@ -12,6 +12,21 @@ const md2html = new markdownIt();
 const fs = require( 'fs' );
 const path = require( 'path' );
 
+console.log( `
+
+_ _ _                                   _   
+| (_) |                                 | |  
+| |_| |__  _ __ ___  _____   _____ _ __ | |_ 
+| | | '_ \\| '__/ _ \\/ _ \\ \\ / / _ \\ '_ \\| __|
+| | | |_) | | |  __/  __/\\ V /  __/ | | | |_ 
+|_|_|_.__/|_|  \\___|\\___| \\_/ \\___|_| |_|\\__|
+
+-------------------------------------------------------
+
+    ==> Building the libreevent documentation!
+                                             
+` );
+
 buildNav( buildDocs() );
 
 
@@ -58,7 +73,7 @@ function buildNav ( pathObject ) {
 
     fs.writeFileSync( path.join( __dirname + '/dist/docs/side-bar.html' ), html );
 
-    console.log( '\n\n==> Completed building website! \n\n' );
+    console.log( '  ==> Successfully built documentation! \n\n' );
 }
 
 function buildDocs () {

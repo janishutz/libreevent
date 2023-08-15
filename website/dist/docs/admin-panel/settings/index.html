@@ -28,14 +28,45 @@
 <p>This setting can be changed individually for admin and user accounts and 2FA can be disabled entirely. It is highly encouraged to enable this at least for the admin accounts and for user accounts set the requirement to 'User-defined' or 'Always required' instead of 'Disabled'.</p>
 <h2>User account passwords</h2>
 <p>Here you may set password requirements for the user accounts. The system will always be offering the users to generate a password that is strong for them to facilitate the process of setting a password.</p>
-<h2>Guest purchase</h2>
-<p>Choose if a user may purchase a ticket without creating an account. An email address is always required as the system sends the tickets via email to the customers for easier access.</p>
-<h2>Allow overbooking</h2>
-<p>Activate this and set a percentage of overbooking, if you want to enable overbooking of the event to ensure that every single spot is occupied even if somebody does not show up. Use is strongly discouraged and currently only works with events that have no seating plan.</p>
-<h2>Special requirements</h2>
-<p>Here you may set a special requirement that a person booking a ticket has to fulfill, like the email address has to be ending in @yourdomain.com or they need to live in a certain street / town / city / country in order for them to be allowed to buy a ticket. You may also require that they provide a certain number, code or similar. Finally, you may choose to limit the amount of tickets a single person may reserve.</p>
 <h2>Change organisation name</h2>
 <p>This should be self explanatory, but keep in mind that this change will only take effect after the next restart of the node app.</p>
+<h1>Admin Accounts</h1>
+<p>On this page you may add, modify or remove admin accounts. Note that in order for you to see this page, you'll need to be logged in as the user root.</p>
+<h2>Adding an account</h2>
+<h3>Privileges</h3>
+<p>libreevent features a privilege system where you can choose to what group of users you want to add a user you are currently creating. Possible values are:</p>
+<table>
+<thead>
+<tr>
+<th>Group</th>
+<th>Allowed settings</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Root</td>
+<td>All pages. Can only be one account (the root account)</td>
+</tr>
+<tr>
+<td>Admin</td>
+<td>Can access all pages and settings except for Admin Accounts</td>
+</tr>
+<tr>
+<td>Event-Manager</td>
+<td>Access the events &amp; pages page</td>
+</tr>
+<tr>
+<td>Event-Handler</td>
+<td>Can log into the apps to do entry control</td>
+</tr>
+</tbody>
+</table>
+<h3>Email</h3>
+<p>An Email address is required for account activation and to recover a password in case it gets lost. The system will automatically send an activation email so the user can confirm that the email address is valid.</p>
+<h3>2FA</h3>
+<p>With this checkbox you can choose if this user needs to do two factor authentication, meaning, if the user needs to authorise the login using a link. In the <a href="/docs/admin-panel/settings#2fa">Settings</a> you may choose between the two different 2FA modes that libreevent offers.</p>
+<h2>Modifying an account</h2>
+<h2>Removing an account</h2>
 </div>
             </div>
             <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
