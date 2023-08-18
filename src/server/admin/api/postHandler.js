@@ -119,7 +119,13 @@ class POSTHandler {
                 this.settings[ 'currency' ] = data.currency;
                 this.settings[ 'payments' ] = data.payments;
                 fs.writeFileSync( path.join( __dirname + '/../../config/settings.config.json' ), JSON.stringify( this.settings ) );
-                // TODO: Parse all events and update currency
+                db.getJSONData( 'events' ).then( dat => {
+                    let updated = dat;
+                    for ( let event in updated ) {
+                        updated[ event ][ 'currency' ] = data.currency;
+                    }
+                    db.writeJSONData( 'events', updated );
+                } );
                 resolve( 'ok' );
             } else {
                 reject( { 'code': 404, 'error': 'Route not found' } );

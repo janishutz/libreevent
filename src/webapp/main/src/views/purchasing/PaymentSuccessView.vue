@@ -14,6 +14,7 @@
             <p>The system is currently processing your order and you will be able to download your tickets within a moment's notice.</p>
             <p>You will receive an email with your tickets within the next few minutes</p>
             <p class="small">If the email does not arrive withing the next 10 minutes, please click <a href="/payments/resendTickets" target="_blank">here</a></p>
+            <a href="/tickets/tickets.pdf" class="submit" style="display: none;" id="manual-download">Download manually</a>
             <button onclick="if ( confirm( 'Do you really want to leave this page? If you want to download the tickets directly, you will need to head to your account page and download the ticket from there or stay on this page and wait for the order to finish processing.' ) ) {
                 location.href = '/' }" class="submit">Back to the home page</button>
         </div>
@@ -53,6 +54,9 @@
                                 open( '/tickets/tickets.pdf' );
                                 source.close();
                             }, 500 );
+                            setTimeout( () => {
+                                $( 'manual-download' ).slideDown( 500 );
+                            }, 2000 );
                         } else if ( e.data === 'paymentOk' ) {
                             self.$refs.notification.createNotification( 'Your payment has been marked as completed!', 5, 'ok', 'normal' );
                         }
@@ -68,7 +72,7 @@
 
                         if ( e.target.readyState == EventSource.CLOSED ) {
                             self.$refs.notification.cancelNotification( startNotification );
-                            self.$refs.notification.createNotification( 'Could not connect to status service', 5, 'error', 'normal' );
+                            self.$refs.notification.createNotification( 'Disconnected from status service', 20, 'info', 'normal' );
                         }
                     }, false );
                 }, 300 );

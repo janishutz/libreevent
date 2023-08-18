@@ -16,10 +16,30 @@ class POSTHandler {
     constructor () {
         db.getJSONData( 'booked' ).then( dat => {
             this.allSelectedSeats = dat;
+            db.getJSONData( 'events' ).then( dat => {
+                db.getJSONData( 'seatplan' ).then( locations => {
+                    this.events = dat;
+                    // TODO: Load from event db subtract all occupied seats from the ordered db from it.
+                    this.ticketTotals = {};
+                    for ( let event in this.events ) {
+                        if ( locations[ this.events[ event ][ 'location' ] ] ) {
+                            this.ticketTotals[ event ] = locations[ this.events[ event ][ 'location' ] ][ 'save' ][ 'seatInfo' ][ 'count' ];
+                        } else {
+                            this.ticketTotals[ event ] = this.events[ event ][ 'maxTickets' ];
+                        }
+                    }
+
+                    console.log( this.ticketTotals );
+                    // for ( let order in this.allSelectedSeats ) {
+                        
+                    // }
+                    console.log( this.allSelectedSeats );
+                } );
+            } );
         } );
-        // TODO: Load from event db subtract all occupied seats from the ordered db from it.
-        // TODO: When loading event data, also add currency to it from settings
+        
         this.ticketTotals = { 'test2': { 'ticket1': 5, 'ticket2': 5 } };
+        
         this.settings = JSON.parse( fs.readFileSync( path.join( __dirname + '/../../config/settings.config.json' ) ) );
     }
 

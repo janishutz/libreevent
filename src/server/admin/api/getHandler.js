@@ -76,6 +76,8 @@ class GETHandler {
                 resolve( this.settings.currency );
             } else if ( call === 'getAdminAccounts' ) {
                 // TODO: Finish
+            } else if ( call === 'getPaymentGatewaySettings' ) {
+                // TODO: Finish
             } else if ( call === 'getSettings' ) {
                 resolve( this.settings );
             } else {

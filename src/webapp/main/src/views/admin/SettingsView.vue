@@ -33,7 +33,7 @@
             <h2>Admin Accounts</h2>
             <button @click="createAccount()">Create new account</button>
             <p>Before setting or editing permissions here, please read the corresponding section of the documentation <a href="https://libreevent.janishutz.com/docs/admin-panel/settings/admin-accounts#permissions" target="_blank">here</a>.
-            <br>Usually, the permissions automatically set by the system on account creation should be appropriate.</p>
+            <br>Usually, the permissions automatically set by the system on account creation should be appropriate. (TIP: Right click for more options)</p>
             <div v-for="account in adminAccounts" class="account" @click="showAccountSettings( account.username );" title="Edit permissions of this account (right click for more options)" @contextmenu="( e ) => { e.preventDefault(); openRightClickMenu( account.username, e ); }">
                 <div class="location-name">
                     <h3>{{ account.username }}</h3>
@@ -175,9 +175,9 @@
             },
             createAccount() {
                 this.$refs.popup.openPopup( 'Create new admin user', {
-                    'pagesSettings': { 
-                        'display': 'Modify pages',
-                        'id': 'pagesSettings',
+                    'role': { 
+                        'display': 'User role',
+                        'id': 'role',
                         'tooltip':'With this setting you can choose one of the preset permissions for users. Account management is only allowed for the root user.', 
                         'value': 'eventManager',
                         'type': 'select',
@@ -233,7 +233,7 @@
                 }
             },
             openRightClickMenu( id, event ) {
-                this.$refs.rclk.openRightClickMenu( event, { 'edit': { 'command': 'openPermissions', 'symbol': 'edit', 'display': 'Edit permissions' }, 'delete': { 'command': 'deleteUser', 'symbol': 'delete', 'display': 'Delete User' } } )
+                this.$refs.rclk.openRightClickMenu( event, { 'permissions': { 'command': 'openPermissions', 'symbol': 'edit', 'display': 'Edit permissions' }, 'password': { 'command': 'updatePassword', 'symbol': 'password', 'display': 'Edit password' }, 'delete': { 'command': 'deleteUser', 'symbol': 'delete', 'display': 'Delete User' } } )
                 this.currentlyOpenMenu = id;
             },
             loadData() {
