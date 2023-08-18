@@ -13,16 +13,37 @@ const path = require( 'path' );
 class JSONDB {
     constructor () {
         this.db = {};
+        this.dbIndex = { 'libreevent_temp': 0, 'libreevent_admin': 0, 'libreevent_orders': 0, 'libreevent_users': 0 };
+        this.isSaving = false;
+        this.awaitingSaving = true;
     }
 
     connect () {
-        this.db = JSON.parse( fs.readFileSync( path.join( __dirname + '/data/db.json' ) ) );
+        let data = JSON.parse( fs.readFileSync( path.join( __dirname + '/data/db.json' ) ) );
+        this.db = data[ 'db' ] ?? { 'libreevent_temp': {}, 'libreevent_admin': {}, 'libreevent_orders': {}, 'libreevent_users': {} };
+        this.dbIndex = data[ 'index' ] ?? { 'libreevent_temp': 0, 'libreevent_admin': 0, 'libreevent_orders': 0, 'libreevent_users': 0 };
         this.db[ 'libreevent_temp' ] = {};
-        setInterval( async () => {
-            fs.writeFile( path.join( __dirname + '/data/db.json' ), JSON.stringify( this.db ) );
-        }, 10000 );
         console.log( '[ JSON-DB ] Database initialized successfully' );
         return 'connection';
+    }
+
+    async saveToDisk () {
+        if ( !this.isSaving ) {
+            this.awaitingSaving = false;
+            this.save();
+        } else {
+            this.awaitingSaving = true;
+        }
+    }
+
+    save () {
+        fs.writeFile( path.join( __dirname + '/data/db.json' ), JSON.stringify( this.db ), ( err ) => {
+            if ( err ) console.error( '[ JSON-DB ] An error occurred during saving: ' + err );
+            this.isSaving = false;
+            if ( this.awaitingSaving ) {
+                this.saveToDisk();
+            }
+        } );
     }
 
     async resetDB () {
@@ -82,7 +103,7 @@ class JSONDB {
             
             if ( operation.command === 'getAllData' ) {
                 resolve( this.db[ table ] );
-            } else if ( operation.command === 'getFilteredData' ) {
+            } else if ( operation.command === 'getFilteredData' || operation.command === 'checkDataAvailability' ) {
                 let ret = {};
                 for ( let entry in this.db[ table ] ) {
                     if ( this.db[ table ][ entry ][ operation.property ] == operation.searchQuery ) {
@@ -91,25 +112,37 @@ class JSONDB {
                 }
                 return ret;
             } else if ( operation.command === 'addData' ) {
-                //
+                this.dbIndex[ table ] += 1;
+                this.db[ table ][ this.dbIndex[ table ] ] = operation.data;
+                this.saveToDisk();
             } else if ( operation.command === 'updateData' ) {
                 if ( !operation.property || !operation.searchQuery ) reject( 'Refusing to run destructive command: Missing Constraints' );
                 else {
-                    //
+                    for ( let entry in this.db[ table ] ) {
+                        if ( this.db[ table ][ entry ][ operation.property ] == operation.searchQuery ) {
+                            for ( let changed in operation.data ) {
+                                this.db[ table ][ entry ][ changed ] = operation.data[ changed ];
+                            }
+                        }
+                    }
                 }
+                this.saveToDisk();
             } else if ( operation.command === 'deleteData' ) {
                 if ( !operation.property || !operation.searchQuery ) reject( 'Refusing to run destructive command: Missing Constraints' );
                 else {
-                    //
+                    for ( let entry in this.db[ table ] ) {
+                        if ( this.db[ table ][ entry ][ operation.property ] == operation.searchQuery ) {
+                            delete this.db[ table ][ entry ];
+                        }
+                    }
                 }
+                this.saveToDisk();
             } else if ( operation.command === 'InnerJoin' ) {
-                //
+                // TODO: Finish those when actually needed
             } else if ( operation.command === 'LeftJoin' ) {
                 //
             } else if ( operation.command === 'RightJoin' ) {
                 //
-            } else if ( operation.command === 'checkDataAvailability' ) {
-                // 
             }
         } );
     }

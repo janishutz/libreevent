@@ -132,7 +132,7 @@ class SQLDB {
             let command = '';
             if ( operation.command === 'getAllData' ) {
                 command = 'SELECT * FROM ' + table;
-            } else if ( operation.command === 'getFilteredData' ) {
+            } else if ( operation.command === 'getFilteredData' || operation.command === 'checkDataAvailability' ) {
                 command = 'SELECT * FROM ' + table + ' WHERE ' + operation.property + ' = ' + this.sqlConnection.escape( operation.searchQuery );
             } else if ( operation.command === 'fullCustomCommand' ) {
                 command = operation.query;
@@ -166,8 +166,6 @@ class SQLDB {
                 command = 'SELECT ' + operation.selection + ' FROM ' + table + ' WHERE ' + operation.property + ' = ' + this.sqlConnection.escape( operation.searchQuery ) + ' LEFT JOIN ' + operation.secondTable + ' ON ' + operation.matchingParam;
             } else if ( operation.command === 'RightJoin' ) {
                 command = 'SELECT ' + operation.selection + ' FROM ' + table + ' WHERE ' + operation.property + ' = ' + this.sqlConnection.escape( operation.searchQuery ) + ' RIGHT JOIN ' + operation.secondTable + ' ON ' + operation.matchingParam;
-            } else if ( operation.command === 'checkDataAvailability' ) {
-                command = 'SELECT * FROM ' + table + ' WHERE ' + operation.property + ' = ' + this.sqlConnection.escape( operation.searchQuery );
             }
             this.sqlConnection.query( command, ( error, results ) => {
                 if ( error ) reject( error );
