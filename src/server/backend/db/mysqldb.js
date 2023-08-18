@@ -61,7 +61,7 @@ class SQLDB {
     async setupDB ( ) {
         this.sqlConnection.query( 'SELECT @@default_storage_engine;', ( error, results ) => {
             if ( error ) throw error;
-            if ( results[ 0 ][ '@@default_storage_engine' ] !== 'InnoDB' ) return 'DB HAS TO USE InnoDB!';
+            if ( results[ 0 ][ '@@default_storage_engine' ] !== 'InnoDB' ) throw 'DB HAS TO USE InnoDB!';
         } );
         this.sqlConnection.query( 'CREATE TABLE libreevent_users ( account_id INT ( 10 ) NOT NULL AUTO_INCREMENT, email TINYTEXT NOT NULL, pass TEXT, name TEXT, first_name TEXT, two_fa TINYTEXT, user_data VARCHAR( 60000 ), mail_confirmed TINYTEXT, marketing TINYTEXT, PRIMARY KEY ( account_id ) ) ENGINE=INNODB;', ( error ) => {
             if ( error ) if ( error.code !== 'ER_TABLE_EXISTS_ERROR' ) throw error;

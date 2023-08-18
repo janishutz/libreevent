@@ -7,8 +7,9 @@
 - Load all orders of customer from db when selecting tickets and save to memory to check if ticket count has been exceeded or not.
 
 
-- Create function that updates currency for every event when updating currency globally.
+- Create function that updates currency for every event when updating currency.
 
+- Update files to import when deploying for included json files instead of secret.json files
 
 - Fix text field overflow (text too big for box)
 - Other optimization for seat plan editor
