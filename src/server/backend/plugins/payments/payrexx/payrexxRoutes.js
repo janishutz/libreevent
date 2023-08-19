@@ -27,47 +27,57 @@ let paymentOk = {};
 module.exports = ( app, settings ) => {
     app.post( '/payments/prepare', bodyParser.json(), ( req, res ) => {
         if ( req.session.loggedInUser ) {
-            let purchase = {
-                'successRedirectUrl': settings.yourDomain + '/payments/success',
-                'cancelRedirectUrl': settings.yourDomain + '/payments/canceled',
-                'failedRedirectUrl': settings.yourDomain + '/payments/failed',
-                'currency': settings.currency,
-                'basket': [],
-                'amount': 0,
-            };
+            db.getDataSimple( 'users', 'email', req.session.username ).then( user => {
+                if ( user[ 0 ] ) {
+                    if ( user[ 0 ][ 'mail_confirmed' ] ) {
+                        let purchase = {
+                            'successRedirectUrl': settings.yourDomain + '/payments/success',
+                            'cancelRedirectUrl': settings.yourDomain + '/payments/canceled',
+                            'failedRedirectUrl': settings.yourDomain + '/payments/failed',
+                            'currency': settings.currency,
+                            'basket': [],
+                            'amount': 0,
+                        };
 
-            db.getDataSimple( 'temp', 'user_id', req.session.id ).then( dat => {
-                if ( dat[ 0 ] ) {
-                    db.getJSONData( 'events' ).then( events => {
-                        let data = JSON.parse( dat[ 0 ].data );
-                        ( async () => {
-                            for ( let event in data ) {
-                                for ( let item in data[ event ] ) {
-                                    purchase[ 'basket' ].push( {
-                                        'name': data[ event ][ item ].name,
-                                        'quantity': data[ event ][ item ].count ?? 1,
-                                        'amount': Math.round( parseFloat( events[ event ][ 'categories' ][ data[ event ][ item ].category ].price[ data[ event ][ item ][ 'ticketOption' ] ] ) * 100 ),
-                                    } );
-                                    purchase[ 'amount' ] += Math.round( parseFloat( events[ event ][ 'categories' ][ data[ event ][ item ].category ].price[ data[ event ][ item ][ 'ticketOption' ] ] ) * 100 ) * ( data[ event ][ item ].count ?? 1 );
-                                }
-                            }
-                            const response = await payrexx.createGateway( purchase );
-                            if ( response.status === 200 ) {
-                                const session = response.data.data[ 0 ];
-                                sessionReference[ session.id ] = { 'tok': req.session.id, 'email': req.session.username };
-                                pendingPayments[ req.session.id ] = true;
-                                res.send( session.link );
+                        db.getDataSimple( 'temp', 'user_id', req.session.id ).then( dat => {
+                            if ( dat[ 0 ] ) {
+                                db.getJSONData( 'events' ).then( events => {
+                                    let data = JSON.parse( dat[ 0 ].data );
+                                    ( async () => {
+                                        for ( let event in data ) {
+                                            for ( let item in data[ event ] ) {
+                                                purchase[ 'basket' ].push( {
+                                                    'name': data[ event ][ item ].name,
+                                                    'quantity': data[ event ][ item ].count ?? 1,
+                                                    'amount': Math.round( parseFloat( events[ event ][ 'categories' ][ data[ event ][ item ].category ].price[ data[ event ][ item ][ 'ticketOption' ] ] ) * 100 ),
+                                                } );
+                                                purchase[ 'amount' ] += Math.round( parseFloat( events[ event ][ 'categories' ][ data[ event ][ item ].category ].price[ data[ event ][ item ][ 'ticketOption' ] ] ) * 100 ) * ( data[ event ][ item ].count ?? 1 );
+                                            }
+                                        }
+                                        const response = await payrexx.createGateway( purchase );
+                                        if ( response.status === 200 ) {
+                                            const session = response.data.data[ 0 ];
+                                            sessionReference[ session.id ] = { 'tok': req.session.id, 'email': req.session.username };
+                                            pendingPayments[ req.session.id ] = true;
+                                            res.send( session.link );
+                                        } else {
+                                            res.status( 500 ).send( 'ERR_PAYMENT' );
+                                        }
+                                    } )();
+                                } );
                             } else {
-                                res.status( 500 ).send( 'ERR_PAYMENT' );
+                                res.status( 400 ).send( 'ERR_UID_NOT_FOUND' );
                             }
-                        } )();
-                    } );
+                        } ).catch( error => {
+                            console.error( '[ STRIPE ] DB ERROR: ' + error );
+                            res.status( 500 ).send( 'ERR_DB' );
+                        } );
+                    } else {
+                        res.status( 428 ).send( 'ERR_MAIL_UNCONFIRMED' );
+                    }
                 } else {
-                    res.status( 400 ).send( 'ERR_UID_NOT_FOUND' );
+                    res.status( 428 ).send( 'ERR_MAIL_UNCONFIRMED' );
                 }
-            } ).catch( error => {
-                console.error( '[ STRIPE ] DB ERROR: ' + error );
-                res.status( 500 ).send( 'ERR_DB' );
             } );
         } else {
             res.status( 403 ).send( 'ERR_UNAUTHORIZED' );

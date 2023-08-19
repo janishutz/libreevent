@@ -14,7 +14,6 @@ const getHandler = new geth();
 const path = require( 'path' );
 const bodyParser = require( 'body-parser' );
 
-// settings is missing in arguments which shouldn't pose any problem
 module.exports = ( app, settings ) => {
     // Add specific routes here to have them be checked first to not get general handling
 

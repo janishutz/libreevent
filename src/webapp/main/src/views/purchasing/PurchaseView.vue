@@ -18,7 +18,9 @@
             </div>
             <div v-else class="wrapper">
                 <div class="data">
-                    <h2>Billing</h2>
+                    <h2>Purchase</h2>
+                    <p>Ready to buy? Please once again check that all the right items are in your cart.</p>
+                    <!--<h2>Billing</h2>
                     <table class="billing-info-table">
                         <tr v-if="settings.requiresAddress">
                             <td>Street and house number</td>
@@ -39,8 +41,8 @@
                     </table>
 
                     <div v-if="settings.requiresSpecialToken">
-                        <!-- TODO: FUTURE: Implement -->
-                    </div>
+                        TODO: FUTURE: Implement
+                    </div> -->
                     <button id="buy-button" @click="preparePayment();">Buy now</button>
                 </div>
                 <div class="cart">
@@ -292,6 +294,13 @@ export default {
                         setTimeout( () => {
                             window.location.href = text;
                         }, 300 );
+                    } );
+                } else if ( res.status === 428 ) {
+                    res.text().then( text => {
+                        if ( text === 'ERR_MAIL_UNCONFIRMED' ) {
+                            this.$refs.notification.cancelNotification( prep );
+                            this.$refs.notification.createNotification( 'Please confirm your email address to proceed', 10, 'error', 'high' );
+                        }
                     } );
                 }
             } ).catch( err => {

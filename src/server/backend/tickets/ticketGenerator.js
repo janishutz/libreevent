@@ -176,7 +176,7 @@ class TicketGenerator {
                                         'eventName': this.events[ event ][ 'name' ],
                                         'locationAndTime': new Date( this.events[ event ][ 'date' ] ).toLocaleString(),
                                         'ticketName': order[ event ][ ticket ][ 'name' ], 
-                                        'ticketQRCode': ord[ 0 ].order_name + '_' + order[ event ][ ticket ][ 'id' ],
+                                        'ticketQRCode': ord[ 0 ].order_name + '_' + event + '-' + order[ event ][ ticket ][ 'id' ],
                                     } ];
                                     const page = await pdfLib.PDFDocument.load( await pdfme.generate( { 'template': template, 'inputs': data } ) );
                                     const p = await doc.copyPages( page, page.getPageIndices() );
