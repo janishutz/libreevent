@@ -192,7 +192,6 @@
     import notifications from '@/components/notifications/notifications.vue';
     import popups from '@/components/notifications/popups.vue';
     import PictureInput from 'vue-picture-input';
-    // TODO: Save info if draft or live
 
     export default {
         name: 'TicketsDetailsView',

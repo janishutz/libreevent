@@ -29,11 +29,11 @@ class POSTHandler {
                         }
                     }
 
-                    console.log( this.ticketTotals );
+                    // console.log( this.ticketTotals );
                     // for ( let order in this.allSelectedSeats ) {
                         
                     // }
-                    console.log( this.allSelectedSeats );
+                    // console.log( this.allSelectedSeats );
                 } );
             } );
         } );

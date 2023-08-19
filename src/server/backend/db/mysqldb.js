@@ -65,7 +65,7 @@ class SQLDB {
         } );
         this.sqlConnection.query( 'CREATE TABLE libreevent_users ( account_id INT ( 10 ) NOT NULL AUTO_INCREMENT, email TINYTEXT NOT NULL, pass TEXT, name TEXT, first_name TEXT, two_fa TINYTEXT, user_data VARCHAR( 60000 ), mail_confirmed TINYTEXT, marketing TINYTEXT, PRIMARY KEY ( account_id ) ) ENGINE=INNODB;', ( error ) => {
             if ( error ) if ( error.code !== 'ER_TABLE_EXISTS_ERROR' ) throw error;
-            this.sqlConnection.query( 'CREATE TABLE libreevent_orders ( order_id INT ( 10 ) NOT NULL AUTO_INCREMENT, order_name TINYTEXT, account_id INT ( 10 ) NOT NULL, tickets VARCHAR( 60000 ), processed TINYTEXT, PRIMARY KEY ( order_id ), FOREIGN KEY ( account_id ) REFERENCES libreevent_users( account_id ) ) ENGINE=INNODB;', ( error ) => {
+            this.sqlConnection.query( 'CREATE TABLE libreevent_orders ( order_id INT ( 10 ) NOT NULL AUTO_INCREMENT, order_name TINYTEXT, account_id INT ( 10 ) NOT NULL, tickets VARCHAR( 60000 ), processed TINYTEXT, timestamp TINYTEXT, PRIMARY KEY ( order_id ), FOREIGN KEY ( account_id ) REFERENCES libreevent_users( account_id ) ) ENGINE=INNODB;', ( error ) => {
                 if ( error ) if ( error.code !== 'ER_TABLE_EXISTS_ERROR' ) throw error;
                 this.sqlConnection.query( 'CREATE TABLE libreevent_admin ( account_id INT NOT NULL AUTO_INCREMENT, email TINYTEXT, pass TEXT, permissions VARCHAR( 1000 ), username TINYTEXT, two_fa TINYTEXT, PRIMARY KEY ( account_id ) );', ( error ) => {
                     if ( error ) if ( error.code !== 'ER_TABLE_EXISTS_ERROR' ) throw error;

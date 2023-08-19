@@ -10,8 +10,8 @@
 <template>
     <div>
         <!-- <h2>Setup check</h2> -->
-        <!-- TODO: Maybe add -->
-        <!-- TODO: call config check of payment + check if events are deployed -->
+        <!-- TODO: FUTURE add -->
+        <!-- call config check of payment + check if events are deployed -->
         <h2>Settings</h2>
         <p>Changing any of these settings requires a restart of libreevent.</p>
         <p>Currency codes used must be valid ISO 4217 codes. Read more on <a href="https://libreevent.janishutz.com/docs/admin-panel/settings#currency" target="_blank">this page</a> of the documentation <!-- https://en.wikipedia.org/wiki/ISO_4217#List_of_ISO_4217_currency_codes"--></p>
@@ -269,7 +269,6 @@
         }
     };
     // TODO: Load gateways and settings in general from server.
-
 </script>
 
 

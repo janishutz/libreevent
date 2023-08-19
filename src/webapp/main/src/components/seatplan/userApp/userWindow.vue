@@ -162,7 +162,7 @@
                 }
 
                 this.seatChecks();
-                // TODO: Trim scroll box to about 200px more than seatplan size
+                // TODO: FUTURE Trim scroll box to about 200px more than seatplan size
                 sessionStorage.setItem( 'seatplan', JSON.stringify( this.scaleDown( this.draggables ) ) );
                 window.addEventListener( 'visibilitychange', ( e ) => {
                     this.seatPlanInit();

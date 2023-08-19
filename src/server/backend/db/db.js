@@ -36,6 +36,16 @@ module.exports.getDataSimple = ( db, column, searchQuery ) => {
     } );
 };
 
+module.exports.getData = ( db ) => {
+    return new Promise( ( resolve, reject ) => {
+        dbh.query( { 'command': 'getAllData' }, dbRef[ db ] ).then( data => {
+            resolve( data );
+        } ).catch( error => {
+            reject( error );
+        } );
+    } );
+};
+
 module.exports.writeDataSimple = ( db, column, searchQuery, data ) => {
     return new Promise( ( resolve, reject ) => {
         dbh.query( { 'command': 'checkDataAvailability', 'property': column, 'searchQuery': searchQuery }, dbRef[ db ] ).then( res => {

@@ -230,7 +230,6 @@ export default {
         }
     },
     methods: {
-        // TODO: Load categories from server
         loadInternal () {
             for ( let value in this.draggables ) {
                 this.internal[ value ] = {};

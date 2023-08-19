@@ -33,9 +33,19 @@ class TicketGenerator {
             this.events = events;
         } );
         this.runningTickets = {};
+        db.getData( 'orders' ).then( orders => {
+            for ( let order in orders ) {
+                if ( orders[ order ][ 'processed' ] != 'true' ) {
+                    this.ticketQueue[ this.jobId ] = { 'order': orders[ order ][ 'order_name' ] };
+                    this.jobId += 1;
+                }
+            }
+            if ( this.jobId > 0 ) {
+                this.queueHandler();
+            }
+        } );
     }
 
-    // TODO: continue processing once back online
     generateTickets ( order ) {
         this.ticketQueue[ this.jobId ] = { 'order': order };
         this.runningTickets[ order.tok ] = 'processing';
@@ -96,7 +106,6 @@ class TicketGenerator {
                 } ).catch( error => {
                     console.error( '[ PDF GENERATOR ] ERROR: ' + error );
                     this.isRunning = false;
-                    // TODO: Add to FAILED db
                 } );
             }
         }

@@ -75,9 +75,13 @@ class GETHandler {
             } else if ( call === 'getCurrency' ) {
                 resolve( this.settings.currency );
             } else if ( call === 'getAdminAccounts' ) {
-                // TODO: Finish
+                db.getData( 'admin' ).then( data => {
+                    resolve( data );
+                } ).catch( err => {
+                    reject( { 'code': 500, 'message': 'ERR_DB: ' + err } );
+                } );
             } else if ( call === 'getPaymentGatewaySettings' ) {
-                // TODO: Finish
+                // TODO: Finish with plugin manager
             } else if ( call === 'getSettings' ) {
                 resolve( this.settings );
             } else {
