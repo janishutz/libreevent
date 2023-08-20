@@ -66,10 +66,14 @@
             this.event[ 'banner' ] = localStorage.getItem( 'url' ) + '/eventAssets/' + this.eventID + '-banner.jpg';
             this.event[ 'logo' ] = localStorage.getItem( 'url' ) + '/eventAssets/' + this.eventID + '-logo.jpg';
             this.event[ 'banner' ] = localStorage.getItem( 'url' ) + '/otherAssets/logo.png';
+            const eventData = JSON.parse( sessionStorage.getItem( 'ticketData' ) );
+            this.event.name = eventData[ 'name' ];
+            this.event.description = eventData[ 'description' ];
+            this.event.location = eventData[ 'locationName' ];
         },
         data() {
             return {
-                event: { 'name': 'TestEvent', 'description': 'This is a description for the TestEvent to test multiline support and proper positioning of the Fields', 'location': 'test', 'date': '2023-07-15', 'currency': 'CHF', 'categories': { '1': { 'price': { '1':25, '2':35 }, 'bg': 'black', 'fg': 'white', 'name': 'Category 1' }, '2': { 'price': { '1':15, '2':20 }, 'bg': 'green', 'fg': 'white', 'name': 'Category 2' } }, 'ageGroups': { '1':{ 'id': 1, 'name':'Child', 'age':'0 - 15.99' }, '2':{ 'id': 2, 'name': 'Adult' } }, 'maxTickets': 2 },
+                event: {},
             }
         }
     };

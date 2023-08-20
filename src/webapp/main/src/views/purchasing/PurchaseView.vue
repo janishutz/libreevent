@@ -302,6 +302,9 @@ export default {
                             this.$refs.notification.createNotification( 'Please confirm your email address to proceed', 10, 'error', 'high' );
                         }
                     } );
+                } else {
+                    this.$refs.notification.cancelNotification( prep );
+                    this.$refs.notification.createNotification( 'An error occurred during preparation of payments. Please try again.', 10, 'error', 'high' );
                 }
             } ).catch( err => {
                 console.error( err );

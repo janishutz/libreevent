@@ -91,7 +91,7 @@
         methods: {
             setActiveTicket ( id ) {
                 sessionStorage.setItem( 'selectedTicket', id );
-                sessionStorage.setItem( 'ticketData', { 'description': this.events[ id ][ 'description' ], 'name': this.events[ id ][ 'name' ], 'locationName': this.events[ id ][ 'locationName' ] } );
+                sessionStorage.setItem( 'ticketData', JSON.stringify( { 'description': this.events[ id ][ 'description' ], 'name': this.events[ id ][ 'name' ], 'locationName': this.events[ id ][ 'locationName' ] } ) );
                 sessionStorage.setItem( 'hasSeatplan', this.events[ id ][ 'hasSeatplan' ] );
             },
             loadEvents () {
