@@ -30,13 +30,15 @@ module.exports = ( app, settings ) => {
                     delete dat[ 'pass' ];
                     response.send( { 'data': dat, 'status': true } );
                 } else {
-                    response.send( { 'data': 'This user does not exist', 'status': false } );
+                    response.status( 404 ).send( { 'data': 'This user does not exist', 'status': false } );
                 }
             } ).catch( () => {
-                response.send( { 'data': 'There was an error reading data from the database. If this error persists, please contact the administrators', 'status': false } );
+                console.log( 'dbError' );
+                response.status( 500 ).send( { 'data': 'There was an error reading data from the database. If this error persists, please contact the administrators', 'status': false } );
             } );
         } else {
-            response.status( 403 ).send( path.join( __dirname + '/../ui/en/errors/403.html' ) );
+            console.log( 'unauthorised' );
+            response.status( 403 ).sendFile( path.join( __dirname + '/../ui/en/errors/403.html' ) );
         }
     } );
 

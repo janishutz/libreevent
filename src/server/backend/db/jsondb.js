@@ -102,15 +102,19 @@ class JSONDB {
             */
             
             if ( operation.command === 'getAllData' ) {
-                resolve( this.db[ table ] );
+                let ret = [];
+                for ( let entry in this.db[ table ] ) {
+                    ret.push( this.db[ table ][ entry ] );
+                }
+                resolve( ret );
             } else if ( operation.command === 'getFilteredData' || operation.command === 'checkDataAvailability' ) {
-                let ret = {};
+                let ret = [];
                 for ( let entry in this.db[ table ] ) {
                     if ( this.db[ table ][ entry ][ operation.property ] == operation.searchQuery ) {
-                        ret[ entry ] = this.db[ table ][ entry ];
+                        ret.push( this.db[ table ][ entry ] );
                     }
                 }
-                return ret;
+                resolve( ret );
             } else if ( operation.command === 'addData' ) {
                 this.dbIndex[ table ] += 1;
                 this.db[ table ][ this.dbIndex[ table ] ] = operation.data;

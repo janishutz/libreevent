@@ -45,7 +45,7 @@
         },
         created () {
             // TODO: Also get all orders of user (using join functions)
-            fetch( '/user/details' ).then( res => {
+            fetch( localStorage.getItem( 'url' ) + '/user/details' ).then( res => {
                 if ( res.status === 200 ) {
                     res.json().then( data => {
                         if ( data.status ) {
@@ -62,11 +62,13 @@
                             this.$router.push( '/login' );
                         }
                     } );
-                } else if ( res.status === 403 ) {
+                } else if ( res.status === 403 || res.status === 404 || res.status === 500 ) {
                     this.userStore.setUserAuth( false );
                     this.userStore.setUser2fa( false );
                     this.$router.push( '/login' );
                 }
+            } ).catch( err => {
+                console.warn( '[ AccountView ] Loading failed with the following message: ' + err );
             } );
             if ( this.userStore.getUserTwoFACompliant ) {
                 this.userStore.setUser2fa( false );

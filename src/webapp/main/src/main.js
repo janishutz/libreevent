@@ -38,7 +38,7 @@ if ( prod ) {
         } );
     } );
 } else {
-    localStorage.setItem( 'url', 'http://localhost:8081' );
+    localStorage.setItem( 'url', 'http://localhost:8080' );
     userStore.setUserAuth( true );
     userStore.setAdminAuth( true );
     localStorage.setItem( 'name', 'libreevent' );

@@ -9,11 +9,18 @@
 
 <template>
     <div class="details">
-        <div class="top-container" :style="`background: url( ${ event.banner } ); background-repeat: no-repeat; background-size: cover;`">
+        <div class="top-container" :style="`background-image: url( ${ event.banner } ); background-repeat: no-repeat; background-size: cover;`">
+            <img :src="event.logo" alt="Event Logo" class="event-logo">
             <h1 class="eventTitle">{{ event.name }}</h1>
             <router-link to="/tickets" class="back-button"><span class="material-symbols-outlined" style="font-size: 100%;">arrow_back</span></router-link>
         </div>
-        <p>{{ event.description }}</p>
+        <div class="main">
+            <p>{{ event.description }}</p>
+        </div>
+        <aside>
+            <p>{{ event.location }}</p>
+            <p>{{ new Date( event.date ).toLocaleString() }}</p>
+        </aside>
         <router-link to="/tickets/order">Order tickets</router-link>
     </div>
 </template>
@@ -36,6 +43,13 @@
         color: white;
         padding: 1.5% 3%;
         margin: 0;
+    }
+
+    .event-logo {
+        position: absolute;
+        left: 10px;
+        top: calc( 87px + 2.5vh );
+        height: 40vh;
     }
 
     .back-button {
@@ -63,11 +77,11 @@
                 this.$router.push( '/tickets' );
             }
             this.eventID = sessionStorage.getItem( 'selectedTicket' );
-            this.event[ 'banner' ] = localStorage.getItem( 'url' ) + '/eventAssets/' + this.eventID + '-banner.jpg';
-            this.event[ 'logo' ] = localStorage.getItem( 'url' ) + '/eventAssets/' + this.eventID + '-logo.jpg';
-            this.event[ 'banner' ] = localStorage.getItem( 'url' ) + '/otherAssets/logo.png';
+            this.event[ 'banner' ] = localStorage.getItem( 'url' ) + '/eventAssets/' + this.eventID + 'Banner.jpg';
+            this.event[ 'logo' ] = localStorage.getItem( 'url' ) + '/eventAssets/' + this.eventID + 'Logo.jpg';
             const eventData = JSON.parse( sessionStorage.getItem( 'ticketData' ) );
             this.event.name = eventData[ 'name' ];
+            this.event.date = eventData[ 'date' ];
             this.event.description = eventData[ 'description' ];
             this.event.location = eventData[ 'locationName' ];
         },
