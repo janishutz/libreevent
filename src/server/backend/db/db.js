@@ -21,7 +21,7 @@ if ( settings.db === 'mysql' ) {
     dbh = new dbsoft();
     dbh.connect();
 } else {
-    const dbsoft = require( './nedbDB.js' );
+    const dbsoft = require( './jsondb.js' );
     dbh = new dbsoft();
     dbh.connect();
 }
