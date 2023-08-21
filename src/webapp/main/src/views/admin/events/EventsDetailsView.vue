@@ -286,6 +286,7 @@
                 if ( !sessionStorage.getItem( 'selectedTicket' ) ) {
                     this.$router.push( '/admin/events' );
                 }
+                // TODO: Check if there is a live version of the event
                 this.eventID = sessionStorage.getItem( 'selectedTicket' );
                 fetch( localStorage.getItem( 'url' ) + '/admin/getAPI/getLocations' ).then( res => {
                     res.json().then( data => {
