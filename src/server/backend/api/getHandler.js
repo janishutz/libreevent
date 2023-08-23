@@ -53,17 +53,9 @@ class GETHandler {
                     reject( { 'code': 500, 'error': error } );
                 } );
             } else if ( call === 'extendTicketDeletion' ) {
-                db.getDataSimple( 'temp', 'user_id', session.id ).then( res => {
-                    if ( res[ 0 ] ) {
-                        db.writeDataSimple( 'temp', 'user_id', session.id, { 'timestamp': new Date().toString() } );
-                        // TODO: make sure it works, seems to be still unreliable
-                        resolve( 'extended' );
-                    } else {
-                        reject( { 'code': 404, 'error': 'UserNotFound' } );
-                    }
-                } ).catch( error => {
-                    reject( { 'code': 500, 'error': error } );
-                } );
+                db.writeDataSimple( 'temp', 'user_id', session.id, { 'timestamp': new Date().toString() } );
+                // TODO: make sure it works, seems to be still unreliable
+                resolve( 'extended' );
             } else if ( call === 'getName' ) {
                 resolve( { 'name': settings.name } );
             } else {

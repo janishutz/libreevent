@@ -315,6 +315,7 @@ export default {
     },
     created () {
         this.loadData();
+        fetch( localStorage.getItem( 'url' ) + '/getAPI/extendTicketDeletion' );
     }
 };
 </script>

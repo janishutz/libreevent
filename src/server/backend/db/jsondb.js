@@ -124,8 +124,8 @@ class JSONDB {
                 else {
                     for ( let entry in this.db[ table ] ) {
                         if ( this.db[ table ][ entry ][ operation.property ] == operation.searchQuery ) {
-                            for ( let changed in operation.data ) {
-                                this.db[ table ][ entry ][ changed ] = operation.data[ changed ];
+                            for ( let changed in operation.newValues ) {
+                                this.db[ table ][ entry ][ changed ] = operation.newValues[ changed ];
                             }
                         }
                     }
