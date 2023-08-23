@@ -62,6 +62,16 @@ class GETHandler {
                 } ).catch( error => {
                     reject( { 'code': 500, 'error': error } );
                 } );
+            } else if ( call === 'getEventStatus' ) {
+                db.getJSONDataSimple( 'events', query.event ).then( data => {
+                    if ( Object.keys( data ) ) {
+                        resolve( true );
+                    } else {
+                        resolve( false );
+                    }
+                } ).catch( error => {
+                    reject( { 'code': 500, 'error': error } );
+                } );
             } else if ( call === 'getAllEvents' ) {
                 db.getJSONData( 'eventDrafts' ).then( data => {
                     db.getJSONData( 'events' ).then( dat => {

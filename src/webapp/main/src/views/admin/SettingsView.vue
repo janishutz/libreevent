@@ -87,6 +87,41 @@
                             },
                         }
                     },
+                    'currency': { 
+                        'display': 'Currency', 
+                        'id': 'currency', 
+                        'tooltip':'Specify a currency in which the prices are displayed to the customer. Defaults to USD. Please use valid currency codes.', 
+                        'value': 'USD',
+                        'type': 'text',
+                    },
+                    'ticketTimeout': { 
+                        'display': 'Ticket Timeout (s)', 
+                        'id': 'ticketTimeout', 
+                        'tooltip': 'Specify how long the user has to be inactive for their order to be canceled. Time is to be specified in seconds', 
+                        'value': 900,
+                        'type': 'number',
+                        'restrictions': {
+                            'min': 0,
+                            'max': 10000,
+                        }
+                    },
+                    'paymentGateway': { 
+                        'display': 'Select the payment gateway to use', 
+                        'id': 'paymentGateway', 
+                        'tooltip':'With this setting you may change which payment gateway you want to use. You will need to provide details below! If you are not sure what this setting means, please click the link below.', 
+                        'value': 'stripe',
+                        'type': 'select',
+                        'restrictions': {
+                            'payrexx': { 
+                                'displayName':'Payrexx',
+                                'value': 'payrexx'
+                            },
+                            'stripe': { 
+                                'displayName':'Stripe',
+                                'value': 'stripe'
+                            },
+                        }
+                    },
                     // 'addressRequired': { 
                     //     'display': 'Require user to provide address?', 
                     //     'id': 'addressRequired', 
@@ -108,30 +143,6 @@
                     //     'value': false,
                     //     'type': 'toggle',
                     // },
-                    'currency': { 
-                        'display': 'Currency', 
-                        'id': 'currency', 
-                        'tooltip':'Specify a currency in which the prices are displayed to the customer. Defaults to USD. Please use valid currency codes.', 
-                        'value': 'USD',
-                        'type': 'text',
-                    },
-                    'paymentGateway': { 
-                        'display': 'Select the payment gateway to use', 
-                        'id': 'paymentGateway', 
-                        'tooltip':'With this setting you may change which payment gateway you want to use. You will need to provide details below! If you are not sure what this setting means, please click the link below.', 
-                        'value': 'stripe',
-                        'type': 'select',
-                        'restrictions': {
-                            'payrexx': { 
-                                'displayName':'Payrexx',
-                                'value': 'payrexx'
-                            },
-                            'stripe': { 
-                                'displayName':'Stripe',
-                                'value': 'stripe'
-                            },
-                        }
-                    },
                 }
             }
         },
@@ -243,6 +254,7 @@
                             this.settings[ '2fa' ].value = json.twoFA;
                             this.settings.currency.value = json.currency;
                             this.settings.paymentGateway.value = json.payments;
+                            this.settings.ticketTimeout.value = json.ticketTimeout;
                         } );
                     }
                 } );
@@ -250,7 +262,12 @@
             save() {
                 let fetchOptions = {
                     method: 'post',
-                    body: JSON.stringify( { 'twoFA': this.settings[ '2fa' ].value, 'currency': this.settings.currency.value, 'payments': this.settings.paymentGateway.value } ),
+                    body: JSON.stringify( { 
+                        'twoFA': this.settings[ '2fa' ].value, 
+                        'currency': this.settings.currency.value, 
+                        'payments': this.settings.paymentGateway.value,
+                        'ticketTimeout': this.settings.ticketTimeout.value,
+                    } ),
                     headers: {
                         'Content-Type': 'application/json',
                         'charset': 'utf-8'
@@ -268,7 +285,7 @@
             this.loadData();
         }
     };
-    // TODO: Load gateways and settings in general from server.
+    // TODO: Load gateways and settings for gateways from server.
 </script>
 
 

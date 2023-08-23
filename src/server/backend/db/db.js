@@ -208,7 +208,7 @@ const gc = () => {
 */
 setInterval( () => {
     gc();
-}, parseInt( settings.gcInterval ) );
+}, parseInt( settings.gcInterval ) * 1000 );
 
 // TODO: Build garbage collector for DB (parse DB every so often (get from settings) 
 // and delete all items where timestamp is older than a certain amount of time (get from settings))
