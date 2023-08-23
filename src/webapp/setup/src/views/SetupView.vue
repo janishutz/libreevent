@@ -11,6 +11,8 @@
     <div>
         <nav class="setup-nav">
             <router-link to="/setup">Start</router-link> | 
+            <router-link to="/setup/basics" v-if="backendStore.getVisitedSetupPages[ 'basics' ]">Basic setup</router-link>
+            <a v-else class="inactive">Basic Setup</a> | 
             <router-link to="/setup/root" v-if="backendStore.getVisitedSetupPages[ 'root' ]">Root account</router-link>
             <a v-else class="inactive">Root account</a> | 
             <router-link to="/setup/page" v-if="backendStore.getVisitedSetupPages[ 'page' ]">Landing page</router-link>

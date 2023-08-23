@@ -1,5 +1,5 @@
 {
-	"init":true,
+	"init":false,
 	"twoFA":"enforce",
 	"setupKey":"hello world",
 	"twoFAMode":"enhanced",

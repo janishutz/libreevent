@@ -7,7 +7,8 @@
 *
 */
 
-const db = require( '../backend/db/db.js' );
+let db = null;
+// const db = require( '../backend/db/db.js' );
 
 module.exports = ( app, settings ) => {
     /* 
@@ -22,4 +23,4 @@ module.exports = ( app, settings ) => {
         }
     } );
 
-}
+};

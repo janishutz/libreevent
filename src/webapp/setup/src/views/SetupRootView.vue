@@ -23,9 +23,9 @@
             <label for="mail">Email address for 2FA</label><br>
             <input type="email" name="mail" id="mail"><br>
             <label for="password">Password</label><br>
-            <input type="email" name="password" id="password"><br>
+            <input type="password" name="password" id="password"><br>
             <label for="password2">Confirm password</label><br>
-            <input type="email" name="password2" id="password2">
+            <input type="password" name="password2" id="password2">
         </form>
         <button @click="submit()">Continue</button>
     </div>
@@ -46,6 +46,7 @@
         },
         methods: {
             submit () {
+                // TODO: Require confirming email before proceeding
                 this.backendStore.addVisitedSetupPages( 'page', true );
                 this.$router.push( 'page' );
             }

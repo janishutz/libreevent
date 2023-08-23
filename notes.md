@@ -1,7 +1,5 @@
 # Account view:
 
-- Also update data in db when user goes to purchase to prevent clearing during purchase
-
 - Load all orders of customer from db when selecting tickets and save to memory to check if ticket count has been exceeded or not.
 
 

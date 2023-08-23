@@ -26,6 +26,15 @@ export default {
             }
         },
         {
+            path: 'basics',
+            name: 'setupBasics',
+            component: () => import( '../views/BasicSetupView.vue' ),
+            meta: {
+                title: 'Basic setup :: Setup - libreevent',
+                setupAuthRequired: true,
+            }
+        },
+        {
             path: 'root',
             name: 'setupRoot',
             component: () => import( '../views/SetupRootView.vue' ),

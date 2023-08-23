@@ -24,12 +24,15 @@ class POSTHandler {
                     for ( let event in this.events ) {
                         if ( locations[ this.events[ event ][ 'location' ] ] ) {
                             this.ticketTotals[ event ] = locations[ this.events[ event ][ 'location' ] ][ 'save' ][ 'seatInfo' ][ 'count' ];
+                            this.events[ event ][ 'maxTickets' ] = this.ticketTotals[ event ];
                         } else {
                             this.ticketTotals[ event ] = this.events[ event ][ 'maxTickets' ];
                         }
                     }
 
+                    // console.log( this.events );
                     // console.log( this.ticketTotals );
+                    
                     // for ( let order in this.allSelectedSeats ) {
                         
                     // }

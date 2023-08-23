@@ -33,8 +33,8 @@
         },
         methods: {
             setup () {
-                this.backendStore.addVisitedSetupPages( 'root', true );
-                this.$router.push( '/setup/root' );
+                this.backendStore.addVisitedSetupPages( 'basics', true );
+                this.$router.push( '/setup/basics' );
             }
         },
     };

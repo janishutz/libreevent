@@ -12,6 +12,14 @@ let routes = [
             title: 'Welcome to libreevent!'
         }
     },
+    {
+        path: '/admin/login',
+        name: 'adminLogin',
+        component: () => import( '../views/AdminLoginView.vue' ),
+        meta: {
+            title: 'Admin login - Restart required! :: libreevent'
+        }
+    },
 ]
 
 routes.push( setupRoutes );
