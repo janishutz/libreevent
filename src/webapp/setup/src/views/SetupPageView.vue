@@ -8,17 +8,19 @@
 -->
 
 <template>
-    <div>
-        <h1>Landing page</h1>
-        <p>The landing page is the page your customers see when they visit your webpage. You may select a page template <a href="https://libreevent.janishutz.com/docs/homepage/templates" target="_blank">here</a>.</p>
-        <p>You may find more infos about this part <a href="https://libreevent.janishutz.com/docs/setup/setup#page-setup" target="_blank">here</a></p>
+    <div class="wrapper">
+        <div class="content">
+            <h1>Landing page</h1>
+            <p>The landing page is the page your customers see when they visit your webpage. You may select a page template <a href="https://libreevent.janishutz.com/docs/homepage/templates" target="_blank">here</a>.</p>
+            <p>You may find more infos about this part <a href="https://libreevent.janishutz.com/docs/setup/setup#page-setup" target="_blank">here</a></p>
 
-        <label for="template">Choose a template</label><br>
-        <select name="template" id="template" v-for="option in options">
-            <option :value="option.id">{{ option.name }}</option>
-        </select><br>
+            <label for="template">Choose a template</label><br>
+            <select name="template" id="template" v-for="option in options">
+                <option :value="option.id">{{ option.name }}</option>
+            </select><br>
 
-        <button @click="submit()">Continue</button>
+            <button @click="submit()" class="button">Continue</button>
+        </div>
     </div>
 </template>
 

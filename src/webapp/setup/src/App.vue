@@ -7,7 +7,7 @@
 </template>
 
 <style>
-    :root, :root.light {
+    :root {
         --primary-color: #2c3e50;
         --accent-background: rgb(30, 30, 82);
         --secondary-color: white;
@@ -21,21 +21,6 @@
         --highlight-backdrop: rgb(143, 134, 192);
         --hint-color: rgb(174, 210, 221);
         --PI: 3.14159265358979;
-    }
-
-    :root.dark {
-        --primary-color: white;
-        --accent-background: rgb(56, 56, 112);
-        --secondary-color: white;
-        --background-color: rgb(32, 32, 32);
-        --popup-color: rgb(58, 58, 58);
-        --accent-color: #42b983;
-        --hover-color: rgb(83, 83, 83);
-        --accent-background-hover: #4380a8;
-        --overlay-color: rgba(104, 104, 104, 0.575);
-        --inactive-color: rgb(190, 190, 190);
-        --highlight-backdrop: rgb(85, 63, 207);
-        --hint-color: rgb(88, 91, 110);
     }
 
     @media ( prefers-color-scheme: dark ) {
@@ -58,16 +43,6 @@
     ::selection {
         background-color: var( --highlight-backdrop );
         color: var( --secondary-color );
-    }
-
-    #themeSelector {
-        background-color: rgba( 0, 0, 0, 0 );
-        color: var( --primary-color );
-        font-size: 130%;
-        padding: 0;
-        margin: 0;
-        border: none;
-        cursor: pointer;
     }
 
     html,
@@ -135,6 +110,48 @@
 
     .clr-open {
         border: black solid 1px !important;
+    }
+
+    .button {
+        margin-top: 2%;
+        background: linear-gradient(90deg, rgb(30, 36, 131), rgb(87, 66, 184), rgb(105, 115, 214), rgb(30, 36, 131), rgb(41, 128, 109), rgb(146, 50, 47));
+        background-size: 300px;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 20px;
+        cursor: pointer;
+        transition: all 3s;
+        font-size: 75%;
+        color: white;
+        margin-bottom: 5vh;
+        font-size: 125%;
+    }
+
+    .button:hover {
+        background-size: 200%;
+        background-position: -100%;
+    }
+
+    input {
+        width: 50%;
+        padding: 10px;
+        border-radius: 500px;
+        border-style: solid;
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    .wrapper {
+        width: 100vw;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+    }
+
+    .content {
+        width: 60vw;
+        font-size: 110%;
     }
 </style>
 
