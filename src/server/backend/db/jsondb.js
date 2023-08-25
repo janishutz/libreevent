@@ -23,6 +23,7 @@ class JSONDB {
         this.db = data[ 'db' ] ?? { 'libreevent_temp': {}, 'libreevent_admin': {}, 'libreevent_orders': {}, 'libreevent_users': {} };
         this.dbIndex = data[ 'index' ] ?? { 'libreevent_temp': 0, 'libreevent_admin': 0, 'libreevent_orders': 0, 'libreevent_users': 0 };
         this.db[ 'libreevent_temp' ] = {};
+        this.saveToDisk();
         console.log( '[ JSON-DB ] Database initialized successfully' );
         return 'connection';
     }
@@ -119,6 +120,7 @@ class JSONDB {
                 this.dbIndex[ table ] += 1;
                 this.db[ table ][ this.dbIndex[ table ] ] = operation.data;
                 this.saveToDisk();
+                resolve( true );
             } else if ( operation.command === 'updateData' ) {
                 if ( !operation.property || !operation.searchQuery ) reject( 'Refusing to run destructive command: Missing Constraints' );
                 else {
@@ -131,6 +133,7 @@ class JSONDB {
                     }
                 }
                 this.saveToDisk();
+                resolve( true );
             } else if ( operation.command === 'deleteData' ) {
                 if ( !operation.property || !operation.searchQuery ) reject( 'Refusing to run destructive command: Missing Constraints' );
                 else {
@@ -141,6 +144,7 @@ class JSONDB {
                     }
                 }
                 this.saveToDisk();
+                resolve( true );
             } else if ( operation.command === 'InnerJoin' ) {
                 // TODO: Finish those when actually needed
             } else if ( operation.command === 'LeftJoin' ) {

@@ -16,13 +16,14 @@
                     <tr>
                         <td>
                             <label for="mail">Email</label><br>
-                            <input type="email" v-model="formData[ 'mail' ]" name="mail" id="mail" required><br><br>
+                            <input type="email" v-model="formData[ 'mail' ]" name="mail" id="mail" required @keyup="emailLiveChecker()"><br><br>
                         </td>
                         <td>
                             <label for="country">Country</label><br>
                             <input type="text" v-model="formData[ 'country' ]" name="country" id="country" required><br><br>
                         </td>
                     </tr>
+                    <p v-if="emailStatus" class="email-status">{{ emailStatus }}</p>
                     <tr>
                         <td>
                             <label for="firstName">First name</label><br>
@@ -68,7 +69,8 @@
     export default {
         data () {
             return {
-                formData: {}
+                formData: {},
+                emailStatus: '',
             }
         },
         components: {
@@ -78,6 +80,58 @@
             ...mapStores( useUserStore )
         },
         methods: {
+            emailLiveChecker () {
+                setTimeout( () => {
+                    if ( this.checkEmail() ) {
+                        this.emailStatus = '';
+                    } else {
+                        this.emailStatus = 'Invalid email address';
+                    }
+                }, 100 );
+            },
+            checkEmail () {
+                const mail = this.formData.mail ?? '';
+                let stat = { 'atPos': 0, 'topLevelPos': 0 };
+                for ( let l in mail ) {
+                    if ( stat[ 'atPos' ] > 0 ) {
+                        if ( mail[ l ] === '@' ) {
+                            return false;
+                        } else if ( mail[ l ] === '.' ) {
+                            if ( stat[ 'topLevelPos' ] > 0 ) {
+                                if ( l > stat[ 'topLevelPos' ] + 2 ) {
+                                    stat[ 'topLevelPos' ] = parseInt( l );
+                                } else { 
+                                    return false;
+                                }
+                            } else {
+                                if ( l > stat[ 'atPos' ] + 2 ) {
+                                    stat[ 'topLevelPos' ] = parseInt( l );
+                                } else {
+                                    return false;
+                                }
+                            }
+                        } else if ( !( /[a-z]/.test( mail[ l ] ) || /[A-Z]/.test( mail[ l ] ) || /[1-9]/.test( mail[ l ] ) ) ) { 
+                            return false 
+                        }
+                    } else {
+                        if ( mail[ l ] === '@' ) {
+                            if ( l > 2 ) {
+                                stat[ 'atPos' ] = parseInt( l );
+                            } else {
+                                return false;
+                            }
+                        } else if ( !( /[a-z]/.test( mail[ l ] ) || /[A-Z]/.test( mail[ l ] ) || /[1-9]/.test( mail[ l ] ) || mail[ l ] === '.' ) ) {
+                            return false;
+                        }
+                    }
+                    
+                }
+                if ( mail.length > stat[ 'topLevelPos' ] + 2 && stat[ 'topLevelPos' ] > 0 && stat[ 'atPos' ] > 0 ) {
+                    return true;
+                } else {
+                    return false;
+                }
+            },
             signup () {
                 if ( !this.formData.mail ) {
                     this.$refs.notification.createNotification( 'An email address is required to sign up', 5, 'error', 'normal' );
@@ -112,8 +166,9 @@
                         'charset': 'utf-8'
                     }
                 };
+                console.log( 'signup initiated' )
                 fetch( localStorage.getItem( 'url' ) + '/user/signup', fetchOptions ).then( res => {
-                    console.log( res );
+                    console.log( res )
                     res.text().then( status => {
                         if ( status === 'ok' ) {
                             this.$refs.notification.cancelNotification( progress );
@@ -138,6 +193,13 @@
 </script>
 
 <style scoped>
+    .email-status {
+        margin-top: -10px;
+        color: red;
+        font-style: italic;
+        margin-bottom: 20px;
+    }
+
     .login {
         background-color: green;
         width: 100%;

@@ -155,7 +155,15 @@ module.exports = ( app, settings ) => {
                         mailManager.sendMail( request.body.mail, await twoFA.generateSignupEmail( tok, settings.yourDomain, settings.name ), 'Confirm your email', settings.mailSender );
                     } )();
                     pwdmanager.hashPassword( request.body.password ).then( hash => {
-                        db.writeDataSimple( 'users', 'email', request.body.mail, { 'email': request.body.mail, 'pass': hash, 'first_name': request.body.firstName, 'name': request.body.name, 'two_fa': 'disabled', 'user_data': JSON.stringify( { 'country': request.body.country } ), 'marketing': request.body.newsletter ? generator.generateToken( 60 ) : null } ).then( () => {
+                        db.writeDataSimple( 'users', 'email', request.body.mail, { 
+                            'email': request.body.mail, 
+                            'pass': hash, 
+                            'first_name': request.body.firstName, 
+                            'name': request.body.name, 
+                            'two_fa': 'disabled', 
+                            'user_data': JSON.stringify( { 'country': request.body.country } ), 
+                            'marketing': request.body.newsletter ? generator.generateToken( 60 ) : null 
+                        } ).then( () => {
                             request.session.loggedInUser = true;
                             request.session.username = request.body.mail;
                             response.send( 'ok' );
