@@ -15,9 +15,12 @@
             <p>You may find more infos about this part <a href="https://libreevent.janishutz.com/docs/setup/setup#page-setup" target="_blank">here</a></p>
 
             <label for="template">Choose a template</label><br>
-            <select name="template" id="template" v-for="option in options">
+            <select name="template" id="template" v-for="option in options" :key="option.id">
                 <option :value="option.id">{{ option.name }}</option>
             </select><br>
+
+            <label for="name">Name of the website</label><br>
+            <input type="text" name="name" id="name" v-model="websiteName"><br>
 
             <button @click="submit()" class="button">Continue</button>
         </div>
@@ -32,6 +35,7 @@
         data () {
             return {
                 options: { 'default': { 'id': 'default', 'name': 'Default' } },
+                websiteName: 'libreevent',
             }
         },
         computed: {
