@@ -141,6 +141,15 @@
         margin-bottom: 20px;
     }
 
+    select {
+        width: 50%;
+        text-align: center;
+        padding: 10px;
+        border-radius: 500px;
+        border-style: solid;
+        background-color: #b4d9ff;
+    }
+
     .wrapper {
         width: 100vw;
         display: flex;

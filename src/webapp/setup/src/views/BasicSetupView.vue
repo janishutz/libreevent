@@ -15,9 +15,14 @@
             <p>You may find more infos about this part <a href="https://libreevent.janishutz.com/docs/setup/setup#basic-setup" target="_blank">here</a></p>
             <h2>Database</h2>
             <p>A database is a piece of software that specializes in storing data. libreevent can use most SQL based databases as well as a custom JSON-based database. You are strongly encouraged to use a SQL based database, as they perform significantly better. Read more 
-                <a href="https://libreevent.janishutz.com/docs/setup/installation#database">here</a>
+                <a href="https://libreevent.janishutz.com/docs/setup/installation#database" target="_blank">here</a>
             </p>
-            <form>
+            <label for="dbType">Database type</label><br>
+            <select name="dbType" id="dbType" v-model="formData.dbType">
+                <option value="mysql">SQL-Database</option>
+                <option value="json">JSON-Database</option>
+            </select>
+            <form v-if="formData.dbType === 'mysql'">
                 <label for="host">Database host name</label><br>
                 <input type="url" name="host" id="host"><br>
                 <label for="database">Database name</label><br>
@@ -30,7 +35,12 @@
                 <input type="number" name="port" id="port" min="1" value="3306" max="65535"><br>
             </form>
             <h2>Email</h2>
+            <p>An email address is required for libreevent to send out mails to users automatically, including their ticket and, in case Two-Factor-Authentication is enabled,
+            a Two-Factor-Authentication email.</p>
+
             <h3>Account</h3>
+            <p>Here you have to enter the connection details for an email account. Most webhosting plans come with email addresses, so you might as well create a new one. 
+            Note that you can customize how the sender of the mail appears down below in the display section.</p>
             <form>
                 <label for="host">SMTP Server</label><br>
                 <input type="url" name="host" id="host"><br>
@@ -42,6 +52,10 @@
                 <input type="password" name="pass" id="pass"><br>
             </form>
             <h3>Display</h3>
+            <p>Here you can adjust how the email sender appears to the customer. This also means, that the email address shown below might receive a response if
+                a customer does not possess the ability to read, which might happen from time to time. All mails contain the information that one should not respond
+                to them.
+            </p>
             <form>
                 <label for="display">Display name (what is shown to user in from field)</label><br>
                 <input type="url" name="display" id="display"><br>
@@ -53,6 +67,12 @@
     </div>
 </template>
 
+<style scoped>
+    #dbType {
+        margin-bottom: 5%;
+    }
+</style>
+
 <script>
     import { useBackendStore } from '@/stores/backendStore.js';
     import { mapStores } from 'pinia';
@@ -60,7 +80,10 @@
     export default {
         data () {
             return {
-                formData: {}
+                formData: {
+                    'dbType': 'mysql',
+
+                },
             }
         },
         computed: {

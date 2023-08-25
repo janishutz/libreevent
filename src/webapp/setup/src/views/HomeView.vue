@@ -11,7 +11,7 @@
     <div class="home">
         <img alt="Libreevent logo" src="../assets/logo.png">
         <h1>Welcome to libreǝvent!</h1>
-        <p>Let's start the setup by entering the setup key below! You may define a setup key in the setupkey.txt file of libreevent. See <a href="https://libreevent.janishutz.com/docs/setup/installation" target="_blank">here</a> for more instructions</p>
+        <p>Let's start the setup by entering the setup key below! You may define a setup key in the <i>setupkey.txt</i> file of libreevent. See <a href="https://libreevent.janishutz.com/docs/setup/installation" target="_blank">here</a> for more instructions</p>
         <form>
             <label for="key">Your setup key</label><br>
             <input type="text" v-model="formData[ 'key' ]" required name="key" id="key">
@@ -47,5 +47,9 @@
         justify-content: center;
         align-items: center;
         flex-direction: column;
+    }
+
+    form {
+        width: 50%;
     }
 </style>

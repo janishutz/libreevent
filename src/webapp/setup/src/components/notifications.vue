@@ -16,7 +16,7 @@
 
 <script>
     export default {
-        name: 'notifications',
+        name: 'notificationsAPI',
         props: {
             location: {
                 type: String,
