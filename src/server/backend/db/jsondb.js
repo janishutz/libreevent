@@ -24,6 +24,7 @@ class JSONDB {
         this.dbIndex = data[ 'index' ] ?? { 'libreevent_temp': 0, 'libreevent_admin': 0, 'libreevent_orders': 0, 'libreevent_users': 0 };
         this.db[ 'libreevent_temp' ] = {};
         this.saveToDisk();
+        console.log( this.db );
         console.log( '[ JSON-DB ] Database initialized successfully' );
         return 'connection';
     }
@@ -38,9 +39,11 @@ class JSONDB {
     }
 
     save () {
-        fs.writeFile( path.join( __dirname + '/data/db.json' ), JSON.stringify( this.db ), ( err ) => {
+        fs.writeFile( path.join( __dirname + '/data/db.json' ), JSON.stringify( { 'db': this.db, 'index': this.dbIndex } ), ( err ) => {
             if ( err ) console.error( '[ JSON-DB ] An error occurred during saving: ' + err );
             this.isSaving = false;
+            console.log( 'afterSaving' );
+            console.log( this.db );
             if ( this.awaitingSaving ) {
                 this.saveToDisk();
             }
@@ -48,13 +51,15 @@ class JSONDB {
     }
 
     async resetDB () {
-        this.db = {};
-        fs.writeFile( path.join( __dirname + '/data/db.json' ), JSON.stringify( this.db ) );
+        this.db = { 'libreevent_temp': {}, 'libreevent_admin': {}, 'libreevent_orders': {}, 'libreevent_users': {} };
+        this.dbIndex = { 'libreevent_temp': 0, 'libreevent_admin': 0, 'libreevent_orders': 0, 'libreevent_users': 0 };
+        fs.writeFile( path.join( __dirname + '/data/db.json' ), JSON.stringify( { 'db': this.db, 'index': this.dbIndex } ) );
     }
 
     async setupDB () {
         this.db = { 'libreevent_temp': {}, 'libreevent_admin': {}, 'libreevent_orders': {}, 'libreevent_users': {} };
-        fs.writeFile( path.join( __dirname + '/data/db.json' ), JSON.stringify( this.db ) );
+        this.dbIndex = { 'libreevent_temp': 0, 'libreevent_admin': 0, 'libreevent_orders': 0, 'libreevent_users': 0 };
+        fs.writeFile( path.join( __dirname + '/data/db.json' ), JSON.stringify( { 'db': this.db, 'index': this.dbIndex } ) );
     }
 
     query ( operation, table ) {
@@ -124,9 +129,11 @@ class JSONDB {
             } else if ( operation.command === 'updateData' ) {
                 if ( !operation.property || !operation.searchQuery ) reject( 'Refusing to run destructive command: Missing Constraints' );
                 else {
+                    console.log( operation );
                     for ( let entry in this.db[ table ] ) {
                         if ( this.db[ table ][ entry ][ operation.property ] == operation.searchQuery ) {
                             for ( let changed in operation.newValues ) {
+                                console.log( this.db[ table ][ entry ] );
                                 this.db[ table ][ entry ][ changed ] = operation.newValues[ changed ];
                             }
                         }
