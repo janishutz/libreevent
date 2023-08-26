@@ -157,6 +157,11 @@
                     this.$refs.notification.createNotification( 'Please provide your first and last name!', 5, 'error', 'normal' );
                     return;
                 }
+
+                if ( !this.checkEmail() ) {
+                    this.$refs.notification.createNotification( 'This email address is not an email address', 5, 'error', 'normal' );
+                    return;
+                }
                 let progress = this.$refs.notification.createNotification( 'Signing up...', 20, 'progress', 'normal' );
                 let fetchOptions = {
                     method: 'post',
@@ -166,9 +171,7 @@
                         'charset': 'utf-8'
                     }
                 };
-                console.log( 'signup initiated' )
                 fetch( localStorage.getItem( 'url' ) + '/user/signup', fetchOptions ).then( res => {
-                    console.log( res )
                     res.text().then( status => {
                         if ( status === 'ok' ) {
                             this.$refs.notification.cancelNotification( progress );

@@ -156,7 +156,9 @@
                                     }
                                 }
                             } else {
-                                this.proceed();
+                                if ( confirm( 'Do you really want to proceed without having your password checked?' ) ) {
+                                    this.proceed();
+                                }
                             }
                         } else {
                             this.$refs.notification.createNotification( 'Passwords do not match', 10, 'error', 'normal' );

@@ -13,6 +13,12 @@
             <h1>Basic Setup</h1>
             <p>To make setting up the database and email accounts easier, you can enter the required values below.</p>
             <p>You may find more infos about this part <a href="https://libreevent.janishutz.com/docs/setup/setup#basic-setup" target="_blank">here</a></p>
+
+            <h2>General information</h2>
+            <label for="name">Name of the website</label><br>
+            <input type="text" name="name" id="name" v-model="websiteName"><br>
+            
+
             <h2>Database</h2>
             <p>A database is a piece of software that specializes in storing data. libreevent can use most SQL based databases as well as a custom JSON-based database. You are strongly encouraged to use a SQL based database, as they perform significantly better. Read more 
                 <a href="https://libreevent.janishutz.com/docs/setup/installation#database" target="_blank">here</a>
