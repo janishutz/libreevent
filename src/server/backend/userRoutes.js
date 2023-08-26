@@ -26,8 +26,12 @@ module.exports = ( app, settings ) => {
         if ( request.session.loggedInUser ) {
             db.getDataSimple( 'users', 'email', request.session.username ).then( data => {
                 if ( data[ 0 ] ) {
-                    let dat = data[ 0 ];
-                    delete dat[ 'pass' ];
+                    let dat = {};
+                    for ( let element in data[ 0 ] ) {
+                        if ( element === 'pass' ) {
+                            dat[ element ] = data[ 0 ][ element ];
+                        }
+                    }
                     response.send( { 'data': dat, 'status': true } );
                 } else {
                     response.status( 404 ).send( { 'data': 'This user does not exist', 'status': false } );
