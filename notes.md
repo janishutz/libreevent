@@ -2,6 +2,8 @@
 
 - Load all orders of customer from db when selecting tickets and save to memory to check if ticket count has been exceeded or not.
 
+- fix ticket counting
+
 
 - Update files to import when deploying for included json files instead of secret.json files
 

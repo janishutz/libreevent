@@ -47,6 +47,19 @@ To do this run the following command when starting libreevent:
 console.log( '[ Server ] loading settings' );
 const settings = JSON.parse( fs.readFileSync( path.join( __dirname + '/config/settings.config.json' ) ) );
 
+
+// Route for static html file for start page (page is compiled using
+// Vue SSR and gets its support files (e.g. CSS and JS files) from 
+// the /home/supportFiles/:file route plus its assets from the /otherAssets/:file
+// route).
+
+app.get( '/', ( req, res ) => {
+    res.sendFile( path.join( __dirname + '/ui/home/active/en/index.html' ) );
+} );
+
+
+// Set up static routes for static file serving (performance wise not
+// that good, but way easier to set up)
 console.log( '[ Server ] Setting up static routes' );
 if ( settings.init ) {
     app.use( express.static( 'webapp/main/dist' ) );
@@ -84,6 +97,8 @@ if ( settings.init ) {
     file = path.join( __dirname + '/webapp/setup/dist/index.html' );
 }
 
+// handling of any unknown route. Returns the SPA index.html file which
+// initiates loading of the SPA
 app.use( ( request, response ) => {
     response.sendFile( file );
 } );
