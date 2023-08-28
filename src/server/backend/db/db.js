@@ -47,7 +47,6 @@ module.exports.getData = ( db ) => {
 };
 
 module.exports.writeDataSimple = ( db, column, searchQuery, data ) => {
-    console.log( 'writingData' );
     return new Promise( ( resolve, reject ) => {
         dbh.query( { 'command': 'checkDataAvailability', 'property': column, 'searchQuery': searchQuery }, dbRef[ db ] ).then( res => {
             if ( res.length > 0 ) {

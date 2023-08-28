@@ -10,11 +10,13 @@
 const db = require( '../../backend/db/db.js' );
 const fs = require( 'fs' );
 const path = require( 'path' );
+const pm = require( '../../backend/plugins/manager.js' );
 
 const letters = [ ',', '{' ];
 
 class POSTHandler {
     constructor ( settings ) {
+        this.pluginManager = new pm( settings );
         this.settings = settings;
     }
 

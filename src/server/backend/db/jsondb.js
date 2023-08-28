@@ -19,7 +19,10 @@ class JSONDB {
     }
 
     connect () {
-        let data = JSON.parse( fs.readFileSync( path.join( __dirname + '/data/db.json' ) ) );
+        let data = {};
+        try {
+            JSON.parse( fs.readFileSync( path.join( __dirname + '/data/db.json' ) ) );
+        } catch ( err ) {}
         this.db = data[ 'db' ] ?? { 'libreevent_temp': {}, 'libreevent_admin': {}, 'libreevent_orders': {}, 'libreevent_users': {} };
         this.dbIndex = data[ 'index' ] ?? { 'libreevent_temp': 0, 'libreevent_admin': 0, 'libreevent_orders': 0, 'libreevent_users': 0 };
         this.db[ 'libreevent_temp' ] = {};

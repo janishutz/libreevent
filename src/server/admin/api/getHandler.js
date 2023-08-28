@@ -8,9 +8,11 @@
 */
 
 const db = require( '../../backend/db/db.js' );
+const pm = require( '../../backend/plugins/manager.js' );
 
 class GETHandler {
     constructor ( settings ) {
+        this.pluginManager = new pm( settings );
         this.settings = settings;
     }
 
@@ -91,7 +93,7 @@ class GETHandler {
                     reject( { 'code': 500, 'message': 'ERR_DB: ' + err } );
                 } );
             } else if ( call === 'getPaymentGatewaySettings' ) {
-                // TODO: Finish with plugin manager
+                pluginManager.loadPaymentGatewaySettings();
             } else if ( call === 'getSettings' ) {
                 resolve( this.settings );
             } else {

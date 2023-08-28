@@ -172,10 +172,13 @@ module.exports = ( app, settings ) => {
                                     }
                                 }
                                 db.writeJSONData( 'booked', booked ).then( () => {
-                                    delete pendingPayments[ sessionReference[ event.data.object.id ][ 'tok' ] ];
-                                } );
-                                db.deleteDataSimple( 'temp', 'user_id', sessionReference[ event.data.object.id ][ 'tok' ] ).catch( error => {
-                                    console.error( '[ STRIPE ] ERROR whilst deleting data from DB: ' + error );
+                                    db.deleteDataSimple( 'temp', 'user_id', sessionReference[ event.data.object.id ][ 'tok' ] ).then( () => {
+                                        delete pendingPayments[ sessionReference[ event.data.object.id ][ 'tok' ] ];
+                                    } ).catch( error => {
+                                        console.error( '[ STRIPE ] ERROR whilst deleting data from DB: ' + error );
+                                    } );
+                                } ).catch( err => {
+
                                 } );
                             } );
                         } );

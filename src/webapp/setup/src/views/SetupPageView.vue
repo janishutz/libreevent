@@ -15,7 +15,7 @@
             <p>You may find more infos about this part <a href="https://libreevent.janishutz.com/docs/setup/setup#page-setup" target="_blank">here</a></p>
 
             <label for="template">Choose a template</label><br>
-            <select name="template" id="template" >
+            <select name="template" id="template">
                 <option v-for="option in options" :key="option.id" :value="option.id">{{ option.name }}</option>
             </select><br>
 
