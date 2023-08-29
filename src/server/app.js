@@ -86,9 +86,10 @@ let file = path.join( __dirname + '/webapp/main/dist/index.html' );
 
 console.log( '[ Server ] loading backend components' );
 if ( settings.init ) {
+    require( './backend/helperRoutes.js' )( app, settings ); // Helper routes
     require( './admin/adminRoutes.js' )( app, settings ); // admin routes
     require( './admin/adminAPIRoutes.js' )( app, settings ); // admin api routes
-    require( './backend/userAPIRoutes.js' )( app, settings ); // admin api routes
+    require( './backend/userAPIRoutes.js' )( app, settings ); // user api routes
     require( './backend/userRoutes.js' )( app, settings ); // user routes
     require( './backend/payments/paymentRoutes.js' )( app, settings ); // payment routes
     require( './backend/plugins/pluginLoader.js' )( app, settings ); // plugin loader

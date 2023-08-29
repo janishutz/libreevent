@@ -11,5 +11,6 @@
 	"maxTickets":10,
 	"currency":"CHF",
 	"gcInterval":300,
-	"ticketTimeout":900
+	"ticketTimeout":900,
+	"startPage": "default"
 }

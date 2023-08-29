@@ -33,6 +33,7 @@ class PluginManager {
     getPluginDetails ( plugin ) {
         return new Promise( ( resolve, reject ) => {
             fs.readFile( path.join( __dirname + '/others/' + plugin + '/plugin.json' ), ( err, file ) => {
+                if ( err ) reject( err );
                 resolve( file );
             } );
         } );
@@ -41,7 +42,9 @@ class PluginManager {
     loadPaymentGatewaySettings () {
         return new Promise( ( resolve, reject ) => {
             fs.readFile( path.join( __dirname + '/payments/' + this.paymentGateway + '/configOptions.json' ), ( err, options ) => {
+                if ( err ) reject( err );
                 fs.readFile( path.join( __dirname + '/payments/' + this.paymentGateway + '/config.payments.json' ), ( err, config ) => {
+                    if ( err ) reject( err );
                     let f = options;
                     for ( let s in f ) {
                         f[ s ][ 'value' ] = config[ s ];
@@ -50,6 +53,10 @@ class PluginManager {
                 } );
             } );
         } );
+    }
+
+    savePaymentGatewaySettings () {
+        
     }
 
     saveSettings ( plugin, settings ) {

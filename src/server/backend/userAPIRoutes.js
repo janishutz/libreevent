@@ -11,7 +11,6 @@ const posth = require( './api/postHandler.js' );
 const geth = require( './api/getHandler.js' );
 const postHandler = new posth();
 const getHandler = new geth();
-const path = require( 'path' );
 const bodyParser = require( 'body-parser' );
 
 module.exports = ( app, settings ) => {
@@ -38,13 +37,5 @@ module.exports = ( app, settings ) => {
         } ).catch( error => {
             res.status( error.code ).send( error.message );
         } );
-    } );
-
-    app.get( '/eventAssets/:image', ( req, res ) => {
-        res.sendFile( path.join( __dirname + '/../assets/events/' + req.params.image ) );
-    } );
-
-    app.get( '/otherAssets/:image', ( req, res ) => {
-        res.sendFile( path.join( __dirname + '/../assets/' + req.params.image ) );
     } );
 };
