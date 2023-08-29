@@ -16,7 +16,7 @@
 
             <h2>General information</h2>
             <label for="name">Name of the website</label><br>
-            <input type="text" name="name" id="name" v-model="websiteName"><br>
+            <input type="text" name="name" id="name" v-model="formData.websiteName"><br>
             
 
             <h2>Database</h2>
@@ -30,15 +30,15 @@
             </select>
             <form v-if="formData.dbType === 'mysql'">
                 <label for="host">Database host name</label><br>
-                <input type="url" name="host" id="host"><br>
+                <input type="url" name="host" id="host" v-model="formData.db.host"><br>
                 <label for="database">Database name</label><br>
-                <input type="text" name="database" id="database"><br>
+                <input type="text" name="database" id="database" v-model="formData.db.database"><br>
                 <label for="user">Database user</label><br>
-                <input type="text" name="user" id="user"><br>
+                <input type="text" name="user" id="user" v-model="formData.db.user"><br>
                 <label for="password">Password</label><br>
-                <input type="password" name="password" id="password"><br>
+                <input type="password" name="password" id="password" v-model="formData.db.password"><br>
                 <label for="port">Database port (default usually fine)</label><br>
-                <input type="number" name="port" id="port" min="1" value="3306" max="65535"><br>
+                <input type="number" name="port" id="port" min="1" max="65535" v-model="formData.db.port"><br>
             </form>
             <h2>Email</h2>
             <p>An email address is required for libreevent to send out mails to users automatically, including their ticket and, in case Two-Factor-Authentication is enabled,
@@ -49,13 +49,13 @@
             Note that you can customize how the sender of the mail appears down below in the display section.</p>
             <form>
                 <label for="host">SMTP Server</label><br>
-                <input type="url" name="host" id="host"><br>
+                <input type="url" name="host" id="host" v-model="formData.email.host"><br>
                 <label for="port">SMTP Port (default usually fine)</label><br>
-                <input type="number" name="port" id="port" value="587" min="1" max="65535"><br>
+                <input type="number" name="port" id="port" min="1" max="65535" v-model="formData.email.port"><br>
                 <label for="user">Email account name</label><br>
-                <input type="email" name="user" id="user"><br>
+                <input type="email" name="user" id="user" v-model="formData.email.user"><br>
                 <label for="pass">Password</label><br>
-                <input type="password" name="pass" id="pass"><br>
+                <input type="password" name="pass" id="pass" v-model="formData.email.pass"><br>
             </form>
             <h3>Display</h3>
             <p>Here you can adjust how the email sender appears to the customer. This also means, that the email address shown below might receive a response if
@@ -64,9 +64,9 @@
             </p>
             <form>
                 <label for="display">Display name (what is shown to user in from field)</label><br>
-                <input type="url" name="display" id="display"><br>
+                <input type="url" name="display" id="display" v-model="formData.display"><br>
                 <label for="dpEmail">Email address to show</label><br>
-                <input type="text" name="dpEmail" id="dpEmail"><br>
+                <input type="text" name="dpEmail" id="dpEmail" v-model="formData.dpEmail"><br>
             </form>
             <button @click="submit()" class="button">Continue</button>
         </div>
@@ -88,7 +88,13 @@
             return {
                 formData: {
                     'dbType': 'mysql',
-
+                    'db': {
+                        'port': 3306,
+                    },
+                    'email': {
+                        'port': 587
+                    },
+                    'websiteName': 'libreevent',
                 },
             }
         },
