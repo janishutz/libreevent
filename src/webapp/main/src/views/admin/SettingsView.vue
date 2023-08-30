@@ -65,6 +65,7 @@
             return {
                 adminAccounts: { 'janis': { 'username': 'janis', 'email': 'info@janishutz.com', 'permissions': [  ] }, 'admin': { 'username': 'admin', 'email': 'development@janishutz.com', 'permissions': [  ] } },
                 currentlyOpenMenu: '',
+                currentPopup: '',
                 settings: { 
                     '2fa': { 
                         'display': 'Require Two-Factor-Authentication of user', 
@@ -148,6 +149,7 @@
         },
         methods: {
             showAccountSettings ( account ) {
+                this.currentPopup = 'account';
                 this.$refs.popup.openPopup( 'Edit user permissions for ' + this.adminAccounts[ account ][ 'username' ], {
                     'pagesSettings': { 
                         'display': 'Modify pages', 
@@ -181,6 +183,7 @@
             , 'settings' );
             },
             showPaymentSettings () {
+                this.currentPopup = 'payments';
                 fetch( '/admin/getAPI/getPaymentGatewaySettings' ).then( res => {
                     if ( res.status === 200 ) {
                         res.json().then( json => {
@@ -192,6 +195,7 @@
                 } )
             },
             createAccount() {
+                this.currentPopup = 'createAccount';
                 this.$refs.popup.openPopup( 'Create new admin user', {
                     'role': { 
                         'display': 'User role',
@@ -245,7 +249,33 @@
                     console.log( 'user canceled' );
                     return;
                 } else if ( data.status === 'settings' ) {
-                    console.log( 'settings processing' )
+                    console.log( this.currentPopup );
+                    if ( this.currentPopup === 'account' ) { 
+                        console.log( 'settings processing' )
+                    } else if ( this.currentPopup === 'payments' ) {
+                        for ( let setting in data.data ) {
+                            if ( !data.data[ setting ] ) {
+                                this.$refs.notification.createNotification( 'Settings for the payment gateway are missing!', 10, 'error', 'normal' );
+                                this.showPaymentSettings();
+                                return;
+                            }
+                        }
+                        let fetchOptions = {
+                            method: 'post',
+                            body: JSON.stringify( data.data ),
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'charset': 'utf-8'
+                            }
+                        };
+                        fetch( '/admin/API/updatePaymentGatewaySettings', fetchOptions ).then( res => {
+                            if ( res.status === 200 ) {
+                                this.$refs.notification.createNotification( 'Payment gateway settings saved!', 5, 'ok', 'normal' );
+                            }
+                        } )
+                    } else if ( this.currentPopup === 'createAccount' ) {
+
+                    }
                 } else {
                     console.log( 'hi' );
                 }

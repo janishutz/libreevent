@@ -17,26 +17,17 @@ const path = require( 'path' );
 class PluginManager {
     constructor ( settings ) {
         this.paymentGateway = settings.payments;
-        this.allPlugins = {};
+        this.pluginDetails = {};
         fs.readdir( path.join( __dirname + '/others' ), ( err, ls ) => {
             for ( let file in ls ) {
-                const pluginSettings = JSON.parse( fs.readFileSync( path.join( __dirname + '/others/' + ls[ file ] + '/plugin.json' ) ) );
-                this.allPlugins[ ls[ file ] ] = pluginSettings;
+                const pluginDetail = JSON.parse( fs.readFileSync( path.join( __dirname + '/others/' + ls[ file ] + '/plugin.json' ) ) );
+                this.pluginDetails[ ls[ file ] ] = pluginDetail;
             }
         } );
     }
 
     getPlugins () {
-        
-    }
-
-    getPluginDetails ( plugin ) {
-        return new Promise( ( resolve, reject ) => {
-            fs.readFile( path.join( __dirname + '/others/' + plugin + '/plugin.json' ), ( err, file ) => {
-                if ( err ) reject( err );
-                resolve( file );
-            } );
-        } );
+        return this.pluginDetails;
     }
 
     loadPaymentGatewaySettings () {
@@ -63,14 +54,13 @@ class PluginManager {
         } );
     }
 
-    savePaymentGatewaySettings () {
+    savePaymentGatewaySettings ( settings ) {
         return new Promise( ( resolve, reject ) => {
-            
+            fs.writeFile( path.join( __dirname + '/payments/' + this.paymentGateway + '/config.payments.json' ), JSON.stringify( settings ), {}, ( err ) => {
+                if ( err ) reject( err );
+                resolve( 'ok' );
+            } );
         } );
-    }
-
-    saveSettings ( plugin, settings ) {
-        
     }
 }
 

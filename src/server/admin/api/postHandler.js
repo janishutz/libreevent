@@ -144,7 +144,11 @@ class POSTHandler {
                 } );
                 resolve( 'ok' );
             } else if ( call === 'updatePaymentGatewaySettings' ) {
-                resolve( 'ok' );
+                this.pluginManager.savePaymentGatewaySettings( data ).then( () => {
+                    resolve( 'ok' );
+                } ).catch( err => {
+                    reject( { 'code': 500, 'message': err } );
+                } );
             } else {
                 reject( { 'code': 404, 'error': 'Route not found' } );
             }

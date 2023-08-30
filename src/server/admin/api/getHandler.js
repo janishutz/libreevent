@@ -100,6 +100,8 @@ class GETHandler {
                 } );
             } else if ( call === 'getSettings' ) {
                 resolve( this.settings );
+            } else if ( call === 'getAllPlugins' ) {
+                resolve( this.pluginManager.getPlugins() );
             } else {
                 reject( { 'code': 404, 'error': 'Route not found' } );
             }
