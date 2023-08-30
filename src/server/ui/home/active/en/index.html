@@ -7,7 +7,13 @@
         <title>libreevent</title>
     </head>
     <body>
-        <nav></nav>
+        <nav>
+            <a href="/">Home</a> |
+            <router-link to="/tickets">Tickets</router-link> |
+            <router-link to="/cart">Cart</router-link> |
+            <router-link to="/account">Account</router-link> |
+            <button @click="changeTheme();" v-html="theme" id="themeSelector"></button>
+        </nav>
         <img src="/otherAssets/logo.png" alt="libreevent logo" class="logo">
         <h1>Welcome to libreevent!</h1>
         <p>No start page has been configured yet! Please configure one either by using the configurator in the settings or by uploading your own HTML page to the correct folder as detailed <a href="https://libreevent.janishutz.com/docs/admin-panel/pages">here</a></p>

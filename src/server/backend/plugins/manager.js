@@ -41,22 +41,32 @@ class PluginManager {
 
     loadPaymentGatewaySettings () {
         return new Promise( ( resolve, reject ) => {
-            fs.readFile( path.join( __dirname + '/payments/' + this.paymentGateway + '/configOptions.json' ), ( err, options ) => {
+            fs.readFile( path.join( __dirname + '/payments/' + this.paymentGateway + '/configOptions.json' ), ( err, optionsBuffer ) => {
                 if ( err ) reject( err );
-                fs.readFile( path.join( __dirname + '/payments/' + this.paymentGateway + '/config.payments.json' ), ( err, config ) => {
+                fs.readFile( path.join( __dirname + '/payments/' + this.paymentGateway + '/config.payments.json' ), ( err, configBuffer ) => {
                     if ( err ) reject( err );
+                    let options, config;
+                    try { 
+                        options = JSON.parse( optionsBuffer );
+                        config = JSON.parse( configBuffer );
+                    } catch ( err ) {
+                        reject( err );
+                        return;
+                    }
                     let f = options;
                     for ( let s in f ) {
                         f[ s ][ 'value' ] = config[ s ];
                     }
-                    resolve( f );
+                    resolve( { 'data': f, 'gateway': this.paymentGateway } );
                 } );
             } );
         } );
     }
 
     savePaymentGatewaySettings () {
-        
+        return new Promise( ( resolve, reject ) => {
+            
+        } );
     }
 
     saveSettings ( plugin, settings ) {

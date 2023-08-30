@@ -143,6 +143,8 @@ class POSTHandler {
                     db.writeJSONData( 'events', updated );
                 } );
                 resolve( 'ok' );
+            } else if ( call === 'updatePaymentGatewaySettings' ) {
+                resolve( 'ok' );
             } else {
                 reject( { 'code': 404, 'error': 'Route not found' } );
             }

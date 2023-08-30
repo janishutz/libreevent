@@ -1,0 +1,16 @@
+{
+    "APIKey": { 
+        "display": "API key", 
+        "id": "APIKey", 
+        "tooltip":"This is the secret key API key you can get from the stripe dashboard. Please make a test purchase (FREE) before you go live!", 
+        "value": "",
+        "type": "text"
+    },
+    "instance": { 
+        "display": "Instance", 
+        "id": "instance", 
+        "tooltip":"Please specify the instance name you used to create the payrexx account. (e.g. libreevent)", 
+        "value": "",
+        "type": "text"
+    }
+}

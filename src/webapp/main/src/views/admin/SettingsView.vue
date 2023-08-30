@@ -27,7 +27,7 @@
             </tr>
         </table>
         <button @click="save()">Save</button>
-        <p>Detailed explanation of payment gateways can be found <a href="https://libreevent.janishutz.com/docs/payments" target="_blank">here</a>. You may install more payment gateway integrations in the plugins section. Only one may be used at any given time.</p>
+        <p>Detailed explanation of payment gateways can be found <a href="https://libreevent.janishutz.com/docs/payments" target="_blank">here</a>. Please note that you need to save the settings before you can edit settings of the payment gateway after changing it.</p>
 
         <div class="admin-settings">
             <h2>Admin Accounts</h2>
@@ -181,8 +181,15 @@
             , 'settings' );
             },
             showPaymentSettings () {
-                // TODO: Load payment gateway settings from server
-                this.$refs.popup.openPopup( 'Payment gateway settings', {}, 'string' );
+                fetch( '/admin/getAPI/getPaymentGatewaySettings' ).then( res => {
+                    if ( res.status === 200 ) {
+                        res.json().then( json => {
+                            this.$refs.popup.openPopup( 'Payment gateway settings for ' + json.gateway, json.data, 'settings' );
+                        } );
+                    } else if ( res.status === 500 ) {
+                        this.$refs.notification.createNotification( 'This payment gateway does not appear to have settings', 10, 'error', 'normal' );
+                    }
+                } )
             },
             createAccount() {
                 this.$refs.popup.openPopup( 'Create new admin user', {

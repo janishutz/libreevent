@@ -93,7 +93,11 @@ class GETHandler {
                     reject( { 'code': 500, 'message': 'ERR_DB: ' + err } );
                 } );
             } else if ( call === 'getPaymentGatewaySettings' ) {
-                pluginManager.loadPaymentGatewaySettings();
+                this.pluginManager.loadPaymentGatewaySettings().then( dat => {
+                    resolve( dat );
+                } ).catch( err => {
+                    reject( { 'code': 500, 'error': err } );
+                } );
             } else if ( call === 'getSettings' ) {
                 resolve( this.settings );
             } else {

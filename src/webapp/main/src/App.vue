@@ -9,7 +9,7 @@
 
 <template>
     <nav>
-        <router-link to="/">Home</router-link> |
+        <a href="/">Home</a> |
         <router-link to="/tickets">Tickets</router-link> |
         <router-link to="/cart">Cart</router-link> |
         <router-link to="/account">Account</router-link> |

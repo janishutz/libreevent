@@ -1,0 +1,16 @@
+{
+    "APIKey": { 
+        "display": "API key", 
+        "id": "APIKey", 
+        "tooltip":"This is the secret key API key you can get from the stripe dashboard. Please make a test purchase (FREE) before you go live!", 
+        "value": "",
+        "type": "text"
+    },
+    "endpointSecret": { 
+        "display": "Webhook endpoint secret", 
+        "id": "endpointSecret", 
+        "tooltip":"Please specify the endpoint secret that you can get from the stripe dashboard when creating the webhook integration", 
+        "value": "",
+        "type": "text"
+    }
+}
