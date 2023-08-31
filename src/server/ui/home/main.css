@@ -84,6 +84,7 @@ html, body {
     color: var( --primary-color );
     background-color: var( --background-color );
     transition: all 0.5s;
+    font-family: Avenir, Helvetica, Arial, sans-serif;
 }
 
 body {

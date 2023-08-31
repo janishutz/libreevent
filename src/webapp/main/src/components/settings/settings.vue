@@ -35,6 +35,16 @@
                 <td v-else-if="setting.type == 'number'">
                     <input type="number" v-model="setting.value" :min="setting.restrictions.min" :max="setting.restrictions.max">
                 </td>
+                <td v-else-if="setting.type == 'password'">
+                    <div v-if="showsPW" style="position: relative;">
+                        <input type="text" v-model="setting.value">
+                        <span class="material-symbols-outlined visibility" @click="togglePasswordVisibility()">visibility_off</span>
+                    </div>
+                    <div v-else style="position: relative;">
+                        <input type="password" v-model="setting.value">
+                        <span class="material-symbols-outlined visibility" @click="togglePasswordVisibility()">visibility</span>
+                    </div>
+                </td>
                 <td v-else-if="setting.type == 'text'">
                     <input type="text" v-model="setting.value">
                 </td>
@@ -54,10 +64,18 @@
 
 <script>
     export default {
+        data () {
+            return {
+                showsPW: false,
+            };
+        },
         props: {
             settings: Object,
         },
         methods: {
+            togglePasswordVisibility () {
+                this.showsPW = !this.showsPW;
+            },
             showInfo ( box ) {
                 $( '#' + box ).stop();
                 $( '#' + box ).fadeIn( 300 );
@@ -71,6 +89,13 @@
 </script>
 
 <style scoped>
+.visibility {
+    font-size: 100%;
+    cursor: pointer;
+    position: relative;
+    margin-left: 3px;
+}
+
 .settings-wrapper {
     width: 100%;
     display: flex;

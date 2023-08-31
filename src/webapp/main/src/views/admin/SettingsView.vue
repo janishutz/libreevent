@@ -32,13 +32,19 @@
         <div class="admin-settings">
             <h2>Admin Accounts</h2>
             <button @click="createAccount()">Create new account</button>
-            <p>Before setting or editing permissions here, please read the corresponding section of the documentation <a href="https://libreevent.janishutz.com/docs/admin-panel/settings/admin-accounts#permissions" target="_blank">here</a>.
-            <br>Usually, the permissions automatically set by the system on account creation should be appropriate. (TIP: Right click for more options)</p>
-            <div v-for="account in adminAccounts" class="account" @click="showAccountSettings( account.username );" title="Edit permissions of this account (right click for more options)" @contextmenu="( e ) => { e.preventDefault(); openRightClickMenu( account.username, e ); }">
-                <div class="location-name">
-                    <h3>{{ account.username }}</h3>
-                    <p>{{ account.email }}</p>
+            <p style="margin-bottom: 0;">Before setting or editing permissions here, please read the corresponding section of the documentation <a href="https://libreevent.janishutz.com/docs/admin-panel/settings/admin-accounts#permissions" target="_blank">here</a>.</p>
+            <p style="margin-top: 0;">Usually, the permissions automatically set by the system on account creation should be appropriate. (TIP: Right click for more options)</p>
+            <div v-if="Object.keys( adminAccounts ).length > 0" class="account-wrapper">
+                <div v-for="account in adminAccounts" class="account" @click="showAccountSettings( account.username );" title="Edit permissions of this account (right click for more options)" @contextmenu="( e ) => { e.preventDefault(); openRightClickMenu( account.username, e ); }">
+                    <div class="location-name">
+                        <h3>{{ account.username }}</h3>
+                        <p>{{ account.email }}</p>
+                    </div>
                 </div>
+            </div>
+            <div v-else class="account-wrapper">
+                <p>No additional admin accounts configured yet.</p>
+                <button @click="createAccount()">Create new account</button>
             </div>
         </div>
         <rightClickMenu ref="rclk" @command="( command ) => { executeCommand( command ) }"></rightClickMenu>
@@ -179,6 +185,13 @@
                         'value': false,
                         'type': 'toggle',
                     },
+                    'pass': { 
+                        'display': 'Password', 
+                        'id': 'pass', 
+                        'tooltip':'Change the password for this user.', 
+                        'value': '',
+                        'type': 'password',
+                    },
                 }
             , 'settings' );
             },
@@ -192,7 +205,7 @@
                     } else if ( res.status === 500 ) {
                         this.$refs.notification.createNotification( 'This payment gateway does not appear to have settings', 10, 'error', 'normal' );
                     }
-                } )
+                } );
             },
             createAccount() {
                 this.currentPopup = 'createAccount';
@@ -231,6 +244,13 @@
                         'tooltip':'Add an email-address for this user', 
                         'value': '',
                         'type': 'text',
+                    },
+                    'pass': { 
+                        'display': 'Password', 
+                        'id': 'pass', 
+                        'tooltip':'Create a password for this user.', 
+                        'value': '',
+                        'type': 'password',
                     },
                 }
             , 'settings' );
@@ -320,6 +340,20 @@
         },
         created () {
             this.loadData();
+            fetch( '/admin/getAPI/getAdminAccounts' ).then( res => {
+                if ( res.status === 200 ) {
+                    res.json().then( json => {
+                        console.log( json );
+                        if ( json.status === 'ok' ) {
+                            for ( let account in json.data ) {
+                                this.adminAccounts[ json.data[ account ][ 'username' ] ] = json.data[ account ];
+                            }
+                        } else {
+                            this.adminAccounts = {};
+                        }
+                    } );
+                }
+            } );
         }
     };
     // TODO: Load gateways and settings for gateways from server.
@@ -327,7 +361,12 @@
 
 
 <style scoped>
-
+    .account-wrapper {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
     .gateway-settings {
         width: 70%;
         text-align: justify;
