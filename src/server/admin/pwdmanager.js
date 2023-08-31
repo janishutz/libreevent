@@ -20,19 +20,27 @@ const db = require( '../backend/db/db.js' );
 
 module.exports.checkpassword = ( username, password ) => {
     return new Promise( resolve => {
-        db.getDataSimple( 'admin', 'email', username ).then( data => {
-            if ( data ) {
-                if ( data[ 0 ] ) {
-                    bcrypt.compare( password, data[ 0 ].pass ).then( res => {
-                        resolve( { 'status': res, 'twoFA': data[ 0 ].two_fa } );
-                    } );
+        if ( username === 'root' ) {
+            db.getJSONData( 'rootAccount' ).then( account => {
+                bcrypt.compare( password, account.pass ).then( res => {
+                    resolve( { 'status': res, 'twoFA': true } );
+                } );
+            } );
+        } else {
+            db.getDataSimple( 'admin', 'email', username ).then( data => {
+                if ( data ) {
+                    if ( data[ 0 ] ) {
+                        bcrypt.compare( password, data[ 0 ].pass ).then( res => {
+                            resolve( { 'status': res, 'twoFA': data[ 0 ].two_fa } );
+                        } );
+                    } else {
+                        resolve( false );
+                    }
                 } else {
                     resolve( false );
                 }
-            } else {
-                resolve( false );
-            }
-        } );
+            } );
+        }
     } );
 };
 

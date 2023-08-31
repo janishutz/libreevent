@@ -88,6 +88,16 @@ class GETHandler {
                 resolve( this.settings.currency );
             } else if ( call === 'getAdminAccounts' ) {
                 db.getData( 'admin' ).then( data => {
+                    if ( data[ 0 ] ) {
+                        resolve( { 'data': data, 'status': 'ok' } );
+                    } else {
+                        resolve( { 'data': {}, 'status': 'empty' } );
+                    }
+                } ).catch( err => {
+                    reject( { 'code': 500, 'message': 'ERR_DB: ' + err } );
+                } );
+            } else if ( call === 'getRootAccountDetails' ) {
+                db.getJSONData( 'rootAccount' ).then( data => {
                     resolve( data );
                 } ).catch( err => {
                     reject( { 'code': 500, 'message': 'ERR_DB: ' + err } );
