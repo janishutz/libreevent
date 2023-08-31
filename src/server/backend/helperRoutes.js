@@ -17,4 +17,8 @@ module.exports = ( app, settings ) => {
     app.get( '/startPage/helperFunction', ( req, res ) => {
         res.sendFile( path.join( __dirname + '/../ui/home/helper.js' ) );
     } );
+
+    app.get( '/startPage/mainStyle', ( req, res ) => {
+        res.sendFile( path.join( __dirname + '/../ui/home/main.css' ) );
+    } );
 };

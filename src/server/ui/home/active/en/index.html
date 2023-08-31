@@ -3,16 +3,20 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <!-- <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"> -->
+        <script defer src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
         <link rel="stylesheet" href="/supportFiles/style.css">
+        <link rel="stylesheet" href="/startPage/mainStyle">
+        <script defer src="/startPage/helperFunction"></script>
         <title>libreevent</title>
     </head>
     <body>
         <nav>
-            <a href="/">Home</a> |
-            <router-link to="/tickets">Tickets</router-link> |
-            <router-link to="/cart">Cart</router-link> |
-            <router-link to="/account">Account</router-link> |
-            <button @click="changeTheme();" v-html="theme" id="themeSelector"></button>
+            <a class="home">Home</a> |
+            <a href="/tickets">Tickets</a> |
+            <a href="/cart">Cart</a> |
+            <a href="/account">Account</a> |
+            <button onclick="changeTheme();" id="themeSelector">&#9789;</button>
         </nav>
         <img src="/otherAssets/logo.png" alt="libreevent logo" class="logo">
         <h1>Welcome to libreevent!</h1>
