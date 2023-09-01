@@ -113,7 +113,7 @@ class POSTHandler {
                     reject( { 'code': 500, 'error': error } );
                 } );
             } else if ( call === 'createAdminAccount' ) {
-                // TODO: Finish
+                db.writeDataSimple( 'admin', 'email', data.email )
             } else if ( call === 'updateAdminAccount' ) {
                 // TODO: Finish
             } else if ( call === 'deleteAdminAccount' ) {

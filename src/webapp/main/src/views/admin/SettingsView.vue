@@ -252,6 +252,27 @@
                         'value': '',
                         'type': 'password',
                     },
+                    'twoFA': { 
+                        'display': 'Two Factor Authentication',
+                        'id': 'twoFA',
+                        'tooltip':'With this setting you may change the 2FA Authentication should work for this user. Enhanced requires the user to enter a code, simple solely to click a link', 
+                        'value': 'enhanced',
+                        'type': 'select',
+                        'restrictions': {
+                            'enhanced': { 
+                                'value': 'enhanced',
+                                'displayName': 'Enhanced'
+                            },
+                            'eventManager': { 
+                                'value': 'simple',
+                                'displayName': 'Simple'
+                            },
+                            'disabled': { 
+                                'value': 'disabled',
+                                'displayName': 'Disabled'
+                            }
+                        }
+                    },
                 }
             , 'settings' );
             },
@@ -272,6 +293,7 @@
                     console.log( this.currentPopup );
                     if ( this.currentPopup === 'account' ) { 
                         console.log( 'settings processing' )
+                        // TODO: Call to server to create account, also add to admin accounts here
                     } else if ( this.currentPopup === 'payments' ) {
                         for ( let setting in data.data ) {
                             if ( !data.data[ setting ] ) {
