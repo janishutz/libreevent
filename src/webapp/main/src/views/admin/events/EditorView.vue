@@ -9,7 +9,7 @@
 
 <template>
     <div>
-        <h2>Seat Plan Editor</h2>
+        <h2>Seat Plan Editor ({{ location }})</h2>
         <window />
     </div>
 </template>
@@ -18,6 +18,11 @@
     import window from '@/components/seatplan/editor/window.vue';
 
     export default {
+        data () {
+            return {
+                location: '',
+            };
+        },
         components: {
             window,
         },
@@ -26,6 +31,7 @@
                 if ( !sessionStorage.getItem( 'locationID' ) ) {
                     this.$router.push( '/admin/locations' );
                 }
+                this.location = sessionStorage.getItem( 'locationID' );
             }
         },
         created() {

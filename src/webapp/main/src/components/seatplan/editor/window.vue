@@ -132,7 +132,17 @@
                 };
 
                 // Auto save every 60s (60K ms)
-                this.autoSave = setInterval( this.saveDraft(), 60000 );
+                this.autoSave = setInterval( () => {
+                    const options = {
+                        method: 'post',
+                        body: JSON.stringify( { 'data':{ 'seatInfo': this.seatCountInfo, 'data': this.scaleDown( this.draggables ) }, 'location': sessionStorage.getItem( 'locationID' ) } ),
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'charset': 'utf-8'
+                        }
+                    };
+                    fetch( localStorage.getItem( 'url' ) + '/admin/api/saveSeatplanDraft', options );
+                }, 60000 );
                 
                 /* 
                 Calculate scale factor (this adds support for differently sized screens)

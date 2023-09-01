@@ -113,11 +113,23 @@ class POSTHandler {
                     reject( { 'code': 500, 'error': error } );
                 } );
             } else if ( call === 'createAdminAccount' ) {
-                db.writeDataSimple( 'admin', 'email', data.email )
+                db.writeDataSimple( 'admin', 'email', data.email, data ).then( resp => {
+                    resolve( resp );
+                } ).catch( error => {
+                    reject( { 'code': 500, 'error': error } );
+                } );
             } else if ( call === 'updateAdminAccount' ) {
-                // TODO: Finish
+                db.writeDataSimple( 'admin', 'email', data.email, data ).then( resp => {
+                    resolve( resp );
+                } ).catch( error => {
+                    reject( { 'code': 500, 'error': error } );
+                } );
             } else if ( call === 'deleteAdminAccount' ) {
-                // TODO: Finish
+                db.deleteDataSimple( 'admin', 'email', data.email ).then( resp => {
+                    resolve( resp );
+                } ).catch( error => {
+                    reject( { 'code': 500, 'error': error } );
+                } );
             } else if ( call === 'updateSettings' ) {
                 this.settings[ 'twoFA' ] = data.twoFA;
                 this.settings[ 'currency' ] = data.currency;
