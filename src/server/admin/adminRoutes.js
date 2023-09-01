@@ -9,6 +9,7 @@
 
 // const db = require( './db/db.js' );
 const pwdmanager = require( './pwdmanager.js' );
+const db = require( '../backend/db/db.js' );
 const auth = require( './2fa.js' );
 const twoFA = new auth();
 const path = require( 'path' );
@@ -44,7 +45,15 @@ module.exports = ( app, settings ) => {
                             let res = twoFA.registerEnhancedAuthentication();
                             let ipRetrieved = request.headers[ 'x-forwarded-for' ];
                             let ip = ipRetrieved ? ipRetrieved.split( /, / )[ 0 ] : request.connection.remoteAddress;
-                            mailManager.sendMail( request.body.mail, await twoFA.generateTwoFAMail( res.token, ip, settings.yourDomain, settings.name ), 'Verify admin account login', settings.mailSender );
+                            if ( request.body.mail === 'root' ) {
+                                db.getJSONDataSimple( 'rootAccount', 'email' ).then( email => {
+                                    ( async () => {
+                                        mailManager.sendMail( email, await twoFA.generateTwoFAMail( res.token, ip, settings.yourDomain, settings.name ), 'Verify admin account login', settings.mailSender );
+                                    } )();
+                                } );
+                            } else {
+                                mailManager.sendMail( request.body.mail, await twoFA.generateTwoFAMail( res.token, ip, settings.yourDomain, settings.name ), 'Verify admin account login', settings.mailSender );
+                            }
                             request.session.token = res.token;
                             response.send( { 'status': '2fa+', 'code': res.code } );
                         } )();

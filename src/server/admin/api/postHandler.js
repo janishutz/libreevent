@@ -8,6 +8,7 @@
 */
 
 const db = require( '../../backend/db/db.js' );
+const pwdmanager = require( '../pwdmanager.js' );
 const fs = require( 'fs' );
 const path = require( 'path' );
 const pm = require( '../../backend/plugins/manager.js' );
@@ -113,17 +114,33 @@ class POSTHandler {
                     reject( { 'code': 500, 'error': error } );
                 } );
             } else if ( call === 'createAdminAccount' ) {
-                db.writeDataSimple( 'admin', 'email', data.email, data ).then( resp => {
-                    resolve( resp );
-                } ).catch( error => {
-                    reject( { 'code': 500, 'error': error } );
+                let dat = data;
+                pwdmanager.hashPassword( dat.pass ).then( hash => {
+                    dat[ 'pass' ] = hash;
+                    db.writeDataSimple( 'admin', 'email', data.email, dat ).then( resp => {
+                        resolve( resp );
+                    } ).catch( error => {
+                        reject( { 'code': 500, 'error': error } );
+                    } );
                 } );
             } else if ( call === 'updateAdminAccount' ) {
-                db.writeDataSimple( 'admin', 'email', data.email, data ).then( resp => {
-                    resolve( resp );
-                } ).catch( error => {
-                    reject( { 'code': 500, 'error': error } );
-                } );
+                if ( data.pass ) {
+                    let dat = data;
+                    pwdmanager.hashPassword( data.pass ).then( hash => {
+                        dat[ 'pass' ] = hash;
+                        db.writeDataSimple( 'admin', 'email', data.email, dat ).then( resp => {
+                            resolve( resp );
+                        } ).catch( error => {
+                            reject( { 'code': 500, 'error': error } );
+                        } );
+                    } );
+                } else {
+                    db.writeDataSimple( 'admin', 'email', data.email, data ).then( resp => {
+                        resolve( resp );
+                    } ).catch( error => {
+                        reject( { 'code': 500, 'error': error } );
+                    } );
+                }
             } else if ( call === 'deleteAdminAccount' ) {
                 db.deleteDataSimple( 'admin', 'email', data.email ).then( resp => {
                     resolve( resp );

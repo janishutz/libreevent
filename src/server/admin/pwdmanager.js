@@ -23,7 +23,7 @@ module.exports.checkpassword = ( username, password ) => {
         if ( username === 'root' ) {
             db.getJSONData( 'rootAccount' ).then( account => {
                 bcrypt.compare( password, account.pass ).then( res => {
-                    resolve( { 'status': res, 'twoFA': true } );
+                    resolve( { 'status': res, 'twoFA': 'enhanced' } );
                 } );
             } );
         } else {

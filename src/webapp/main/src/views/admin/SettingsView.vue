@@ -35,7 +35,7 @@
             <p style="margin-bottom: 0;">Before setting or editing permissions here, please read the corresponding section of the documentation <a href="https://libreevent.janishutz.com/docs/admin-panel/settings/admin-accounts#permissions" target="_blank">here</a>.</p>
             <p style="margin-top: 0;">Usually, the permissions automatically set by the system on account creation should be appropriate. (TIP: Right click for more options)</p>
             <div v-if="Object.keys( adminAccounts ).length > 0" class="account-wrapper">
-                <div v-for="account in adminAccounts" class="account" @click="showAccountSettings( account.username );" title="Edit permissions of this account (right click for more options)" @contextmenu="( e ) => { e.preventDefault(); openRightClickMenu( account.username, e ); }">
+                <div v-for="account in adminAccounts" class="account" @click="showPasswordSettings( account.email );" title="Edit settings of this account (right click for more options)" @contextmenu="( e ) => { e.preventDefault(); openRightClickMenu( account.email, e ); }">
                     <div class="location-name">
                         <h3>{{ account.username }}</h3>
                         <p>{{ account.email }}</p>
@@ -155,7 +155,7 @@
         },
         methods: {
             showAccountSettings ( account ) {
-                this.currentPopup = 'account';
+                this.currentPopup = 'permissions';
                 this.$refs.popup.openPopup( 'Edit user permissions for ' + this.adminAccounts[ account ][ 'username' ], {
                     'pagesSettings': { 
                         'display': 'Modify pages', 
@@ -185,6 +185,20 @@
                         'value': false,
                         'type': 'toggle',
                     },
+                }
+            , 'settings' );
+            },
+            showPasswordSettings ( account ) {
+                this.currentlyOpenMenu = account;
+                this.currentPopup = 'account';
+                this.$refs.popup.openPopup( 'Edit user settings for ' + this.adminAccounts[ account ][ 'username' ], {
+                    'username': { 
+                        'display': 'Username', 
+                        'id': 'username', 
+                        'tooltip':'Change the username for this user.', 
+                        'value': this.adminAccounts[ account ][ 'username' ],
+                        'type': 'text',
+                    },
                     'pass': { 
                         'display': 'Password', 
                         'id': 'pass', 
@@ -192,8 +206,7 @@
                         'value': '',
                         'type': 'password',
                     },
-                }
-            , 'settings' );
+                }, 'settings' );
             },
             showPaymentSettings () {
                 this.currentPopup = 'payments';
@@ -252,9 +265,9 @@
                         'value': '',
                         'type': 'password',
                     },
-                    'twoFA': { 
+                    'two_fa': { 
                         'display': 'Two Factor Authentication',
-                        'id': 'twoFA',
+                        'id': 'two_fa',
                         'tooltip':'With this setting you may change the 2FA Authentication should work for this user. Enhanced requires the user to enter a code, simple solely to click a link', 
                         'value': 'enhanced',
                         'type': 'select',
@@ -278,22 +291,44 @@
             },
             executeCommand( command ) {
                 if ( command === 'openPermissions' ) {
+                    this.currentPopup = 'account';
                     this.showAccountSettings( this.currentlyOpenMenu );
                 } else if ( command === 'deleteUser' ) {
+                    this.currentPopup = 'deleteUser';
                     this.$refs.popup.openPopup( 'Do you really want to delete the user ' + this.currentlyOpenMenu + '?', {}, 'confirm' );
+                } else if ( command === 'updatePassword' ) {
+                    this.currentPopup = 'deleteUser';
+                    this.showPasswordSettings( this.currentlyOpenMenu );
                 }
             },
             handlePopupReturns( data ) {
                 console.log( data );
                 // TODO: Delete user
                 if ( data.status === 'cancel' ) {
-                    console.log( 'user canceled' );
                     return;
                 } else if ( data.status === 'settings' ) {
-                    console.log( this.currentPopup );
                     if ( this.currentPopup === 'account' ) { 
-                        console.log( 'settings processing' )
-                        // TODO: Call to server to create account, also add to admin accounts here
+                        if ( data.data.username != '' ) {
+                            let updatedData = data.data;
+                            if ( updatedData.pass == '' ) {
+                                delete updatedData[ 'pass' ];
+                            }
+                            updatedData[ 'email' ] = this.currentlyOpenMenu;
+                            let fetchOptions = {
+                                method: 'post',
+                                body: JSON.stringify( updatedData ),
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    'charset': 'utf-8'
+                                }
+                            };
+                            fetch( '/admin/API/updateAdminAccount', fetchOptions ).then( res => {
+                                if ( res.status === 200 ) {
+                                    this.$refs.notification.createNotification( 'Updated settings for admin account successfully', 5, 'ok', 'normal' );
+                                    this.loadAdminAccounts();
+                                }
+                            } );
+                        }
                     } else if ( this.currentPopup === 'payments' ) {
                         for ( let setting in data.data ) {
                             if ( !data.data[ setting ] ) {
@@ -316,14 +351,44 @@
                             }
                         } )
                     } else if ( this.currentPopup === 'createAccount' ) {
-
+                        let fetchOptions = {
+                            method: 'post',
+                            body: JSON.stringify( data.data ),
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'charset': 'utf-8'
+                            }
+                        };
+                        fetch( '/admin/API/createAdminAccount', fetchOptions ).then( res => {
+                            if ( res.status === 200 ) {
+                                this.$refs.notification.createNotification( 'Created new admin account successfully', 5, 'ok', 'normal' );
+                                this.loadAdminAccounts();
+                            }
+                        } );
+                    }
+                } else if ( data.status === 'ok' ) {
+                    if ( this.currentPopup === 'deleteUser' ) {
+                        let fetchOptions = {
+                            method: 'post',
+                            body: JSON.stringify( {  } ),
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'charset': 'utf-8'
+                            }
+                        };
+                        fetch( '/admin/API/deleteAdminAccount', fetchOptions ).then( res => {
+                            if ( res.status === 200 ) {
+                                this.$refs.notification.createNotification( 'Admin account deleted successfully', 5, 'ok', 'normal' );
+                                this.loadAdminAccounts();
+                            }
+                        } );
                     }
                 } else {
                     console.log( 'hi' );
                 }
             },
             openRightClickMenu( id, event ) {
-                this.$refs.rclk.openRightClickMenu( event, { 'permissions': { 'command': 'openPermissions', 'symbol': 'edit', 'display': 'Edit permissions' }, 'password': { 'command': 'updatePassword', 'symbol': 'password', 'display': 'Edit password' }, 'delete': { 'command': 'deleteUser', 'symbol': 'delete', 'display': 'Delete User' } } )
+                this.$refs.rclk.openRightClickMenu( event, { 'permissions': { 'command': 'openPermissions', 'symbol': 'edit', 'display': 'Edit permissions' }, 'password': { 'command': 'updatePassword', 'symbol': 'password', 'display': 'Edit account settings' }, 'delete': { 'command': 'deleteUser', 'symbol': 'delete', 'display': 'Delete User' } } )
                 this.currentlyOpenMenu = id;
             },
             loadData() {
@@ -334,6 +399,22 @@
                             this.settings.currency.value = json.currency;
                             this.settings.paymentGateway.value = json.payments;
                             this.settings.ticketTimeout.value = json.ticketTimeout;
+                        } );
+                    }
+                } );
+            },
+            loadAdminAccounts () {
+                fetch( '/admin/getAPI/getAdminAccounts' ).then( res => {
+                    if ( res.status === 200 ) {
+                        res.json().then( json => {
+                            if ( json.status === 'ok' ) {
+                                this.adminAccounts = {};
+                                for ( let account in json.data ) {
+                                    this.adminAccounts[ json.data[ account ][ 'email' ] ] = json.data[ account ];
+                                }
+                            } else {
+                                this.adminAccounts = {};
+                            }
                         } );
                     }
                 } );
@@ -362,20 +443,7 @@
         },
         created () {
             this.loadData();
-            fetch( '/admin/getAPI/getAdminAccounts' ).then( res => {
-                if ( res.status === 200 ) {
-                    res.json().then( json => {
-                        console.log( json );
-                        if ( json.status === 'ok' ) {
-                            for ( let account in json.data ) {
-                                this.adminAccounts[ json.data[ account ][ 'username' ] ] = json.data[ account ];
-                            }
-                        } else {
-                            this.adminAccounts = {};
-                        }
-                    } );
-                }
-            } );
+            this.loadAdminAccounts();
         }
     };
     // TODO: Load gateways and settings for gateways from server.

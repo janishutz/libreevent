@@ -57,7 +57,7 @@
                             res.json().then( json => {
                                 if ( json.status === 'ok' ) {
                                     this.userStore.setAdminAuth( true );
-                                    this.$router.push( sessionStorage.getItem( 'redirect' ) ? sessionStorage.getItem( 'redirect' ) : '/account' );
+                                    this.$router.push( '/admin' );
                                     sessionStorage.removeItem( 'redirect' );
                                 } else if ( json.status === '2fa' ) {
                                     this.userStore.setAdmin2fa( true );
