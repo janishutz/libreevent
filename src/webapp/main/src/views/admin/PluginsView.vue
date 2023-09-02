@@ -21,7 +21,6 @@
                 <p style="margin: 0">(Version V{{ plugin.version }}, maintained by {{ plugin.maintainer }})</p>
             </a>
         </div>
-        <!-- TODO: Get all installed plugins -->
     </div>
 </template>
 

@@ -50,7 +50,6 @@
     import notifications from '../components/notifications.vue';
 
     const lookup = [ '@', '!', '.', ',', '?', '%', '&', '-', '_', ':', ';', '*', '§', '<', '>', '{', '}', '[', ']', '(', ')', '/', '#' ];
-    // TODO: Also add this to user signup
     export default {
         data () {
             return {
@@ -119,7 +118,6 @@
                 }
             },
             submit () {
-                // TODO: Maybe require confirming email before proceeding
                 if ( this.formData.mail && this.formData.password && this.formData.password2 ) {
                     if ( this.checkEmail() ) {
                         if ( this.formData.password == this.formData.password2 ) {

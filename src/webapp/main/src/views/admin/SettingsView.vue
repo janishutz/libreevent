@@ -302,8 +302,6 @@
                 }
             },
             handlePopupReturns( data ) {
-                console.log( data );
-                // TODO: Delete user
                 if ( data.status === 'cancel' ) {
                     return;
                 } else if ( data.status === 'settings' ) {
@@ -446,7 +444,6 @@
             this.loadAdminAccounts();
         }
     };
-    // TODO: Load gateways and settings for gateways from server.
 </script>
 
 

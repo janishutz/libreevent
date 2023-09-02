@@ -13,7 +13,6 @@ module.exports = ( app, settings ) => {
         res.sendFile( path.join( __dirname + '/../ui/home/templates/' + settings.startPage + '/supportFiles/' + req.params.file ) );
     } );
 
-    // TODO: Decide if removed or not
     app.get( '/startPage/helperFunction', ( req, res ) => {
         res.sendFile( path.join( __dirname + '/../ui/home/helper.js' ) );
     } );

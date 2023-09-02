@@ -186,7 +186,7 @@ module.exports.deleteJSONDataSimple = ( db, identifier ) => {
 };
 
 const gc = () => {
-    // this function acts as the database garbage collector. TicketTimeout can be changed from the GUI. TODO: Add
+    // this function acts as the database garbage collector. TicketTimeout can be changed from the GUI.
     this.getData( 'temp' ).then( tempData => {
         let data = tempData;
         console.info( 'Garbage Collecting' );
