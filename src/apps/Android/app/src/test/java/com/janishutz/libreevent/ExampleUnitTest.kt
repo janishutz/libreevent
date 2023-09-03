@@ -1,4 +1,4 @@
-package com.janishutz.libreeventEntryControl
+package com.janishutz.libreevent
 
 import org.junit.Test
 
