@@ -11,49 +11,40 @@
     <div class="login">
         <div class="login-app">
             <h1>Sign up</h1>
-            <form>
-                <table>
-                    <tr>
-                        <td>
-                            <label for="mail">Email</label><br>
-                            <input type="email" v-model="formData[ 'mail' ]" name="mail" id="mail" required @keyup="emailLiveChecker()"><br><br>
-                        </td>
-                        <td>
-                            <label for="country">Country</label><br>
-                            <input type="text" v-model="formData[ 'country' ]" name="country" id="country" required><br><br>
-                        </td>
-                    </tr>
+            <div class="parent">
+                <div class="field">
+                    <label for="mail">Email</label><br>
+                    <input type="email" v-model="formData[ 'mail' ]" name="mail" id="mail" required @keyup="emailLiveChecker()" class="input"><br><br>
                     <p v-if="emailStatus" class="email-status">{{ emailStatus }}</p>
-                    <tr>
-                        <td>
-                            <label for="firstName">First name</label><br>
-                            <input type="text" v-model="formData[ 'firstName' ]" name="firstName" id="firstName" required><br><br>
-                        </td>
-                        <td>
-                            <label for="name">Last name</label><br>
-                            <input type="text" v-model="formData[ 'name' ]" name="name" id="name" required><br><br>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <label for="password">Password</label><br>
-                            <input type="password" v-model="formData[ 'password' ]" name="password" id="password" required><br><br>
-                        </td>
-                        <td>
-                            <label for="password2">Confirm password</label><br>
-                            <input type="password" v-model="formData[ 'password2' ]" name="password2" id="password2" required><br><br>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <label for="news">Do you want to potentially get newsletter?</label><br>
-                        </td>
-                        <td>
-                            <input type="checkbox" v-model="formData[ 'newsletter' ]" name="news" id="news"><br><br>
-                        </td>
-                    </tr>
-                </table>
-            </form>
+                </div>
+                <div class="field">
+                    <label for="country">Country</label><br>
+                    <input type="text" v-model="formData[ 'country' ]" name="country" id="country" required class="input"><br><br>
+                </div>
+                <div class="field">
+                    <label for="firstName">First name</label><br>
+                    <input type="text" v-model="formData[ 'firstName' ]" name="firstName" id="firstName" required class="input"><br><br>
+                </div>
+                <div class="field">
+                    <label for="name">Last name</label><br>
+                    <input type="text" v-model="formData[ 'name' ]" name="name" id="name" required class="input"><br><br>
+                </div>
+                <div class="field">
+                    <label for="password">Password</label><br>
+                    <input type="password" v-model="formData[ 'password' ]" name="password" id="password" required class="input"><br><br>
+                </div>
+                <div class="field">
+                    <label for="password2">Confirm password</label><br>
+                    <input type="password" v-model="formData[ 'password2' ]" name="password2" id="password2" required class="input"><br><br>
+                </div>
+                <div class="field">
+                    <label for="news">Do you want to potentially get newsletter?</label><br>
+                </div>
+                <div class="field">
+                    <input type="checkbox" v-model="formData[ 'newsletter' ]" name="news" id="news"><br><br>
+                </div>
+            </div>
+
             <notifications ref="notification" location="topright" size="bigger"></notifications>
             <button @click="signup();" class="button">Sign up</button>
             <router-link to="/login" class="button">Log in instead</router-link>
@@ -196,6 +187,18 @@
 </script>
 
 <style scoped>
+    .parent {
+        display: flex;
+        justify-content: center;
+        flex-direction: row;
+        flex-wrap: wrap;
+    }
+    
+    .field {
+        width: 90%;
+        margin-bottom: 2%;
+    }
+
     .email-status {
         margin-top: -10px;
         color: red;
@@ -207,19 +210,17 @@
         background-color: green;
         width: 100%;
         height: 100%;
-        flex-grow: 1;
         display: flex;
-        flex-direction: column;
         justify-content: center;
         align-items: center;
-        flex: 0 1 auto;
+        flex-direction: column;
     }
 
     .login-app {
         background-color: var( --background-color );
-        min-height: fit-content;
-        min-height: fit-content;
-        padding: 5% 20%;
+        width: 90%;
+        height: 90%;
+        padding: 10% 5%;
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -230,5 +231,25 @@
     .button {
         padding: 5px 10px;
         margin-top: 2%;
+    }
+
+    .input {
+        width: 80%;
+        padding: 10px;
+        border-radius: 500px;
+        border: solid 1px black;
+        margin-top: 1%;
+    }
+
+    @media only screen and (min-width: 999px) {
+        .login-app {
+            width: 50vw;
+            height: min-content;
+            padding: 5% 5%;
+        }
+
+        .field {
+            width: 40%;
+        }
     }
 </style>

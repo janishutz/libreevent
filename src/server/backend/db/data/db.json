@@ -1,1 +1,1 @@
-{"db":{"libreevent_temp":{},"libreevent_admin":{"2":{"role":"eventManager","username":"janis","email":"info@janishutz.com","pass":"$2b$10$yjTZTt0k1bvmz.WOm.81l.vFnd6vXLVhFvNQ2b/6EvRa07ktG2Fo6","two_fa":"enhanced"}},"libreevent_orders":{},"libreevent_users":{}},"index":{"libreevent_temp":0,"libreevent_admin":2,"libreevent_orders":0,"libreevent_users":0}}
+{"db":{"libreevent_temp":{},"libreevent_admin":{},"libreevent_orders":{},"libreevent_users":{}},"index":{"libreevent_temp":0,"libreevent_admin":0,"libreevent_orders":0,"libreevent_users":0}}
