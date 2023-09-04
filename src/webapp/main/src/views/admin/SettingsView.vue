@@ -16,6 +16,8 @@
         <p>Changing any of these settings requires a restart of libreevent.</p>
         <p>Currency codes used must be valid ISO 4217 codes. Read more on <a href="https://libreevent.janishutz.com/docs/admin-panel/settings#currency" target="_blank">this page</a> of the documentation <!-- https://en.wikipedia.org/wiki/ISO_4217#List_of_ISO_4217_currency_codes"--></p>
         <settings v-model:settings="settings"></settings>
+        <button @click="save()">Save</button>
+        <p>Detailed explanation of payment gateways can be found <a href="https://libreevent.janishutz.com/docs/payments" target="_blank">here</a>. Please note that you need to save the settings before you can edit settings of the payment gateway after changing it.</p>
         <table class="gateway-settings">
             <tr>
                 <td style="width: 75%;">
@@ -26,8 +28,6 @@
                 </td>
             </tr>
         </table>
-        <button @click="save()">Save</button>
-        <p>Detailed explanation of payment gateways can be found <a href="https://libreevent.janishutz.com/docs/payments" target="_blank">here</a>. Please note that you need to save the settings before you can edit settings of the payment gateway after changing it.</p>
 
         <div class="admin-settings">
             <h2>Admin Accounts</h2>
@@ -368,7 +368,7 @@
                     if ( this.currentPopup === 'deleteUser' ) {
                         let fetchOptions = {
                             method: 'post',
-                            body: JSON.stringify( {  } ),
+                            body: JSON.stringify( { 'email': this.currentlyOpenMenu } ),
                             headers: {
                                 'Content-Type': 'application/json',
                                 'charset': 'utf-8'
