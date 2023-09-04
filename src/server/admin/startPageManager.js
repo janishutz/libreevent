@@ -25,6 +25,10 @@ class StartPageManager {
         return JSON.parse( fs.readFileSync( path.join( __dirname + '/../ui/home/templates/' + startPageName + '/startPage.config.html' ) ) );
     }
 
+    findAllStartPageTemplates() {
+        return fs.readdirSync( path.join( __dirname + '/../ui/home/templates/' ) );
+    }
+
     setActiveStartPage( startPageName ) {
         this.settings[ 'startPage' ] = startPageName;
         fs.writeFileSync( path.join( __dirname + '/../config/settings.config.json' ), JSON.stringify( this.settings ) );

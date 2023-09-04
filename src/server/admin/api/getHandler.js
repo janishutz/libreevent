@@ -9,6 +9,8 @@
 
 const db = require( '../../backend/db/db.js' );
 const pm = require( '../../backend/plugins/manager.js' );
+const spm = require( '../startPageManager.js' );
+const startPageManager = new spm();
 
 class GETHandler {
     constructor ( settings ) {
@@ -112,6 +114,10 @@ class GETHandler {
                 resolve( this.settings );
             } else if ( call === 'getAllPlugins' ) {
                 resolve( this.pluginManager.getPlugins() );
+            } else if ( call === 'getStartPageSettings' ) {
+                resolve( startPageManager.loadStartPagePreferences( query.name ) );
+            } else if ( call === 'getAllStartPages' ) {
+                resolve( startPageManager.findAllStartPageTemplates() );
             } else {
                 reject( { 'code': 404, 'error': 'Route not found' } );
             }
