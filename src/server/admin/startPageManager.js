@@ -18,7 +18,11 @@ class StartPageManager {
     }
 
     saveStartPagePreferences( startPageName, preferences ) {
-        fs.writeFileSync( path.join( __dirname + '/../ui/home/templates/' + startPageName + '/startPage.config.html' ), JSON.stringify( preferences ) );
+        let conf = {};
+        for ( let setting in preferences ) {
+            conf[ setting ] = preferences[ setting ][ 'value' ];
+        }
+        fs.writeFileSync( path.join( __dirname + '/../ui/home/templates/' + startPageName + '/startPage.config.json' ), JSON.stringify( conf ) );
     }
 
     loadStartPagePreferences( startPageName ) {
@@ -43,14 +47,19 @@ class StartPageManager {
 
     async renderStartPage( startPageName ) {
         this.setActiveStartPage( startPageName );
+        let self = this;
         const app = createSSRApp( {
             data() {
-                return this.loadStartPagePreferences( startPageName );
+                return {
+                    'data': self.loadStartPagePreferences( startPageName ),
+                    'pageName': self.settings.pageName,
+                };
             },
             template: '' + fs.readFileSync( path.join( __dirname + '/../ui/home/templates/' + startPageName + '/index.html' ) )
         } );
 
         fs.writeFileSync( path.join( __dirname + '/../ui/home/active/en/index.html' ), await renderToString( app ) );
+        return true;
     }
 }
 

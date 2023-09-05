@@ -12,6 +12,8 @@ const pwdmanager = require( '../pwdmanager.js' );
 const fs = require( 'fs' );
 const path = require( 'path' );
 const pm = require( '../../backend/plugins/manager.js' );
+const spm = require( '../startPageManager.js' );
+const startPageManager = new spm();
 
 const letters = [ ',', '{' ];
 
@@ -178,6 +180,9 @@ class POSTHandler {
                 } ).catch( err => {
                     reject( { 'code': 500, 'message': err } );
                 } );
+            } else if ( call === 'savePageSettings' ) {
+                startPageManager.saveStartPagePreferences( data.page, data.preferences );
+                resolve( 'ok' );
             } else {
                 reject( { 'code': 404, 'error': 'Route not found' } );
             }

@@ -10,12 +10,12 @@
 const db = require( '../../backend/db/db.js' );
 const pm = require( '../../backend/plugins/manager.js' );
 const spm = require( '../startPageManager.js' );
-const startPageManager = new spm();
 
 class GETHandler {
     constructor ( settings ) {
         this.pluginManager = new pm( settings );
         this.settings = settings;
+        this.startPageManager = new spm( settings );
     }
 
     handleCall ( call, query ) {
@@ -115,9 +115,17 @@ class GETHandler {
             } else if ( call === 'getAllPlugins' ) {
                 resolve( this.pluginManager.getPlugins() );
             } else if ( call === 'getStartPageSettings' ) {
-                resolve( startPageManager.loadStartPagePreferences( query.name ) );
+                resolve( this.startPageManager.loadStartPagePreferences( query.name ) );
             } else if ( call === 'getAllStartPages' ) {
-                resolve( startPageManager.findAllStartPageTemplates() );
+                resolve( this.startPageManager.findAllStartPageTemplates() );
+            } else if ( call === 'buildStartPage' ) {
+                ( async() => {
+                    if ( await this.startPageManager.renderStartPage( query.page ) ) {
+                        resolve( 'ok' );
+                    } else {
+                        reject( { 'code': 412, 'error': 'Missing entries' } );
+                    }
+                } )();
             } else {
                 reject( { 'code': 404, 'error': 'Route not found' } );
             }
