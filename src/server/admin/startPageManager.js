@@ -24,8 +24,8 @@ class StartPageManager {
     loadStartPagePreferences( startPageName ) {
         let conf, options;
         try {
-            conf = JSON.parse( fs.readFileSync( path.join( __dirname + '/../ui/home/templates/' + startPageName + '/startPage.json' ) ) );
-            options = JSON.parse( fs.readFileSync( path.join( __dirname + '/../ui/home/templates/' + startPageName + '/startPage.config.json' ) ) );
+            options = JSON.parse( fs.readFileSync( path.join( __dirname + '/../ui/home/templates/' + startPageName + '/startPage.json' ) ) );
+            conf = JSON.parse( fs.readFileSync( path.join( __dirname + '/../ui/home/templates/' + startPageName + '/startPage.config.json' ) ) );
             return { 'conf': conf, 'options': options };
         } catch ( err ) {
             return {};

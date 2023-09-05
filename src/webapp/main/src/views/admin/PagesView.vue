@@ -16,7 +16,9 @@
         </select>
         <!-- Start page settings -> Defined by startPage.json file -->
         <div class="start-page-settings">
-            
+            <div class="setting" v-for="setting in startPageSettings">
+                {{ setting }}
+            </div>
         </div>
     </div>
 </template>
@@ -35,8 +37,10 @@
                 fetch( '/admin/getAPI/getStartPageSettings?name=' + this.selectedTemplate ).then( res => {
                     if ( res.status === 200 ) {
                         res.json().then( json => {
-                            this.startPageSettings = json;
-                            console.log( json );
+                            this.startPageSettings = json[ 'options' ];
+                            for ( let option in this.startPageSettings ) {
+                                this.startPageSettings[ option ][ 'value' ] = json[ 'conf' ][ option ];
+                            }
                         } );
                     }
                 } );
@@ -59,7 +63,7 @@
             fetch( '/admin/getAPI/getSettings' ).then( res => {
                 if ( res.status === 200 ) {
                     res.json().then( json => {
-                        this.selectedTemplate = String( json[ 'startPage' ] );
+                        this.selectedTemplate = json[ 'startPage' ];
                     } );
                 }
             } );

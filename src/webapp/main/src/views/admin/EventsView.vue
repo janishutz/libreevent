@@ -21,7 +21,7 @@
                             <p>{{ event.description }}</p>
                             <b>{{ event.date }}</b>
                         </div>
-                        <img :src="event.logo" alt="event logo" class="ticket-logo">
+                        <!-- <img :src="event.logo" alt="event logo" class="ticket-logo"> -->
                     </router-link>
                     <router-link to="/admin/events/analytics" class="ticket" @click="setActiveTicket( event.eventID );" v-else="new Date( event.date ).getTime() > currentDate">
                         <div class="ticket-name">
@@ -29,7 +29,7 @@
                             <p>{{ event.description }}</p>
                             <b>{{ event.date }}</b>
                         </div>
-                        <img :src="event.logo" alt="event logo" class="ticket-logo">
+                        <!-- <img :src="event.logo" alt="event logo" class="ticket-logo"> -->
                     </router-link>
                 </li>
             </ul>
@@ -107,7 +107,7 @@
         },
         data () {
             return {
-                events: { 'test':{ 'name': 'TestEvent', 'description': 'This is a description for the TestEvent to test multiline support and proper positioning of the Fields', 'freeSeats': 2, 'maxSeats': 2, 'date':'2023-08-15', 'startingPrice':15, 'location': 'TestLocation', 'eventID': 'test', 'currency': 'CHF', 'logo': new URL( '/src/assets/logo.png', import.meta.url ).href }, 'test2':{ 'name': 'TestEvent2', 'description': 'This is a description for the TestEvent to test multiline support and proper positioning of the Fields', 'freeSeats': 2, 'maxSeats': 2, 'date':'2023-06-13', 'startingPrice':15, 'location': 'TestLocation', 'eventID': 'test2', 'currency': 'CHF', 'logo': new URL( '/src/assets/logo.png', import.meta.url ).href } },
+                events: { 'test':{ 'name': 'TestEvent', 'description': 'This is a description for the TestEvent to test multiline support and proper positioning of the Fields', 'freeSeats': 2, 'maxSeats': 2, 'date':'2023-08-15', 'startingPrice':15, 'location': 'TestLocation', 'eventID': 'test', 'currency': 'CHF', 'logo': new URL( '/assets/logo.png', import.meta.url ).href } },
                 currentDate: new Date().getTime(),
                 eventList: { 'upcoming': { 'name': 'Upcoming', 'content': {} }, 'past': { 'name': 'Past', 'content': {} }, 'drafts': { 'name': 'Drafts', 'content': {} } },
                 currentlyOpenMenu: '',
