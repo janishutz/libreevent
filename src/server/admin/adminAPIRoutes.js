@@ -62,4 +62,13 @@ module.exports = ( app ) => {
             res.send( 'ok' );
         }
     } );
+
+    app.post( '/admin/pages/uploadImages', multer.array( 'image', 1 ), ( req, res ) => {
+        if ( req.query.image.includes( '/' ) || req.query.image.includes( '.' ) || req.query.template.includes( '/' ) || req.query.template.includes( '.' )  ) {
+            res.status( 400 ).send( 'fp_wrong' );
+        } else {
+            fs.writeFileSync( path.join( __dirname + '/../ui/home/templates/' + req.query.template + '/' + req.query.image + '.jpg' ), req.files[ 0 ].buffer );
+            res.send( 'ok' );
+        }
+    } );
 };

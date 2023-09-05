@@ -20,4 +20,8 @@ module.exports = ( app, settings ) => {
     app.get( '/startPage/mainStyle', ( req, res ) => {
         res.sendFile( path.join( __dirname + '/../ui/home/main.css' ) );
     } );
+
+    app.get( '/startPage/assets/:image', ( req, res ) => {
+        res.sendFile( path.join( __dirname + '/../assets/' + settings.startPage + '/assets/' + req.param.image  ) );
+    } );
 };

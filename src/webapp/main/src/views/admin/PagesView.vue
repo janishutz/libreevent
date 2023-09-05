@@ -138,10 +138,10 @@
                 }
             },
             saveImage( image ) {
-                if ( this.$refs[ image ].file ) {
+                if ( this.$refs[ image ][ 0 ].file ) {
+                    console.log( 'saving image' );
                     let fd = new FormData();
-                    fd.append( 'image', this.$refs[ image ].file );
-                    fd.append( 'name', image );
+                    fd.append( 'image', this.$refs[ image ][ 0 ].file );
                     let fetchOptions = {
                         method: 'post',
                         body: fd,
@@ -150,13 +150,15 @@
                         if ( res.status === 200 ) {
                             return true;
                         } else {
-                            return false;
+                            this.$refs.notification.createNotification( 'There was an error uploading the image', 5, 'error', 'normal' );
                         }
                     } ).catch( err => {
                         console.error( err );
                     } );
                     return true;
                 } else {
+                    console.log( this.$refs[ image ][ 0 ] );
+                    console.log( image );
                     return false;
                 }
             },
