@@ -26,7 +26,7 @@ module.exports = ( app, settings ) => {
                 res.send( data );
             }
         } ).catch( error => {
-            res.status( error.code ).send( error.message );
+            res.status( error.code ?? 500 ).send( error.message );
         } );
     } );
 
@@ -35,7 +35,7 @@ module.exports = ( app, settings ) => {
         postHandler.handleCall( req.params.call, req.body, req.session ).then( data => {
             res.send( data );
         } ).catch( error => {
-            res.status( error.code ).send( error.message );
+            res.status( error.code ?? 500 ).send( error.message );
         } );
     } );
 };

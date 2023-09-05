@@ -22,7 +22,14 @@ class StartPageManager {
     }
 
     loadStartPagePreferences( startPageName ) {
-        return JSON.parse( fs.readFileSync( path.join( __dirname + '/../ui/home/templates/' + startPageName + '/startPage.config.html' ) ) );
+        let conf, options;
+        try {
+            conf = JSON.parse( fs.readFileSync( path.join( __dirname + '/../ui/home/templates/' + startPageName + '/startPage.json' ) ) );
+            options = JSON.parse( fs.readFileSync( path.join( __dirname + '/../ui/home/templates/' + startPageName + '/startPage.config.json' ) ) );
+            return { 'conf': conf, 'options': options };
+        } catch ( err ) {
+            return {};
+        }
     }
 
     findAllStartPageTemplates() {
