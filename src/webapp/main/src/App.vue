@@ -178,11 +178,6 @@ export default {
         }
     },
     created () {
-        // if ( window.webpage.engine.trident ) {
-        //     alert( 'Welcome! We have detected that you are still using Internet Explorer or a similar browser. As a modern webapp, libreevent does NOT officially support Internet Explorer. If you run into problems whilst using this webapp, please switch to a modern browser like Firefox.' )
-        // } else if ( window.webpage.engine.presto ) {
-        //     alert( 'Welcome! We have detected that you are a very old version of Opera or related browser. As a modern webapp, libreevent does only support modern browsers. If you run into issues whilst using this webapp, please switch to a modern browser, like Firefox.' )
-        // }
         this.theme = localStorage.getItem( 'theme' ) ?? '';
         if ( window.matchMedia( '(prefers-color-scheme: dark)' ).matches || this.theme === '&#9788;' ) {
             document.documentElement.classList.add( 'dark' );
@@ -191,6 +186,21 @@ export default {
             document.documentElement.classList.add( 'light' );
             this.theme = '&#9789;';
         }
+        console.log( `
+                _ _ _                                   _   
+                | (_) |                                 | |  
+                | |_| |__  _ __ ___  _____   _____ _ __ | |_ 
+                | | | '_ \\| '__/ _ \\/ _ \\ \\ / / _ \\ '_ \\| __|
+                | | | |_) | | |  __/  __/\\ V /  __/ | | | |_ 
+                |_|_|_.__/|_|  \\___|\\___| \\_/ \\___|_| |_|\\__|
+
+You opened the developer tools. Know some coding? Want to help make this software even better?
+Then come and join the development team of libreevent, the free and open source event management
+solution. Your help is greatly appreciated by the team as well as all its users!
+
+=> https://github.com/simplePCBuilding/libreevent
+=> https://libreevent.janishutz.com/
+        ` );
     }
 }
 </script>

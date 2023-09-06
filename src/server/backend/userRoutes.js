@@ -147,6 +147,15 @@ module.exports = ( app, settings ) => {
         response.send( 'logoutOk' );
     } );
 
+    app.get( '/user/resendEmail', ( req, res ) => {
+        ( async () => {
+            let tok = generator.generateToken( 60 );
+            mailTokens[ tok ] = req.session.username;
+            mailManager.sendMail( req.session.username, await twoFA.generateSignupEmail( tok, settings.yourDomain, settings.name ), 'Confirm your email', settings.mailSender );
+        } )();
+        res.send( 'sent' );
+    } );
+
     app.post( '/user/signup', bodyParser.json(), ( request, response ) => {
         if ( request.body.password && request.body.password === request.body.password2 && request.body.firstName && request.body.name && request.body.country && request.body.mail ) {
             db.checkDataAvailability( 'users', 'email', request.body.mail ).then( status => {

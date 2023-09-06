@@ -3,7 +3,7 @@
     "setupDone": true,
     "twoFA":"enforce",
     "twoFAMode":"enhanced",
-    "db":"json",
+    "db":"mysql",
     "payments":"stripe",
     "name":"libreevent",
     "yourDomain":"http://localhost:8080",

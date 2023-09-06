@@ -2,7 +2,8 @@
     <div>
         <h1>Account</h1>
         <p>Welcome, {{ accountData.first_name }} {{ accountData.name }}!</p>
-        <table>
+        <button @click="resendMailConfirmation()" v-if="!accountData.mail_confirmed">Resend confirmation email</button>
+        <table class="userData">
             <tr>
                 <td>
                     Email
@@ -19,8 +20,26 @@
                     {{ accountData.first_name }} {{ accountData.name }}
                 </td>
             </tr>
+            <tr>
+                <td>
+                    Email notifications
+                </td>
+                <td>
+                    <div v-if="accountData.marketing">Enabled</div>
+                    <div v-else>Disabled</div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Two-Factor Authentication
+                </td>
+                <td>
+                    <div v-if="accountData.two_fa == 'enhanced'">Enhanced</div>
+                    <div v-else-if="accountData.two_fa == 'standard'">Standard</div>
+                    <div v-else>Disabled</div>
+                </td>
+            </tr>
         </table>
-        <button>Resend confirmation email</button>
         <notifications ref="notification" location="topright" size="bigger"></notifications>
         <popups ref="popups" size="big" @data="data => { savePwd( data ) }"></popups>
     </div>
@@ -30,6 +49,12 @@
 <style>
     nav {
         display: initial;
+    }
+</style>
+
+<style scoped>
+    .userData {
+        width: 50%;
     }
 </style>
 
@@ -52,6 +77,17 @@
         computed: {
             ...mapStores( useUserStore )
         },
+        methods: {
+            resendMailConfirmation() {
+                fetch( localStorage.getItem( 'url' ) + '/user/resendEmail' ).then( res => {
+                    if ( res.status === 200 ) {
+                        this.$refs.notification.createNotification( 'Confirmation email sent.', 5, 'ok', 'normal' );
+                    } else {
+                        this.$refs.notification.createNotification( 'An error occurred whilst sending the confirmation mail. Please retry', 20, 'error', 'normal' );
+                    }
+                } );
+            }
+        },
         created () {
             // TODO: FUTURE Also get all orders of user (using join functions)
             fetch( localStorage.getItem( 'url' ) + '/user/details' ).then( res => {
@@ -59,7 +95,11 @@
                     res.json().then( data => {
                         if ( data.status ) {
                             this.accountData = data.data;
-                            console.log( data );
+                            if ( this.accountData.marketing ) {
+                                this.accountData.marketing = true;
+                            } else {
+                                this.accountData.marketing = false;
+                            }
                             if ( !data.data.mail_confirmed ) {
                                 setTimeout( () => {
                                     this.$refs.notification.createNotification( 'Your account is unverified. Please confirm your email using the link we have sent to your email!', 20, 'info', 'normal' );
