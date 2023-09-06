@@ -52,17 +52,19 @@ const settings = JSON.parse( fs.readFileSync( path.join( __dirname + '/config/se
 // Vue SSR and gets its support files (e.g. CSS and JS files) from 
 // the /home/supportFiles/:file route plus its assets from the /otherAssets/:file
 // route).
-if ( settings.init ) {
+if ( settings.setupDone ) {
     app.get( '/', ( req, res ) => {
         res.sendFile( path.join( __dirname + '/ui/home/active/en/index.html' ) );
     } );
 }
 
+// TODO: If no init, initialize DB.
+
 
 // Set up static routes for static file serving (performance wise not
 // that good, but way easier to set up)
 console.log( '[ Server ] Setting up static routes' );
-if ( settings.init ) {
+if ( settings.setupDone ) {
     app.use( express.static( 'webapp/main/dist' ) );
 } else {
     app.use( express.static( 'webapp/setup/dist' ) );
@@ -86,7 +88,7 @@ app.use( cookieParser() );
 let file = path.join( __dirname + '/webapp/main/dist/index.html' );
 
 console.log( '[ Server ] loading backend components' );
-if ( settings.init ) {
+if ( settings.setupDone ) {
     require( './backend/helperRoutes.js' )( app, settings ); // Helper routes
     require( './admin/adminRoutes.js' )( app, settings ); // admin routes
     require( './admin/adminAPIRoutes.js' )( app, settings ); // admin api routes

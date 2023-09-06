@@ -11,7 +11,16 @@
                     {{ accountData.email }}
                 </td>
             </tr>
+            <tr>
+                <td>
+                    Name
+                </td>
+                <td>
+                    {{ accountData.first_name }} {{ accountData.name }}
+                </td>
+            </tr>
         </table>
+        <button>Resend confirmation email</button>
         <notifications ref="notification" location="topright" size="bigger"></notifications>
         <popups ref="popups" size="big" @data="data => { savePwd( data ) }"></popups>
     </div>
@@ -44,7 +53,7 @@
             ...mapStores( useUserStore )
         },
         created () {
-            // TODO: Also get all orders of user (using join functions)
+            // TODO: FUTURE Also get all orders of user (using join functions)
             fetch( localStorage.getItem( 'url' ) + '/user/details' ).then( res => {
                 if ( res.status === 200 ) {
                     res.json().then( data => {

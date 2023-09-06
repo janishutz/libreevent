@@ -1,1 +1,17 @@
-{"init":false,"twoFA":"enforce","setupKey":"hello world","twoFAMode":"enhanced","db":"json","payments":"stripe","name":"libreevent","yourDomain":"http://localhost:8080","mailSender":"libreevent <info@libreevent.janishutz.com>","maxTickets":10,"currency":"CHF","gcInterval":300,"ticketTimeout":900,"startPage":"default","version":"1.0.0"}
+{
+    "init":false,
+    "setupDone": true,
+    "twoFA":"enforce",
+    "twoFAMode":"enhanced",
+    "db":"json",
+    "payments":"stripe",
+    "name":"libreevent",
+    "yourDomain":"http://localhost:8080",
+    "mailSender":"libreevent <info@libreevent.janishutz.com>",
+    "maxTickets":10,
+    "currency":"CHF",
+    "gcInterval":300,
+    "ticketTimeout":900,
+    "startPage":"default",
+    "version":"1.0.0"
+}

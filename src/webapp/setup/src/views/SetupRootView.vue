@@ -169,6 +169,7 @@
                 }
             },
             proceed () {
+                // TODO: Perform checks
                 this.backendStore.addVisitedSetupPages( 'complete', true );
                 this.$router.push( 'complete' );
             }

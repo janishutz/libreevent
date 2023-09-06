@@ -11,9 +11,11 @@
 
 
 - Update files to import when deploying for included json files instead of secret.json files
+- Also remove /test/ routes
 
 - Fix text field overflow (text too big for box)
 - Other optimization for seat plan editor
+- Fix diagonal stand component
 
 
 - FUTURE: Implement Permission system

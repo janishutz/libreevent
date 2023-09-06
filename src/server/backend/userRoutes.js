@@ -28,7 +28,7 @@ module.exports = ( app, settings ) => {
                 if ( data[ 0 ] ) {
                     let dat = {};
                     for ( let element in data[ 0 ] ) {
-                        if ( element === 'pass' ) {
+                        if ( element !== 'pass' ) {
                             dat[ element ] = data[ 0 ][ element ];
                         }
                     }
