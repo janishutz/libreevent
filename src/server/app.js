@@ -52,10 +52,11 @@ const settings = JSON.parse( fs.readFileSync( path.join( __dirname + '/config/se
 // Vue SSR and gets its support files (e.g. CSS and JS files) from 
 // the /home/supportFiles/:file route plus its assets from the /otherAssets/:file
 // route).
-
-app.get( '/', ( req, res ) => {
-    res.sendFile( path.join( __dirname + '/ui/home/active/en/index.html' ) );
-} );
+if ( settings.init ) {
+    app.get( '/', ( req, res ) => {
+        res.sendFile( path.join( __dirname + '/ui/home/active/en/index.html' ) );
+    } );
+}
 
 
 // Set up static routes for static file serving (performance wise not
@@ -94,6 +95,7 @@ if ( settings.init ) {
     require( './backend/payments/paymentRoutes.js' )( app, settings ); // payment routes
     require( './backend/plugins/pluginLoader.js' )( app, settings ); // plugin loader
 } else {
+    console.log( '[ Setup ] Loading setup routes' );
     require( './setup/setupRoutes.js' )( app, settings ); // setup routes
     file = path.join( __dirname + '/webapp/setup/dist/index.html' );
 }

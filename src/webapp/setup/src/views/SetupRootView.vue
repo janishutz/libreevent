@@ -169,8 +169,8 @@
                 }
             },
             proceed () {
-                this.backendStore.addVisitedSetupPages( 'page', true );
-                this.$router.push( 'page' );
+                this.backendStore.addVisitedSetupPages( 'complete', true );
+                this.$router.push( 'complete' );
             }
         },
     };

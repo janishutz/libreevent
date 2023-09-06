@@ -44,15 +44,6 @@ export default {
             }
         },
         {
-            path: 'page',
-            name: 'setupPage',
-            component: () => import( '../views/SetupPageView.vue' ),
-            meta: {
-                title: 'Landing page :: Setup - libreevent',
-                setupAuthRequired: true,
-            }
-        },
-        {
             path: 'complete',
             name: 'setupComplete',
             component: () => import( '../views/SetupCompleteView.vue' ),

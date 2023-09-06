@@ -15,8 +15,6 @@
             <a v-else class="inactive">Basic Setup</a> | 
             <router-link to="/setup/root" v-if="backendStore.getVisitedSetupPages[ 'root' ]">Root account</router-link>
             <a v-else class="inactive">Root account</a> | 
-            <router-link to="/setup/page" v-if="backendStore.getVisitedSetupPages[ 'page' ]">Landing page</router-link>
-            <a v-else class="inactive">Landing page</a> | 
             <router-link to="/setup/complete" v-if="backendStore.getVisitedSetupPages[ 'complete' ]">Complete</router-link>
             <a v-else class="inactive">Complete</a>
         </nav>
@@ -45,6 +43,17 @@
         },
         created () {
             this.backendStore.loadVisitedSetupPages();
+            fetch( '/setup/getKeyStatus' ).then( res => {
+                if ( res.status === 200 ) {
+                    res.text().then( text => {
+                        if ( text != 'ok' ) {
+                            this.$router.push( '/' );
+                        }
+                    } );
+                } else {
+                    this.$router.push( '/' );
+                }
+            } );
         },
     };
 </script>
