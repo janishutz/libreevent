@@ -89,5 +89,8 @@ On most webhosting accounts, there's a file created in the directory of libreeve
 ### DB HAS TO USE InnoDB!
 The MySQL database you are using is not supported by libreevent or is incorrectly configured. Please ensure that InnoDB is enabled. If you cannot enable it yourself, please contact the DB hosting provider.
 
+### ERR_ENCODING_NOT_SUPPORTED
+If this error occurs, most likely, the Node.js build of your hosting provider is set to small-icu mode, meaning some localizations are missing, one of which is ascii, which is required by the pdf generator that libreevent uses. To resolve this, please contact the support team of your web hosting company and ask them to enable full-icu for you. 
+
 ### Any other error
 Please click [here](https://github.com/simplePCBuilding/libreevent/issues/new) to head to GitHub and open a new issue. You will need to have a GitHub Account to open an issue. If you don't have a GitHub account, you may also contact me using my [Bug reporting tool](https://api.janishutz.com/contact/report?origin=libreevent?error=unkown?lang=en).
