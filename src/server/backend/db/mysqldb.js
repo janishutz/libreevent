@@ -150,7 +150,7 @@ class SQLDB {
                     command = 'UPDATE ' + table + ' SET ';
                     let updatedValues = '';
                     for ( let value in operation.newValues ) {
-                        updatedValues += value + ' = ' + this.sqlConnection.escape( operation.newValues[ value ] ) + ', ';
+                        updatedValues += value + ' = ' + this.sqlConnection.escape( String( operation.newValues[ value ] ) ) + ', ';
                     }
                     command += updatedValues.slice( 0, updatedValues.length - 2 );
                     command += ' WHERE ' + operation.property + ' = ' + this.sqlConnection.escape( operation.searchQuery );

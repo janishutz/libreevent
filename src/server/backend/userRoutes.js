@@ -41,7 +41,6 @@ module.exports = ( app, settings ) => {
                 response.status( 500 ).send( { 'data': 'There was an error reading data from the database. If this error persists, please contact the administrators', 'status': false } );
             } );
         } else {
-            console.log( 'unauthorised' );
             response.status( 403 ).sendFile( path.join( __dirname + '/../ui/en/errors/403.html' ) );
         }
     } );
@@ -84,7 +83,7 @@ module.exports = ( app, settings ) => {
                 }
             } );
         } else {
-            response.send( 'missingCredentials' );
+            response.status( 400 ).send( 'missingCredentials' );
         }
     } );
 
@@ -101,7 +100,7 @@ module.exports = ( app, settings ) => {
         } else if ( tokType === 'enhanced' ) {
             response.sendFile( path.join( __dirname + '/../ui/en/2fa/2faEnhanced.html' ) );
         } else {
-            response.sendFile( path.join( __dirname + '/../ui/en/2fa/2faInvalid.html' ) );
+            response.status( 403 ).sendFile( path.join( __dirname + '/../ui/en/2fa/2faInvalid.html' ) );
         }
     } );
 
@@ -117,7 +116,7 @@ module.exports = ( app, settings ) => {
                 authOk[ request.body.token ] = 'ok';
             }
             response.send( 'ok' );
-        } else response.send( 'wrong' );
+        } else response.status( 403 ).send( 'wrong' );
     } );
 
     app.get( '/user/2fa/check', ( request, response ) => {
@@ -148,12 +147,16 @@ module.exports = ( app, settings ) => {
     } );
 
     app.get( '/user/resendEmail', ( req, res ) => {
-        ( async () => {
-            let tok = generator.generateToken( 60 );
-            mailTokens[ tok ] = req.session.username;
-            mailManager.sendMail( req.session.username, await twoFA.generateSignupEmail( tok, settings.yourDomain, settings.name ), 'Confirm your email', settings.mailSender );
-        } )();
-        res.send( 'sent' );
+        if ( req.session.username ) {
+            ( async () => {
+                let tok = generator.generateToken( 60 );
+                mailTokens[ tok ] = req.session.username;
+                mailManager.sendMail( req.session.username, await twoFA.generateSignupEmail( tok, settings.yourDomain, settings.name ), 'Confirm your email', settings.mailSender );
+            } )();
+            res.send( 'sent' );
+        } else {
+            res.status( 403 ).send( 'unauthorised' );
+        }
     } );
 
     app.post( '/user/signup', bodyParser.json(), ( request, response ) => {
@@ -202,7 +205,7 @@ module.exports = ( app, settings ) => {
                 response.sendFile( path.join( __dirname + '/../ui/en/signup/disallowTwoFA.html' ) );
             }
         } else {
-            response.sendFile( path.join( __dirname + '/../ui/en/signup/invalid.html' ) );
+            response.status( 400 ).sendFile( path.join( __dirname + '/../ui/en/signup/invalid.html' ) );
         }
     } );
     
@@ -214,7 +217,16 @@ module.exports = ( app, settings ) => {
                 response.send( 'ok' );
             }
         } else {
-            response.send( 'unauthorised' );
+            response.status( 403 ).send( 'unauthorised' );
+        }
+    } );
+
+    app.post( '/user/settings', bodyParser.json(), ( req, res ) => {
+        if ( req.session.username ) {
+            db.writeDataSimple( 'users', 'email', req.session.username, req.body );
+            res.send( 'ok' );
+        } else {
+            res.status( 403 ).send( 'unauthorised' );
         }
     } );
     

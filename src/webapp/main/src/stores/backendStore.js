@@ -12,7 +12,6 @@ import { defineStore } from "pinia";
 export const useBackendStore = defineStore ( 'backend', {
     state: () => ( { 'guestPurchase': false, 'guestPurchaseAllowed': false } ),
     getters: {
-        getVisitedSetupPages: ( state ) => state.visitedSetupPages,
         getIsGuestPurchase: ( state ) => state.guestPurchase,
         getIsGuestPurchaseAllowed: ( state ) => state.guestPurchaseAllowed,
     },
