@@ -12,6 +12,7 @@ const db = require( '../backend/db/db.js' );
 const pwHandler = require( './pwdmanager.js' );
 
 module.exports = ( app ) => {
+    console.log( '[ APP API ] Loaded!' );
     app.post( '/app/authenticate', bodyParser.json(), ( req, res ) => {
         pwHandler.checkpassword( req.body.email, req.body.password ).then( status => {
             if ( status ) {
@@ -38,6 +39,7 @@ module.exports = ( app ) => {
                             if ( tickets[ event ] ) {
                                 if ( tickets[ event ][ ticket ] ) {
                                     if ( !tickets[ event ][ ticket ][ 'invalidated' ] ) {
+                                        // TODO: invalidate ticket!
                                         res.send( 'ticketValid' );
                                     } else {
                                         res.send( 'ticketInvalid' );

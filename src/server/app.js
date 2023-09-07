@@ -92,6 +92,7 @@ if ( settings.setupDone ) {
     require( './backend/helperRoutes.js' )( app, settings ); // Helper routes
     require( './admin/adminRoutes.js' )( app, settings ); // admin routes
     require( './admin/adminAPIRoutes.js' )( app, settings ); // admin api routes
+    require( './admin/appApiRoutes.js' )( app, settings ); // app api routes
     require( './backend/userAPIRoutes.js' )( app, settings ); // user api routes
     require( './backend/userRoutes.js' )( app, settings ); // user routes
     require( './backend/payments/paymentRoutes.js' )( app, settings ); // payment routes
