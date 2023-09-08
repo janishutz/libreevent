@@ -22,7 +22,10 @@ class JSONDB {
         let data = {};
         try {
             JSON.parse( fs.readFileSync( path.join( __dirname + '/data/db.json' ) ) );
-        } catch ( err ) {}
+        } catch ( err ) {
+            console.error( '[ JSON-DB ] CRITICAL INITIALIZATION FAILURE!' + err );
+            throw ( 'JSONDB failed to start!' );
+        }
         this.db = data[ 'db' ] ?? { 'libreevent_temp': {}, 'libreevent_admin': {}, 'libreevent_orders': {}, 'libreevent_users': {} };
         this.dbIndex = data[ 'index' ] ?? { 'libreevent_temp': 0, 'libreevent_admin': 0, 'libreevent_orders': 0, 'libreevent_users': 0 };
         this.db[ 'libreevent_temp' ] = {};

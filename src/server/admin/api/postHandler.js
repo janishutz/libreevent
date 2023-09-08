@@ -9,13 +9,11 @@
 
 const db = require( '../../backend/db/db.js' );
 const pwdmanager = require( '../pwdmanager.js' );
-const fs = require( 'fs' );
-const path = require( 'path' );
 const pm = require( '../../backend/plugins/manager.js' );
 const spm = require( '../startPageManager.js' );
 const startPageManager = new spm();
 
-const letters = [ ',', '{' ];
+
 
 class POSTHandler {
     constructor ( settings ) {
@@ -154,18 +152,7 @@ class POSTHandler {
                 this.settings[ 'currency' ] = data.currency;
                 this.settings[ 'payments' ] = data.payments;
                 this.settings[ 'ticketTimeout' ] = data.ticketTimeout;
-                const settingsString = JSON.stringify( this.settings );
-                let settingsToSave = '';
-                for ( let letter in settingsString ) {
-                    if ( letters.includes( settingsString[ letter ] ) ) {
-                        settingsToSave += settingsString[ letter ] + '\n\t';
-                    } else if ( settingsString[ letter ] === '}' ) {
-                        settingsToSave += '\n' + settingsString[ letter ];
-                    } else {
-                        settingsToSave += settingsString[ letter ];
-                    }
-                }
-                fs.writeFileSync( path.join( __dirname + '/../../config/settings.config.json' ), settingsToSave );
+                db.saveSettings( this.settings );
                 db.getJSONData( 'events' ).then( dat => {
                     let updated = dat;
                     for ( let event in updated ) {

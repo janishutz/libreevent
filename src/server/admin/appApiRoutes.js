@@ -39,7 +39,8 @@ module.exports = ( app ) => {
                             if ( tickets[ event ] ) {
                                 if ( tickets[ event ][ ticket ] ) {
                                     if ( !tickets[ event ][ ticket ][ 'invalidated' ] ) {
-                                        // TODO: invalidate ticket!
+                                        tickets[ event ][ ticket ][ 'invalidated' ] = true;
+                                        db.writeDataSimple( 'orders', 'order_name', req.body.ticketID.slice( 0, req.body.ticketID.indexOf( '_' ) ), { 'tickets': JSON.stringify( tickets ) } );
                                         res.send( 'ticketValid' );
                                     } else {
                                         res.send( 'ticketInvalid' );

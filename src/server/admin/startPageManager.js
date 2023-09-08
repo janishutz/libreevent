@@ -11,6 +11,7 @@ let createSSRApp = require( 'vue' ).createSSRApp;
 let renderToString = require( 'vue/server-renderer' ).renderToString;
 const fs = require( 'fs' );
 const path = require( 'path' );
+const db = require( '../backend/db/db.js' );
 
 class StartPageManager {
     constructor ( settings ) {
@@ -42,7 +43,7 @@ class StartPageManager {
 
     setActiveStartPage( startPageName ) {
         this.settings[ 'startPage' ] = startPageName;
-        fs.writeFileSync( path.join( __dirname + '/../config/settings.config.json' ), JSON.stringify( this.settings ) );
+        db.saveSettings( this.settings );
     }
 
     async renderStartPage( startPageName ) {

@@ -15,6 +15,7 @@ const cookieParser = require( 'cookie-parser' );
 const http = require( 'http' );
 const fs = require( 'fs' );
 const token = require( './backend/token.js' );
+const db = require( './backend/db/db.js' );
 
 console.log( `
 
@@ -58,7 +59,12 @@ if ( settings.setupDone ) {
     } );
 }
 
-// TODO: If no init, initialize DB.
+if ( !settings.init ) {
+    db.initDB();
+    let mutSettings = settings;
+    mutSettings[ 'init' ] = true;
+    db.saveSettings( mutSettings );
+}
 
 
 // Set up static routes for static file serving (performance wise not

@@ -20,11 +20,13 @@
                 <a href="https://libreevent.janishutz.com/docs/setup/afterSetup" target="_blank">here</a></p>
             <div class="list-wrapper">
                 <ul>
+                    <li>Customize the start page</li>
                     <li>Choose a payment gateway and set it up</li>
                     <li>Create a event location and an event</li>
                     <li>Create other admin accounts with less privileges</li>
                 </ul>
             </div>
+            <button class="button" @click="cleanup()">Done</button>
         </div>
     </div>
 </template>
@@ -47,5 +49,12 @@
                 windowURL: location.protocol + '//' + location.host +'/admin/login',
             }
         },
+        methods: {
+            cleanup() {
+                sessionStorage.removeItem( 'basics' );
+                sessionStorage.removeItem( 'root' );
+                this.$router.push( '/admin/login' );
+            }
+        }
     };
 </script>

@@ -154,8 +154,10 @@
                                     }
                                 }
                             } else {
-                                if ( confirm( 'Do you really want to proceed without having your password checked?' ) ) {
-                                    this.proceed();
+                                if ( confirm( 'Do you really want to proceed without having your password checked? This is strongly discouraged as it essentially removes the first factor (the password) of the authentication making it much less secure.' ) ) {
+                                    if ( confirm( 'Are you really sure?' ) ) {
+                                        this.proceed();
+                                    }
                                 }
                             }
                         } else {
@@ -169,11 +171,30 @@
                 }
             },
             proceed () {
-                // TODO: Perform checks
-                this.backendStore.addVisitedSetupPages( 'complete', true );
-                this.$router.push( 'complete' );
-            }
+                const options = {
+                    method: 'post',
+                    body: JSON.stringify( this.formData ),
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'charset': 'utf-8'
+                    }
+                };
+                fetch( '/setup/saveRootAccount', options ).then( res => {
+                    if ( res.status === 200 ) {
+                        sessionStorage.setItem( 'basics', JSON.stringify( this.formData ) );
+                        this.backendStore.addVisitedSetupPages( 'complete', true );
+                        this.$router.push( 'complete' );
+                    } else {
+                        this.$refs.notification.createNotification( 'Setup key incorrect!', 5, 'error', 'normal' );
+                    }
+                } );
+            },
         },
+        created () {
+            if ( sessionStorage.getItem( 'root' ) ) {
+                this.formData = JSON.parse( sessionStorage.getItem( 'root' ) );
+            }
+        }
     };
 </script>
 

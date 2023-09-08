@@ -14,6 +14,8 @@ const settings = JSON.parse( fs.readFileSync( path.join( __dirname + '/../../con
 
 const dbRef = { 'user': 'libreevent_users', 'admin': 'libreevent_admin', 'order': 'libreevent_orders', 'users': 'libreevent_users', 'orders': 'libreevent_orders', 'temp': 'libreevent_temp' };
 
+const letters = [ ',', '{' ];
+
 let dbh;
 
 if ( settings.db === 'mysql' ) {
@@ -25,6 +27,14 @@ if ( settings.db === 'mysql' ) {
     dbh = new dbsoft();
     dbh.connect();
 }
+
+module.exports.initDB = () => {
+    ( async() =>  {
+        console.log( '[ DB ] Setting up...' );
+        await dbh.setupDB();
+        console.log( '[ DB ] Setting up complete!' );
+    } )();
+};
 
 module.exports.getDataSimple = ( db, column, searchQuery ) => {
     return new Promise( ( resolve, reject ) => {
@@ -183,6 +193,21 @@ module.exports.deleteJSONDataSimple = ( db, identifier ) => {
             }
         } );
     } );
+};
+
+module.exports.saveSettings = ( settings ) => {
+    const settingsString = JSON.stringify( settings );
+    let settingsToSave = '';
+    for ( let letter in settingsString ) {
+        if ( letters.includes( settingsString[ letter ] ) ) {
+            settingsToSave += settingsString[ letter ] + '\n\t';
+        } else if ( settingsString[ letter ] === '}' ) {
+            settingsToSave += '\n' + settingsString[ letter ];
+        } else {
+            settingsToSave += settingsString[ letter ];
+        }
+    }
+    fs.writeFileSync( path.join( __dirname + '/../../config/settings.config.json' ), settingsToSave );
 };
 
 const gc = () => {

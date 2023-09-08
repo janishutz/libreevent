@@ -7,7 +7,9 @@
 *
 */
 
-let db = null;
+// let db = null;
+let db = require( '../backend/db/db.js' );
+const pwm = require( '../admin/pwdmanager.js' );
 const fs = require( 'fs' );
 const path = require( 'path' );
 const bodyParser = require( 'body-parser' );
@@ -30,7 +32,38 @@ module.exports = ( app, settings ) => {
         if ( req.session.setupKeyOk ) {
             res.send( 'ok' );
         } else {
-            res.status( 403 ).send( 'not authorized' );
+            res.status( 403 ).send( 'unauthorized' );
+        }
+    } );
+
+    app.post( '/setup/saveBasicSettings', bodyParser.json(), ( req, res ) => {
+        if ( req.session.setupKeyOk ) {
+            fs.writeFileSync( path.join( __dirname + '/../config/db.config.json' ), JSON.stringify( req.body.db ) );
+            fs.writeFileSync( path.join( __dirname + '/../config/mail.config.json' ), JSON.stringify( req.body.email ) );
+            if ( db === null ) {
+                db = require( '../backend/db/db.js' );
+            }
+            let updatedSettings = settings;
+            updatedSettings[ 'name' ] = req.body.websiteName;
+            updatedSettings[ 'mailSender' ] = req.body.mailDisplay;
+            db.saveSettings( updatedSettings );
+            res.send( 'ok' );
+        } else {
+            res.status( 403 ).send( 'unauthorized' );
+        }
+    } );
+
+    app.post( '/setup/saveRootAccount', bodyParser.json(), ( req, res ) => {
+        if ( req.session.setupKeyOk ) {
+            pwm.hashPassword( req.body.password ).then( hash => {
+                db.writeJSONData( 'rootAccount', { 'pass': hash, 'email': req.body.mail } );
+                let updatedSettings = settings;
+                updatedSettings[ 'setupDone' ] = true;
+                db.saveSettings( updatedSettings );
+                res.send( 'ok' );
+            } );
+        } else {
+            res.status( 403 ).send( 'unauthorized' );
         }
     } );
 
