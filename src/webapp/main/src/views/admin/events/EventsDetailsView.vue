@@ -81,15 +81,9 @@
                         </td>
                     </tr>
                     <tr>
-                        <td><div class="category-details">Foreground colour:</div></td>
+                        <td><div class="category-details">Colour:</div></td>
                         <td>
                             <input type="text" data-coloris v-model="category.fg" onkeydown="return false;">
-                        </td>
-                    </tr>
-                    <tr>
-                        <td><div class="category-details">Background colour:</div></td>
-                        <td>
-                            <input type="text" data-coloris v-model="category.bg" onkeydown="return false;">
                         </td>
                     </tr>
                     <tr v-if="!hasSeatPlan">

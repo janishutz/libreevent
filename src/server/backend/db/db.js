@@ -214,11 +214,11 @@ const gc = () => {
     // this function acts as the database garbage collector. TicketTimeout can be changed from the GUI.
     this.getData( 'temp' ).then( tempData => {
         let data = tempData;
-        console.info( 'Garbage Collecting' );
+        console.info( '[ DB ] Garbage Collecting' );
         for ( let item in data ) {
             if ( new Date( data[ item ][ 'timestamp' ] ).getTime() + ( parseInt( settings.ticketTimeout ) * 1000 ) > new Date().getTime() ) {
                 delete data[ item ];
-                console.debug( 'Garbage collected a session' );
+                console.debug( '[ DB ] Garbage collected a session' );
             }
         }
     } );

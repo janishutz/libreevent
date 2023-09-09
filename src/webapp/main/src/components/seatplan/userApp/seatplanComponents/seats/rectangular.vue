@@ -95,7 +95,7 @@ export default {
                     this.seats[ row ][ n ][ 'scaling' ] = `font-size: ${this.scaleFactor * 200}%; `;
                     
                     if ( this.data.categoryInfo.color ) {
-                        this.seats[ row ][ n ][ 'style' ] += `color: ${ this.data.categoryInfo.color.fg ? this.data.categoryInfo.color.fg : 'black' }; background-color: ${ this.data.categoryInfo.color.bg ? this.data.categoryInfo.color.bg : 'rgba( 0, 0, 0, 0 )' }`;
+                        this.seats[ row ][ n ][ 'style' ] += `color: ${ this.data.categoryInfo.color ?? 'black' };`;
                     }
 
                     if ( this.unavailable[ this.id ] ) {

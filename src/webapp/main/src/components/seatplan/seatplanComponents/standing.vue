@@ -1,5 +1,5 @@
 <!--
-*				libreevent - standing.vue
+*				libreevent - stages.vue
 *
 *	Created by Janis Hutz 05/12/2023, Licensed under the GPL V3 License
 *			https://janishutz.com, development@janishutz.com
@@ -24,6 +24,7 @@
 #rectangular {
     border-color: black;
     border-width: 2px;
+    background-color: var( --popup-color );
 }
 
 #circular, #trapezoid {
@@ -33,7 +34,7 @@
 #trapezoid-ingredient {
     display: flex;
     justify-content: center;
-    align-items: center;
+    align-items: flex-end;
     height: 200%;
     width: 200%;
     position: relative;
@@ -84,15 +85,19 @@ export default {
             if ( this.origin === 1 ) {
                 this.style = 'border-style: none none solid none';
                 this.circularStyle = 'top: 0; right: 100%;';
+                this.trapezoidStyle = 'rotate: 45deg';
             } else if ( this.origin === 2 ) {
                 this.style = 'border-style: none solid none none';
                 this.circularStyle = 'top: 0; right: 0;';
+                this.trapezoidStyle = 'rotate: 135deg';
             } else if ( this.origin === 3 ) {
                 this.style = 'border-style: solid none none none';
                 this.circularStyle = 'top: -100%; right: 0;';
+                this.trapezoidStyle = 'rotate: 225deg';
             } else if ( this.origin === 4 ) {
                 this.style = 'border-style: none none none solid';
                 this.circularStyle = 'top: -100%; right: 100%;';
+                this.trapezoidStyle = 'rotate: 315deg';
             }
         }
     },

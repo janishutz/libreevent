@@ -147,7 +147,6 @@
             },
             prepSeatplan () {
                 // Mark all selected seats + all unavailable seats
-                // { 'sector': 'A', 'sectorCount': 1, 'unavailableSeats': { 'secAr0s0': 'nav' }, 'categoryInfo': { 'pricing': { '1': { 'displayName': 'Adults - CHF 20.-', 'value': 'adult', 'price': 20 }, '2': { 'displayName': 'Child (0 - 15.99y) - CHF 15.-', 'value': 'child', 'price': 15 } } } }
                 let categoryDetails = {};
                 for ( let category in this.event.categories ) {
                     categoryDetails[ category ] = {};
@@ -158,7 +157,7 @@
                 }
 
                 for ( let element in this.draggables ) {
-                    this.draggables[ element ][ 'data' ] = { 'sector': this.draggables[ element ][ 'sector' ], 'categoryInfo': { 'pricing': categoryDetails[ this.draggables[ element ][ 'category' ] ] } };
+                    this.draggables[ element ][ 'data' ] = { 'sector': this.draggables[ element ][ 'sector' ], 'categoryInfo': { 'pricing': categoryDetails[ this.draggables[ element ][ 'category' ] ], 'color': this.event.categories[ this.draggables[ element ][ 'category' ] ][ 'fg' ] } };
                 }
 
                 this.seatChecks();
