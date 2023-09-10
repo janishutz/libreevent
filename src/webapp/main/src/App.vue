@@ -9,6 +9,7 @@
 
 <template>
     <nav>
+        <p class="beta">LIBREEVENT BETA! Performance and functionality are expected to change and bugs may appear</p>
         <a href="/">Home</a> |
         <router-link to="/tickets">Tickets</router-link> |
         <router-link to="/cart">Cart</router-link> |
@@ -23,6 +24,13 @@
 </template>
 
 <style>
+    .beta {
+        color: red;
+        padding: 0;
+        margin: 0;
+        font-weight: bold;
+    }
+
     :root, :root.light {
         --primary-color: #2c3e50;
         --accent-background: rgb(30, 30, 82);
