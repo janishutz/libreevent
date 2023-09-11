@@ -132,12 +132,12 @@
                                 if ( res.status === 200 ) {
                                     res.json().then( data => {
                                         this.draggables = this.scaleUp( data.data );
-                                        this.prepSeatplan();
+                                        this.prepSeatplan( data.seatInfo );
                                     } );
                                 } else if ( res.status === 500 ) {
                                     if ( sessionStorage.getItem( 'seatplan' ) ) {
                                         this.draggables = this.scaleUp( JSON.parse( sessionStorage.getItem( 'seatplan' ) ) );
-                                        this.prepSeatplan();
+                                        this.prepSeatplan( {} );
                                     }
                                 }
                             } );
@@ -145,7 +145,8 @@
                     }
                 } );
             },
-            prepSeatplan () {
+            prepSeatplan ( seatInfo ) {
+                console.log( seatInfo );
                 // Mark all selected seats + all unavailable seats
                 let categoryDetails = {};
                 for ( let category in this.event.categories ) {
@@ -157,7 +158,14 @@
                 }
 
                 for ( let element in this.draggables ) {
-                    this.draggables[ element ][ 'data' ] = { 'sector': this.draggables[ element ][ 'sector' ], 'categoryInfo': { 'pricing': categoryDetails[ this.draggables[ element ][ 'category' ] ], 'color': this.event.categories[ this.draggables[ element ][ 'category' ] ][ 'fg' ] } };
+                    this.draggables[ element ][ 'data' ] = { 
+                        'sector': this.draggables[ element ][ 'sector' ], 
+                        'categoryInfo': { 
+                            'pricing': categoryDetails[ this.draggables[ element ][ 'category' ] ], 
+                            'color': this.event.categories[ this.draggables[ element ][ 'category' ] ][ 'fg' ] 
+                        },
+                        'seatInfo': seatInfo,
+                    };
                 }
 
                 this.seatChecks();
@@ -297,17 +305,6 @@
                 if ( sessionStorage.getItem( 'seatplan' ) ) {
                     this.draggables = this.scaleUp( JSON.parse( sessionStorage.getItem( 'seatplan' ) ) );
                 }
-
-                // if ( this.cart[ this.event.eventID ] ) {
-                //     let tickets = this.cart[ this.event.eventID ][ 'tickets' ];
-                //     for ( let seat in tickets ) {
-                //         if ( !this.unavailableSeats[ data.user[ seat ].component ] ) {
-                //             this.unavailableSeats[ data.reserved[ seat ].component ] = {};
-                //         }
-                //         this.unavailableSeats[ tickets[ seat ].component ][ tickets[ seat ].id ] = 'sel';
-                //     }
-                // }
-
             },
             scaleUp ( valueArray ) {
                 const allowedAttributes = [ 'w', 'h', 'x', 'y' ];
