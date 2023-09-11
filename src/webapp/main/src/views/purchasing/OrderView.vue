@@ -19,7 +19,7 @@
                             <p>{{ event.description }}</p>
                         </div>
                         <div class="ticket-info">
-                            <p>Free seats: {{ event.free }} / {{ event.maxTickets }}</p>
+                            <p>Free seats: {{ event.free }} / {{ event.totalSeats }}</p>
                             <p>{{ event.locationName }}, {{ event.dateString }}</p>
                             <h4>Starting at {{ event.currency }} {{ event.startingPrice }}</h4>
                         </div>

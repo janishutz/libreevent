@@ -59,9 +59,10 @@ export default {
             let h = Math.floor( this.h / this.scaleFactor );
             const size = 33;
             this.seats = {};
-            let details = { 'data': { '0': Math.floor( w / size ) }, 'id': this.id };
+            let details = { 'data': {}, 'id': this.id };
             for ( let row = 0; row < Math.floor( h / size ); row++ ) {
                 this.seats[ row ] = {};
+                details.data[ row ] = Math.floor( w / size );
                 for ( let n = 0; n < Math.floor( w / size ); n++ ) {
                     if ( this.origin === 1 ) {
                         this.seats[ row ][ n ] = { 'style': `font-size: ${this.scaleFactor * 200}%; bottom: ${ row * size * this.scaleFactor }px; left: ${ n * size * this.scaleFactor }px; rotate: ${ this.origin / 4 - 0.25 }turn;` };
@@ -74,6 +75,7 @@ export default {
                     }
                 }
             }
+
             this.$emit( 'seatingInfo', details );
         },
         setScaleFactor () {

@@ -22,7 +22,14 @@ module.exports = ( app, settings ) => {
                 let dat = data;
                 dat[ 'reserved' ] = postHandler.getReservedSeats( req.query.event );
                 res.send( dat );
-            } else {
+            } else if ( req.params.call === 'getAllEvents' ) {
+                let dat = data;
+                const freeSeats = postHandler.getFreeSeatsCount();
+                for ( let event in freeSeats ) {
+                    dat[ event ][ 'free' ] = freeSeats[ event ];
+                }
+                res.send( dat );
+            }else {
                 res.send( data );
             }
         } ).catch( error => {

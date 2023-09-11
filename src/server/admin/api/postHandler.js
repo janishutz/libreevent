@@ -29,14 +29,26 @@ class POSTHandler {
                     let dat = res;
                     dat[ 'draft' ] = data.data;
                     db.writeJSONDataSimple( 'seatplan', data.location, dat ).then( resp => { 
-                        resolve( resp );
+                        db.getJSONDataSimple( 'locations', data.location ).then( dat => { 
+                            let s = dat;
+                            s[ 'totalSeats' ] = data.data.seatInfo.count
+                            db.writeJSONDataSimple( 'locations', data.location, s ).then( () => {
+                                resolve( resp );
+                            } );
+                        } );
                     } ).catch( error => {
                         reject( { 'code': 500, 'error': error } );
                     } );
                 } );
             } else if ( call === 'saveSeatplan' ) {
                 db.writeJSONDataSimple( 'seatplan', data.location, { 'draft': {}, 'save': data.data } ).then( resp => { 
-                    resolve( resp );
+                    db.getJSONDataSimple( 'locations', data.location ).then( dat => { 
+                        let s = dat;
+                        s[ 'totalSeats' ] = data.data.seatInfo.count
+                        db.writeJSONDataSimple( 'locations', data.location, s ).then( () => {
+                            resolve( resp );
+                        } );
+                    } );
                 } ).catch( error => {
                     reject( { 'code': 500, 'error': error } );
                 } );

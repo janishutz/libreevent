@@ -342,6 +342,7 @@
                     }
 
                     let lowestPrice = 1000000;
+                    let totalSeats = parseInt( this.locations[ this.event.location ].totalSeats );
                     for ( let category in this.event.categories ) {
                         for ( let price in this.event.categories[ category ].price ) {
                             if ( this.event.categories[ category ].price[ price ] < 0.5 || ( !this.event.categories[ category ].ticketCount && this.hasSeatPlan ) ) {
@@ -352,12 +353,14 @@
                                 lowestPrice = this.event.categories[ category ].price[ price ];
                             };
                         }
+                        totalSeats += parseInt( this.event.categories[ category ].ticketCount ?? 0 );
                     }
 
                     this.event[ 'startingPrice' ] = lowestPrice;
                     this.event[ 'currency' ] = this.currency;
                     this.event[ 'locationName' ] = this.locations[ this.event.location ].name;
                     this.event[ 'hasSeatplan' ] = this.hasSeatPlan;
+                    this.event[ 'totalSeats' ] = totalSeats;
                     const fullDate = new Date( this.event.date + 'T' + this.event.time +'Z' );
                     this.event.date = fullDate.toISOString();
                     if ( !this.event.maxTickets ) {

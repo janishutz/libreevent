@@ -17,31 +17,23 @@ class POSTHandler {
         db.getJSONData( 'booked' ).then( dat => {
             this.allSelectedSeats = dat;
             db.getJSONData( 'events' ).then( dat => {
-                db.getJSONData( 'seatplan' ).then( locations => {
-                    this.events = dat;
-                    // TODO: Load from event db subtract all occupied seats from the ordered db from it.
-                    this.ticketTotals = {};
-                    for ( let event in this.events ) {
-                        if ( locations[ this.events[ event ][ 'location' ] ] ) {
-                            this.ticketTotals[ event ] = locations[ this.events[ event ][ 'location' ] ][ 'save' ][ 'seatInfo' ][ 'count' ];
-                            this.events[ event ][ 'maxTickets' ] = this.ticketTotals[ event ];
+                this.events = dat;
+                this.ticketTotals = {};
+                for ( let event in this.events ) {
+                    this.ticketTotals[ event ] = this.events[ event ][ 'totalSeats' ];
+                }
+                
+                for ( let event in this.allSelectedSeats ) {
+                    for ( let t in this.allSelectedSeats[ event ] ) {
+                        if ( this.allSelectedSeats[ event ][ t ][ 'count' ] ) {
+                            this.ticketTotals[ event ] -= this.allSelectedSeats[ event ][ t ][ 'count' ];
                         } else {
-                            this.ticketTotals[ event ] = this.events[ event ][ 'maxTickets' ];
+                            this.ticketTotals[ event ] -= 1
                         }
                     }
-
-                    // console.log( this.events );
-                    // console.log( this.ticketTotals );
-                    
-                    // for ( let order in this.allSelectedSeats ) {
-                        
-                    // }
-                    // console.log( this.allSelectedSeats );
-                } );
+                }
             } );
         } );
-        
-        this.ticketTotals = { 'test2': { 'ticket1': 5, 'ticket2': 5 } };
         
         this.settings = JSON.parse( fs.readFileSync( path.join( __dirname + '/../../config/settings.config.json' ) ) );
     }
@@ -196,6 +188,10 @@ class POSTHandler {
 
     getReservedSeats ( event ) {
         return this.allSelectedSeats[ event ] ? Object.values( this.allSelectedSeats[ event ] ) : {};
+    }
+
+    getFreeSeatsCount() {
+        return this.ticketTotals;
     }
 }
 

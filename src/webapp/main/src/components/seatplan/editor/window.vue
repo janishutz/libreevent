@@ -15,12 +15,16 @@
                 <Vue3DraggableResizable v-for="draggable in draggables" :initW="draggable.w" :initH="draggable.h" v-model:x="draggable.x" v-model:y="draggable.y" v-model:w="draggable.w" v-model:h="draggable.h"
                     v-model:active="draggable.active" v-model:draggable="draggable.draggable" :resizable="draggable.resizable" :parent="true" @activated="activateComponent( draggable.id );"
                     @drag-end="saveHistory();" @resize-end="saveHistory();" @contextmenu="( e ) => { e.preventDefault(); }" class="draggable-box">
-                    <circularSeatplanComponent v-if="draggable.shape == 'circular' && draggable.type == 'seat'" :scale-factor="scaleFactor" :w="draggable.w" :h="draggable.h" :origin="draggable.origin" :starting-row="draggable.startingRow" :id="draggable.id" @seatingInfo="( info ) => { handleSeatCountInfo( info ); }"></circularSeatplanComponent>
-                    <trapezoidSeatplanComponent v-else-if="draggable.shape == 'trapezoid' && draggable.type == 'seat'" :scale-factor="scaleFactor" :w="draggable.w" :h="draggable.h" :origin="draggable.origin" :starting-row="draggable.startingRow" :id="draggable.id" @seatingInfo="( info ) => { handleSeatCountInfo( info ); }"></trapezoidSeatplanComponent>
-                    <rectangularSeatplanComponent v-else-if="draggable.shape == 'rectangular' && draggable.type == 'seat'" :scale-factor="scaleFactor" :w="draggable.w" :h="draggable.h" :origin="draggable.origin" :id="draggable.id" @seatingInfo="( info ) => { handleSeatCountInfo( info ); }"></rectangularSeatplanComponent>
+                    <circularSeatplanComponent v-if="draggable.shape == 'circular' && draggable.type == 'seat'" :scale-factor="scaleFactor" 
+                    :w="draggable.w" :h="draggable.h" :origin="draggable.origin" :starting-row="draggable.startingRow" :id="draggable.id" @seatingInfo="( info ) => { handleSeatCountInfo( info ); }"></circularSeatplanComponent>
+                    <trapezoidSeatplanComponent v-else-if="draggable.shape == 'trapezoid' && draggable.type == 'seat'" :scale-factor="scaleFactor" 
+                    :w="draggable.w" :h="draggable.h" :origin="draggable.origin" :starting-row="draggable.startingRow" :id="draggable.id" @seatingInfo="( info ) => { handleSeatCountInfo( info ); }"></trapezoidSeatplanComponent>
+                    <rectangularSeatplanComponent v-else-if="draggable.shape == 'rectangular' && draggable.type == 'seat'" :scale-factor="scaleFactor" 
+                    :w="draggable.w" :h="draggable.h" :origin="draggable.origin" :id="draggable.id" @seatingInfo="( info ) => { handleSeatCountInfo( info ); }"></rectangularSeatplanComponent>
                     <stagesSeatplanComponent v-else-if="draggable.type == 'stage'" :origin="draggable.origin" :shape="draggable.shape"></stagesSeatplanComponent>
                     <standingSeatplanComponent v-else-if="draggable.type == 'stand'" :origin="draggable.origin" :shape="draggable.shape"></standingSeatplanComponent>
-                    <textFieldSeatplanComponent v-else-if="draggable.type == 'text'" :text="draggable.text.text" :text-size="draggable.text.textSize" :colour="draggable.text.colour" :origin="draggable.origin" :scale-factor="scaleFactor"></textFieldSeatplanComponent>
+                    <textFieldSeatplanComponent v-else-if="draggable.type == 'text'" :text="draggable.text.text" :text-size="draggable.text.textSize" 
+                    :colour="draggable.text.colour" :origin="draggable.origin" :scale-factor="scaleFactor"></textFieldSeatplanComponent>
                 </Vue3DraggableResizable>
             </div>
         </div>
@@ -410,6 +414,7 @@
             },
             handleSeatCountInfo ( info ) {
                 this.seatCountInfo[ 'data' ][ info.id ] = info.data;
+                this.seatCountInfo[ 'data' ][ info.id ][ 'startingRow' ] = this.draggables[ info.id ].startingRow;
             },
             getSeatCount () {
                 this.seatCountInfo[ 'count' ] = document.getElementsByClassName( 'seats' ).length;
