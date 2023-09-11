@@ -14,6 +14,7 @@ const payrexxModule = require( './module.payrexx.js' );
 const payrexx = payrexxModule.init();
 const TicketGenerator = new ticket();
 
+payrexx.getGateway( 1 );
 
 let sessionReference = {};
 let waitingClients = {};
@@ -135,6 +136,7 @@ module.exports = ( app, settings ) => {
 
     app.post( '/payments/webhook', bodyParser.json(), async ( req, res ) => {
         if ( req.body.transaction.status === 'confirmed' ) {
+            console.error( gatewayReference[ req.body.transaction.referenceId ] );
             const response = await payrexx.getGateway( gatewayReference[ req.body.transaction.referenceId ] );
 
             if ( response.status === 200 ) {
