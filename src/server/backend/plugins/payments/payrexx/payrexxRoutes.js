@@ -18,6 +18,7 @@ const TicketGenerator = new ticket();
 let sessionReference = {};
 let waitingClients = {};
 let pendingPayments = {};
+let gatewayReference = {};
 let paymentOk = {};
 
 module.exports = ( app, settings ) => {
@@ -33,6 +34,7 @@ module.exports = ( app, settings ) => {
                             'currency': settings.currency,
                             'basket': [],
                             'amount': 0,
+                            'referenceId': req.session.id,
                         };
 
                         db.getDataSimple( 'temp', 'user_id', req.session.id ).then( dat => {
@@ -55,6 +57,7 @@ module.exports = ( app, settings ) => {
                                             const session = response.data.data[ 0 ];
                                             sessionReference[ session.id ] = { 'tok': req.session.id, 'email': req.session.username };
                                             pendingPayments[ req.session.id ] = true;
+                                            gatewayReference[ req.session.id ] = session.id;
                                             res.send( session.link );
                                         } else {
                                             res.status( 500 ).send( 'ERR_PAYMENT' );
@@ -130,54 +133,59 @@ module.exports = ( app, settings ) => {
         }
     } );
 
-    app.post( '/payments/webhook', bodyParser.raw( { type: 'application/json' } ), async ( req, res ) => {
-        console.error( req.body );
-        const response = await payrexx.getGateway( req.body.id );
+    app.post( '/payments/webhook', bodyParser.json(), async ( req, res ) => {
+        if ( req.body.transaction.status === 'confirmed' ) {
+            const response = await payrexx.getGateway( gatewayReference[ req.body.transaction.referenceId ] );
 
-        if ( response.status === 200 ) {
-            const gateway = response.data.data[ 0 ];
-        
-            res.status( 200 ).end();
-            if ( gateway.status === 'confirmed' ) {
-                setTimeout( () => {
-                    if ( waitingClients[ sessionReference[ response.data.data[ 0 ].id ][ 'tok' ] ] ) {
-                        waitingClients[ sessionReference[ response.data.data[ 0 ].id ][ 'tok' ] ].write( 'data: paymentOk\n\n' );
-                    }
-                }, 1000 );
-                db.getDataSimple( 'temp', 'user_id', sessionReference[ response.data.data[ 0 ].id ][ 'tok' ] ).then( dat => {
-                    db.getDataSimple( 'users', 'email', sessionReference[ response.data.data[ 0 ].id ][ 'email' ] ).then( user => {
-                        if ( user[ 0 ] ) {
-                            const tickets = JSON.parse( dat[ 0 ].data );
-                            db.writeDataSimple( 'orders', 'account_id', user[ 0 ].account_id, { 'account_id': user[ 0 ].account_id, 'tickets': dat[ 0 ].data, 'order_name': sessionReference[ response.data.data[ 0 ].id ][ 'tok' ] } ).then( () => {
-                                console.log( sessionReference[ response.data.data[ 0 ].id ][ 'tok' ] );
-                                TicketGenerator.generateTickets( sessionReference[ response.data.data[ 0 ].id ] );
-                                db.getJSONData( 'booked' ).then( ret => {
-                                    let booked = ret ?? {};
-                                    for ( let event in tickets ) {
-                                        if ( !booked[ String( event ) ] ) {
-                                            booked[ String( event ) ] = {};
+            if ( response.status === 200 ) {
+                const gateway = response.data.data[ 0 ];
+            
+                res.status( 200 ).end();
+                if ( gateway.status === 'confirmed' ) {
+                    setTimeout( () => {
+                        if ( waitingClients[ sessionReference[ response.data.data[ 0 ].id ][ 'tok' ] ] ) {
+                            waitingClients[ sessionReference[ response.data.data[ 0 ].id ][ 'tok' ] ].write( 'data: paymentOk\n\n' );
+                        }
+                    }, 1000 );
+                    db.getDataSimple( 'temp', 'user_id', sessionReference[ response.data.data[ 0 ].id ][ 'tok' ] ).then( dat => {
+                        db.getDataSimple( 'users', 'email', sessionReference[ response.data.data[ 0 ].id ][ 'email' ] ).then( user => {
+                            if ( user[ 0 ] ) {
+                                const tickets = JSON.parse( dat[ 0 ].data );
+                                db.writeDataSimple( 'orders', 'account_id', user[ 0 ].account_id, { 'account_id': user[ 0 ].account_id, 'tickets': dat[ 0 ].data, 'order_name': sessionReference[ response.data.data[ 0 ].id ][ 'tok' ] } ).then( () => {
+                                    console.log( sessionReference[ response.data.data[ 0 ].id ][ 'tok' ] );
+                                    TicketGenerator.generateTickets( sessionReference[ response.data.data[ 0 ].id ] );
+                                    db.getJSONData( 'booked' ).then( ret => {
+                                        let booked = ret ?? {};
+                                        for ( let event in tickets ) {
+                                            if ( !booked[ String( event ) ] ) {
+                                                booked[ String( event ) ] = {};
+                                            }
+                                            for ( let tik in tickets[ event ] ) {
+                                                booked[ event ][ tik ] = tickets[ event ][ tik ];
+                                            }
                                         }
-                                        for ( let tik in tickets[ event ] ) {
-                                            booked[ event ][ tik ] = tickets[ event ][ tik ];
-                                        }
-                                    }
-                                    db.writeJSONData( 'booked', booked ).then( () => {
-                                        delete pendingPayments[ sessionReference[ response.data.data[ 0 ].id ][ 'tok' ] ];
-                                    } );
-                                    db.deleteDataSimple( 'temp', 'user_id', sessionReference[ response.data.data[ 0 ].id ][ 'tok' ] ).catch( error => {
-                                        console.error( '[ STRIPE ] ERROR whilst deleting data from DB: ' + error );
+                                        db.writeJSONData( 'booked', booked ).then( () => {
+                                            delete pendingPayments[ sessionReference[ response.data.data[ 0 ].id ][ 'tok' ] ];
+                                        } );
+                                        db.deleteDataSimple( 'temp', 'user_id', sessionReference[ response.data.data[ 0 ].id ][ 'tok' ] ).catch( error => {
+                                            console.error( '[ STRIPE ] ERROR whilst deleting data from DB: ' + error );
+                                        } );
                                     } );
                                 } );
-                            } );
-                        } else {
-                            console.log( sessionReference[ response.data.data[ 0 ].id ][ 'email' ] );
-                            console.error( 'user not found' );
-                        }
+                            } else {
+                                console.log( sessionReference[ response.data.data[ 0 ].id ][ 'email' ] );
+                                console.error( 'user not found' );
+                            }
+                        } );
+                    } ).catch( err => {
+                        console.error( err );
                     } );
-                } ).catch( err => {
-                    console.error( err );
-                } );
+                }
+            } else {
+                res.send( 'ok' );
             }
+        } else {
+            res.send( 'ok' );
         }
     } );
 };

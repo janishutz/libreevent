@@ -16,6 +16,10 @@ const hmacSHA256 = require( 'crypto-js/hmac-sha256' );
 const payrexxConfig = JSON.parse( fs.readFileSync( path.join( __dirname + '/config.payments.secret.json' ) ) );
 
 const baseUrl = 'https://api.payrexx.com/v1.0/';
+
+if ( !payrexxConfig.APISecret || !payrexxConfig.instance ) {
+    throw new Error( '[ Payrexx ] No API secret or instance name configured!' );
+}
 const instance = payrexxConfig.instance;
 const secret = payrexxConfig.APISecret;
 
@@ -32,10 +36,12 @@ exports.init = function () {
         getGateway: function ( id ) {
             const baseUrl = buildBaseUrl( 'Gateway/' + id + '/' );
             const url = baseUrl + '&ApiSignature=' + buildSignature();
+            console.error( url );
             return axios.get( url );
         },
         createGateway: function ( params ) {
             if ( !params.amount ) {
+                // TODO: Think if we really have to throw here
                 throw new Error( 'Amount required!' );
             }
 
