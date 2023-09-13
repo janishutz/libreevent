@@ -13,9 +13,8 @@
             <h1 style="font-size: 250%;">Thank you for your purchase!</h1>
             <p>The system is currently processing your order and you will be able to download your tickets within a moment's notice.</p>
             <p>You will receive an email with your tickets within the next few minutes</p>
-            <p class="small">If the email does not arrive withing the next 10 minutes, please click <a href="/payments/resendTickets" target="_blank">here</a></p>
             <a href="/tickets/tickets.pdf" class="submit" style="display: none;" id="manual-download">Download manually</a>
-            <button onclick="if ( confirm( 'Do you really want to leave this page? If you want to download the tickets directly, you will need to head to your account page and download the ticket from there or stay on this page and wait for the order to finish processing.' ) ) {
+            <button onclick="if ( confirm( 'Do you really want to leave this page? You will not be able to download the tickets directly and instead you will have to download them from the email.' ) ) {
                 location.href = '/' }" class="submit">Back to the home page</button>
         </div>
         <notifications ref="notification" location="bottomright" size="bigger"></notifications>
