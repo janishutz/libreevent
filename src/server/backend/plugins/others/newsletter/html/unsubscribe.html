@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unsubscribe from Newsletter</title>
+    <link rel="stylesheet" href="/css/errorstyle.css">
+    <style>
+        .input {
+            width: 40%;
+            padding: 0.5%;
+            font-size: 120%;
+            border-radius: 15px;
+            margin: 2%;
+            margin-bottom: 4%;
+        }
+    </style>
+</head>
+    <body>
+        <div class="content">
+            <h1>Unsubscribe from newsletter</h1>
+            <form action="/mail/unsubscribe/go?lang=en" method="post" class="unsub">
+                <label for="mail" style="font-size: 120%;">Your email address</label><br>
+                <input type="email" name="mail" id="mail" class="input" required><br>
+
+                <input type="submit" value="Unsubscribe" class="button" style="font-size: 130%;">
+            </form>
+            <a href="?lang=de" class="button" style="margin-top: 4%;">DE</a>
+        </div>
+    </body>
+</html>

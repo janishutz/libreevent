@@ -11,7 +11,7 @@ const path = require( 'path' );
 const mm = require( '../../../mail/mailSender.js' );
 const sendMail = new mm();
 
-module.exports = ( app, settings ) => {
+module.exports = ( app ) => {
     app.get( '/admin/mail/compose', ( request, response ) => {
         if ( request.session.loggedInAdmin ) {
             response.sendFile( path.join( __dirname + '/html/compose.html' ) );
