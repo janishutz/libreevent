@@ -1,7 +1,7 @@
 {
   "name": "libreevent",
-  "version": "0.1.0",
-  "private": true,
+  "version": "1.0.0",
+  "private": false,
   "scripts": {
     "dev": "vite --host",
     "preview": "vite preview --host",

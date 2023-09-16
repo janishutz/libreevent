@@ -10,11 +10,11 @@
 <template>
     <div>
         <h2>Plugins</h2>
-        <p>Here you can manage installed plugins. If you want to install more plugins, please follow the guide <a href="https://librevent.janishutz.com/docs/plugins/install">here</a></p>
+        <p>Here you can manage installed plugins. If you want to install more plugins, please follow the guide <a href="https://librevent.janishutz.com/docs/plugins/install">here</a>. Note that some plugins might not follow the libreevent design scheme.</p>
         <div class="bigButton-container">
             <a class="bigButton" v-for="plugin in allPlugins" :href="plugin.settingsURL">
-                <object data="/otherAssets/libreeventLogo.png" type="image/png" class="plugin-logo">
-                    <img :src="plugin.logo">
+                <object data="/otherAssets/libreeventLogo.png" type="image/png" class="plugin-logo" @click="$router.push( plugin.settingsURL )">
+                    <img :src="plugin.logo" @click="$router.push( plugin.settingsURL )" style="cursor: pointer;">
                 </object>
                 <h3 style="margin-bottom: 0;">{{ plugin.pluginName }}</h3>
                 <p>{{ plugin.pluginDescription }}</p>

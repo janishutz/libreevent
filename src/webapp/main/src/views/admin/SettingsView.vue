@@ -32,8 +32,8 @@
         <div class="admin-settings">
             <h2>Admin Accounts</h2>
             <button @click="createAccount()">Create new account</button>
-            <p style="margin-bottom: 0;">Before setting or editing permissions here, please read the corresponding section of the documentation <a href="https://libreevent.janishutz.com/docs/admin-panel/settings/admin-accounts#permissions" target="_blank">here</a>.</p>
-            <p style="margin-top: 0;">Usually, the permissions automatically set by the system on account creation should be appropriate. (TIP: Right click for more options)</p>
+            <!-- <p style="margin-bottom: 0;">Before setting or editing permissions here, please read the corresponding section of the documentation <a href="https://libreevent.janishutz.com/docs/admin-panel/settings/admin-accounts#permissions" target="_blank">here</a>.</p> -->
+            <!-- <p style="margin-top: 0;">Usually, the permissions automatically set by the system on account creation should be appropriate. (TIP: Right click for more options)</p> -->
             <div v-if="Object.keys( adminAccounts ).length > 0" class="account-wrapper">
                 <div v-for="account in adminAccounts" class="account" @click="showPasswordSettings( account.email );" title="Edit settings of this account (right click for more options)" @contextmenu="( e ) => { e.preventDefault(); openRightClickMenu( account.email, e ); }">
                     <div class="location-name">
@@ -223,27 +223,27 @@
             createAccount() {
                 this.currentPopup = 'createAccount';
                 this.$refs.popup.openPopup( 'Create new admin user', {
-                    'role': { 
-                        'display': 'User role',
-                        'id': 'role',
-                        'tooltip':'With this setting you can choose one of the preset permissions for users. Account management is only allowed for the root user.', 
-                        'value': 'eventManager',
-                        'type': 'select',
-                        'restrictions': {
-                            'fullAccess': { 
-                                'value': 'fullAccess',
-                                'displayName': 'Full Access'
-                            },
-                            'eventManager': { 
-                                'value': 'eventManager',
-                                'displayName': 'Event Manager'
-                            },
-                            'entryControl': { 
-                                'value': 'entryControl',
-                                'displayName': 'Entry Control'
-                            }
-                        }
-                    },
+                    // 'role': { 
+                    //     'display': 'User role',
+                    //     'id': 'role',
+                    //     'tooltip':'With this setting you can choose one of the preset permissions for users. Account management is only allowed for the root user.', 
+                    //     'value': 'eventManager',
+                    //     'type': 'select',
+                    //     'restrictions': {
+                    //         'fullAccess': { 
+                    //             'value': 'fullAccess',
+                    //             'displayName': 'Full Access'
+                    //         },
+                    //         'eventManager': { 
+                    //             'value': 'eventManager',
+                    //             'displayName': 'Event Manager'
+                    //         },
+                    //         'entryControl': { 
+                    //             'value': 'entryControl',
+                    //             'displayName': 'Entry Control'
+                    //         }
+                    //     }
+                    // },
                     'username': { 
                         'display': 'Username', 
                         'id': 'username', 
@@ -290,10 +290,11 @@
             , 'settings' );
             },
             executeCommand( command ) {
-                if ( command === 'openPermissions' ) {
-                    this.currentPopup = 'account';
-                    this.showAccountSettings( this.currentlyOpenMenu );
-                } else if ( command === 'deleteUser' ) {
+                // if ( command === 'openPermissions' ) {
+                //     this.currentPopup = 'account';
+                //     this.showAccountSettings( this.currentlyOpenMenu );
+                // } else 
+                if ( command === 'deleteUser' ) {
                     this.currentPopup = 'deleteUser';
                     this.$refs.popup.openPopup( 'Do you really want to delete the user ' + this.currentlyOpenMenu + '?', {}, 'confirm' );
                 } else if ( command === 'updatePassword' ) {
@@ -386,7 +387,10 @@
                 }
             },
             openRightClickMenu( id, event ) {
-                this.$refs.rclk.openRightClickMenu( event, { 'permissions': { 'command': 'openPermissions', 'symbol': 'edit', 'display': 'Edit permissions' }, 'password': { 'command': 'updatePassword', 'symbol': 'password', 'display': 'Edit account settings' }, 'delete': { 'command': 'deleteUser', 'symbol': 'delete', 'display': 'Delete User' } } )
+                this.$refs.rclk.openRightClickMenu( event, { 
+                    // 'permissions': { 'command': 'openPermissions', 'symbol': 'edit', 'display': 'Edit permissions' }, 
+                    'password': { 'command': 'updatePassword', 'symbol': 'password', 'display': 'Edit account settings' }, 
+                    'delete': { 'command': 'deleteUser', 'symbol': 'delete', 'display': 'Delete User' } } )
                 this.currentlyOpenMenu = id;
             },
             loadData() {

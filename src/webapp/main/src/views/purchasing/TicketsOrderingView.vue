@@ -59,7 +59,11 @@
                 this.$router.push( '/tickets' );
             }
             this.eventID = sessionStorage.getItem( 'selectedTicket' );
-            this.hasSeatplan = sessionStorage.getItem( 'hasSeatplan' );
+            if ( sessionStorage.getItem( 'hasSeatplan' ) === 'false' ) {
+                this.hasSeatplan = false;
+            } else {
+                this.hasSeatplan = true;
+            }
         }
     };
 </script>

@@ -77,13 +77,13 @@
                             <div class="category-details">{{ ageGroup.name }}<div style="display: inline;" v-if="ageGroup.age"> ({{ ageGroup.age }})</div>:</div>
                         </td>
                         <td>
-                            <input type="number" v-model="category.price[ ageGroup.id ]">
+                            {{ event.currency }} <input type="number" v-model="category.price[ ageGroup.id ]">
                         </td>
                     </tr>
                     <tr>
                         <td><div class="category-details">Colour:</div></td>
                         <td>
-                            <input type="text" data-coloris v-model="category.fg" onkeydown="return false;">
+                            {{ event.currency }} <input type="text" data-coloris v-model="category.fg" onkeydown="return false;">
                         </td>
                     </tr>
                     <tr v-if="!hasSeatPlan">
