@@ -6,8 +6,8 @@
     "pluginWebsite": "https://libreevent.janishutz.com/plugins/polls",
     "pluginDocs": "https://libreevent.janishutz.com/docs/plugins/polls",
     "gitURL": "https://github.com/simplePCBuilding/libreevent/tree/master/src/server/backend/plugins/others/poll",
-    "settingsURL": "/admin/plugins/polls/settings",
-    "mainPluginURL": "/polls",
+    "settingsURL": "/admin/plugins/polls",
+    "mainPluginURL": "/voting",
     "logo": "",
     "version": "1.0.0"
 }

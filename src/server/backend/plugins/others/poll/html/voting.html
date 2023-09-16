@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="IE=7">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <title>Polls :: libreevent-plugin</title>
+        <link rel="stylesheet" href="/polls/css/style.css">
+        <link rel="stylesheet" href="/polls/css/popup.css">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+        <style>
+            .material-symbols-outlined {
+                font-variation-settings:
+                'FILL' 0,
+                'wght' 400,
+                'GRAD' 0,
+                'opsz' 24
+            }
+
+            .voting-wrapper {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                flex-direction: row;
+            }
+
+            .voting {
+                border-radius: 500px;
+                border: 1px black solid;
+                font-size: 150%;
+                cursor: pointer;
+            }
+
+            .voting-counter {
+                margin: 0;
+                font-size: 150%;
+                margin-left: 10px;
+                margin-right: 10px;
+            }
+
+            body {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                flex-direction: column;
+            }
+
+            .content {
+                justify-content: flex-start;
+            }
+
+            .input {
+                width: 30vw;
+                padding: 20px;
+                border-radius: 20px;
+                border: none;
+                margin-bottom: 1vh;
+                margin-top: 5px;
+            }
+
+            .entry {
+                border: black 2px solid;
+                padding: 1% 10%;
+            }
+
+            .selected {
+                background-color: green;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="content" id="app">
+            <div v-if="votingDetails.display">
+                <h1>Voting on {{ votingDetails.display ?? 'untitled' }}</h1>
+                <p v-if="votingDetails.description">{{ votingDetails.description }}</p>
+                <div style="margin-bottom: 1%;" v-if="votingDetails.allowAdding">
+                    <button onclick="location.href = '/'">Back to website</button>
+                    <button @click="addSuggestion();">Add suggestion</button>
+                </div>
+                <div v-for="entry in entries" class="entry">
+                    <h3>{{ entry.title }}</h3>
+                    <p>{{ entry.comment }}</p>
+                    <div class="voting-wrapper">
+                        <span class="material-symbols-outlined voting" @click="vote( 'up', entry.id )" :class="votedOn[ entry.id ] === 'up' ? 'selected' : ''">arrow_upward</span>
+                        <p class="voting-counter">{{ entry.count ?? 0 }}</p>
+                        <span class="material-symbols-outlined voting" @click="vote( 'down', entry.id )" :class="votedOn[ entry.id ] === 'down' ? 'selected' : ''">arrow_downward</span>
+                    </div>
+                </div>
+                <div id="popup">
+                    <div class="popup-positioning">
+                        <div class="popup-main">
+                            <form id="popup-message">
+                                <h2 style="font-size: 200%;">Add new suggestion</h2>
+                                <label for="title">Suggestion title</label><br>
+                                <input type="text" v-model="newSuggestion.title" name="title" id="title" class="input"><br>
+                                <label for="title">Comments</label><br>
+                                <textarea type="text" v-model="newSuggestion.comment" name="comment" id="comment" class="input" rows="5"></textarea><br>
+                            </form>
+                            <button @click="save()" class="submit">Add</button>
+                            <button @click="closePopup()" class="submit">Cancel</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div v-else style="display: flex; justify-content: center; align-items: center; height: 100vh; font-size: 110%;">
+                <h1>This poll does not exist!</h1>
+            </div>
+        </div>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+        <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+        <script src="/polls/js/voting.js"></script>
+    </body>
+</html>

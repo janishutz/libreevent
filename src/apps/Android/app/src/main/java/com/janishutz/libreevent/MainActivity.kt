@@ -1,5 +1,6 @@
 package com.janishutz.libreevent
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
@@ -9,5 +10,14 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        val loginButton = findViewById<Button>(R.id.loginButton)
+        loginButton.setOnClickListener {
+            login()
+        }
+    }
+
+    private fun login() {
+        val switchIntent = Intent(this, ScanActivity::class.java)
+        startActivity(switchIntent)
     }
 }
