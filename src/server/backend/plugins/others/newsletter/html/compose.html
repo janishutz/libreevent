@@ -4,7 +4,7 @@
     <!-- Include Quill stylesheet -->
     <meta charset="utf-8">
     <title>New Mail :: Webmail | Language School Hossegor - Admin</title>
-    <link rel="stylesheet" href="/admin/css/webmail-compose.css">
+    <link rel="stylesheet" href="/admin/plugins/newsletter/css/mailCompose.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
     <link href="https://cdn.quilljs.com/1.0.0/quill.snow.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200">
@@ -12,36 +12,14 @@
     <body>
         <div id="top-bar">
             <div class="top-toolbar">
-                <a href="/admin/panel" title="Back to admin panel" id="back" class="top-buttons"><span class="material-symbols-outlined">arrow_back</span></a>
-                <a href="/admin/mail" title="Back to webmail" id="new" class="top-buttons"><span class="material-symbols-outlined">arrow_back_ios_new</span></a>
+                <a href="/admin/plugins" title="Back to admin panel" id="back" class="top-buttons"><span class="material-symbols-outlined">arrow_back</span></a>
             </div>
-            <p id="title">Webmail - Language School Hossegor</p>
+            <p id="title">Newsletter plugin - libreevent</p>
             <p id="spacer"></p>
         </div>
         <div class="mail-app">
-            <h1>New message</h1>
-            <p>All mails written here can get one of four different styles. Please choose your style in the dropdown below. You can preview them by clicking <a href="/admin/mail/preview" target="_blank">here</a></p>
-            <p>If you select "Newsletter", the mail will automatically be sent to everybody that subscribed to the newsletter with the correct styling. Note that you need to create a newsletter in German and English and send them separately</p>
-            <select id="mailTypeSelector" onchange="updateType()" title="Mail template">
-                <option value="default">Default</option>
-                <option value="booking">Booking</option>
-                <option value="newsletter">Newsletter</option>
-                <option value="plain">Plain text</option>
-            </select>
-            <select id="mailLangSelector" title="Language">
-                <option value="de">Deutsch</option>
-                <option value="en">English</option>
-            </select>
-            <!--<button onclick="getContent()">Get html</button>--><br>
+            <h1>New newsletter</h1>
             <table>
-                <tr id="to">
-                    <td>
-                        <label for="mail">To: </label>
-                    </td>
-                    <td>
-                        <input type="email" name="mail" id="mail"><br>
-                    </td>
-                </tr>
                 <tr>
                     <td>
                         <label for="subject">Subject:</label>
@@ -104,77 +82,38 @@
 
         <!-- Initialize Quill editor -->
         <script>
-            var editor = new Quill('#editor', {
+            var editor = new Quill( '#editor', {
                 modules: { toolbar: '#toolbar' },
                 theme: 'snow',
-            });
-            function getContent () {
-                console.log( document.getElementsByClassName( 'ql-editor' )[0].innerHTML );
-            }
-
-            setTimeout( updateType, 200 );
-
-            function updateType () {
-                if ( document.getElementById( 'mailTypeSelector' ).value === 'newsletter' ) {
-                    $( '#to' ).slideUp();
-                    $( '#mailLangSelector' ).slideDown();
-                } else {
-                    $( '#to' ).slideDown();
-                    $( '#mailLangSelector' ).slideUp();
-                };
-                if ( window.location.search.slice( 1, 8 ) === 'replyTo' ) {
-                    document.getElementById( 'subject' ).value = 'Re: ' + sessionStorage.getItem( 'mailSubject' );
-                    document.getElementById( 'mail' ).value = sessionStorage.getItem( 'mailAddress' );
-                }
-            };
+            } );
 
             function sendMail () {
-                let ok = false;
-                if ( document.getElementById( 'mailTypeSelector' ).value !== 'newsletter' ) {
-                    if ( document.getElementById( 'mail' ).value != '' && document.getElementById( 'subject' ).value != '' ) {
-                        ok = true;
-                    } else {
-                        alert( 'A mail address and a subject are required!' );
-                    };
-                } else {
-                    if ( document.getElementById( 'subject' ).value != '' ) {
-                        if ( confirm( 'Do you really want to send the newsletter?' ) ) {
-                            ok = true;
-                        };
-                    } else {
-                        alert( 'A subject is required!' );
-                    };
+                if ( !document.getElementById( 'subject' ).value ) {
+                    alert( 'An email subject is required!' );
+                    return;
+                }
+                let dat = { 'subject': document.getElementById( 'subject' ).value, 'message': document.getElementsByClassName( 'ql-editor' )[0].innerHTML };
+                let options = {
+                    method: 'post',
+                    body: JSON.stringify( dat ),
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'charset': 'utf-8'
+                    },
                 };
-                if ( ok ) {
-                    let dat = { 'receiver': document.getElementById( 'mail' ).value, 'subject': document.getElementById( 'subject' ).value, 'mode': document.getElementById( 'mailTypeSelector' ).value, 'lang': document.getElementById( 'mailLangSelector' ).value };
-                    dat[ 'message' ] = document.getElementsByClassName( 'ql-editor' )[0].innerHTML;
-                    if ( window.location.search.slice( 1, 8 ) === 'replyTo' ) {
-                        dat[ 'inReplyTo' ] = sessionStorage.getItem( 'replyTo' );
-                        sessionStorage.removeItem( 'replyTo' );
-                        sessionStorage.removeItem( 'mailSubject' );
-                        sessionStorage.removeItem( 'mailAddress' );
-                        window.location = '/admin/mail/compose';
-                    };
-                    let options = {
-                        method: 'post',
-                        body: JSON.stringify( dat ),
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'charset': 'utf-8'
-                        },
-                    };
-                    fetch( '/admin/mail/send', options ).then( res => {
-                        if ( res.status === 200 ) {
-                            alert( 'Mail sent successfully' );
-                        } else {
-                            alert( 'There was an error sending the mail. Please try again. If the error persists, please contact the developer and tell this status code: ' + res.status );
-                        };
-                    } );
-                    document.getElementById( 'subject' ).value = '';
-                    document.getElementById( 'mail' ).value = '';
-                    document.getElementsByClassName( 'ql-editor' )[0].innerHTML = '';
-                };
-            }
+                fetch( '/admin/plugins/newsletter/send', options ).then( res => {
+                    if ( res.status === 200 ) {
+                        alert( 'Newsletter sent successfully' );
+                    } else if ( res.status === 403 ) {
+                        alert( 'It appears that you have been logged out or have logged out somewhere else. Please ensure that you are logged in and try again!' );
+                    } else {
+                        alert( 'There was an error sending the mail. Please try again. If the error persists, please contact the developer and tell this status code: ' + res.status );
+                    }
+                } );
+                document.getElementById( 'subject' ).value = '';
+                document.getElementById( 'mail' ).value = '';
+                document.getElementsByClassName( 'ql-editor' )[0].innerHTML = '';
+            };
         </script>
     </body>
 </html>

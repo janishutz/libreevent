@@ -1,0 +1,74 @@
+body {
+    font-family: sans-serif;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    background-color: rgb(180, 191, 255);
+}
+
+.material-symbols-outlined {
+    font-variation-settings:
+    'FILL' 0,
+    'wght' 400,
+    'GRAD' 0,
+    'opsz' 48
+}
+
+.mail-app {
+    width: 80%;
+    margin-left: 5%;
+    margin-top: 1%;
+    background-color: rgb(144, 160, 255);
+    border-radius: 50px;
+    padding: 5%;
+}
+
+#toolbar, #editor {
+    background-color: white;
+}
+
+#top-bar {
+    color: white;
+    background-color: rgb(0, 8, 53);
+    margin-bottom: 0;
+    grid-area: header;
+    height: 10vh;
+    display: flex;
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+    flex-direction: row;
+}
+
+#title {
+    font-size: 120%;
+}
+
+#spacer {
+    width: 10%;
+}
+
+.top-toolbar {
+    display: inline-flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    margin-right: 10%;
+    gap: 10%;
+}
+
+.top-buttons {
+    background-color: rgba(0, 0, 0, 0);
+    color: white;
+    border-radius: 5px;
+    border-color: white;
+    border-style: solid;
+    padding: 0.5%;
+    cursor: pointer;
+}
+
+.top-buttons:hover {
+    color: blue;
+    border-color: blue;
+}
