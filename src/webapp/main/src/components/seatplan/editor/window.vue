@@ -330,8 +330,7 @@
                 };
                 fetch( localStorage.getItem( 'url' ) + '/admin/api/saveSeatplanDraft', options ).then( res => {
                     if ( res.status === 200 ) {
-                        res.text().then( text => {
-                            console.log( text );
+                        res.text().then( () => {
                             this.$refs.notification.cancelNotification( progressNotification );
                             this.$refs.notification.createNotification( 'Saved as draft', 5, 'ok', 'normal' );
                         } );
@@ -343,6 +342,7 @@
                 // TODO: add warning if no component has a seat start point if any component is a seat component
             },
             deploy () {
+                this.getSeatCount();
                 let deployNotification = this.$refs.notification.createNotification( 'Deploying...', 5, 'progress', 'normal' );
                 const options = {
                     method: 'post',
@@ -354,8 +354,7 @@
                 };
                 fetch( localStorage.getItem( 'url' ) + '/admin/api/saveSeatplan', options ).then( res => {
                     if ( res.status === 200 ) {
-                        res.text().then( text => {
-                            console.log( text );
+                        res.text().then( () => {
                             this.$refs.notification.cancelNotification( deployNotification );
                             this.$refs.notification.createNotification( 'Deployed successfully', 5, 'ok', 'normal' );
                         } );
