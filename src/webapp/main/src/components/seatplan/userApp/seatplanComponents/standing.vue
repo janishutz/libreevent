@@ -105,7 +105,6 @@ export default {
             this.style += ` background-color: ${this.color}; color: ${this.color}`;
             this.circularStyle += ` background-color: ${this.color}; color: ${this.color}`;
             this.trapezoidStyle += ` background-color: ${this.color}; color: ${this.color}`;
-            console.log( this.style );
         },
     },
     watch: {

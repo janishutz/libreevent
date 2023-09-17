@@ -147,7 +147,6 @@
                 } );
             },
             prepSeatplan ( seatInfo ) {
-                console.log( seatInfo );
                 // Mark all selected seats + all unavailable seats
                 let categoryDetails = {};
                 for ( let category in this.event.categories ) {

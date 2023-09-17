@@ -92,6 +92,66 @@ export default {
                 }
             }
         },
+        seatChecks () {
+                let self = this;
+                let allSeatsAvailable = true;
+
+                fetch( localStorage.getItem( 'url' ) + '/getAPI/getReservedSeats?event=' + this.event.eventID ).then( res => {
+                    if ( res.status === 200 ) {
+                        let unavailableSeats = {};
+                        res.json().then( data => {
+                            for ( let seat in data.reserved ) {
+                                if ( data.reserved[ seat ] ) {
+                                    if ( !unavailableSeats[ data.reserved[ seat ].component ] ) {
+                                        unavailableSeats[ data.reserved[ seat ].component ] = {};
+                                    }
+                                    unavailableSeats[ data.reserved[ seat ].component ][ data.reserved[ seat ].id ] = 'nav';
+                                }
+                            }
+                            for ( let seat in data.user ) {
+                                if ( data.user[ seat ] ) {
+                                    if ( !unavailableSeats[ data.user[ seat ].component ] ) {
+                                        unavailableSeats[ data.user[ seat ].component ] = {};
+                                    }
+                                    unavailableSeats[ data.user[ seat ].component ][ data.user[ seat ].id ] = 'sel';
+                                }
+                            }
+
+                            let tickets = {};
+                            if ( this.cart[ this.event.eventID ] ) {
+                                tickets = this.cart[ this.event.eventID ][ 'tickets' ];
+                            }
+
+                            if ( data.user ) {
+                                for ( let element in tickets ) {
+                                    if ( !data.user[ element ] ) {
+                                        allSeatsAvailable = false;
+                                        if ( Object.keys( this.cart[ this.event.eventID ][ 'tickets' ] ).length > 1 ) {
+                                            delete this.cart[ this.event.eventID ][ 'tickets' ][ element ];
+                                        } else {
+                                            delete this.cart[ this.event.eventID ];
+                                        }
+                                    }
+                                }
+                            } else {
+                                delete this.cart[ this.event.eventID ];
+                                allSeatsAvailable = false;
+                            }
+
+                            this.unavailableSeats = unavailableSeats;
+
+                            if ( !allSeatsAvailable ) {
+                                setTimeout( () => {
+                                    self.$refs.popups.openPopup( 'We are sorry to tell you that since the last time the seat plan was refreshed, one or more of the seats you have selected has/have been taken.', {}, 'string' );
+                                }, 500 );
+                                localStorage.setItem( 'cart', JSON.stringify( this.cart ) );
+                            }
+                        } );
+                    } else {
+                        console.error( 'unable to load' );
+                    }
+                } );
+        },
         cartHandling () {
             for ( let ticket in this.selectedTickets ) {
                 let category = '';
@@ -183,6 +243,7 @@ export default {
         }, 1 );
         this.cart = localStorage.getItem( 'cart' ) ? JSON.parse( localStorage.getItem( 'cart' ) ): {};
         this.loadTickets();
+        this.seatChecks();
     }
 }
 </script>

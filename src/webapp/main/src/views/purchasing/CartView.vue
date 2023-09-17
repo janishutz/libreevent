@@ -139,8 +139,65 @@
                 }
                 localStorage.setItem( 'cart', JSON.stringify( this.cart ) );
             },
-            logs ( message ) {
-                console.log( message );
+            seatChecks ( event ) {
+                let self = this;
+                let allSeatsAvailable = true;
+
+                fetch( localStorage.getItem( 'url' ) + '/getAPI/getReservedSeats?event=' + event ).then( res => {
+                    if ( res.status === 200 ) {
+                        let unavailableSeats = {};
+                        res.json().then( data => {
+                            for ( let seat in data.reserved ) {
+                                if ( data.reserved[ seat ] ) {
+                                    if ( !unavailableSeats[ data.reserved[ seat ].component ] ) {
+                                        unavailableSeats[ data.reserved[ seat ].component ] = {};
+                                    }
+                                    unavailableSeats[ data.reserved[ seat ].component ][ data.reserved[ seat ].id ] = 'nav';
+                                }
+                            }
+                            for ( let seat in data.user ) {
+                                if ( data.user[ seat ] ) {
+                                    if ( !unavailableSeats[ data.user[ seat ].component ] ) {
+                                        unavailableSeats[ data.user[ seat ].component ] = {};
+                                    }
+                                    unavailableSeats[ data.user[ seat ].component ][ data.user[ seat ].id ] = 'sel';
+                                }
+                            }
+
+                            let tickets = {};
+                            if ( this.cart[ event ] ) {
+                                tickets = this.cart[ event ][ 'tickets' ];
+                            }
+
+                            if ( data.user ) {
+                                for ( let element in tickets ) {
+                                    if ( !data.user[ element ] ) {
+                                        allSeatsAvailable = false;
+                                        if ( Object.keys( this.cart[ event ][ 'tickets' ] ).length > 1 ) {
+                                            delete this.cart[ event ][ 'tickets' ][ element ];
+                                        } else {
+                                            delete this.cart[ event ];
+                                        }
+                                    }
+                                }
+                            } else {
+                                delete this.cart[ event ];
+                                allSeatsAvailable = false;
+                            }
+
+                            this.unavailableSeats = unavailableSeats;
+
+                            if ( !allSeatsAvailable ) {
+                                setTimeout( () => {
+                                    self.$refs.popups.openPopup( 'We are sorry to tell you that since the last time the seat plan was refreshed, one or more of the seats you have selected has/have been taken.', {}, 'string' );
+                                }, 500 );
+                                localStorage.setItem( 'cart', JSON.stringify( this.cart ) );
+                            }
+                        } );
+                    } else {
+                        console.error( 'unable to load' );
+                    }
+                } );
             },
         },
         created () {
@@ -150,6 +207,9 @@
             }, 1 );
             this.cart = localStorage.getItem( 'cart' ) ? JSON.parse( localStorage.getItem( 'cart' ) ): {};
             this.calculateTotal();
+            for ( let event in this.cart ) {
+                this.seatChecks( event );
+            }
         }
     }
 </script>

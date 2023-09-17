@@ -76,6 +76,7 @@
             </div>
         </div>
         <notifications ref="notification" location="topleft" size="bigger"></notifications>
+        <popups ref="popups" size="small" @data="data => { verifyTicketDelete( data.status ) }"></popups>
     </div>
 </template>
 
@@ -216,6 +217,7 @@ import { useUserStore } from '@/stores/userStore';
 import { useBackendStore } from '@/stores/backendStore';
 import { mapStores } from 'pinia';
 import notifications from '@/components/notifications/notifications.vue';
+import popups from '@/components/notifications/popups.vue';
 
 export default {
     name: 'PurchaseView',
@@ -231,6 +233,7 @@ export default {
     },
     components: {
         notifications,
+        popups,
     },
     computed: {
         ...mapStores( useUserStore ),
@@ -238,7 +241,6 @@ export default {
     },
     methods: {
         loadData () {
-            // TODO: FUTURE Also load the customer data from server!
             this.cartNotEmpty = false;
             let cart = JSON.parse( localStorage.getItem( 'cart' ) );
 
@@ -256,6 +258,69 @@ export default {
             } else {
                 this.$router.push( '/tickets' );
             }
+            for ( let event in this.cart ) {
+                this.seatChecks( event );
+            }
+        },
+        seatChecks ( event ) {
+            let self = this;
+            let allSeatsAvailable = true;
+
+            fetch( localStorage.getItem( 'url' ) + '/getAPI/getReservedSeats?event=' + event ).then( res => {
+                if ( res.status === 200 ) {
+                    let unavailableSeats = {};
+                    res.json().then( data => {
+                        for ( let seat in data.reserved ) {
+                            if ( data.reserved[ seat ] ) {
+                                if ( !unavailableSeats[ data.reserved[ seat ].component ] ) {
+                                    unavailableSeats[ data.reserved[ seat ].component ] = {};
+                                }
+                                unavailableSeats[ data.reserved[ seat ].component ][ data.reserved[ seat ].id ] = 'nav';
+                            }
+                        }
+                        for ( let seat in data.user ) {
+                            if ( data.user[ seat ] ) {
+                                if ( !unavailableSeats[ data.user[ seat ].component ] ) {
+                                    unavailableSeats[ data.user[ seat ].component ] = {};
+                                }
+                                unavailableSeats[ data.user[ seat ].component ][ data.user[ seat ].id ] = 'sel';
+                            }
+                        }
+
+                        let tickets = {};
+                        if ( this.cart[ event ] ) {
+                            tickets = this.cart[ event ][ 'tickets' ];
+                        }
+
+                        if ( data.user ) {
+                            for ( let element in tickets ) {
+                                if ( !data.user[ element ] ) {
+                                    allSeatsAvailable = false;
+                                    if ( Object.keys( this.cart[ event ][ 'tickets' ] ).length > 1 ) {
+                                        delete this.cart[ event ][ 'tickets' ][ element ];
+                                    } else {
+                                        delete this.cart[ event ];
+                                    }
+                                }
+                            }
+                        } else {
+                            delete this.cart[ event ];
+                            allSeatsAvailable = false;
+                        }
+
+                        this.unavailableSeats = unavailableSeats;
+
+                        if ( !allSeatsAvailable ) {
+                            setTimeout( () => {
+                                self.$refs.popups.openPopup( 'We are sorry to tell you that an error occurred in the system and all sessions have been reset. You will need to pick the seats again. We are very sorry for the inconvenience', {}, 'string' );
+                            }, 500 );
+                            localStorage.setItem( 'cart', JSON.stringify( this.cart ) );
+                        }
+                    } );
+                } else {
+                    console.error( 'unable to load' );
+                }
+            } );
         },
         calculateTotal () {
             this.backend[ 'total' ] = 0;
