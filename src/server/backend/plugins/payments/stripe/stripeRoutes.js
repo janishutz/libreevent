@@ -43,12 +43,9 @@ module.exports = ( app, settings ) => {
                         db.getDataSimple( 'temp', 'user_id', req.session.id ).then( dat => {
                             if ( dat[ 0 ] ) {
                                 db.getJSONData( 'events' ).then( events => {
-                                    console.log( events );
                                     let data = JSON.parse( dat[ 0 ].data );
                                     ( async () => {
-                                        console.log( data );
                                         for ( let event in data ) {
-                                            console.log( event );
                                             for ( let item in data[ event ] ) {
                                                 purchase[ 'line_items' ].push( {
                                                     'price_data': {
@@ -179,13 +176,12 @@ module.exports = ( app, settings ) => {
                                     } ).catch( error => {
                                         console.error( '[ STRIPE ] ERROR whilst deleting data from DB: ' + error );
                                     } );
-                                } ).catch( err => {
+                                } ).catch( () => {
 
                                 } );
                             } );
                         } );
                     } else {
-                        console.log( sessionReference[ event.data.object.id ][ 'email' ] );
                         console.error( 'user not found' );
                     }
                 } );

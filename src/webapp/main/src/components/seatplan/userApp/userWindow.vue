@@ -31,8 +31,9 @@
 
                     <stagesSeatplanComponent :ref="'component' + draggable.id" v-else-if="draggable.type == 'stage'" :origin="draggable.origin" :shape="draggable.shape"></stagesSeatplanComponent>
                     <standingSeatplanComponent :ref="'component' + draggable.id" v-else-if="draggable.type == 'stand'" :origin="draggable.origin" 
-                    :shape="draggable.shape" @click="standing( draggable.id )"></standingSeatplanComponent>
-                    <textFieldSeatplanComponent :ref="'component' + draggable.id" v-else-if="draggable.type == 'text'" :text="draggable.text.text" :text-size="draggable.text.textSize" :colour="draggable.text.colour" :origin="draggable.origin" :scale-factor="scaleFactor"></textFieldSeatplanComponent>
+                    :shape="draggable.shape" @click="standing( draggable.id )" :color="draggable.data.categoryInfo.color"></standingSeatplanComponent>
+                    <textFieldSeatplanComponent :ref="'component' + draggable.id" v-else-if="draggable.type == 'text'" :text="draggable.text.text" :text-size="draggable.text.textSize" 
+                    :colour="draggable.text.colour" :origin="draggable.origin" :scale-factor="scaleFactor"></textFieldSeatplanComponent>
                 </Vue3DraggableResizable>
             </div>
         </div>

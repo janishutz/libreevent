@@ -83,7 +83,7 @@
                     <tr>
                         <td><div class="category-details">Colour:</div></td>
                         <td>
-                            {{ event.currency }} <input type="text" data-coloris v-model="category.fg" onkeydown="return false;">
+                            <input type="text" data-coloris v-model="category.fg" onkeydown="return false;">
                         </td>
                     </tr>
                     <tr v-if="!hasSeatPlan">

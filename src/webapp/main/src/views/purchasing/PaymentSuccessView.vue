@@ -44,7 +44,6 @@
                     let self = this;
 
                     source.onmessage = ( e ) => {
-                        console.log( e );
                         if ( e.data === 'ready' ) {
                             self.$refs.notification.cancelNotification( startNotification );
                             self.$refs.notification.createNotification( 'Your tickets are ready! Starting download...', 10, 'progress', 'normal' );
