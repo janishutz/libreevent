@@ -58,6 +58,8 @@ class GETHandler {
                 resolve( 'extended' );
             } else if ( call === 'getName' ) {
                 resolve( { 'name': settings.name } );
+            } else if ( call === 'reloadData' ) {
+                resolve( 'ok' );
             } else {
                 reject( { 'code': 404, 'message': 'Route not found' } );
             }

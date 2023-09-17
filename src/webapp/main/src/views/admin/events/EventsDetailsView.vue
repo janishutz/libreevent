@@ -342,7 +342,7 @@
                     }
 
                     let lowestPrice = 1000000;
-                    let totalSeats = parseInt( this.locations[ this.event.location ].totalSeats );
+                    let totalSeats = parseInt( this.locations[ this.event.location ].totalSeats ?? 0 );
                     for ( let category in this.event.categories ) {
                         for ( let price in this.event.categories[ category ].price ) {
                             if ( this.event.categories[ category ].price[ price ] < 0.5 || ( !this.event.categories[ category ].ticketCount && this.hasSeatPlan ) ) {
@@ -383,6 +383,7 @@
                         if ( res.status === 200 ) {
                             if ( action === 'deploy' ) {
                                 this.$refs.notification.createNotification( 'Your event has been published successfully.', 5, 'ok', 'normal' );
+                                fetch( '/getAPI/reloadData' ).catch( () => {} );
                                 this.hasLiveVersion = true;
                             } else {
                                 this.$refs.notification.createNotification( 'Saved as draft successfully!', 5, 'ok', 'normal' );

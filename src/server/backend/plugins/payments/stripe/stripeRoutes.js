@@ -43,9 +43,12 @@ module.exports = ( app, settings ) => {
                         db.getDataSimple( 'temp', 'user_id', req.session.id ).then( dat => {
                             if ( dat[ 0 ] ) {
                                 db.getJSONData( 'events' ).then( events => {
+                                    console.log( events );
                                     let data = JSON.parse( dat[ 0 ].data );
                                     ( async () => {
+                                        console.log( data );
                                         for ( let event in data ) {
+                                            console.log( event );
                                             for ( let item in data[ event ] ) {
                                                 purchase[ 'line_items' ].push( {
                                                     'price_data': {
@@ -159,7 +162,6 @@ module.exports = ( app, settings ) => {
                     if ( user[ 0 ] ) {
                         const tickets = JSON.parse( dat[ 0 ].data );
                         db.writeDataSimple( 'orders', 'account_id', user[ 0 ].account_id, { 'account_id': user[ 0 ].account_id, 'tickets': dat[ 0 ].data, 'order_name': sessionReference[ event.data.object.id ][ 'tok' ] } ).then( () => {
-                            console.log( sessionReference[ event.data.object.id ][ 'tok' ] );
                             TicketGenerator.generateTickets( sessionReference[ event.data.object.id ] );
                             db.getJSONData( 'booked' ).then( ret => {
                                 let booked = ret ?? {};

@@ -1,1 +1,1 @@
-{"test2":{"locationID":"test2","name":"TestLocation2","seatplan-enabled":true,"totalSeats":352},"test":{"locationID":"test","name":"TestLocation","seatplan-enabled":false}}
+{"test2":{"locationID":"test2","name":"TestLocation2","seatplan-enabled":true,"totalSeats":352},"test":{"locationID":"test","name":"TestLocation","seatplan-enabled":false},"testLocationNoSeatplan":{"locationID":"testLocationNoSeatplan","name":"TestLocationWithoutSeatplan","seatplan-enabled":true,"totalSeats":0}}

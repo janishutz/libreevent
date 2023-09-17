@@ -14,13 +14,24 @@ const pwHandler = require( '../credentials/pwdmanager.js' );
 
 class POSTHandler {
     constructor () {
+        this.loadData();
+        
+        this.settings = JSON.parse( fs.readFileSync( path.join( __dirname + '/../../config/settings.config.json' ) ) );
+    }
+
+    loadData () {
         db.getJSONData( 'booked' ).then( dat => {
             this.allSelectedSeats = dat;
             db.getJSONData( 'events' ).then( dat => {
                 this.events = dat;
                 this.ticketTotals = {};
+                this.detailedTicketTotals = {};
                 for ( let event in this.events ) {
                     this.ticketTotals[ event ] = this.events[ event ][ 'totalSeats' ];
+                    this.detailedTicketTotals[ event ] = {};
+                    for ( let category in this.events[ event ].categories ) {
+                        this.detailedTicketTotals[ event ][ category ] = this.events[ event ].categories[ category ].ticketCount ?? 0;
+                    }
                 }
                 
                 for ( let event in this.allSelectedSeats ) {
@@ -28,14 +39,12 @@ class POSTHandler {
                         if ( this.allSelectedSeats[ event ][ t ][ 'count' ] ) {
                             this.ticketTotals[ event ] -= this.allSelectedSeats[ event ][ t ][ 'count' ];
                         } else {
-                            this.ticketTotals[ event ] -= 1
+                            this.ticketTotals[ event ] -= 1;
                         }
                     }
                 }
             } );
         } );
-        
-        this.settings = JSON.parse( fs.readFileSync( path.join( __dirname + '/../../config/settings.config.json' ) ) );
     }
 
     // Add lang in the future
@@ -68,40 +77,41 @@ class POSTHandler {
                                 totalTickets += totalTicketsPerID[ category ];
                             }
                             
-                            if ( totalTickets <= this.settings.maxTickets ) {
-                                if ( totalTicketsPerID[ id ] <= this.ticketTotals[ data.eventID ][ id ] ) {
-                                    let info = {};
-                                    info[ data.eventID ] = tickets;
-                                    if ( data.count < 1 ) {
-                                        if ( Object.keys( info[ data.eventID ] ).length < 1 ) {
-                                            delete info[ data.eventID ];
-                                        } else {
-                                            delete info[ data.eventID ][ data.id ];
-                                        }
-                                    } else {
-                                        info[ data.eventID ][ data.id ] = data;
-                                    }
-                                    let ticketCount = data.count;
-                                    const maxTickets = this.ticketTotals[ data.eventID ][ data.id.slice( 0, data.id.indexOf( '_' ) ) ];
-                                    if ( ticketCount > maxTickets ) {
-                                        ticketCount = maxTickets;
-                                    }
-                                    if ( maxTickets > 0 ) {
-                                        db.writeDataSimple( 'temp', 'user_id', session.id, { 'user_id': session.id, 'timestamp': new Date().toString(), 'data': JSON.stringify( info ) } );
-                                        resolve( { 'status': 'ok', 'ticketCount': ticketCount } );
-                                    } else {
-                                        reject( { 'code': 409, 'message': 'ERR_ALL_OCCUPIED' } );
-                                    }
+                            if ( this.settings.maxTickets !== 0 ) {
+                                if ( totalTickets >= this.settings.maxTickets ) {
+                                    reject( { 'code': 418, 'message': 'ERR_TOO_MANY_TICKETS' } );
                                 }
-                            } else {
-                                reject( { 'code': 418, 'message': 'ERR_TOO_MANY_TICKETS' } );
+                            }
+                            if ( totalTicketsPerID[ id ] <= this.detailedTicketTotals[ data.eventID ][ id ] ) {
+                                let info = {};
+                                info[ data.eventID ] = tickets;
+                                if ( data.count < 1 ) {
+                                    if ( Object.keys( info[ data.eventID ] ).length < 1 ) {
+                                        delete info[ data.eventID ];
+                                    } else {
+                                        delete info[ data.eventID ][ data.id ];
+                                    }
+                                } else {
+                                    info[ data.eventID ][ data.id ] = data;
+                                }
+                                let ticketCount = data.count;
+                                const maxTickets = this.detailedTicketTotals[ data.eventID ][ data.id.slice( 0, data.id.indexOf( '_' ) ) ];
+                                if ( ticketCount > maxTickets ) {
+                                    ticketCount = maxTickets;
+                                }
+                                if ( maxTickets > 0 ) {
+                                    db.writeDataSimple( 'temp', 'user_id', session.id, { 'user_id': session.id, 'timestamp': new Date().toString(), 'data': JSON.stringify( info ) } );
+                                    resolve( { 'status': 'ok', 'ticketCount': ticketCount } );
+                                } else {
+                                    reject( { 'code': 409, 'message': 'ERR_ALL_OCCUPIED' } );
+                                }
                             }
                         } else {
                             let info = {};
                             info[ data.eventID ] = {};
                             info[ data.eventID ][ data.id ] = data;
                             let ticketCount = data.count;
-                            const maxTickets = this.ticketTotals[ data.eventID ][ data.id.slice( 0, data.id.indexOf( '_' ) ) ];
+                            const maxTickets = this.detailedTicketTotals[ data.eventID ][ data.category ];
                             if ( ticketCount > maxTickets ) {
                                 ticketCount = maxTickets;
                             }

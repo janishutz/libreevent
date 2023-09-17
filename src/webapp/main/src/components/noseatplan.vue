@@ -94,6 +94,13 @@ export default {
         },
         cartHandling () {
             for ( let ticket in this.selectedTickets ) {
+                let category = '';
+                const ticketSlice = ticket.slice( 0, ticket.indexOf( '_' ) );
+                for ( let letter in ticketSlice ) {
+                    if ( !isNaN( ticketSlice[ letter ] ) ) {
+                        category += parseInt( ticketSlice[ letter ] );
+                    }
+                }
                 const options = {
                     method: 'post',
                     body: JSON.stringify( { 
@@ -102,8 +109,8 @@ export default {
                         'ticketOption': ticket.substring( ticket.indexOf( '_' ) + 1 ), 
                         'eventID': this.event.eventID, 
                         'count': this.selectedTickets[ ticket ], 
-                        'category': ticket.slice( 0, ticket.indexOf( '_' ) ), 
-                        'name': this.event.categories[ ticket.slice( ticket.indexOf( '_' ) - 1, ticket.indexOf( '_' ) ) ].name + ' (' + this.event.ageGroups[ ticket.substring( ticket.indexOf( '_' ) + 1 ) ].name + ')',
+                        'category': category,
+                        'name': this.event.categories[ category ].name + ' (' + this.event.ageGroups[ ticket.substring( ticket.indexOf( '_' ) + 1 ) ].name + ')',
                     } ),
                     headers: {
                         'Content-Type': 'application/json',

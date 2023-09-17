@@ -29,7 +29,14 @@ module.exports = ( app, settings ) => {
                     dat[ event ][ 'free' ] = freeSeats[ event ];
                 }
                 res.send( dat );
-            }else {
+            } else if ( req.params.call === 'reloadData' ) {
+                if ( req.session.loggedInAdmin ) {
+                    postHandler.loadData();
+                    res.send( 'ok' );
+                } else {
+                    res.status( 403 ).send( 'unauthorized' );
+                }
+            } else {
                 res.send( data );
             }
         } ).catch( error => {
