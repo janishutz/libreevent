@@ -22,6 +22,7 @@ module.exports = ( app, settings ) => {
    
     app.post( '/setup/start', bodyParser.json(), ( request, response ) => {
         if ( request.body.token === '' + fs.readFileSync( path.join( __dirname + '/../setupkey.txt' ) ) ) {
+            request.session.setupKeyOk = true;
             response.send( 'ok' );
         } else {
             response.status( 400 ).send( 'incorrect' );

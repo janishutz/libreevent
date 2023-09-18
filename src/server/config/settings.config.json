@@ -1,6 +1,6 @@
 {
 	"init":true,
-	"setupDone":true,
+	"setupDone":false,
 	"twoFA":"enforce",
 	"twoFAMode":"enhanced",
 	"db":"mysql",

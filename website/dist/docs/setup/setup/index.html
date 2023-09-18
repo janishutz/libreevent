@@ -20,8 +20,30 @@
                 <h1>Setup of libreevent</h1>
 <p>At this point we assume you've completed the initial install of libreevent. If not, you may find a guide on how to do it <a href="/docs/setup/getting-started">here</a>. Let's get started setting up your event management system!</p>
 <h2>Connecting to the server</h2>
-<p>As discussed in the previous part where we installed the system, you can connect to your server simply by opening a web browser and typing your domain name into the address field. After that you should be greeted by the libreevent post-install landing page. Once there, you'll need the setup key you defined during the installation. Type it into the field and hit &quot;Start setup&quot;.</p>
+<p>As discussed in the previous part where we installed the system, you can connect to your server simply by opening a web browser and typing your domain name into the address field. After that you should be greeted by the libreevent post-install landing page. Once there, you'll need the setup key you defined during the installation. Type (or copy) it into the field and hit &quot;Start setup&quot;. You will now land on the setup start page. You may hit &quot;Start setup&quot; below to start the setup.</p>
 <p><em>Note: This is only available during the setup process of libreevent and will afterwards be deactivated to ensure safety of the system.</em></p>
+<h2>Basic Setup</h2>
+<p>This page prepares libreevent for use, covering all the basics, the name of the website, database and email accounts.
+The first setting you may change here is the name of the website. Choose wisely, as changing the name at a later point is hard, not explained in the documentation and also doesn't make for a good image.</p>
+<h3>Database</h3>
+<p>In the database, all the userdata is stored. libreevent currently supports two different databases, MySQL and a custom database based on JSON. Which one to choose?</p>
+<p>Generally MySQL, except:</p>
+<ul>
+<li>If your organisation is small and does only sell a few tickets at a time, the JSON based database can be an easy to set up alternative.</li>
+<li>Your web hosting plan does not includes MySQL and you've got no access to MySQL in any other way. <em>NOTE: Free MySQL services should NEVER be used in such an application, as most hosting plans include MySQL (or MariaDB, which works similarly) which is much more reliable and if you lose access to the database, you can only access the root account and all other user data (and therefore all user accounts) is lost. The event data is always stored in JSON format as it is more efficient this way.</em></li>
+</ul>
+<p><strong>NOTE: The JSON database is really slow and should only be used if you have a small event where you expect to sell less than 5 ticket per minute at any time! The amount of tickets sold per minute that the system can handle really depends on the speed of the server the website runs on.</strong></p>
+<p>MySQL generally is more time consuming to set up (taking about ten minutes compared to zero), but we'll run you through the process here to make the process easier for you.</p>
+<p>If you are really sure that you want to use the JSON-based database, skip the next section.</p>
+<h3>Setting up a MySQL database</h3>
+<p>At this point, we assume that you are logged in to the administration panel of your webhosting provider. This guide will use the Web Control Panel called &quot;Direct Admin&quot;, as it is fairly common, along with cPanel. Somewhere, there should be a button that says something like &quot;MySQL Management&quot;. Click it, which will bring you to the MySQL-Database management page. Now, create a new database by clicking the &quot;Create new database&quot; (or similar) button which will bring up the database creation tool. Give the database any name you like (libreevent would though be a reasonable choice) and give the user any name you like. When creating a password, it is important that this password is long and complicated. What we recommend doing is using a password generator or to essentially &quot;sit&quot; onto your keyboard to get a random string of characters as the password.</p>
+<p>Now copy this password and head back to the libreevent setup page. In the &quot;Database host name&quot; field, change the domain, if libreevent hasn't recognized the correct one automatically (do not enter the protocol (like http:// or https://) in the host name field!). Under &quot;database name&quot;, enter the name you just entered before when creating the database (including any prefixes shown there) and for the &quot;database user&quot; field, type the username you just created (again, including any prefixes shown in the admin panel). Now paste the password you just copied before into the &quot;Password&quot; field. The port should usually be fine.</p>
+<p>Now head back to the admin panel of the webhosting provider. Hit &quot;Create Database&quot; to actually create the database.</p>
+<p>And just like that, you have finished setting up your database.</p>
+<h3>Email</h3>
+<p>libreevent needs to have access to an email address to be able to send emails to customers. In the &quot;Account&quot; section, you need to enter the mail connection details. You only need the data for the outgoing mail server, namely for a SMTP server, as this is what libreevent uses.</p>
+<p>In the &quot;display&quot; section, you can customize how the email address shows up for customers. What we are doing here is known as email address spoofing, if you change what email address is shown. This is being shunned actively by some email providers, which means, the value entered in the &quot;Email address to show&quot; field should be the same as the actual email address. For the display name, you can get creative.</p>
+<p>With the main part of setup complete, hit continue, to advance to root account setup.</p>
 <h2>Root account</h2>
 <p>This is the most powerful account in this system. From it you can control EVERY aspect of your system.</p>
 <p><strong>Remark: You may (and definitely should) add other accounts with less privileges after completing setup and only use the root account when it is actually necessary</strong></p>
@@ -55,17 +77,11 @@
 </table>
 <p>Please avoid using easy to guess combinations like names &amp; birth dates of you or your relatives, zip codes &amp; cities and obvious words like 'password', 'libreevent', 'admin', 'root' and your organisation / event's name.</p>
 <p>After this, the system will email you an email confirmation link using the email you've previously configured in the config.json file during installation.</p>
-<h2>Page setup</h2>
-<p>After having set up the root account and confirmed the email address, it is now time to set the name of the webpage. For this, you'll need to enter your organisation's name and choose the offered languages. Note that for every language you select, you need to add a promotional text. Please select a homepage template from <a href="/docs/homepage/templates">here</a>. You also have to upload an/some image(s) at this stage, if the selected template requires (an) image(s).</p>
-<h2>Payment methods</h2>
-<p>Now it is time to set up some payment methods. You may find advantages / disadvantages of each payment gateway <a href="/docs/payments">here</a>. It is advised to only choose one payment gateway which provides lots of different payment options, but cost of usage can also be a factor to consider. You may add more payment options by downloading a plugin through the plugin installer in the admin panel. <em>Note: You'll have to restart the node app whenever you install a new plugin!</em></p>
-<h2>Event setup</h2>
-<p>With payment methods sorted, you now have to add an event. For this, you'll need to create tickets by hitting the plus icon.</p>
-<h2>TOS</h2>
-<p>This is an optional step. Here you may add your own terms of services (TOS), next to the ones that are given by libreevent itself. Your TOS will be inserted at the top.</p>
 <h2>Setup complete</h2>
-<p>With this, you've completed the setup of the event. We now ask you to restart the node application. You may do this by stopping the process (if logged in via SSH, press Ctrl + C, if you've got a graphical user interface for setting up the node app, it should be self explanatory) and restarting it as described <a href="/docs/setup/installation#starting">here</a>.</p>
-<p><strong>Congratulations! You've now successfully set up your event management solution. You may now log into the admin panel. You can find your admin panel at /admin (example: libreevent.janishutz.com/admin, replace libreevent.janishutz.com with your own domain).</strong></p>
+<p>With this, you've completed the setup of the event. We now ask you to restart the node application. You may do this by stopping the process (if logged in via SSH, press Ctrl + C, if you've got a graphical user interface for setting up the node app, it should be self explanatory) and restarting it.</p>
+<p>libreevent already gives you the link to the admin panel, which you can click, but if you already closed the page, here's how to reach it:</p>
+<p><em>You can find your admin panel at /admin (example: libreevent.janishutz.com/admin, replace libreevent.janishutz.com with your own domain).</em></p>
+<p><strong>Congratulations! You've now successfully set up your event management solution.</strong></p>
 <p><em>You may find documentation on the admin panel <a href="/docs/admin-panel/">here</a></em></p>
 </div>
             </div>

@@ -53,7 +53,7 @@
                                 source.close();
                             }, 500 );
                             setTimeout( () => {
-                                $( 'manual-download' ).slideDown( 500 );
+                                $( '#manual-download' ).slideDown( 500 );
                             }, 2000 );
                         } else if ( e.data === 'paymentOk' ) {
                             self.$refs.notification.createNotification( 'Your payment has been marked as completed!', 5, 'ok', 'normal' );

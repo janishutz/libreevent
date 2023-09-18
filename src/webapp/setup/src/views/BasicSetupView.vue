@@ -108,6 +108,7 @@
         },
         methods: {
             submit() {
+                this.collectUrl();
                 if ( this.formData.dbType === 'mysql' ) {
                     if ( !this.formData.db.port || !this.formData.db.host || !this.formData.db.database || !this.formData.db.user || !this.formData.db.password ) {
                         this.$refs.notification.createNotification( 'Database settings are not complete!', 5, 'error', 'normal' );
@@ -141,6 +142,10 @@
                 sessionStorage.setItem( 'basics', JSON.stringify( this.formData ) );
                 this.backendStore.addVisitedSetupPages( 'root', true );
                 this.$router.push( '/setup/root' );
+            },
+            collectUrl() {
+                this.formData.yourDomain = location.protocol + '//' + location.host;
+                this.formData.db.host = location.hostname;
             }
         },
         created () {
