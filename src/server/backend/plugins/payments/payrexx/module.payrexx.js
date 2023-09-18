@@ -35,7 +35,7 @@ exports.init = function () {
     return {
         getGateway: function ( id ) {
             const baseUrl = buildBaseUrl( 'Gateway/' + id + '/' );
-            const url = baseUrl + '&ApiSignature=' + buildSignature();
+            const url = baseUrl + '&ApiSignature=' + encodeURIComponent( buildSignature() );
             return axios.get( url );
         },
         createGateway: function ( params ) {

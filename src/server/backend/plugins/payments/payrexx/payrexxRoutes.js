@@ -14,8 +14,6 @@ const payrexxModule = require( './module.payrexx.js' );
 const payrexx = payrexxModule.init();
 const TicketGenerator = new ticket();
 
-payrexx.getGateway( 1 );
-
 let sessionReference = {};
 let waitingClients = {};
 let pendingPayments = {};

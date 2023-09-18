@@ -4,7 +4,7 @@
 	"twoFA":"enforce",
 	"twoFAMode":"enhanced",
 	"db":"mysql",
-	"payments":"stripe",
+	"payments":"payrexx",
 	"name":"libreevent",
 	"yourDomain":"http://localhost:8080",
 	"mailSender":"libreevent <no-reply@libreevent.janishutz.com>",
