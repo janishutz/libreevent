@@ -75,13 +75,12 @@
                 */
                 try { 
                     delete this.notifications[ id ];
-                    console.log( this.notifications );
-                    console.log( this.queue.findIndex( id ) );
-                    console.log( this.queue );
-                    delete this.queue[ this.queue.findIndex( id ) - 1 ];
                 } catch ( error ) {
                     console.log( 'notification to be deleted is nonexistent or currently being displayed' );
                 }
+                try {
+                    this.queue.splice( this.queue.indexOf( id ), 1 );
+                } catch {}
                 if ( this.currentlyDisplayedNotificationID == id ) {
                     this.handleNotifications();
                 }
@@ -100,6 +99,7 @@
                     this.priority = this.notifications[ this.queue[ 0 ] ][ 'priority' ];
                     this.currentlyDisplayedNotificationID = this.notifications[ this.queue[ 0 ] ][ 'id' ];
                     this.notificationDisplayTime = this.notifications[ this.queue[ 0 ] ][ 'showDuration' ];
+                    delete this.notifications[ this.queue[ 0 ] ];
                     this.queue.reverse();
                     this.queue.pop();
                 } else {
