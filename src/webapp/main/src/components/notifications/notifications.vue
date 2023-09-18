@@ -75,7 +75,10 @@
                 */
                 try { 
                     delete this.notifications[ id ];
-                    delete this.queue[ this.queue.findIndex( id ) ];
+                    console.log( this.notifications );
+                    console.log( this.queue.findIndex( id ) );
+                    console.log( this.queue );
+                    delete this.queue[ this.queue.findIndex( id ) - 1 ];
                 } catch ( error ) {
                     console.log( 'notification to be deleted is nonexistent or currently being displayed' );
                 }

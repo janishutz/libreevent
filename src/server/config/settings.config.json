@@ -1,10 +1,10 @@
 {
 	"init":true,
-	"setupDone":false,
+	"setupDone":true,
 	"twoFA":"enforce",
 	"twoFAMode":"enhanced",
-	"db":"mysql",
-	"payments":"payrexx",
+	"db":"json",
+	"payments":"stripe",
 	"name":"libreevent",
 	"yourDomain":"http://localhost:8080",
 	"mailSender":"libreevent <no-reply@libreevent.janishutz.com>",

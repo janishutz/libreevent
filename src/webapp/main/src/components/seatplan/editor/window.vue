@@ -417,6 +417,11 @@
             },
             getSeatCount () {
                 this.seatCountInfo[ 'count' ] = document.getElementsByClassName( 'seats' ).length;
+                for ( let draggable in this.draggables ) {
+                    if ( this.draggables[ draggable ][ 'ticketCount' ] ) {
+                        this.seatCountInfo[ 'count' ] += this.draggables[ draggable ][ 'ticketCount' ];
+                    }
+                }
             },
         },
         created () {
