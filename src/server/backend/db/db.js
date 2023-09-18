@@ -105,7 +105,7 @@ module.exports.checkDataAvailability = ( db, column, searchQuery ) => {
 
 module.exports.getJSONData = ( file ) => {
     return new Promise( ( resolve, reject ) => {
-        fs.readFile( path.join( __dirname + '/data/' + file + '.json' ), ( error, data ) => {
+        fs.readFile( path.join( __dirname + '/../../data/' + file + '.json' ), ( error, data ) => {
             if ( error ) {
                 reject( 'Error occurred: Error trace: ' + error );
             } else {
@@ -121,7 +121,7 @@ module.exports.getJSONData = ( file ) => {
 
 module.exports.getJSONDataSimple = ( file, identifier ) => {
     return new Promise( ( resolve, reject ) => {
-        fs.readFile( path.join( __dirname + '/data/' + file + '.json' ), ( error, data ) => {
+        fs.readFile( path.join( __dirname + '/../../data/' + file + '.json' ), ( error, data ) => {
             if ( error ) {
                 reject( 'Error occurred: Error trace: ' + error );
             } else {
@@ -141,7 +141,7 @@ module.exports.getJSONDataSync = ( file ) => {
 
 module.exports.writeJSONDataSimple = ( db, identifier, values ) => {
     return new Promise( ( resolve, reject ) => {
-        fs.readFile( path.join( __dirname + '/data/' + db + '.json' ), ( error, data ) => {
+        fs.readFile( path.join( __dirname + '/../../data/' + db + '.json' ), ( error, data ) => {
             if ( error ) {
                 reject( 'Error occurred: Error trace: ' + error );
             } else {
@@ -150,7 +150,7 @@ module.exports.writeJSONDataSimple = ( db, identifier, values ) => {
                     dat = JSON.parse( data ) ?? {};
                 }
                 dat[ identifier ] = values;
-                fs.writeFile( path.join( __dirname + '/data/' + db + '.json' ), JSON.stringify( dat ), ( error ) => {
+                fs.writeFile( path.join( __dirname + '/../../data/' + db + '.json' ), JSON.stringify( dat ), ( error ) => {
                     if ( error ) {
                         reject( 'Error occurred: Error trace: ' + error );
                     }
@@ -163,7 +163,7 @@ module.exports.writeJSONDataSimple = ( db, identifier, values ) => {
 
 module.exports.writeJSONData = ( db, data ) => {
     return new Promise( ( resolve, reject ) => {
-        fs.writeFile( path.join( __dirname + '/data/' + db + '.json' ), JSON.stringify( data ), ( error ) => {
+        fs.writeFile( path.join( __dirname + '/../../data/' + db + '.json' ), JSON.stringify( data ), ( error ) => {
             if ( error ) {
                 reject( 'Error occurred: Error trace: ' + error );
             } else {
@@ -175,7 +175,7 @@ module.exports.writeJSONData = ( db, data ) => {
 
 module.exports.deleteJSONDataSimple = ( db, identifier ) => {
     return new Promise( ( resolve, reject ) => {
-        fs.readFile( path.join( __dirname + '/data/' + db + '.json' ), ( error, data ) => {
+        fs.readFile( path.join( __dirname + '/../../data/' + db + '.json' ), ( error, data ) => {
             if ( error ) {
                 reject( 'Error occurred: Error trace: ' + error );
             } else {
@@ -184,7 +184,7 @@ module.exports.deleteJSONDataSimple = ( db, identifier ) => {
                     dat = JSON.parse( data ) ?? {};
                 }
                 delete dat[ identifier ];
-                fs.writeFile( path.join( __dirname + '/data/' + db + '.json' ), JSON.stringify( dat ), ( error ) => {
+                fs.writeFile( path.join( __dirname + '/../../data/' + db + '.json' ), JSON.stringify( dat ), ( error ) => {
                     if ( error ) {
                         reject( 'Error occurred: Error trace: ' + error );
                     }

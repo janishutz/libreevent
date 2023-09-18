@@ -21,7 +21,7 @@ class JSONDB {
     connect () {
         let data = {};
         try {
-            JSON.parse( fs.readFileSync( path.join( __dirname + '/data/db.json' ) ) );
+            JSON.parse( fs.readFileSync( path.join( __dirname + '/../../data/db.json' ) ) );
         } catch ( err ) {
             console.error( '[ JSON-DB ] CRITICAL INITIALIZATION FAILURE!' + err );
             throw ( 'JSONDB failed to start!' );
@@ -44,7 +44,7 @@ class JSONDB {
     }
 
     save () {
-        fs.writeFile( path.join( __dirname + '/data/db.json' ), JSON.stringify( { 'db': this.db, 'index': this.dbIndex } ), ( err ) => {
+        fs.writeFile( path.join( __dirname + '/../../data/db.json' ), JSON.stringify( { 'db': this.db, 'index': this.dbIndex } ), ( err ) => {
             if ( err ) console.error( '[ JSON-DB ] An error occurred during saving: ' + err );
             this.isSaving = false;
             if ( this.awaitingSaving ) {
@@ -56,13 +56,13 @@ class JSONDB {
     async resetDB () {
         this.db = { 'libreevent_temp': {}, 'libreevent_admin': {}, 'libreevent_orders': {}, 'libreevent_users': {} };
         this.dbIndex = { 'libreevent_temp': 0, 'libreevent_admin': 0, 'libreevent_orders': 0, 'libreevent_users': 0 };
-        fs.writeFile( path.join( __dirname + '/data/db.json' ), JSON.stringify( { 'db': this.db, 'index': this.dbIndex } ) );
+        fs.writeFile( path.join( __dirname + '/../../data/db.json' ), JSON.stringify( { 'db': this.db, 'index': this.dbIndex } ) );
     }
 
     async setupDB () {
         this.db = { 'libreevent_temp': {}, 'libreevent_admin': {}, 'libreevent_orders': {}, 'libreevent_users': {} };
         this.dbIndex = { 'libreevent_temp': 0, 'libreevent_admin': 0, 'libreevent_orders': 0, 'libreevent_users': 0 };
-        fs.writeFile( path.join( __dirname + '/data/db.json' ), JSON.stringify( { 'db': this.db, 'index': this.dbIndex } ) );
+        fs.writeFile( path.join( __dirname + '/../../data/db.json' ), JSON.stringify( { 'db': this.db, 'index': this.dbIndex } ) );
     }
 
     query ( operation, table ) {
