@@ -74,6 +74,9 @@ export default {
         calculateChairs () {
             // Size of seat at scale 1 is 32px
             // w & h are normalised
+            // TODO: numbering and numbering direction
+            // TODO: get component number and numbering direction as well
+            console.log( this.data );
             let w = Math.floor( this.w / this.scaleFactor );
             let h = Math.floor( this.h / this.scaleFactor );
             const size = 33;
