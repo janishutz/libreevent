@@ -1,13 +1,9 @@
-- Load all orders of customer from db when selecting tickets and save to memory to check if ticket count has been exceeded or not.
-
-- load all available start page templates with dir crawler
-
-
-- fix ticket counting
 - Seat numbering!!
 
 
 - Website: Add ids to titles
+
+- Website: Remove comments
 
 
 - Update files to import when deploying for included json files instead of secret.json files

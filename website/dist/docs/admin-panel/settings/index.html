@@ -19,22 +19,45 @@
                 <div id="doc-container">
                 <h1>Settings</h1>
 <h2>2FA</h2>
-<p>libreevent offers two different 2fa modes:</p>
-<ul>
-<li>Standard mode: The user has to click on a link that was sent to him via email. He'll automatically be logged in as soon as the page loads.</li>
-<li>Enhanced mode: The user has to click on a link that was sent to him via email and then has to confirm it by entering the code that is shown to him on the 2FA page. After that he'll automatically be logged in.</li>
-</ul>
-<p>In both modes, the system informs the user about the IP address that tried to log into the account.</p>
-<p>This setting can be changed individually for admin and user accounts and 2FA can be disabled entirely. It is highly encouraged to enable this at least for the admin accounts and for user accounts set the requirement to 'User-defined' or 'Always required' instead of 'Disabled'.</p>
-<h2>User account passwords</h2>
-<p>Here you may set password requirements for the user accounts. The system will always be offering the users to generate a password that is strong for them to facilitate the process of setting a password.</p>
-<h2>Change organisation name</h2>
-<p>This should be self explanatory, but keep in mind that this change will only take effect after the next restart of the node app.</p>
+<p>You can require the users to enable Two-Factor Authentication when confirming their email.
+The following settings are available:</p>
+<table>
+<thead>
+<tr>
+<th>Setting</th>
+<th>Explanation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>always require</td>
+<td>Always require the user to use Two-Factor Authentication (will be enforced at account confirmation)</td>
+</tr>
+<tr>
+<td>user can decide</td>
+<td>Allow the user to decide if they want to enable Two-Factor Authentication (default, recommended)</td>
+</tr>
+<tr>
+<td>disable</td>
+<td>Disable Two-Factor-Authentication entirely (only for users, root account still has 2FA enforced!)</td>
+</tr>
+</tbody>
+</table>
+<h2>Currency</h2>
+<p>This setting allows you to change the currency in which you want your customers to pay. The code has to be a valid ISO 4217 currency code. See more <a href="https://en.wikipedia.org/wiki/ISO_4217#List_of_ISO_4217_currency_codes">here</a> (Wikipedia). This setting defaults to USD.</p>
+<h2>Ticket Timeout</h2>
+<p>The ticket timeout setting allows you to specify for how much time of inactivity the ticket is reserved for a user. The value is to be entered in seconds. The database is parsed every five minutes by default (can be changed in the config file) and, if the threshold set here is exceeded, the session is garbage collected and all tickets selected are returned to the available tickets pool.</p>
+<h2>Payment gateway</h2>
+<h3>Select a gateway</h3>
+<p>With this setting, you can select the payment gateway to use. You may follow the link <a href="https://libreevent.janishutz.com/docs/payments">here</a> to get more information on the payment gateway. You need to hit save to enable editing for the gateway settings.</p>
+<h3>Gateway settings</h3>
+<p>Here you need to enter gateway specific settings to make them work. Do note, that some gateway plugins might crash libreevent on startup if these settings aren't entered, if you are using an unofficial plugin. All officially supported plugins will not crash it if the values entered are incorrect</p>
 <h1>Admin Accounts</h1>
-<p>On this page you may add, modify or remove admin accounts. Note that in order for you to see this page, you'll need to be logged in as the user root.</p>
+<p>On this page you may add, modify or remove admin accounts. &lt;!--Note that in order for you to see this page, you'll need to be logged in as the user root.--&gt;</p>
 <h2>Adding an account</h2>
-<h3>Privileges</h3>
-<p>libreevent features a privilege system where you can choose to what group of users you want to add a user you are currently creating. Possible values are:</p>
+<p>&lt;!-- ### Privileges
+TODO: will be added in future version
+libreevent features a privilege system where you can choose to what group of users you want to add a user you are currently creating. Possible values are:</p>
 <table>
 <thead>
 <tr>
@@ -57,16 +80,48 @@
 </tr>
 <tr>
 <td>Event-Handler</td>
-<td>Can log into the apps to do entry control</td>
+<td>Can log into the apps to do entry control --&gt;</td>
 </tr>
 </tbody>
 </table>
+<h3>Username</h3>
+<p>Give the user a username that can be used for internal recognition. It does not currently have any other use.</p>
 <h3>Email</h3>
-<p>An Email address is required for account activation and to recover a password in case it gets lost. The system will automatically send an activation email so the user can confirm that the email address is valid.</p>
+<p>An email address is required to allow the user to log in (it's their username) and for Two-Factor-Authentication.</p>
+<h3>Password</h3>
+<p>The password of the admin account does not have any specific requirements (yet), but we strongly encourage you to follow these guidelines:</p>
+<table>
+<thead>
+<tr>
+<th>Factor</th>
+<th>Requirement</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Length</td>
+<td>At least 15 characters</td>
+</tr>
+<tr>
+<td>Special characters</td>
+<td>At least 2 required</td>
+</tr>
+<tr>
+<td>Numbers</td>
+<td>At least 2 required</td>
+</tr>
+<tr>
+<td>Upper / Lower case</td>
+<td>At least 2 upper &amp; 2 lower case letters required</td>
+</tr>
+</tbody>
+</table>
 <h3>2FA</h3>
-<p>With this checkbox you can choose if this user needs to do two factor authentication, meaning, if the user needs to authorise the login using a link. In the <a href="/docs/admin-panel/settings#2fa">Settings</a> you may choose between the two different 2FA modes that libreevent offers.</p>
+<p>With this setting, you can choose one of three Two-Factor-Authentication modes, namely, disabled for no 2FA, Simple for one where the user has to verify the login by clicking a link in an email sent to them or Enhanced for one where the user has to enter a code after having opened up the link in the email sent to them.</p>
 <h2>Modifying an account</h2>
+<p>You can update the username and the password of any admin account by clicking onto it.</p>
 <h2>Removing an account</h2>
+<p>You can delete an admin account by right clicking on it (yes, right click) and hit delete. Confirm again that you want to delete the account and then it's gone.</p>
 </div>
             </div>
             <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
