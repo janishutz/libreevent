@@ -74,6 +74,7 @@ export default {
         calculateChairs () {
             // Size of seat at scale 1 is 32px
             // w & h are normalised
+            // TODO: Numbering direction
             let offsets = {};
             if ( this.data.seatInfo ) {
                 for ( let element in this.data.seatInfo.data ) {
