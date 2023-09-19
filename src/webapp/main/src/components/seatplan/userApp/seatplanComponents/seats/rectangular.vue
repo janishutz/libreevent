@@ -74,16 +74,23 @@ export default {
         calculateChairs () {
             // Size of seat at scale 1 is 32px
             // w & h are normalised
-            // TODO: numbering and numbering direction
-            // TODO: get component number and numbering direction as well
-            console.log( this.data );
+            let offsets = {};
+            if ( this.data.seatInfo ) {
+                for ( let element in this.data.seatInfo.data ) {
+                    if ( this.data.seatInfo.data[ element ] > this.data.seatNumbering ) {
+                        for ( let row in this.data.seatInfo.data[ element ] ) {
+                            offsets[ row ] += this.data.seatInfo.data[ element ][ row ];
+                        }
+                    }
+                }
+            }
             let w = Math.floor( this.w / this.scaleFactor );
             let h = Math.floor( this.h / this.scaleFactor );
             const size = 33;
             this.seats = {};
             for ( let row = 0; row < Math.floor( h / size ); row++ ) {
                 this.seats[ row ] = {};
-                for ( let n = 0; n < Math.floor( w / size ); n++ ) {
+                for ( let n = ( offsets[ row ] ?? 0 ); n < ( Math.floor( w / size ) + ( offsets[ row ] ?? 0 ) ); n++ ) {
                     this.seats[ row ][ n ] = { 'style': '', 'id': 'sec' + this.data.sector + 'r' + row + 's' + n, 'displayName': ( this.data.sectorCount > 1 ? 'Sector ' + this.data.sector + ', ' : '' ) + 'Row ' + ( row + 1 ) + ', Seat ' + ( n + 1 ), 'status': 'av', 'row': row, 'seat': n };
                     if ( this.origin === 1 ) {
                         this.seats[ row ][ n ][ 'style' ] = `bottom: ${ row * size * this.scaleFactor }px; left: ${ n * size * this.scaleFactor }px; rotate: ${ this.origin / 4 - 0.25 }turn;`;

@@ -165,6 +165,8 @@
                             'color': this.event.categories[ this.draggables[ element ][ 'category' ] ][ 'fg' ] 
                         },
                         'seatInfo': seatInfo,
+                        'seatNumbering': this.draggables[ element ].seatNumberingPosition,
+                        'numberingDirection': this.draggables[ element ].numberingDirection,
                     };
                 }
 
