@@ -95,7 +95,7 @@
                                     return false;
                                 }
                             }
-                        } else if ( !( /[a-z]/.test( mail[ l ] ) || /[A-Z]/.test( mail[ l ] ) || /[1-9]/.test( mail[ l ] ) ) ) { 
+                        } else if ( !( /[a-z]/.test( mail[ l ] ) || /[A-Z]/.test( mail[ l ] ) || /[1-9]/.test( mail[ l ] ) || mail[ l ] === '-' || mail[ l ] === '_' ) ) { 
                             return false 
                         }
                     } else {
@@ -105,11 +105,10 @@
                             } else {
                                 return false;
                             }
-                        } else if ( !( /[a-z]/.test( mail[ l ] ) || /[A-Z]/.test( mail[ l ] ) || /[1-9]/.test( mail[ l ] ) || mail[ l ] === '.' ) ) {
+                        } else if ( !( /[a-z]/.test( mail[ l ] ) || /[A-Z]/.test( mail[ l ] ) || /[1-9]/.test( mail[ l ] ) || mail[ l ] === '.' || mail[ l ] === '-' || mail[ l ] == '_' ) ) {
                             return false;
                         }
                     }
-                    
                 }
                 if ( mail.length > stat[ 'topLevelPos' ] + 2 && stat[ 'topLevelPos' ] > 0 && stat[ 'atPos' ] > 0 ) {
                     return true;
