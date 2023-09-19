@@ -19,6 +19,9 @@ You may contribute to any of the following things (list is not exhaustive):
 - Add permission settings and permissions to admin panel
 - Improve iOS and Android App functionality
 - Add an admin account page
+- Allow admins to print remaining tickets
+- Add auto updater
+- Create update plugin to allow for easy updating to next version
 
 ## Before starting to contribute
 Before you start coding, please make yourself familiar with the code of conduct and the linter settings. Another thing that is not required, but certainly a good idea is to open an issue on our GitHub to have a discussion about the changes you want to make so that you don't waste your time, if the thing you want to do is not something we feel like is necessary. 
