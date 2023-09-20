@@ -67,7 +67,7 @@ export default {
             let details = { 'data': {}, 'id': this.id };
             for ( let row = this.startingRow; row < count; row++ ) {
                 let nn = row * ( Math.PI / 2 );
-                details.data[ row ] = Math.floor( nn );
+                details.data[ row - 1 ] = Math.ceil( nn );
                 let r = row * size;
                 this.seats[ row ] = {};
                 for ( let n = 0; n < nn; n++ ) {

@@ -70,13 +70,15 @@ export default {
         calculateChairs () {
             // Size of seat at scale 1 is 32px
             // w & h are normalised
-            // TODO: update to new algorithm
             let offsets = {};
             if ( this.data.seatInfo ) {
-                for ( let element in this.data.seatInfo.data ) {
-                    if ( this.data.seatInfo.data[ element ] > this.data.seatNumbering ) {
-                        for ( let row in this.data.seatInfo.data[ element ] ) {
-                            offsets[ row ] += this.data.seatInfo.data[ element ][ row ];
+                for ( let element in this.data.seatInfo.data[ this.data.sector ] ) {
+                    if ( element < this.data.seatNumbering ) {
+                        for ( let row in this.data.seatInfo.data[ this.data.sector ][ element ] ) {
+                            if ( row !== 'startingRow' ) {
+                                if ( !offsets[ row ] ) offsets[ row ] = 0;
+                                offsets[ row ] += this.data.seatInfo.data[ this.data.sector ][ element ][ row ];
+                            }
                         }
                     }
                 }
@@ -93,8 +95,8 @@ export default {
             for ( let row = this.startingRow; row < count; row++ ) {
                 let nn = 2 + ( row - 1 ) * 2; 
                 this.seats[ row ] = {};
-                for ( let n = ( offsets[ row ] ?? 0 ); n < ( nn + ( offsets[ row ] ?? 0 ) ); n++ ) {
-                    const seatNumber = this.data.numberingDirection === 'right' ? ( Math.floor( w / size ) + ( offsets[ row ] ?? 0 ) ) - n: n;
+                for ( let n = 0; n < nn; n++ ) {
+                    const seatNumber = this.data.numberingDirection === 'right' ? nn - n: n + ( offsets[ row - 1 ] ?? 0 );
                     this.seats[ row ][ n ] = { 
                         'style': '', 
                         'id': 'comp' + this.id + 'sec' + this.data.sector + 'r' + row + 's' + seatNumber, 

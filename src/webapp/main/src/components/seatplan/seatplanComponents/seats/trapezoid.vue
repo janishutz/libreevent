@@ -72,7 +72,7 @@ export default {
             for ( let row = this.startingRow; row < count; row++ ) {
                 let nn = 2 + ( row - 1 ) * 2; 
                 this.seats[ row ] = {};
-                details.data[ row ] = Math.floor( nn );
+                details.data[ row - 1 ] = Math.floor( nn );
                 for ( let n = 0; n < nn; n++ ) {
                     let side = n * sideOffset;
                     if ( this.origin === 1 ) {
