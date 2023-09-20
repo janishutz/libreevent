@@ -70,6 +70,17 @@ export default {
         calculateChairs () {
             // Size of seat at scale 1 is 32px
             // w & h are normalised
+            // TODO: update to new algorithm
+            let offsets = {};
+            if ( this.data.seatInfo ) {
+                for ( let element in this.data.seatInfo.data ) {
+                    if ( this.data.seatInfo.data[ element ] > this.data.seatNumbering ) {
+                        for ( let row in this.data.seatInfo.data[ element ] ) {
+                            offsets[ row ] += this.data.seatInfo.data[ element ][ row ];
+                        }
+                    }
+                }
+            }
             let w = Math.round( this.w / this.scaleFactor );
             let h = Math.round( this.h / this.scaleFactor );
             const size = 33;
@@ -82,17 +93,25 @@ export default {
             for ( let row = this.startingRow; row < count; row++ ) {
                 let nn = 2 + ( row - 1 ) * 2; 
                 this.seats[ row ] = {};
-                for ( let n = 0; n < nn; n++ ) {
-                    this.seats[ row ][ n ] = { 'style': '', 'id': 'sec' + this.data.sector + 'r' + row + 's' + n, 'displayName': ( this.data.sectorCount > 1 ? 'Sector ' + this.data.sector + ', ' : '' ) + 'Row ' + row + ', Seat ' + ( n + 1 ), 'status': 'av', 'row': row, 'seat': n };
+                for ( let n = ( offsets[ row ] ?? 0 ); n < ( nn + ( offsets[ row ] ?? 0 ) ); n++ ) {
+                    const seatNumber = this.data.numberingDirection === 'right' ? ( Math.floor( w / size ) + ( offsets[ row ] ?? 0 ) ) - n: n;
+                    this.seats[ row ][ n ] = { 
+                        'style': '', 
+                        'id': 'comp' + this.id + 'sec' + this.data.sector + 'r' + row + 's' + seatNumber, 
+                        'displayName': ( this.data.sectorCount > 1 ? 'Sector ' + this.data.sector + ', ' : '' ) + 'Row ' + row + ', Seat ' + ( seatNumber + 1 ), 
+                        'status': 'av', 
+                        'row': row, 
+                        'seat': n 
+                    };
                     let side = n * sideOffset;
                     if ( this.origin === 1 ) {
-                        this.seats[ row ][ n ][ 'style' ] = `bottom: ${ ( side + 5 ) * this.scaleFactor }px; left: ${ ( row * sideOffset * 2 - side ) * this.scaleFactor }px; rotate: ${ angle }rad`;
+                        this.seats[ row ][ n ][ 'style' ] = `bottom: ${ ( side + 5 ) * this.scaleFactor }px; left: ${ ( row * sideOffset * 2 - side ) * this.scaleFactor }px; rotate: ${ angle }rad;`;
                     } else if ( this.origin === 2 ) {
-                        this.seats[ row ][ n ][ 'style' ] = `bottom: ${ ( side + 5 ) * this.scaleFactor }px; right: ${ ( row * sideOffset * 2 - side ) * this.scaleFactor }px; rotate: ${ Math.PI * 2 - angle }rad`;
+                        this.seats[ row ][ n ][ 'style' ] = `bottom: ${ ( side + 5 ) * this.scaleFactor }px; right: ${ ( row * sideOffset * 2 - side ) * this.scaleFactor }px; rotate: ${ Math.PI * 2 - angle }rad;`;
                     } else if ( this.origin === 3 ) {
-                        this.seats[ row ][ n ][ 'style' ] = `top: ${ ( side + 5 ) * this.scaleFactor }px; right: ${ ( row * sideOffset * 2 - side ) * this.scaleFactor }px; rotate: ${ angle + Math.PI }rad`;
+                        this.seats[ row ][ n ][ 'style' ] = `top: ${ ( side + 5 ) * this.scaleFactor }px; right: ${ ( row * sideOffset * 2 - side ) * this.scaleFactor }px; rotate: ${ angle + Math.PI }rad;`;
                     } else if ( this.origin === 4 ) {
-                        this.seats[ row ][ n ][ 'style' ] = `top: ${ ( side + 5 ) * this.scaleFactor }px; left: ${ ( row * sideOffset * 2 - side ) * this.scaleFactor }px; rotate: ${ Math.PI - angle }rad`;
+                        this.seats[ row ][ n ][ 'style' ] = `top: ${ ( side + 5 ) * this.scaleFactor }px; left: ${ ( row * sideOffset * 2 - side ) * this.scaleFactor }px; rotate: ${ Math.PI - angle }rad;`;
                     }
 
                     this.seats[ row ][ n ][ 'scaling' ] = `font-size: ${this.scaleFactor * 200}%; `;

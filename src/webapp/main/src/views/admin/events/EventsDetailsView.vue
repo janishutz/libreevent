@@ -77,7 +77,7 @@
                             <div class="category-details">{{ ageGroup.name }}<div style="display: inline;" v-if="ageGroup.age"> ({{ ageGroup.age }})</div>:</div>
                         </td>
                         <td>
-                            {{ event.currency }} <input type="number" v-model="category.price[ ageGroup.id ]">
+                            {{ currency }} <input type="number" v-model="category.price[ ageGroup.id ]">
                         </td>
                     </tr>
                     <tr>
@@ -272,17 +272,21 @@
         },
         methods: {
             loadData () {
+                if ( !sessionStorage.getItem( 'selectedTicket' ) ) {
+                    this.$router.push( '/admin/events' );
+                }
                 fetch( localStorage.getItem( 'url' ) + '/admin/getAPI/getCurrency' ).then( res => {
                     res.text().then( currency => {
                         this.currency = currency;
                     } );
                 } );
-                if ( !sessionStorage.getItem( 'selectedTicket' ) ) {
-                    this.$router.push( '/admin/events' );
-                }
                 fetch( localStorage.getItem( 'url' ) + '/admin/getAPI/getEventStatus' ).then( res => {
                     res.text().then( status => {
-                        this.hasLiveVersion = Boolean( status );
+                        if ( status === 'true' ) {
+                            this.hasLiveVersion = true;
+                        } else {
+                            this.hasLiveVersion = false;
+                        }
                     } );
                 } );
                 this.eventID = sessionStorage.getItem( 'selectedTicket' );

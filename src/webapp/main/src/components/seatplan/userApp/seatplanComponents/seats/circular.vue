@@ -70,6 +70,17 @@ export default {
         calculateChairs () {
             // Size of seat at scale 1 is 32px
             // w & h are normalised
+            console.log( this.data.seatInfo );
+            let offsets = {};
+            if ( this.data.seatInfo ) {
+                for ( let element in this.data.seatInfo.data ) {
+                    if ( this.data.seatInfo.data[ element ] > this.data.seatNumbering ) {
+                        for ( let row in this.data.seatInfo.data[ element ] ) {
+                            offsets[ row ] += this.data.seatInfo.data[ element ][ row ];
+                        }
+                    }
+                }
+            }
             let w = Math.round( this.w / this.scaleFactor );
             let h = Math.round( this.h / this.scaleFactor );
             const size = 33;
@@ -79,17 +90,25 @@ export default {
                 let nn = row * ( Math.PI / 2 );
                 let r = row * size;
                 this.seats[ row ] = {};
-                for ( let n = 0; n < nn; n++ ) {
-                    this.seats[ row ][ n ] = { 'style': '', 'id': 'sec' + this.data.sector + 'r' + row + 's' + n, 'displayName': ( this.data.sectorCount > 1 ? 'Sector ' + this.data.sector + ', ' : '' ) + 'Row ' + row + ', Seat ' + ( n + 1 ), 'status': 'av', 'row': row, 'seat': n };
+                for ( let n = ( offsets[ row ] ?? 0 ); n < ( nn + ( offsets[ row ] ?? 0 ) ); n++ ) {
+                    const seatNumber = this.data.numberingDirection === 'right' ? ( Math.floor( w / size ) + ( offsets[ row ] ?? 0 ) ) - n: n;
+                    this.seats[ row ][ n ] = { 
+                        'style': '', 
+                        'id': 'comp' + this.id + 'sec' + this.data.sector + 'r' + row + 's' + seatNumber, 
+                        'displayName': ( this.data.sectorCount > 1 ? 'Sector ' + this.data.sector + ', ' : '' ) + 'Row ' + row + ', Seat ' + ( seatNumber + 1 ), 
+                        'status': 'av', 
+                        'row': row, 
+                        'seat': n 
+                    };
                     let phi = n * size / ( row * size );
                     if ( this.origin === 1 ) {
-                        this.seats[ row ][ n ][ 'style' ] = `bottom: ${ r * Math.cos( phi ) * this.scaleFactor }px; left: ${ r * Math.sin( phi ) * this.scaleFactor }px; rotate: ${ phi }rad`;
+                        this.seats[ row ][ n ][ 'style' ] = `bottom: ${ r * Math.cos( phi ) * this.scaleFactor }px; left: ${ r * Math.sin( phi ) * this.scaleFactor }px; rotate: ${ phi }rad;`;
                     } else if ( this.origin === 2 ) {
-                        this.seats[ row ][ n ][ 'style' ] = `bottom: ${ r * Math.cos( phi ) * this.scaleFactor }px; right: ${ r * Math.sin( phi ) * this.scaleFactor }px; rotate: ${ Math.PI * 2 - phi }rad`;
+                        this.seats[ row ][ n ][ 'style' ] = `bottom: ${ r * Math.cos( phi ) * this.scaleFactor }px; right: ${ r * Math.sin( phi ) * this.scaleFactor }px; rotate: ${ Math.PI * 2 - phi }rad;`;
                     } else if ( this.origin === 3 ) {
-                        this.seats[ row ][ n ][ 'style' ] = `top: ${ r * Math.cos( phi ) * this.scaleFactor }px; right: ${ r * Math.sin( phi ) * this.scaleFactor }px; rotate: ${ phi + Math.PI }rad`;
+                        this.seats[ row ][ n ][ 'style' ] = `top: ${ r * Math.cos( phi ) * this.scaleFactor }px; right: ${ r * Math.sin( phi ) * this.scaleFactor }px; rotate: ${ phi + Math.PI }rad;`;
                     } else if ( this.origin === 4 ) {
-                        this.seats[ row ][ n ][ 'style' ] = `top: ${ r * Math.cos( phi ) * this.scaleFactor }px; left: ${ r * Math.sin( phi ) * this.scaleFactor }px; rotate: ${ Math.PI - phi }rad`;
+                        this.seats[ row ][ n ][ 'style' ] = `top: ${ r * Math.cos( phi ) * this.scaleFactor }px; left: ${ r * Math.sin( phi ) * this.scaleFactor }px; rotate: ${ Math.PI - phi }rad;`;
                     }
                     this.seats[ row ][ n ][ 'scaling' ] = `font-size: ${this.scaleFactor * 200}%; `;
                     if ( this.data.categoryInfo.color ) {

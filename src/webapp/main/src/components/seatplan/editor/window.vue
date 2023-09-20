@@ -82,7 +82,7 @@
                 zoomFactor: 1,
                 historyPos: 0,
                 generalSettings: { 'namingScheme': 'numeric' },
-                seatCountInfo: { 'data': {}, 'count': 0 },
+                seatCountInfo: { 'details': {}, 'count': 0 },
                 autoSave: null,
             }
         },
@@ -317,7 +317,10 @@
                 sessionStorage.setItem( 'seatplan', JSON.stringify( this.scaleDown( this.draggables ) ) );
             },
             saveDraft () {
-                this.getSeatCount();
+                if ( !this.getSeatCount() ) {
+                    this.$refs.notification.createNotification( 'Collision of seat count!', 10, 'error', 'normal' );
+                    return;
+                }
                 let progressNotification = this.$refs.notification.createNotification( 'Saving as draft', 5, 'progress', 'normal' );
                 sessionStorage.setItem( 'seatplan', JSON.stringify( this.scaleDown( this.draggables ) ) );
                 const options = {
@@ -342,7 +345,10 @@
                 // TODO: add warning if no component has a seat start point if any component is a seat component
             },
             deploy () {
-                this.getSeatCount();
+                if ( !this.getSeatCount() ) {
+                    this.$refs.notification.createNotification( 'Collision of seat count!', 10, 'error', 'normal' );
+                    return;
+                }
                 let deployNotification = this.$refs.notification.createNotification( 'Deploying...', 5, 'progress', 'normal' );
                 const options = {
                     method: 'post',
@@ -412,8 +418,8 @@
                 }
             },
             handleSeatCountInfo ( info ) {
-                this.seatCountInfo[ 'data' ][ info.id ] = info.data;
-                this.seatCountInfo[ 'data' ][ info.id ][ 'startingRow' ] = this.draggables[ info.id ].startingRow;
+                this.seatCountInfo[ 'details' ][ info.id ] = info.data;
+                this.seatCountInfo[ 'details' ][ info.id ][ 'startingRow' ] = this.draggables[ info.id ].startingRow;
             },
             getSeatCount () {
                 this.seatCountInfo[ 'count' ] = document.getElementsByClassName( 'seats' ).length;
@@ -422,6 +428,16 @@
                         this.seatCountInfo[ 'count' ] += this.draggables[ draggable ][ 'ticketCount' ];
                     }
                 }
+                // Remap seat count info
+                this.seatCountInfo[ 'data' ] = {};
+                for ( let element in this.seatCountInfo[ 'details' ] ) {
+                    if ( !this.seatCountInfo[ 'data' ][ this.draggables[ 1 ].sector ] ) {
+                        this.seatCountInfo[ 'data' ][ this.draggables[ 1 ].sector ] = {};
+                    }
+                    if ( this.seatCountInfo[ 'data' ][ this.draggables[ 1 ].sector ][ this.draggables[ element ].seatNumberingPosition ] ) return false;
+                    this.seatCountInfo[ 'data' ][ this.draggables[ 1 ].sector ][ this.draggables[ element ].seatNumberingPosition ] = this.seatCountInfo[ 'details' ][ element ];
+                }
+                return true;
             },
         },
         created () {

@@ -74,7 +74,6 @@ export default {
         calculateChairs () {
             // Size of seat at scale 1 is 32px
             // w & h are normalised
-            // TODO: Numbering direction
             let offsets = {};
             if ( this.data.seatInfo ) {
                 for ( let element in this.data.seatInfo.data ) {
@@ -92,7 +91,15 @@ export default {
             for ( let row = 0; row < Math.floor( h / size ); row++ ) {
                 this.seats[ row ] = {};
                 for ( let n = ( offsets[ row ] ?? 0 ); n < ( Math.floor( w / size ) + ( offsets[ row ] ?? 0 ) ); n++ ) {
-                    this.seats[ row ][ n ] = { 'style': '', 'id': 'sec' + this.data.sector + 'r' + row + 's' + n, 'displayName': ( this.data.sectorCount > 1 ? 'Sector ' + this.data.sector + ', ' : '' ) + 'Row ' + ( row + 1 ) + ', Seat ' + ( n + 1 ), 'status': 'av', 'row': row, 'seat': n };
+                    const seatNumber = this.data.numberingDirection === 'right' ? ( Math.floor( w / size ) + ( offsets[ row ] ?? 0 ) ) - n: n;
+                    this.seats[ row ][ n ] = { 
+                        'style': '', 
+                        'id': 'comp' + this.id + 'sec' + this.data.sector + 'r' + row + 's' + seatNumber, 
+                        'displayName': ( this.data.sectorCount > 1 ? 'Sector ' + this.data.sector + ', ' : '' ) + 'Row ' + ( row + 1 ) + ', Seat ' + ( seatNumber + 1 ), 
+                        'status': 'av', 
+                        'row': row, 
+                        'seat': n
+                    };
                     if ( this.origin === 1 ) {
                         this.seats[ row ][ n ][ 'style' ] = `bottom: ${ row * size * this.scaleFactor }px; left: ${ n * size * this.scaleFactor }px; rotate: ${ this.origin / 4 - 0.25 }turn;`;
                     } else if ( this.origin === 2 ) {

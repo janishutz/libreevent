@@ -10,7 +10,7 @@
 <template>
     <div>
         <h2>Locations</h2>
-        <p>Here you can change everything regarding event locations. All locations can have a seating plan.</p>
+        <p>Here you can change everything regarding event locations. All locations can have a seating plan. Right click for more options.</p>
         <button @click="addLocation();">Add new location</button>
         <div class="location-app" v-if="Object.keys( locations ).length">
             <ul>
@@ -77,16 +77,6 @@
                         'tooltip':'With this toggle you may specify whether or not this location has a seat plan or not.', 
                         'value': this.locations[ locationID ][ 'seatplan-enabled' ],
                         'type': 'toggle',
-                    },
-                    'seatplanEditor': { 
-                        'display': 'Seat plan editor', 
-                        'id': 'seatplanEditor', 
-                        'tooltip':'The seat plan editor allows you to create a seat plan that closely resembles the location you host the event in.', 
-                        'type': 'link',
-                        'restrictions': {
-                            'to': '/admin/seatplan',
-                            'displayName': 'Edit seat plan'
-                        }
                     },
                 }
             , 'settings' );
