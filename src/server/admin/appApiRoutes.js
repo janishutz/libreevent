@@ -31,16 +31,16 @@ module.exports = ( app ) => {
         pwHandler.checkpassword( req.body.email, req.body.password ).then( status => {
             if ( status ) {
                 if ( status.status ) {
-                    db.getDataSimple( 'orders', 'order_name', req.body.ticketID.slice( 0, req.body.ticketID.indexOf( '_' ) ) ).then( dat => {
+                    db.getDataSimple( 'orders', 'order_name', req.body.ticketID.slice( 0, req.body.ticketID.lastIndexOf( '_' ) ) ).then( dat => {
                         if ( dat[ 0 ] ) {
                             const tickets = JSON.parse( dat[ 0 ][ 'tickets' ] );
-                            const event = req.body.ticketID.slice( req.body.ticketID.indexOf( '_' ) + 1, req.body.ticketID.indexOf( '-' ) );
-                            const ticket = req.body.ticketID.slice( req.body.ticketID.indexOf( '-' ) + 1, req.body.ticketID.length );
+                            const event = req.body.ticketID.slice( req.body.ticketID.lastIndexOf( '_' ) + 1, req.body.ticketID.lastIndexOf( '-' ) );
+                            const ticket = req.body.ticketID.slice( req.body.ticketID.lastIndexOf( '-' ) + 1, req.body.ticketID.length );
                             if ( tickets[ event ] ) {
                                 if ( tickets[ event ][ ticket ] ) {
                                     if ( !tickets[ event ][ ticket ][ 'invalidated' ] ) {
                                         tickets[ event ][ ticket ][ 'invalidated' ] = true;
-                                        db.writeDataSimple( 'orders', 'order_name', req.body.ticketID.slice( 0, req.body.ticketID.indexOf( '_' ) ), { 'tickets': JSON.stringify( tickets ) } );
+                                        db.writeDataSimple( 'orders', 'order_name', req.body.ticketID.slice( 0, req.body.ticketID.lastIndexOf( '_' ) ), { 'tickets': JSON.stringify( tickets ) } );
                                         res.send( 'ticketValid' );
                                     } else {
                                         res.send( 'ticketInvalid' );

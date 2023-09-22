@@ -14,6 +14,7 @@
                     <div v-else-if="contentType === 'text'" class="options">
                         <h3>{{ data.message }}</h3>
                         <input type="text" v-model="data.selected">
+                        <p>{{ info }}</p>
                         <div class="button-wrapper">
                             <button @click="closePopup( 'ok' )" title="Save changes">Save</button>
                             <button @click="closePopup( 'cancel' )" title="Cancel changes">Cancel</button>
@@ -108,10 +109,19 @@
             return {
                 contentType: 'dropdown',
                 data: {},
+                info: '',
             }
         },
         methods: {
             closePopup( message ) {
+                if ( this.data.options.disallowedCharacters ) {
+                    for ( let letter in this.data.selected ) {
+                        if ( this.data.options.disallowedCharacters.includes( this.data.selected[ letter ] ) ) {
+                            this.info = `Illegal character "${ this.data.selected[ letter ] }"`;
+                            return false;
+                        }
+                    }
+                }
                 $( '#popup-backdrop' ).fadeOut( 300 );
                 if ( message ) {
                     this.$emit( 'data', { 'data': this.data.selected, 'status': message } );

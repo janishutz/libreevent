@@ -158,7 +158,7 @@
             },
             addEvent () {
                 this.currentPopup = 'add';
-                this.$refs.popup.openPopup( 'Please give the new event a name for internal use', {}, 'text' );
+                this.$refs.popup.openPopup( 'Please give the new event a name for internal use', { 'disallowedCharacters': [ '_', '-' ] }, 'text' );
             },
             setActiveTicket ( id ) {
                 sessionStorage.setItem( 'selectedTicket', id );
