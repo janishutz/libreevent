@@ -75,7 +75,6 @@ export default {
             // Size of seat at scale 1 is 32px
             // w & h are normalised
             let offsets = {};
-            console.log( this.data.seatInfo );
             if ( this.data.seatInfo ) {
                 for ( let element in this.data.seatInfo.data[ this.data.sector ] ) {
                     if ( element < this.data.seatNumbering ) {

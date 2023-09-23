@@ -11,22 +11,20 @@
     <div class="order">
         <h1>Order tickets</h1>
         <div class="order-app" v-if="Object.keys( orderedEvents ).length">
-            <ul>
-                <li v-for="event in orderedEvents">
-                    <router-link to="/tickets/details" class="ticket" @click="setActiveTicket( event.eventID );">
-                        <img :src="event.logo" alt="event logo" class="ticket-logo">
-                        <div class="ticket-name">
-                            <h3>{{ event.name }}</h3>
-                            <p>{{ event.description }}</p>
-                        </div>
-                        <div class="ticket-info">
-                            <p>Free seats: {{ event.free }} / {{ event.totalSeats }}</p>
-                            <p>{{ event.locationName }}, {{ event.dateString }}</p>
-                            <h4>Starting at {{ event.currency }} {{ event.startingPrice }}</h4>
-                        </div>
-                    </router-link>
-                </li>
-            </ul>
+            <div v-for="event in orderedEvents" style="width: 80%;">
+                <router-link to="/tickets/details" class="ticket" @click="setActiveTicket( event.eventID );">
+                    <img :src="event.logo" alt="event logo" class="ticket-logo">
+                    <div class="ticket-name">
+                        <h3>{{ event.name }}</h3>
+                        <p>{{ event.description }}</p>
+                    </div>
+                    <div class="ticket-info">
+                        <p>Free seats: {{ event.free }} / {{ event.totalSeats }}</p>
+                        <p>{{ event.locationName }}, {{ event.dateString }}</p>
+                        <h4>Starting at {{ event.currency }} {{ event.startingPrice }}</h4>
+                    </div>
+                </router-link>
+            </div>
         </div>
         <div class="order-app" v-else>
             No future events are available!
@@ -42,11 +40,6 @@
         align-items: center;
         justify-content: center;
         flex-direction: column;
-    }
-
-    ul {
-        list-style: none;
-        width: 80%;
     }
 
     .ticket {
