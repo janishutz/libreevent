@@ -14,59 +14,31 @@
             <div v-if="!isAuthenticated" class="wrapper-buttons">
                 <router-link to="/login" class="option-button" @click="setRedirect()">Log in with an existing account</router-link><br>
                 <router-link to="/signup" class="option-button" @click="setRedirect()">Create new account</router-link><br>
-                <router-link to="/guest" v-if="!settings.accountRequired" class="option-button" @click="setRedirect()">Purchase as guest</router-link>
+                <!-- <router-link to="/guest" v-if="!settings.accountRequired" class="option-button" @click="setRedirect()">Purchase as guest</router-link> -->
             </div>
             <div v-else class="wrapper">
-                <div class="data">
-                    <h2>Purchase</h2>
-                    <p>Ready to buy? Please once again check that all the right items are in your cart.</p>
-                    <!--<h2>Billing</h2>
-                    <table class="billing-info-table">
-                        <tr v-if="settings.requiresAddress">
-                            <td>Street and house number</td>
-                            <td><input type="text" name="street" id="street" v-bind="userData.street" placeholder="Street"> <input type="text" name="houseNumber" id="houseNumber" v-bind="userData.houseNumber" placeholder="House number"></td>
-                        </tr>
-                        <tr v-if="settings.requiresAddress">
-                            <td>Zip Code and City</td>
-                            <td><input type="text" name="zip" id="zip" v-bind="userData.zip" placeholder="Zip Code"> <input type="text" name="city" id="city" v-bind="userData.city" placeholder="City"></td>
-                        </tr>
-                        <tr v-if="settings.requiresAddress">
-                            <td>Country</td>
-                            <td><input type="text" name="country" id="country" v-bind="userData.zip" placeholder="Country"></td>
-                        </tr>
-                        <tr v-if="settings.requiresAge">
-                            <td>Birth date</td>
-                            <td><input type="date" name="bday" id="bday" v-bind="userData.bday"></td>
-                        </tr>
-                    </table>
-
-                    <div v-if="settings.requiresSpecialToken">
-                        TODO: FUTURE: Implement
-                    </div> -->
-                    <button id="buy-button" @click="preparePayment();">Buy now</button>
-                </div>
-                <div class="cart">
-                    <div class="cart-list">
-                        <h2>Order summary</h2>
-                        <h3>Your tickets</h3>
-                        <div v-for="event in cart">
-                            <h3>{{ event.displayName }}</h3>
-                            <table class="tickets-table">
-                                <tr v-for="ticket in event.tickets">
-                                    <td>
-                                        <h4 class="price"><div style="display: inline;" v-if="ticket.count">{{ ticket.count }}x</div> {{ ticket.displayName }}: </h4>
-                                    </td>
-                                    <td>
-                                        {{ backend.currency }} {{ ticket.price }}
-                                    </td>
-                                </tr>
-                            </table>
-                        </div>
-                        <div class="tool-wrapper wrapper-loggedIn">
-                            <h4>Total: {{ backend.currency }} {{ backend.total }}</h4>
-                        </div>
+                <p>Ready to buy? Please once again check that all the right items are in your cart.</p>
+                <div class="cart-list">
+                    <h2>Order summary</h2>
+                    <h3>Your tickets</h3>
+                    <div v-for="event in cart">
+                        <h3>{{ event.displayName }}</h3>
+                        <table class="tickets-table">
+                            <tr v-for="ticket in event.tickets">
+                                <td>
+                                    <h4 class="price"><div style="display: inline;" v-if="ticket.count">{{ ticket.count }}x</div> {{ ticket.displayName }}: </h4>
+                                </td>
+                                <td>
+                                    {{ backend.currency }} {{ ticket.price }}
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="tool-wrapper wrapper-loggedIn">
+                        <h4>Total: {{ backend.currency }} {{ backend.total }}</h4>
                     </div>
                 </div>
+                <button id="buy-button" @click="preparePayment();">Buy now</button>
             </div>
         </div>
         <div v-else>
@@ -111,10 +83,6 @@
     .purchase-app {
         text-align: justify;
         width: 100%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        flex-grow: 1;
     }
 
     
@@ -124,36 +92,20 @@
         border-radius: 20px;
         padding: 6% 7%;
         display: block;
-        width: 100%;
+        width: 60%;
         text-align: center;
         margin: 0.5%;
         color: var( --primary-color );
         text-decoration: none;
-    }
-
-    .data {
-        grid-area: main;
-        display: flex;
-        justify-content: justify;
-        align-items: center;
-        flex-direction: column;
-        flex-grow: 1;
-    }    
+    }  
     
     .option-button:hover {
         background-color: var( --hover-color );
         color: var( --secondary-color )
     }
-    
-    .cart {
-        grid-area: sidebar;
-        background-color: var( --accent-background );
-        color: var( --secondary-color );
-        overflow: scroll;
-    }
 
     .wrapper-buttons {
-        width: 40%;
+        width: 100%;
         display: flex;
         flex-direction: column;
         justify-content: flex-start;
@@ -163,25 +115,15 @@
 
     .wrapper {
         width: 100%;
-        display: grid;
-        height: 100%;
-        grid-template-areas:
-        'main main main sidebar'
-        'main main main sidebar'
-        'main main main sidebar'
-        'main main main sidebar'
-        'main main main sidebar'
-        'main main main sidebar'
-        'main main main sidebar'
-        'main main main sidebar'
-        'main main main sidebar';
+        display: flex;
+        flex-direction: column;
+        align-items: center;
     }
 
     .cart-list {
         width: 100%;
         display: flex;
         flex-direction: column;
-        justify-content: center;
         align-items: center;
     }
 

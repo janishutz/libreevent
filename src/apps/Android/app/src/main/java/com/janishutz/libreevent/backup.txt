@@ -6,17 +6,14 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.core.app.ActivityCompat
 import com.journeyapps.barcodescanner.BarcodeCallback
-import com.journeyapps.barcodescanner.BarcodeResult
-import com.journeyapps.barcodescanner.CaptureActivity
 import com.journeyapps.barcodescanner.CaptureManager
 import com.journeyapps.barcodescanner.DecoratedBarcodeView
 
-class ScannerActivity : CaptureActivity() {
+class ScannerActivity : AppCompatActivity() {
 
     private lateinit var barcodeView: DecoratedBarcodeView
     private lateinit var captureManager: CaptureManager
 
-    private var lastScanned: String = ""
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_scanner)
@@ -36,25 +33,11 @@ class ScannerActivity : CaptureActivity() {
 
         captureManager.initializeFromIntent(intent, null)
         captureManager.decode()
-        barcodeView.decodeContinuous(object : BarcodeCallback {
-            override fun barcodeResult(result: BarcodeResult?) {
-                if (result != null) {
-                    val scannedData = result.text // This is the scanned data (e.g., QR code content)
-                    handleScanResult(scannedData)
-                }
-            }
-
-            override fun possibleResultPoints(resultPoints: List<com.google.zxing.ResultPoint>?) {
-                // Optional: Handle possible result points
-            }
-        })
     }
 
     private fun handleScanResult(result: String) {
-        if ( lastScanned != result ) {
-            println(result)
-            lastScanned = result
-        }
+        // The `result` parameter contains the scanned data (e.g., QR code content)
+        // You can process it or send it as needed
     }
 
     override fun onResume() {

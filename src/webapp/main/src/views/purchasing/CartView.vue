@@ -64,7 +64,7 @@
     }
 
     .cart-list {
-        width: 50%;
+        width: 90%;
     }
     
     ul {
@@ -88,6 +88,12 @@
 
     .tickets-table {
         margin-left: 3%;
+    }
+
+    @media only screen and (min-width: 999px) {
+        .cart-list {
+            width: 50%;
+        }
     }
 </style>
 

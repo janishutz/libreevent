@@ -14,6 +14,7 @@
             <ul>
                 <li v-for="event in orderedEvents">
                     <router-link to="/tickets/details" class="ticket" @click="setActiveTicket( event.eventID );">
+                        <img :src="event.logo" alt="event logo" class="ticket-logo">
                         <div class="ticket-name">
                             <h3>{{ event.name }}</h3>
                             <p>{{ event.description }}</p>
@@ -23,7 +24,6 @@
                             <p>{{ event.locationName }}, {{ event.dateString }}</p>
                             <h4>Starting at {{ event.currency }} {{ event.startingPrice }}</h4>
                         </div>
-                        <img :src="event.logo" alt="event logo" class="ticket-logo">
                     </router-link>
                 </li>
             </ul>
@@ -52,6 +52,7 @@
     .ticket {
         display: flex;
         align-items: center;
+        flex-shrink: 0;
         justify-content: center;
         text-decoration: none;
         color: var( --primary-color );
@@ -61,6 +62,14 @@
         border-style: solid;
         padding: 10px;
         transition: 0.4s;
+        flex-direction: column;
+    }
+
+    .ticket-logo {
+        height: 20vh;
+        width: auto;
+        min-width: 20vh;
+        margin-right: 3%;
     }
 
     .ticket:hover {
@@ -68,20 +77,38 @@
         transition: 0.4s;
     }
 
-    .ticket-logo {
-        height: 20vh;
-        width: auto;
-        margin-left: auto;
-    }
-
     .ticket-name {
-        margin-right: auto;
-        max-width: 35%;
+        text-align: center;
     }
 
     .ticket-info {
-        margin-left: auto;
-        margin-right: auto
+        text-align: center;
+    }
+
+    @media only screen and (min-width: 999px) {
+
+        .ticket {
+            flex-direction: row;
+        }
+
+        .ticket-logo {
+            height: 20vh;
+            width: auto;
+            min-width: 20vh;
+            margin-left: 3%;
+        }
+
+        .ticket-name {
+            flex-shrink: 0;
+            margin-right: 3%;
+            width: 40%;
+            text-align: justify;
+        }
+
+        .ticket-info {
+            margin-right: auto;
+            text-align: justify;
+        }   
     }
 </style>
 
