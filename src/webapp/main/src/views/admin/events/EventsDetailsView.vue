@@ -469,7 +469,6 @@
                                         this.hasSeatPlan = this.locations[ this.event.location ][ 'seatplan-enabled' ] ?? false;
                                         this.event.categories = {};
                                         this.totalSeats = json.seatInfo.count;
-                                        // TODO: Make sure ticket counting actually works from the seat plan editor
                                         for ( let element in json.data ) {
                                             if ( json.data[ element ][ 'type' ] === 'seat' || json.data[ element ][ 'type' ] === 'stand' ) {
                                                 this.event.categories[ json.data[ element ][ 'category' ] ] = { 'price': {}, 'bg': '#FFFFFF', 'fg': '#000000', 'name': 'Category ' + json.data[ element ][ 'category' ], 'id': json.data[ element ][ 'category' ], 'ticketCount': 1 };

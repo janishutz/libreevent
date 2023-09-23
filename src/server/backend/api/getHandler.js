@@ -54,7 +54,6 @@ class GETHandler {
                 } );
             } else if ( call === 'extendTicketDeletion' ) {
                 db.writeDataSimple( 'temp', 'user_id', session.id, { 'timestamp': new Date().toString() } );
-                // TODO: make sure it works, seems to be still unreliable
                 resolve( 'extended' );
             } else if ( call === 'getName' ) {
                 resolve( { 'name': settings.name } );
