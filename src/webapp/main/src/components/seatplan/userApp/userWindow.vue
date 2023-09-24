@@ -42,7 +42,7 @@
             <button title="Reset zoom [=]" @click="zoom( 1 );"><span class="material-symbols-outlined">center_focus_strong</span></button>
             <button title="Zoom out [-]" @click="zoom( -0.2 )"><span class="material-symbols-outlined">zoom_out</span></button>
         </div>
-        <sideCartView :cart="cart" :name="event.name" ref="cart"></sideCartView>
+        <sideCartView :cart="cart" :name="event.name" ref="cart" type="true"></sideCartView>
         <notifications ref="notification" location="topright"></notifications>
         <popups ref="popups" size="normal" @data="data => { reserveTicket( data ) }"
             @ticket="data => { standingTicketHandling( data ) }"></popups>
@@ -504,6 +504,8 @@
         },
     }
 </script>
+
+<!-- TODO: Optimize as well -->
 
 <style scoped>
     .parent {

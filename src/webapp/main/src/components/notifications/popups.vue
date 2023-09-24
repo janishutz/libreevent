@@ -170,6 +170,8 @@
     }
 </script>
 
+<!-- TODO: optimize for mobile -->
+
 <style scoped>
     #popup-backdrop {
         position: fixed;

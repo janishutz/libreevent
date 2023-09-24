@@ -122,6 +122,8 @@
     }
 </script>
 
+<!-- TODO: Optimize for mobile -->
+
 <style scoped>
     .message-box {
         position: fixed;

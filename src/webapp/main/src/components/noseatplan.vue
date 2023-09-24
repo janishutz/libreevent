@@ -1,6 +1,5 @@
 <template>
     <div class="seatingWrapper">
-        <sideCartView :cart="cart" :name="event.name" ref="cart"></sideCartView>
         <div class="noseatplan">
             <h2>Available tickets</h2>
             <button @click="cartHandling()">Add selected tickets to cart</button>
@@ -25,6 +24,7 @@
                 </div>
             </div>
         </div>
+        <sideCartView :cart="cart" :name="event.name" ref="cart" type="false"></sideCartView>
         <popups ref="popups" size="normal"></popups>
     </div>
 </template>

@@ -8,7 +8,7 @@
 -->
 
 <template>
-    <div id="sideCartView">
+    <div id="sideCartView" :class="type ? 'seatplan': 'noseatplan'">
         <h1>Seat plan: {{ name }}</h1>
         <h2>Cart</h2>
         <div v-if="Object.keys( cart ).length > 0" style="height: 100%; width: 100%;">
@@ -62,9 +62,9 @@ export default {
             type: String,
             default: 'CHF'
         },
-        'height': {
-            type: Number,
-            default: 17
+        'type': {
+            type: Boolean,
+            default: true
         },
         'name': {
             type: String,
@@ -94,13 +94,16 @@ export default {
 
 <style scoped>
     #sideCartView {
-        position: fixed;
-        right: 0;
-        height: 100vh;
-        top: 90px;
-        width: 25vw;
         background-color: var( --accent-background );
         color: var( --secondary-color );
+    }
+
+    .seatplan {
+        width: 100%;
+        position: absolute;
+        top: calc( 90px + 80vh );
+        height: fit-content;
+        padding-bottom: 5%;
     }
 
     .tickets-table {
@@ -116,5 +119,15 @@ export default {
     .price {
         margin: 0;
         padding: 0;
+    }
+
+    @media only screen and (min-width: 999px) {
+        #sideCartView {
+            position: fixed;
+            right: 0;
+            height: 100vh;
+            top: 90px;
+            width: 25vw;
+        }
     }
 </style>
