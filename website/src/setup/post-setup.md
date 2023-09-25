@@ -1,0 +1,3 @@
+# Post-Setup
+
+As soon as you have completed setting up libreevent, there are some things you want to change on the admin panel. First off, you want to create an [event location](&/admin-panel/locations) and an [event](&/admin-panel/events). Secondly, you may want to customize the start page, which you can do in the pages settings on the admin panel. You may find documentation for this [here](&/admin-panel/pages). Lastly, you need to configure and set up a [payment gateway](&/admin-panel/settings#payment-gateway) in order for you to accept payments. Additionally, have a look around on the admin panel to change settings where you see fit.

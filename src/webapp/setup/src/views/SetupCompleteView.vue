@@ -22,7 +22,7 @@
                 <ul>
                     <li>Customize the start page</li>
                     <li>Choose a payment gateway and set it up</li>
-                    <li>Create a event location and an event</li>
+                    <li>Create an event location and an event</li>
                     <li>Create other admin accounts with less privileges</li>
                 </ul>
             </div>
