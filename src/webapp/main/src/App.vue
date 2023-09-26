@@ -9,7 +9,7 @@
 
 <template>
     <nav>
-        <p class="beta">LIBREEVENT BETA! Performance and functionality are expected to change and bugs may appear</p>
+        <!-- <p class="beta">LIBREEVENT BETA! Although this is a very late beta, bugs may still appear</p> -->
         <a href="/">Home</a> |
         <router-link to="/tickets">Tickets</router-link> |
         <router-link to="/cart">Cart</router-link> |
@@ -31,6 +31,10 @@
         font-weight: bold;
     }
 
+    body {
+        background-color: var( --background-color );
+    }
+
     :root, :root.light {
         --primary-color: #2c3e50;
         --accent-background: rgb(30, 30, 82);
@@ -42,45 +46,42 @@
         --accent-background-hover: rgb(124, 140, 236);
         --overlay-color: rgba(0, 0, 0, 0.7);
         --inactive-color: rgb(100, 100, 100);
-        --highlight-backdrop: rgb(143, 134, 192);
         --hint-color: rgb(174, 210, 221);
         --PI: 3.14159265358979;
     }
 
     :root.dark {
         --primary-color: white;
-        --accent-background: rgb(56, 56, 112);
+        --accent-background: rgb(20, 20, 116);
         --secondary-color: white;
         --background-color: rgb(32, 32, 32);
         --popup-color: rgb(58, 58, 58);
         --accent-color: #42b983;
         --hover-color: rgb(83, 83, 83);
-        --accent-background-hover: #4380a8;
+        --accent-background-hover: rgb(124, 140, 236);
         --overlay-color: rgba(104, 104, 104, 0.575);
         --inactive-color: rgb(190, 190, 190);
-        --highlight-backdrop: rgb(85, 63, 207);
         --hint-color: rgb(88, 91, 110);
     }
 
     @media ( prefers-color-scheme: dark ) {
         :root {
             --primary-color: white;
-            --accent-background: rgb(56, 56, 112);
+            --accent-background: rgb(20, 20, 116);
             --secondary-color: white;
             --background-color: rgb(32, 32, 32);
             --popup-color: rgb(58, 58, 58);
             --accent-color: #42b983;
             --hover-color: rgb(83, 83, 83);
-            --accent-background-hover: #4380a8;
+            --accent-background-hover: rgb(124, 140, 236);
             --overlay-color: rgba(104, 104, 104, 0.575);
             --inactive-color: rgb(190, 190, 190);
-            --highlight-backdrop: rgb(85, 63, 207);
             --hint-color: rgb(88, 91, 110);
         }
     }
 
     ::selection {
-        background-color: var( --highlight-backdrop );
+        background-color: #7c8cec;
         color: var( --secondary-color );
     }
 

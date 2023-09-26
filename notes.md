@@ -16,6 +16,7 @@
 - FUTURE: Add Admin profile (page to change account settings per person like changing pwd)
 - FUTURE: add multi-language support
 - FUTURE: Guest purchase
+- FUTURE: Colour for event banner background 
 - FUTURE: add webpack (or any other minifying tool) to project website to decrease file size (OPTIONAL)
 
 

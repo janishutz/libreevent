@@ -35,9 +35,8 @@
         background-color: var( --accent-background );
         width: 40%;
         height: 30vh;
-        border-color: black;
-        margin: 0.02%;
-        border-style: inset;
+        border-color: var( --accent-background-hover ); 
+        border-style: solid;
         color: var( --secondary-color );
         text-decoration: none;
         border-width: 2px;

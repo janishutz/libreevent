@@ -16,7 +16,7 @@
                     <img :src="event.logo" alt="event logo" class="ticket-logo">
                     <div class="ticket-name">
                         <h3>{{ event.name }}</h3>
-                        <p>{{ event.description }}</p>
+                        <p v-html="event.description"></p>
                     </div>
                     <div class="ticket-info">
                         <p>Free seats: {{ event.free }} / {{ event.totalSeats }}</p>
@@ -60,7 +60,7 @@
 
     .ticket-logo {
         height: 20vh;
-        width: auto;
+        width: 20vh;
         min-width: 20vh;
         margin-right: 3%;
     }
@@ -82,13 +82,6 @@
 
         .ticket {
             flex-direction: row;
-        }
-
-        .ticket-logo {
-            height: 20vh;
-            width: auto;
-            min-width: 20vh;
-            margin-left: 3%;
         }
 
         .ticket-name {
