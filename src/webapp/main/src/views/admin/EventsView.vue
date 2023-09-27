@@ -18,7 +18,7 @@
                     <router-link to="/admin/events/view" class="ticket" @click="setActiveTicket( event.eventID );" v-if="new Date( event.date ).getTime() > currentDate || timeframe.name === 'Drafts'">
                         <div class="ticket-name">
                             <h3>{{ event.name }}</h3>
-                            <p>{{ event.description }}</p>
+                            <p>{{ event.shortDescription }}</p>
                             <b>{{ event.date }}</b>
                         </div>
                         <!-- <img :src="event.logo" alt="event logo" class="ticket-logo"> -->
@@ -124,6 +124,11 @@
                         this.eventList.drafts[ 'content' ] = dat[ 'drafts' ] ?? {};
                         let sortable = [];
                         for ( let event in this.events ) {
+                            if ( this.events[ event ][ 'description' ].length > 200 ) {
+                                this.events[ event ][ 'shortDescription' ] = this.events[ event ][ 'description' ].slice( 0, 200 ) + '...';
+                            } else {
+                                this.events[ event ][ 'shortDescription' ] = this.events[ event ][ 'description' ];
+                            }
                             sortable.push( [ this.events[ event ][ 'eventID' ], new Date( this.events[ event ][ 'date' ] ).getTime() ] );
                         }
                         sortable.sort( function( a, b ) {

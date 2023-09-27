@@ -16,7 +16,7 @@
                     <img :src="event.logo" alt="event logo" class="ticket-logo">
                     <div class="ticket-name">
                         <h3>{{ event.name }}</h3>
-                        <p v-html="event.description"></p>
+                        <p v-html="event.shortDescription"></p>
                     </div>
                     <div class="ticket-info">
                         <p>Free seats: {{ event.free }} / {{ event.totalSeats }}</p>
@@ -112,6 +112,11 @@
                     res.json().then( dat => {
                         this.events = dat ?? {};
                         for ( let event in dat ) {
+                            if ( this.events[ event ][ 'description' ].length > 200 ) {
+                                this.events[ event ][ 'shortDescription' ] = this.events[ event ][ 'description' ].slice( 0, 200 ) + '...';
+                            } else {
+                                this.events[ event ][ 'shortDescription' ] = this.events[ event ][ 'description' ];
+                            }
                             this.events[ event ][ 'logo' ] = new URL( location.protocol + '//' + location.hostname + ':' + location.port + '/eventAssets/' + this.events[ event ].eventID + 'Logo.jpg' );
                         }
                     } );

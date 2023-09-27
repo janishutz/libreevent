@@ -206,25 +206,20 @@
     }
 
     .login {
-        background-color: green;
         width: 100%;
-        height: 100%;
         display: flex;
-        justify-content: center;
-        align-items: center;
-        flex-direction: column;
     }
 
     .login-app {
         background-color: var( --background-color );
-        width: 90%;
-        height: 90%;
-        padding: 10% 5%;
+        margin-top: 0;
+        width: 100%;
+        height: 100%;
+        padding: 5% 5%;
         display: flex;
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        border-radius: 50px;
     }
 
     .button {
@@ -241,10 +236,20 @@
     }
 
     @media only screen and (min-width: 999px) {
+        .login {
+            background-color: green;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+
         .login-app {
             width: 50vw;
             height: min-content;
-            padding: 5% 5%;
+            border-radius: 50px;
         }
 
         .field {

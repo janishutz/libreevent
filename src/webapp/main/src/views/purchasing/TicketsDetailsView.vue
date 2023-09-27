@@ -16,7 +16,7 @@
         </div>
         <div class="container">
             <div class="main">
-                <p v-html="event.description" style="margin: 0;"></p>
+                <p v-for="line in event.description.split( '\n' )">{{ line }}</p>
             </div>
             <div class="aside">
                 <h3>{{ event.location }}</h3>

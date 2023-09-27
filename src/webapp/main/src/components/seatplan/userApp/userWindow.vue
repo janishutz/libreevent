@@ -505,12 +505,10 @@
     }
 </script>
 
-<!-- TODO: Optimize as well -->
-
 <style scoped>
     .parent {
         height: 80vh;
-        width: 70vw;
+        width: 90vw;
         top: 90px;
         left: 5vw;
         position: absolute;
@@ -523,22 +521,6 @@
 
     .draggable-box {
         cursor: default;
-    }
-
-    .properties {
-        position: absolute;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        flex-direction: column;
-        z-index: 1;
-        background-color: var( --accent-background );
-        color: var( --secondary-color );
-        width: 20vw;
-        height: 90vh;
-        top: 7.5vh;
-        right: 0.5vw;
-        overflow: scroll;
     }
 
     .content-parent {
@@ -559,5 +541,11 @@
 
     .toolbar button:disabled {
         cursor: default;
+    }
+
+    @media only screen and (min-width: 999px) {
+        .parent {
+            width: 70vw;
+        }
     }
 </style>
