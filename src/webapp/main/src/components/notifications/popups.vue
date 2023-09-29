@@ -170,8 +170,6 @@
     }
 </script>
 
-<!-- TODO: optimize for mobile -->
-
 <style scoped>
     #popup-backdrop {
         position: fixed;
@@ -222,6 +220,8 @@
         border: none;
         border-radius: 20px;
         background-color: var( --popup-color );
+        width: 90vw;
+        height: 80vh;
     }
 
     .popup-iframe {
@@ -231,31 +231,6 @@
 
     .iframe-wrapper {
         height: 100%;
-    }
-
-    .small {
-        width: 40%;
-        height: 40%;
-    }
-
-    .normal {
-        width: 50%;
-        height: 50%;
-    }
-
-    .big {
-        width: 60%;
-        height: 60%;
-    }
-
-    .bigger {
-        width: 70%;
-        height: 70%;
-    }
-
-    .huge {
-        width: 80%;
-        height: 80%;
     }
 
     .message-container {
@@ -308,5 +283,32 @@
         font-weight: bold;
         border: solid var( --primary-color ) 1px;
         border-radius: 100%;
+    }
+
+    @media only screen and (min-width: 999px) {
+        .small {
+            width: 40%;
+            height: 40%;
+        }
+
+        .normal {
+            width: 50%;
+            height: 50%;
+        }
+
+        .big {
+            width: 60%;
+            height: 60%;
+        }
+
+        .bigger {
+            width: 70%;
+            height: 70%;
+        }
+
+        .huge {
+            width: 80%;
+            height: 80%;
+        }
     }
 </style>

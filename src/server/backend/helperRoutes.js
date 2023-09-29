@@ -22,6 +22,11 @@ module.exports = ( app, settings ) => {
     } );
 
     app.get( '/startPage/assets/:image', ( req, res ) => {
-        res.sendFile( path.join( __dirname + '/../assets/' + settings.startPage + '/assets/' + req.param.image  ) );
+        res.sendFile( path.join( __dirname + '/../assets/' + settings.startPage + '/assets/' + req.params.image  ) );
+    } );
+
+    app.get( '/startPage/preview/:template', ( req, res ) => {
+        // TODO: only allow when logged in
+        res.sendFile( path.join( __dirname + '/../ui/home/templates/' + req.params.template + '/index.html' ) );
     } );
 };
