@@ -30,7 +30,7 @@ module.exports = ( app, settings ) => {
                 }
                 res.send( dat );
             } else if ( req.params.call === 'reloadData' ) {
-                if ( req.session.loggedInAdmin ) {
+                if ( req.session.loggedInAdmin || req.session.loggedInUser ) {
                     postHandler.loadData();
                     res.send( 'ok' );
                 } else {

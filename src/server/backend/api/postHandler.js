@@ -16,6 +16,8 @@ class POSTHandler {
     constructor () {
         this.loadData();
         
+        this.temporarilySelected = {};
+        this.temporarilySelectedTotals = {};
         this.settings = JSON.parse( fs.readFileSync( path.join( __dirname + '/../../config/settings.config.json' ) ) );
     }
 
@@ -51,6 +53,7 @@ class POSTHandler {
     handleCall ( call, data, session ) {
         return new Promise( ( resolve, reject ) => {
             if ( call === 'reserveTicket' ) {
+                // TODO: probably rewrite from scratch
                 if ( data.count || data.count === 0 ) {
                     db.getDataSimple( 'temp', 'user_id', session.id ).then( dat => {
                         if ( dat[ 0 ] ) {
@@ -101,6 +104,11 @@ class POSTHandler {
                                 }
                                 if ( maxTickets > 0 ) {
                                     db.writeDataSimple( 'temp', 'user_id', session.id, { 'user_id': session.id, 'timestamp': new Date().toString(), 'data': JSON.stringify( info ) } );
+                                    this.temporarilySelected[ id ] = info;
+                                    if ( !this.temporarilySelectedTotals[ data.eventID ] ) {
+                                        this.ticketTotals[ data.eventID ] = 0;
+                                    }
+                                    this.ticketTotals[ data.eventID ] -= ticketCount;
                                     resolve( { 'status': 'ok', 'ticketCount': ticketCount } );
                                 } else {
                                     reject( { 'code': 409, 'message': 'ERR_ALL_OCCUPIED' } );
@@ -117,6 +125,8 @@ class POSTHandler {
                             }
                             if ( maxTickets > 0 ) {
                                 db.writeDataSimple( 'temp', 'user_id', session.id, { 'user_id': session.id, 'timestamp': new Date().toString(), 'data': JSON.stringify( info ) } );
+                                this.allSelectedSeats[ data.id ] = info;
+                                this.ticketTotals[ data.eventID ] -= ticketCount;
                                 resolve( { 'status': 'ok', 'ticketCount': ticketCount } );
                             } else {
                                 reject( { 'code': 409, 'message': 'ERR_ALL_OCCUPIED' } );
@@ -140,6 +150,7 @@ class POSTHandler {
                     }
                 }
             } else if ( call === 'deselectTicket' ) {
+                // TODO: probably rewrite from scratch
                 db.getDataSimple( 'temp', 'user_id', session.id ).then( dat => {
                     let transmit = {};
                     if ( dat[ 0 ] ) {
