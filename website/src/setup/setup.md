@@ -1,5 +1,5 @@
 # Setup of libreevent
-At this point we assume you've completed the initial install of libreevent. If not, you may find a guide on how to do it [here](&/setup/getting-started). Let's get started setting up your event management system!
+At this point we assume you've completed the initial install of libreevent. If not, you may find a guide on how to do it [here](&/setup/installation). Let's get started setting up your event management system!
 
 ## Connecting to the server
 As discussed in the previous part where we installed the system, you can connect to your server simply by opening a web browser and typing your domain name into the address field. After that you should be greeted by the libreevent post-install landing page. Once there, you'll need the setup key you defined during the installation. Type (or copy) it into the field and hit "Start setup". You will now land on the setup start page. You may hit "Start setup" below to start the setup.

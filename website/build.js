@@ -137,6 +137,22 @@ function handleMD ( filepath ) {
                 }
                 fileContent = fileContent.slice( 0, parseInt( letter ) ) + newLink + fileContent.slice( parseInt( letter ) + i + 2, parseInt( fileContent.length ) );
             }
+        } else if ( fileContent[ letter ] === '&' ) {
+            if ( fileContent.slice( letter, parseInt( letter ) + 7 ) === '&lt;!--' ) {
+                fileContent.slice( letter, parseInt( letter ) + 7 );
+                let newLink = '';
+                let i = 7;
+                let ok = false;
+                while ( !ok ) {
+                    if ( fileContent.slice( parseInt( letter ) + i, parseInt( letter ) + i + 1 ) === '-' ) {
+                        if ( fileContent.slice( parseInt( letter ) + i, parseInt( letter ) + i + 6 ) === '--&gt;' ) {
+                            break;
+                        }
+                    }
+                    i++;
+                }
+                fileContent = fileContent.slice( 0, parseInt( letter ) ) + newLink + fileContent.slice( parseInt( letter ) + i + 6, parseInt( fileContent.length ) );
+            }
         }
     }
     return storeHTML( fileContent, filepath );

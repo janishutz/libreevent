@@ -34,9 +34,6 @@ body {
 }
 
 .title-wrapper {
-    /* 
-        TODO: Replace with image
-    */
     background-color: white;
     display: flex;
     text-align: center;

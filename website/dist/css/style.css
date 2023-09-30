@@ -31,9 +31,6 @@ body {
     This is the title div with a screenshot of the admin portal
 */
 .title-wrapper {
-    /* 
-        TODO: Replace with image
-    */
     background-color: white;
     display: flex;
     text-align: center;

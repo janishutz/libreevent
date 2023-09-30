@@ -7,18 +7,42 @@
         <meta name="description" content="Download libreevent, the free and open source event management solution">
         <title>Download - libreǝvent</title>
         <link rel="stylesheet" href="/css/style.css">
+        <style>
+            .download-buttons {
+                width: 100%;
+                margin-top: 2%;
+                margin-bottom: 2%;
+                display: flex;
+                flex-wrap: wrap;
+                height: fit-content;
+            }
+
+            .button {
+                display: block;
+                margin: 0;
+                width: 40%;
+                margin-right: 1%;
+                margin-bottom: 0.5%;
+            }
+        </style>
     </head>
     <body>
         <div id="nav"></div>
         <div id="backToTop" onclick="backToTop();"></div>
         <div class="title-wrapper">
-            <h1>Download libreǝvent</h1>
-            <footer>Ready to downlaod?</footer>
+            <h1>Download <i>libre</i>ǝvent</h1>
         </div>
         <div class="content">
-            <h3 class="dev">Website & project not completed yet!</h3>
-            <p>There are a couple of options to download libreǝvent. You may use npm or you may download it from the GitHub releases page. You may also clone the repository locally if you want to use upstream instead of a release</p>
-            <a href="https://github.com/simplePCBuilding/libreevent" class="button">GitHub</a>
+            <p>libreǝvent can be downloaded in two main ways, either by downloading the prebuilt zip / tar files or by downloading the entire GitHub repository and compiling it manually. We would highly suggest that you download the prebuilt version of libreǝvent to make things easier. After downloading, you can follow our guide <a href="/docs/setup/installation">here</a> to get libreǝvent installed on your server.</p>
+            <p>Depending on your webhosting company, you might also need to download the "node-modules" to deploy libreevent. If so, the installation guide will tell you to do it. </p>
+            <div class="download-buttons">
+                <!-- TODO: Add api routes for this! -->
+                <a href="https://api.janishutz.com/download/libreevent?v=latest&type=prebuilt" class="button">Direct download (recommended)</a>
+                <a href="https://api.janishutz.com/download/libreevent?v=latest&type=releases" class="button">GitHub releases</a>
+                <a href="https://api.janishutz.com/download/libreevent?v=all&type=releases" class="button">All releases</a>
+                <a href="https://github.com/simplePCBuilding/libreevent" class="button">Source code</a>
+                <a href="https://api.janishutz.com/download/libreevent?v=latest&type=npm" class="button">node-modules</a>
+            </div>
             <p>You may download the iOS & Android apps from the AppStore / Google Play Store respectively.</p>
         </div>
         <div id="footer"></div>

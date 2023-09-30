@@ -102,8 +102,10 @@
                     delete this.notifications[ this.queue[ 0 ] ];
                     this.queue.reverse();
                     this.queue.pop();
+                    $( '.message-box' ).css( 'z-index', 20 );
                 } else {
                     this.messageType = 'hide';
+                    $( '.message-box' ).css( 'z-index', -1 );
                 }
             }
         },
@@ -122,12 +124,10 @@
     }
 </script>
 
-<!-- TODO: Optimize for mobile -->
-
 <style scoped>
     .message-box {
         position: fixed;
-        z-index: 10;
+        z-index: -1;
         color: white;
         transition: all 0.5s;
         width: 95vw;
@@ -183,6 +183,7 @@
     }
     
     .progress {
+        z-index: 20;
         background-color: rgb(0, 0, 99);
     }
     

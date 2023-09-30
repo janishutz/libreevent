@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="description" content="Download libreevent, the free and open source event management solution">
+        <title>Start page templates - libreǝvent</title>
+        <link rel="stylesheet" href="/css/style.css">
+    </head>
+    <body>
+        <div id="nav"></div>
+        <div id="backToTop" onclick="backToTop();"></div>
+        <div class="title-wrapper">
+            <h1>Start page templates</h1>
+        </div>
+        <div class="content">
+            <p>libreǝvent uses plain HTML start pages, such that you can create your own start page or use one of the included start page templates. You may also upload new start page templates, as explained <a href="/docs/plugins/start-pages">here</a> or you may also create a complete custom one yourself, as explained <a href="/docs/plugins/create-start-pages">here</a></p>
+            <p>Currently, libreǝvent has the following start page templates included by default:</p>
+            <ul>
+                <li><a href="/templates/default">Default</a></li>
+                <li><a href="/templates/modern">Modern</a></li>
+            </ul>
+            <p>More templates will be available in the future and you will find download links to them here.</p>
+        </div>
+        <div id="footer"></div>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.3/jquery-ui.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+        <script>
+            let btn = document.getElementById( 'backToTop' );
+            $( document ).ready( function () {
+                $( '#nav' ).load( '/nav.html' );
+                $( '#footer' ).load( '/footer.html' );
+            } );
+
+            function backToTop () {
+                if ( document.body.scrollTop > 500 || document.documentElement.scrollTop > 500 ) {
+                    window.scrollTo( { top: 0, behavior: 'smooth' } );
+                }
+            }
+
+            window.onscroll = function () {
+                if ( document.body.scrollTop > 500 || document.documentElement.scrollTop > 500 ) {
+                    btn.style.opacity = '1';
+                    btn.style.cursor = 'pointer';
+                } else {
+                    btn.style.opacity = '0';
+                    btn.style.cursor = 'default';
+                }
+            };
+        </script>
+    </body>
+</html>

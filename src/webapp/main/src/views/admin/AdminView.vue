@@ -73,7 +73,7 @@
         display: none;
         height: 100vh;
         top: 0;
-        width: 30vw;
+        width: 70vw;
         padding: 0;
         margin: 0;
         background-color: var( --accent-background );
