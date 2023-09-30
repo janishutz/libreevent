@@ -48,6 +48,7 @@
                             self.$refs.notification.cancelNotification( startNotification );
                             self.$refs.notification.createNotification( 'Your tickets are ready! Starting download...', 10, 'progress', 'normal' );
                             localStorage.removeItem( 'cart' );
+                            fetch( '/getAPI/reloadData' ).catch( () => {} );
                             setTimeout( () => {
                                 open( '/tickets/tickets.pdf' );
                                 source.close();

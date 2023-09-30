@@ -209,28 +209,3 @@ module.exports.saveSettings = ( settings ) => {
     }
     fs.writeFileSync( path.join( __dirname + '/../../config/settings.config.json' ), settingsToSave );
 };
-
-const gc = () => {
-    // this function acts as the database garbage collector. TicketTimeout can be changed from the GUI.
-    this.getData( 'temp' ).then( tempData => {
-        let data = tempData;
-        console.info( '[ DB ] Garbage Collecting' );
-        for ( let item in data ) {
-            if ( new Date( data[ item ][ 'timestamp' ] ).getTime() + ( parseInt( settings.ticketTimeout ) * 1000 ) > new Date().getTime() ) {
-                delete data[ item ];
-                console.debug( '[ DB ] Garbage collected a session' );
-            }
-        }
-    } );
-};
-
-/*
-    Here, GC-Duty is scheduled to run every so often (defined in settings.config.json file, no GUI setting available.
-    If you are a developer and are thinking about adding a GUI setting for this, please consider that this is a
-    advanced setting and many people might not understand what it changes. The config file is mentioned in the 
-    "advanced settings" section of the admin panel documentation where all the available settings in the config file
-    are explained in some detail.)
-*/
-setInterval( () => {
-    gc();
-}, parseInt( settings.gcInterval ) * 1000 );

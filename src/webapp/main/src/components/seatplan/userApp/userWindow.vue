@@ -398,7 +398,7 @@
                 // Make call to server to deselect ticket
                 const options = {
                     method: 'post',
-                    body: JSON.stringify( { 'id': seat[ 'id' ], 'eventID': this.event.eventID, 'component': seat.component } ),
+                    body: JSON.stringify( { 'id': seat[ 'id' ], 'eventID': this.event.eventID, 'component': seat.componentID } ),
                     headers: {
                         'Content-Type': 'application/json',
                         'charset': 'utf-8'

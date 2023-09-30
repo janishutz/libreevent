@@ -18,7 +18,20 @@ class POSTHandler {
         
         this.temporarilySelected = {};
         this.temporarilySelectedTotals = {};
+        this.temporaryTotals = {};
+        this.freeSeats = {};
         this.settings = JSON.parse( fs.readFileSync( path.join( __dirname + '/../../config/settings.config.json' ) ) );
+
+        /*
+            Here, GC-Duty is scheduled to run every so often (defined in settings.config.json file, no GUI setting available.
+            If you are a developer and are thinking about adding a GUI setting for this, please consider that this is a
+            advanced setting and many people might not understand what it changes. The config file is mentioned in the 
+            "advanced settings" section of the admin panel documentation where all the available settings in the config file
+            are explained in some detail.)
+        */
+        setInterval( () => {
+            this.gc();
+        }, parseInt( this.settings.gcInterval ) * 1000 );
     }
 
     loadData () {
@@ -27,25 +40,47 @@ class POSTHandler {
             db.getJSONData( 'events' ).then( dat => {
                 this.events = dat;
                 this.ticketTotals = {};
-                this.detailedTicketTotals = {};
                 for ( let event in this.events ) {
                     this.ticketTotals[ event ] = this.events[ event ][ 'totalSeats' ];
-                    this.detailedTicketTotals[ event ] = {};
-                    for ( let category in this.events[ event ].categories ) {
-                        this.detailedTicketTotals[ event ][ category ] = this.events[ event ].categories[ category ].ticketCount ?? 0;
-                    }
                 }
-                
+
                 for ( let event in this.allSelectedSeats ) {
                     for ( let t in this.allSelectedSeats[ event ] ) {
                         if ( this.allSelectedSeats[ event ][ t ][ 'count' ] ) {
-                            this.ticketTotals[ event ] -= this.allSelectedSeats[ event ][ t ][ 'count' ];
+                            this.ticketTotals[ event ] -= parseInt( this.allSelectedSeats[ event ][ t ][ 'count' ] );
                         } else {
                             this.ticketTotals[ event ] -= 1;
                         }
                     }
                 }
+                this.countFreeSeats();
             } );
+        } );
+    }
+
+    gc() {
+        // this function acts as the database garbage collector. TicketTimeout can be changed from the GUI.
+        db.getData( 'temp' ).then( tempData => {
+            let data = tempData;
+            console.info( '[ DB ] Garbage Collecting' );
+            for ( let item in data ) {
+                if ( new Date( data[ item ][ 'timestamp' ] ).getTime() + ( parseInt( this.settings.ticketTimeout ) * 1000 ) <= new Date().getTime() ) {
+                    let dat = JSON.parse( data[ item ].data );
+                    for ( let event in dat ) {
+                        for ( let ticket in dat[ event ] ) {
+                            this.temporaryTotals -= this.temporarilySelectedTotals[ data[ item ].user_id ][ event ][ ticket ];
+                            delete this.temporarilySelectedTotals[ data[ item ].user_id ][ event ][ ticket ];
+                            delete this.temporarilySelected[ event ][ ticket ];
+                        }
+                    }
+                    db.deleteDataSimple( 'temp', 'entry_id', data[ item ].entry_id ).then( () => {
+                        console.debug( '[ DB ] Garbage collected a session' );
+                    } ).catch( err => {
+                        console.error( '[ DB ] GC-ERROR: ' + err );
+                    } );
+                }
+            }
+            this.countFreeSeats();
         } );
     }
 
@@ -53,83 +88,115 @@ class POSTHandler {
     handleCall ( call, data, session ) {
         return new Promise( ( resolve, reject ) => {
             if ( call === 'reserveTicket' ) {
-                // TODO: probably rewrite from scratch
                 if ( data.count || data.count === 0 ) {
                     db.getDataSimple( 'temp', 'user_id', session.id ).then( dat => {
                         if ( dat[ 0 ] ) {
-                            let totalTicketsPerID = {};
-                            // sum up total of tickets per category (based on a sliced ID of the ticket selected,
-                            // as ticketID is based on category and ageGroup)
-                            let tickets = JSON.parse( dat[ 0 ].data )[ data.eventID ];
+                            // data.count is the total amount of tickets currently selected
+                            let totalTickets = 0;
+
+                            // sum up total of tickets 
+                            let info = JSON.parse( dat[ 0 ].data );
+                            let tickets = info[ data.eventID ];
                             for ( let ticket in tickets ) {
-                                if ( !totalTicketsPerID[ ticket.slice( 0, ticket.indexOf( '_' ) ) ] ) {
-                                    totalTicketsPerID[ ticket.slice( 0, ticket.indexOf( '_' ) ) ] = 0;
-                                }
-                                totalTicketsPerID[ ticket.slice( 0, ticket.indexOf( '_' ) ) ] += tickets[ ticket ].count;
+                                totalTickets += tickets[ ticket ].count;
                             }
 
+                            // find actual ticket ID and check if there are tickets for this ticketID already
                             const id = data.id.slice( 0, data.id.indexOf( '_' ) );
-                            
-                            if ( !totalTicketsPerID[ id ] ) {
-                                totalTicketsPerID[ id ] = 0;
-                            }
-                            totalTicketsPerID[ id ] += 1;
-                            
-                            let totalTickets = 0;
-                            for ( let category in totalTicketsPerID ) {
-                                totalTickets += totalTicketsPerID[ category ];
-                            }
-                            
+
+                            // check if total ticket count exceeds max tickets per order
                             if ( this.settings.maxTickets !== 0 ) {
                                 if ( totalTickets >= this.settings.maxTickets ) {
                                     reject( { 'code': 418, 'message': 'ERR_TOO_MANY_TICKETS' } );
                                 }
                             }
-                            if ( totalTicketsPerID[ id ] <= this.detailedTicketTotals[ data.eventID ][ id ] ) {
-                                let info = {};
-                                info[ data.eventID ] = tickets;
-                                if ( data.count < 1 ) {
-                                    if ( Object.keys( info[ data.eventID ] ).length < 1 ) {
-                                        delete info[ data.eventID ];
+
+                            if ( !this.temporarilySelectedTotals[ session.id ] ) {
+                                this.temporarilySelectedTotals[ session.id ] = {};
+                                this.temporarilySelectedTotals[ session.id ][ data.eventID ] = {};
+                            }
+
+                            // check if total ticket count exceeds max tickets for this event and adjust if necessary
+                            let ticketCount = data.count;
+                            if ( this.events[ data.eventID ].maxTickets == 0 || totalTickets < this.events[ data.eventID ].maxTickets ) {
+
+                                // check if enough tickets are still available
+                                if ( totalTickets < this.ticketTotals[ data.eventID ] - this.temporarilySelectedTotals[ session.id ][ data.eventID ][ id ] ) {
+                                    if ( data.count > this.ticketTotals[ data.eventID ] ) {
+                                        ticketCount = this.ticketTotals[ data.eventID ];
+                                    }
+                                    info[ data.eventID ] = tickets;
+                                    if ( data.count < 1 ) {
+                                        if ( Object.keys( info[ data.eventID ] ).length < 1 ) {
+                                            delete info[ data.eventID ];
+                                        } else {
+                                            delete info[ data.eventID ][ data.id ];
+                                        }
                                     } else {
-                                        delete info[ data.eventID ][ data.id ];
+                                        info[ data.eventID ][ data.id ] = data;
                                     }
-                                } else {
-                                    info[ data.eventID ][ data.id ] = data;
-                                }
-                                let ticketCount = data.count;
-                                const maxTickets = this.detailedTicketTotals[ data.eventID ][ data.id.slice( 0, data.id.indexOf( '_' ) ) ];
-                                if ( ticketCount > maxTickets ) {
-                                    ticketCount = maxTickets;
-                                }
-                                if ( maxTickets > 0 ) {
                                     db.writeDataSimple( 'temp', 'user_id', session.id, { 'user_id': session.id, 'timestamp': new Date().toString(), 'data': JSON.stringify( info ) } );
-                                    this.temporarilySelected[ id ] = info;
-                                    if ( !this.temporarilySelectedTotals[ data.eventID ] ) {
-                                        this.ticketTotals[ data.eventID ] = 0;
+                                    if ( !this.temporarilySelected[ data.eventID ] ) {
+                                        this.temporarilySelected[ data.eventID ] = {};
                                     }
-                                    this.ticketTotals[ data.eventID ] -= ticketCount;
+                                    if ( !this.temporaryTotals[ data.eventID ] ) {
+                                        this.temporaryTotals[ data.eventID ] = 0;
+                                    }
+                                    this.temporarilySelected[ data.eventID ][ id ] = info;
+                                    this.temporaryTotals[ data.eventID ] -= this.temporarilySelectedTotals[ session.id ][ data.eventID ][ id ];
+                                    this.temporaryTotals[ data.eventID ] += ticketCount;
+                                    this.temporarilySelectedTotals[ session.id ][ data.eventID ][ id ] = ticketCount;
+                                    this.countFreeSeats();
                                     resolve( { 'status': 'ok', 'ticketCount': ticketCount } );
                                 } else {
                                     reject( { 'code': 409, 'message': 'ERR_ALL_OCCUPIED' } );
                                 }
+                            } else {
+                                reject( { 'code': 418, 'message': 'ERR_TOO_MANY_TICKETS' } );
                             }
                         } else {
-                            let info = {};
-                            info[ data.eventID ] = {};
-                            info[ data.eventID ][ data.id ] = data;
-                            let ticketCount = data.count;
-                            const maxTickets = this.detailedTicketTotals[ data.eventID ][ data.category ];
-                            if ( ticketCount > maxTickets ) {
-                                ticketCount = maxTickets;
+                            // find actual ticket ID and check if there are tickets for this ticketID already
+                            const id = data.id.slice( 0, data.id.indexOf( '_' ) );
+                            
+                            if ( !this.temporarilySelectedTotals[ session.id ] ) {
+                                this.temporarilySelectedTotals[ session.id ] = {};
+                                this.temporarilySelectedTotals[ session.id ][ data.eventID ] = {};
+                                this.temporarilySelectedTotals[ session.id ][ data.eventID ][ id ] = 0;
                             }
-                            if ( maxTickets > 0 ) {
-                                db.writeDataSimple( 'temp', 'user_id', session.id, { 'user_id': session.id, 'timestamp': new Date().toString(), 'data': JSON.stringify( info ) } );
-                                this.allSelectedSeats[ data.id ] = info;
-                                this.ticketTotals[ data.eventID ] -= ticketCount;
-                                resolve( { 'status': 'ok', 'ticketCount': ticketCount } );
+
+                            let ticketCount = data.count;
+                            if ( this.events[ data.eventID ].maxTickets == 0 || ticketCount < this.events[ data.eventID ].maxTickets ) {
+
+                                // check if enough tickets are still available
+                                if ( ticketCount < this.ticketTotals[ data.eventID ] - this.temporarilySelectedTotals[ session.id ][ data.eventID ][ id ] ) {
+                                    if ( data.count < this.ticketTotals[ data.eventID ] ) {
+                                        ticketCount = this.ticketTotals[ data.eventID ];
+
+                                        // Create details
+                                        let info = {};
+                                        info[ data.eventID ] = {};
+                                        info[ data.eventID ][ id ] = data;
+                                        if ( !this.temporarilySelected[ data.eventID ] ) {
+                                            this.temporarilySelected[ data.eventID ] = {};
+                                        }
+                                        if ( !this.temporaryTotals[ data.eventID ] ) {
+                                            this.temporaryTotals[ data.eventID ] = 0;
+                                        }
+                                        db.writeDataSimple( 'temp', 'user_id', session.id, { 'user_id': session.id, 'timestamp': new Date().toString(), 'data': JSON.stringify( info ) } );
+                                        this.temporarilySelected[ data.eventID ][ id ] = info;
+                                        this.temporaryTotals[ data.eventID ] -= this.temporarilySelectedTotals[ session.id ][ data.eventID ][ id ];
+                                        this.temporaryTotals[ data.eventID ] += ticketCount;
+                                        this.temporarilySelectedTotals[ session.id ][ data.eventID ][ id ] = ticketCount;
+                                        this.countFreeSeats();
+                                        resolve( 'ok' );
+                                    } else {
+                                        reject( { 'code': 409, 'message': 'ERR_ALL_OCCUPIED' } );
+                                    }
+                                } else {
+                                    reject( { 'code': 409, 'message': 'ERR_ALL_OCCUPIED' } );
+                                }
                             } else {
-                                reject( { 'code': 409, 'message': 'ERR_ALL_OCCUPIED' } );
+                                reject( { 'code': 418, 'message': 'ERR_TOO_MANY_TICKETS' } );
                             }
                         }
                     } );
@@ -137,20 +204,34 @@ class POSTHandler {
                     if ( !this.allSelectedSeats[ data.eventID ] ) {
                         this.allSelectedSeats[ data.eventID ] = {};
                     }
-                    if ( this.allSelectedSeats[ data.eventID ][ data.id ] ) {
+                    if ( !this.temporarilySelected[ data.eventID ] ) {
+                        this.temporarilySelected[ data.eventID ] = {};
+                    }
+                    if ( this.allSelectedSeats[ data.eventID ][ data.id ] || this.temporarilySelected[ data.eventID ][ data.id ] ) {
                         reject( { 'code': 409, 'message': 'ERR_ALREADY_SELECTED' } );
                     } else {
                         let info = {};
                         info[ data.eventID ] = {};
                         info[ data.eventID ][ data.id ] = data;
-                        db.writeDataSimple( 'temp', 'user_id', session.id, { 'user_id': session.id, 'timestamp': new Date().toString(), 'data': JSON.stringify( info ) } ).catch( err => {
+                        db.writeDataSimple( 'temp', 'user_id', session.id, { 'user_id': session.id, 'timestamp': new Date().toString(), 'data': JSON.stringify( info ) } ).then( () => {
+                            if ( !this.temporarilySelectedTotals[ session.id ] ) {
+                                this.temporarilySelectedTotals[ session.id ] = {};
+                                this.temporarilySelectedTotals[ session.id ][ data.eventID ] = {};
+                            }
+                            if ( !this.temporaryTotals[ data.eventID ] ) {
+                                this.temporaryTotals[ data.eventID ] = 0;
+                            }
+                            this.temporarilySelected[ data.eventID ] = info[ data.eventID ];
+                            this.temporaryTotals[ data.eventID ] += 1;
+                            this.temporarilySelectedTotals[ session.id ][ data.eventID ][ data.id ] = 1;
+                            this.countFreeSeats();
+                            resolve( 'ok' );
+                        } ).catch( err => {
                             console.error( err );
                         } );
-                        resolve( 'ok' );
                     }
                 }
             } else if ( call === 'deselectTicket' ) {
-                // TODO: probably rewrite from scratch
                 db.getDataSimple( 'temp', 'user_id', session.id ).then( dat => {
                     let transmit = {};
                     if ( dat[ 0 ] ) {
@@ -168,11 +249,13 @@ class POSTHandler {
                             reject( { 'code': 404, 'message': 'ERR_DATA_NOT_FOUND' } );
                         }
 
-                        const allSeats = this.allSelectedSeats[ data.eventID ];
+                        const allSeats = this.temporarilySelected[ data.eventID ];
                         for ( let seat in allSeats ) {
                             if ( allSeats[ seat ].component === data.component ) {
                                 if ( allSeats[ seat ].id === data.id ) {
-                                    delete this.allSelectedSeats[ data.eventID ][ seat ];
+                                    this.temporaryTotals[ data.eventID ] -= 1;
+                                    delete this.temporarilySelectedTotals[ session.id ][ data.eventID ][ seat ];
+                                    delete this.temporarilySelected[ data.eventID ][ seat ];
                                 }
                             }
                         }
@@ -182,6 +265,7 @@ class POSTHandler {
                     }                    
 
                     db.writeDataSimple( 'temp', 'user_id', session.id, { 'user_id': session.id, 'data': JSON.stringify( transmit ) } ).then( () => {
+                        this.countFreeSeats();
                         resolve( 'ok' );
                     } ).catch( error => {
                         console.error( error );
@@ -208,11 +292,21 @@ class POSTHandler {
     }
 
     getReservedSeats ( event ) {
-        return this.allSelectedSeats[ event ] ? Object.values( this.allSelectedSeats[ event ] ) : {};
+        return this.allSelectedSeats[ event ] ? Object.values( Object.assign( {}, this.allSelectedSeats[ event ], this.temporarilySelected[ event ] ) ) : {};
+    }
+
+    countFreeSeats() {
+        this.freeSeats = {};
+        for ( let el in this.ticketTotals ) {
+            this.freeSeats[ el ] = this.ticketTotals[ el ];
+        }
+        for ( let el in this.temporaryTotals ) {
+            this.freeSeats[ el ] -= this.temporaryTotals[ el ];
+        }
     }
 
     getFreeSeatsCount() {
-        return this.ticketTotals;
+        return this.freeSeats;
     }
 }
 
