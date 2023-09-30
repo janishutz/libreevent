@@ -26,7 +26,10 @@ module.exports = ( app, settings ) => {
     } );
 
     app.get( '/startPage/preview/:template', ( req, res ) => {
-        // TODO: only allow when logged in
-        res.sendFile( path.join( __dirname + '/../ui/home/templates/' + req.params.template + '/index.html' ) );
+        if ( req.session.loggedInAdmin ) {
+            res.sendFile( path.join( __dirname + '/../ui/home/templates/' + req.params.template + '/index.html' ) );
+        } else {
+            res.status( 403 ).send( 'unauthorized' );
+        }
     } );
 };

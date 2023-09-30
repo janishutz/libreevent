@@ -15,6 +15,23 @@
         <select name="templateSel" id="templateSel" v-model="selectedTemplate">
             <option v-for="el in startPageTemplates" :value="el">{{ el }}</option>
         </select>
+        <div>
+            <h4>Upload your website's logo here (png image)</h4>
+            <picture-input
+            ref="logoUpload"
+            width="350"
+            height="350"
+            :removable="false"
+            removeButtonClass="ui red button"
+            accept="image/png"
+            buttonClass="ui button primary"
+            :customStrings="{
+                upload: '<h1>Upload your image!</h1>',
+                drag: 'Drag and drop your image here'
+            }">
+            </picture-input><br>
+            <button @click="saveLogo()" class="button">Upload logo</button>
+        </div>
         <h3>Change the settings of the start page here</h3>
         <button @click="save()" class="button">Save</button>
         <!-- Start page settings -> Defined by startPage.json file -->
@@ -157,11 +174,30 @@
                     } );
                     return true;
                 } else {
-                    console.log( this.$refs[ image ][ 0 ] );
-                    console.log( image );
                     return false;
                 }
             },
+            saveLogo() {
+                if ( this.$refs.logoUpload.file ) {
+                    let fd = new FormData();
+                    fd.append( 'image', this.$refs.logoUpload.file );
+                    let fetchOptions = {
+                        method: 'post',
+                        body: fd,
+                    };
+                    fetch( localStorage.getItem( 'url' ) + '/admin/logo/upload', fetchOptions ).then( res => {
+                        if ( res.status === 200 ) {
+                            this.$refs.notification.createNotification( 'Logo uploaded successfully', 5, 'ok', 'normal' );
+                        } else {
+                            this.$refs.notification.createNotification( 'There was an error uploading the image', 5, 'error', 'normal' );
+                        }
+                    } ).catch( err => {
+                        console.error( err );
+                    } );
+                } else {
+                    this.$refs.notification.createNotification( 'No logo selected. Please select one and try again!', 10, 'error', 'normal' );
+                }
+            }
         },
         watch: {
             selectedTemplate( value ) {
