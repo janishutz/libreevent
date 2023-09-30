@@ -530,7 +530,7 @@
 
     .toolbar {
         display: flex;
-        position: fixed;
+        position: absolute;
         top: 90px;
         left: 5.5vw;
     }

@@ -67,7 +67,7 @@
         width: fit-content;
         height: fit-content;
         text-decoration: none;
-        position: fixed;
+        position: absolute;
         left: 2vh;
         top: calc( 87px + 1vh );
     }

@@ -34,7 +34,15 @@
         text-decoration: none;
         position: fixed;
         left: 2vh;
-        top: 2vh;
+        bottom: 2vh;
+    }
+
+    @media only screen and (min-width: 999px) {
+        .back-button {
+            position: fixed;
+            left: 2vh;
+            top: 2vh;
+        }   
     }
 </style>
 
