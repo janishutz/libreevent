@@ -1,10 +1,4 @@
 {
-    "subtitle": {
-        "id": "subtitle",
-        "type": "text",
-        "display": "Subtitle",
-        "can-be-empty": false
-    },
     "description": {
         "id": "description",
         "type": "textarea",
@@ -16,16 +10,5 @@
             "min-length": 100
         },
         "can-be-empty": false
-    },
-    "banner": {
-        "id": "banner",
-        "type": "image",
-        "display": "Banner",
-        "image-settings": {
-            "upload-name": "homeBanner",
-            "accept-filetype": "image/jpeg",
-            "height": 200,
-            "width": 350
-        }
     }
 }

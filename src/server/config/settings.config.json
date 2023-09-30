@@ -12,6 +12,6 @@
 	"currency":"CHF",
 	"gcInterval":300,
 	"ticketTimeout":900,
-	"startPage":"default",
+	"startPage":"modern",
 	"version":"1.0.0"
 }

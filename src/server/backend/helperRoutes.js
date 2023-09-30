@@ -22,7 +22,7 @@ module.exports = ( app, settings ) => {
     } );
 
     app.get( '/startPage/assets/:image', ( req, res ) => {
-        res.sendFile( path.join( __dirname + '/../assets/' + settings.startPage + '/assets/' + req.params.image  ) );
+        res.sendFile( path.join( __dirname + '/../ui/home/templates/' + settings.startPage + '/assets/' + req.params.image  ) );
     } );
 
     app.get( '/startPage/preview/:template', ( req, res ) => {
