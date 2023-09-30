@@ -13,7 +13,7 @@
             <h1 style="font-size: 250%;">Thank you for your purchase!</h1>
             <p>The system is currently processing your order and you will be able to download your tickets within a moment's notice.</p>
             <p>You will receive an email with your tickets within the next few minutes</p>
-            <a href="/tickets/tickets.pdf" class="submit" style="display: none;" id="manual-download">Download manually</a>
+            <a href="/tickets/tickets.pdf" class="submit" style="display: none; text-decoration: none;" id="manual-download" target="_blank">Download manually</a>
             <button onclick="if ( confirm( 'Do you really want to leave this page? You will not be able to download the tickets directly and instead you will have to download them from the email.' ) ) {
                 location.href = '/' }" class="submit">Back to the home page</button>
         </div>

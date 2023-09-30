@@ -11,11 +11,21 @@
     <div>
         <h1>Password Reset</h1>
         <p>Please enter the email address connected to your account to begin the password reset process.</p>
-        <input type="email" v-model="email"><br>
-        <button @click="reset()">Reset</button>
+        <input type="email" v-model="email" class="input"><br>
+        <button @click="reset()" class="button">Reset</button>
         <notifications ref="notification" location="topright" size="bigger"></notifications>
     </div>
 </template>
+
+<style scoped>
+    .input {
+        width: 50%;
+        padding: 10px;
+        border-radius: 500px;
+        border: solid 1px black;
+        margin-top: 1%;
+    }
+</style>
 
 <script>
     import notifications from '@/components/notifications/notifications.vue';

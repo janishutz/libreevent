@@ -13,9 +13,9 @@
             <h1>Log in</h1>
             <form>
                 <label for="mail">Email</label><br>
-                <input type="email" v-model="formData[ 'mail' ]" name="mail" id="mail" required><br><br>
+                <input type="email" v-model="formData[ 'mail' ]" name="mail" id="mail" required class="input"><br><br>
                 <label for="password">Password</label><br>
-                <input type="password" v-model="formData[ 'password' ]" name="password" id="password" required>
+                <input type="password" v-model="formData[ 'password' ]" name="password" id="password" required class="input">
             </form>
             <button @click="login();" class="button">Log in</button>
             <router-link to="/signup" class="button">Sign up instead</router-link>
@@ -110,6 +110,14 @@
         align-items: center;
         justify-content: center;
         border-radius: 50px;
+    }
+
+    .input {
+        width: 100%;
+        padding: 10px;
+        border-radius: 500px;
+        border: solid 1px black;
+        margin-top: 1%;
     }
 
     .button {

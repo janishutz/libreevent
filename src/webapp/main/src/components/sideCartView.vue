@@ -36,7 +36,7 @@
                         </td>
                     </tr>
                 </table>
-                <router-link to="/cart">To Cart</router-link>
+                <router-link to="/cart" id="toCartButton">To Cart</router-link>
             </div>
         </div>
         <div v-else>
@@ -93,6 +93,22 @@ export default {
 </script>
 
 <style scoped>
+    #toCartButton {
+        text-decoration: none;
+        padding: 5%;
+        width: fit-content;
+        background-color: var( --accent-color );
+        color: var( --secondary-color );
+        transition: all 1s;
+        border-radius: 50px;
+        margin-top: 2%;
+    }
+
+    #toCartButton:hover {
+        background-color: var( --accent-background-hover );
+        border-radius: 10px;
+    }
+
     #sideCartView {
         background-color: var( --accent-background );
         color: var( --secondary-color );

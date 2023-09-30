@@ -27,7 +27,7 @@
             </div>
             <div class="tool-wrapper">
                 <h4>Total: {{ backend.currency }} {{ backend.total }}</h4>
-                <router-link to="/purchase">Purchase now</router-link>
+                <router-link to="/purchase" id="toCartButton">Purchase now</router-link>
             </div>
         </div>
         <div v-else>
@@ -41,6 +41,22 @@
 </template>
 
 <style scoped>
+    #toCartButton {
+        text-decoration: none;
+        padding: 2%;
+        width: fit-content;
+        background-color: var( --accent-color );
+        color: var( --secondary-color );
+        transition: all 1s;
+        border-radius: 50px;
+        margin-top: 2%;
+    }
+
+    #toCartButton:hover {
+        background-color: var( --accent-background-hover );
+        border-radius: 10px;
+    }
+
     .cart {
         text-align: justify;
         width: 100%;
