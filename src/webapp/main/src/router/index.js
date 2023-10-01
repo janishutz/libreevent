@@ -35,7 +35,7 @@ router.afterEach( ( to, from ) => {
 let UserAccountPages = [ 'account' ];
 
 
-router.beforeEach( ( to, from ) => {
+router.beforeEach( ( to ) => {
     let userStore = useUserStore();
     let isUserAuthenticated = userStore.getUserAuthenticated;
     let isAdminAuthenticated = userStore.getAdminAuthenticated;

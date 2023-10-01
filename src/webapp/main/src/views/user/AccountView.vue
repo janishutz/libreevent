@@ -130,7 +130,7 @@ export default {
     },
     methods: {
         logout() {
-            fetch( '/user/logout' ).then( res => {
+            fetch( '/user/logout' ).then( () => {
                 this.$router.push( '/login' );
                 this.userStore.setUserAuth( false );
             } );
