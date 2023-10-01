@@ -28,41 +28,41 @@
 </style>
 
 <script>
-    import notifications from '@/components/notifications/notifications.vue';
+import notifications from '@/components/notifications/notifications.vue';
 
-    export default {
-        data () {
-            return {
-                email: '',
-            }
-        },
-        components: {
-            notifications,
-        },
-        methods: {
-            reset() {
-                const startNotification = this.$refs.notification.createNotification( 'Starting password reset', 20, 'progress', 'normal' );
-                let fetchOptions = {
-                    method: 'post',
-                    body: JSON.stringify( {'email': this.email } ),
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'charset': 'utf-8'
-                    }
-                };
-                fetch( localStorage.getItem( 'url' ) + '/API/resetPW', fetchOptions ).then( res => {
-                    if ( res.status !== 200 ) {
-                        this.$refs.notification.cancelNotification( startNotification );
-                        this.$refs.notification.createNotification( 'An account with this email address does not exist.', 5, 'error', 'normal' );
-                    } else {
-                        this.$refs.notification.cancelNotification( startNotification );
-                        this.$refs.notification.createNotification( 'Password reset email sent. Please follow the instructions given there.', 30, 'ok', 'normal' );
-                        setTimeout( () => {
-                            location.href = '/login';
-                        }, 10000 );
-                    }
-                } );
-            }
+export default {
+    data () {
+        return {
+            email: '',
+        };
+    },
+    components: {
+        notifications,
+    },
+    methods: {
+        reset() {
+            const startNotification = this.$refs.notification.createNotification( 'Starting password reset', 20, 'progress', 'normal' );
+            let fetchOptions = {
+                method: 'post',
+                body: JSON.stringify( {'email': this.email } ),
+                headers: {
+                    'Content-Type': 'application/json',
+                    'charset': 'utf-8'
+                }
+            };
+            fetch( localStorage.getItem( 'url' ) + '/API/resetPW', fetchOptions ).then( res => {
+                if ( res.status !== 200 ) {
+                    this.$refs.notification.cancelNotification( startNotification );
+                    this.$refs.notification.createNotification( 'An account with this email address does not exist.', 5, 'error', 'normal' );
+                } else {
+                    this.$refs.notification.cancelNotification( startNotification );
+                    this.$refs.notification.createNotification( 'Password reset email sent. Please follow the instructions given there.', 30, 'ok', 'normal' );
+                    setTimeout( () => {
+                        location.href = '/login';
+                    }, 10000 );
+                }
+            } );
         }
     }
+};
 </script>

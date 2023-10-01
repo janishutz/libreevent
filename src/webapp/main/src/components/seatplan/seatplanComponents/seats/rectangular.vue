@@ -27,29 +27,29 @@ export default {
     props: {
         h: {
             type: Number,
-            "default": 100,
+            'default': 100,
         },
         w: {
             type: Number,
-            "default": 200,
+            'default': 200,
         },
         scaleFactor: {
             type: Number,
-            "default": 1,
+            'default': 1,
         },
         origin: {
             type: Number,
-            "default": 1,
+            'default': 1,
         },
         id: {
             type: Number,
-            "default": 1
+            'default': 1
         }
     },
     data () {
         return {
             seats: {},
-        }
+        };
     },
     methods: {
         calculateChairs () {
@@ -104,6 +104,6 @@ export default {
     created() {
         this.calculateChairs();
     }
-}
+};
 </script>
 

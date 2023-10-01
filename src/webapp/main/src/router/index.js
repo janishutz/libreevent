@@ -7,7 +7,7 @@
 *
 */
 
-import { createRouter, createWebHistory } from 'vue-router'
+import { createRouter, createWebHistory } from 'vue-router';
 import { useUserStore } from '@/stores/userStore';
 import { useBackendStore } from '@/stores/backendStore';
 import adminRoutes from '@/router/adminRoutes';

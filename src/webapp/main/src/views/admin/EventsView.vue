@@ -96,122 +96,122 @@
 </style>
 
 <script>
-    import popups from '@/components/notifications/popups.vue';
-    import rightClickMenu from '@/components/settings/rightClickMenu.vue';
+import popups from '@/components/notifications/popups.vue';
+import rightClickMenu from '@/components/settings/rightClickMenu.vue';
 
-    export default {
-        name: 'OrderView',
-        components: {
-            popups,
-            rightClickMenu,
+export default {
+    name: 'OrderView',
+    components: {
+        popups,
+        rightClickMenu,
+    },
+    data () {
+        return {
+            events: { 'test': { 'name': 'TestEvent', 'description': 'This is a description for the TestEvent to test multiline support and proper positioning of the Fields', 'freeSeats': 2, 'maxSeats': 2, 'date': '2023-08-15', 'startingPrice': 15, 'location': 'TestLocation', 'eventID': 'test', 'currency': 'CHF', 'logo': new URL( '/assets/logo.png', import.meta.url ).href } },
+            currentDate: new Date().getTime(),
+            eventList: { 'upcoming': { 'name': 'Upcoming', 'content': {} }, 'past': { 'name': 'Past', 'content': {} }, 'drafts': { 'name': 'Drafts', 'content': {} } },
+            currentlyOpenMenu: '',
+        };
+    },
+    created() {
+        this.loadData();
+    },
+    methods: {
+        loadData () {
+            fetch( '/admin/getAPI/getAllEvents' ).then( res => {
+                res.json().then( dat => {
+                    this.events = dat[ 'live' ] ?? {};
+                    this.eventList.drafts[ 'content' ] = dat[ 'drafts' ] ?? {};
+                    let sortable = [];
+                    for ( let event in this.events ) {
+                        if ( this.events[ event ][ 'description' ].length > 200 ) {
+                            this.events[ event ][ 'shortDescription' ] = this.events[ event ][ 'description' ].slice( 0, 200 ) + '...';
+                        } else {
+                            this.events[ event ][ 'shortDescription' ] = this.events[ event ][ 'description' ];
+                        }
+                        sortable.push( [ this.events[ event ][ 'eventID' ], new Date( this.events[ event ][ 'date' ] ).getTime() ] );
+                    }
+                    sortable.sort( function( a, b ) {
+                        return a[ 1 ] - b[ 1 ];
+                    } );
+
+                    for ( let element in sortable ) {
+                        if ( this.eventList.drafts[ 'content' ][ sortable[ element ][ 0 ] ] ) {
+                            delete this.eventList.drafts[ 'content' ][ sortable[ element ][ 0 ] ];
+                        }
+                        if ( sortable[ element ][ 1 ] > this.currentDate ) {
+                            this.eventList.upcoming.content[ sortable[ element ][ 0 ] ] = this.events[ sortable[ element ][ 0 ] ];
+                        } else {
+                            this.eventList.past.content[ sortable[ element ][ 0 ] ] = this.events[ sortable[ element ][ 0 ] ];
+                        }
+                    }
+                } );
+            } );
         },
-        data () {
-            return {
-                events: { 'test':{ 'name': 'TestEvent', 'description': 'This is a description for the TestEvent to test multiline support and proper positioning of the Fields', 'freeSeats': 2, 'maxSeats': 2, 'date':'2023-08-15', 'startingPrice':15, 'location': 'TestLocation', 'eventID': 'test', 'currency': 'CHF', 'logo': new URL( '/assets/logo.png', import.meta.url ).href } },
-                currentDate: new Date().getTime(),
-                eventList: { 'upcoming': { 'name': 'Upcoming', 'content': {} }, 'past': { 'name': 'Past', 'content': {} }, 'drafts': { 'name': 'Drafts', 'content': {} } },
-                currentlyOpenMenu: '',
+        openRightClickMenu( id, event ) {
+            this.$refs.rclk.openRightClickMenu( event, { 'edit': { 'command': 'editEvent', 'symbol': 'edit', 'display': 'Edit event' }, 'delete': { 'command': 'deleteEvent', 'symbol': 'delete', 'display': 'Delete event' } } );
+            this.currentlyOpenMenu = id;
+        },
+        executeCommand( command ) {
+            if ( command === 'editEvent' ) {
+                sessionStorage.setItem( 'selectedTicket', this.currentlyOpenMenu );
+                this.$router.push( '/admin/events/view' );
+            } else if ( command === 'deleteEvent' ) {
+                this.$refs.popup.openPopup( 'Do you really want to delete the event ' + this.currentlyOpenMenu + '?', {}, 'confirm' );
+                this.currentPopup = 'delete';
             }
         },
-        created() {
-            this.loadData();
+        addEvent () {
+            this.currentPopup = 'add';
+            this.$refs.popup.openPopup( 'Please give the new event a name for internal use', { 'disallowedCharacters': [ '_', '-' ] }, 'text' );
         },
-        methods: {
-            loadData () {
-                fetch( '/admin/getAPI/getAllEvents' ).then( res => {
-                    res.json().then( dat => {
-                        this.events = dat[ 'live' ] ?? {};
-                        this.eventList.drafts[ 'content' ] = dat[ 'drafts' ] ?? {};
-                        let sortable = [];
-                        for ( let event in this.events ) {
-                            if ( this.events[ event ][ 'description' ].length > 200 ) {
-                                this.events[ event ][ 'shortDescription' ] = this.events[ event ][ 'description' ].slice( 0, 200 ) + '...';
-                            } else {
-                                this.events[ event ][ 'shortDescription' ] = this.events[ event ][ 'description' ];
-                            }
-                            sortable.push( [ this.events[ event ][ 'eventID' ], new Date( this.events[ event ][ 'date' ] ).getTime() ] );
+        setActiveTicket ( id ) {
+            sessionStorage.setItem( 'selectedTicket', id );
+        },
+        handleData ( data ) {
+            if ( this.currentPopup === 'add' ) {
+                if ( data.status === 'ok' ) {
+                    const options = {
+                        method: 'post',
+                        body: JSON.stringify( { 'event': data.data } ),
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'charset': 'utf-8'
                         }
-                        sortable.sort( function( a, b ) {
-                            return a[ 1 ] - b[ 1 ];
-                        } );
-
-                        for ( let element in sortable ) {
-                            if ( this.eventList.drafts[ 'content' ][ sortable[ element ][ 0 ] ] ) {
-                                delete this.eventList.drafts[ 'content' ][ sortable[ element ][ 0 ] ];
-                            }
-                            if ( sortable[ element ][ 1 ] > this.currentDate ) {
-                                this.eventList.upcoming.content[ sortable[ element ][ 0 ] ] = this.events[ sortable[ element ][ 0 ] ];
-                            } else {
-                                this.eventList.past.content[ sortable[ element ][ 0 ] ] = this.events[ sortable[ element ][ 0 ] ];
-                            }
+                    };
+                    fetch( localStorage.getItem( 'url' ) + '/admin/api/createEvent', options ).then( res => {
+                        if ( res.status === 200 ) {
+                            res.text().then( () => {
+                                this.currentlyOpenMenu = '';
+                                this.loadData();
+                            } );
+                        } else if ( res.status === 409 ) {
+                            this.$refs.popup.openPopup( 'This event does already exist. Please choose a different identifier!', {}, 'string' );
                         }
                     } );
-                } );
-            },
-            openRightClickMenu( id, event ) {
-                this.$refs.rclk.openRightClickMenu( event, { 'edit': { 'command': 'editEvent', 'symbol': 'edit', 'display': 'Edit event' }, 'delete': { 'command': 'deleteEvent', 'symbol': 'delete', 'display': 'Delete event' } } )
-                this.currentlyOpenMenu = id;
-            },
-            executeCommand( command ) {
-                if ( command === 'editEvent' ) {
-                    sessionStorage.setItem( 'selectedTicket', this.currentlyOpenMenu );
-                    this.$router.push( '/admin/events/view' );
-                } else if ( command === 'deleteEvent' ) {
-                    this.$refs.popup.openPopup( 'Do you really want to delete the event ' + this.currentlyOpenMenu + '?', {}, 'confirm' );
-                    this.currentPopup = 'delete';
                 }
-            },
-            addEvent () {
-                this.currentPopup = 'add';
-                this.$refs.popup.openPopup( 'Please give the new event a name for internal use', { 'disallowedCharacters': [ '_', '-' ] }, 'text' );
-            },
-            setActiveTicket ( id ) {
-                sessionStorage.setItem( 'selectedTicket', id );
-            },
-            handleData ( data ) {
-                if ( this.currentPopup === 'add' ) {
-                    if ( data.status === 'ok' ) {
-                        const options = {
-                            method: 'post',
-                            body: JSON.stringify( { 'event': data.data } ),
-                            headers: {
-                                'Content-Type': 'application/json',
-                                'charset': 'utf-8'
-                            }
-                        };
-                        fetch( localStorage.getItem( 'url' ) + '/admin/api/createEvent', options ).then( res => {
-                            if ( res.status === 200 ) {
-                                res.text().then( () => {
-                                    this.currentlyOpenMenu = '';
-                                    this.loadData();
-                                } );
-                            } else if ( res.status === 409 ) {
-                                this.$refs.popup.openPopup( 'This event does already exist. Please choose a different identifier!', {}, 'string' );
-                            }
-                        } );
-                    }
-                } else if ( this.currentPopup === 'delete' ) {
-                    console.log( data );
-                    if ( data.status === 'ok' ) {
-                        const options = {
-                            method: 'post',
-                            body: JSON.stringify( { 'event': this.currentlyOpenMenu } ),
-                            headers: {
-                                'Content-Type': 'application/json',
-                                'charset': 'utf-8'
-                            }
-                        };
-                        fetch( localStorage.getItem( 'url' ) + '/admin/api/deleteEvent', options ).then( res => {
-                            if ( res.status === 200 ) {
-                                res.text().then( () => {
-                                    this.currentlyOpenMenu = '';
-                                    this.loadData();
-                                } );
-                            }
-                        } );
-                    }
+            } else if ( this.currentPopup === 'delete' ) {
+                console.log( data );
+                if ( data.status === 'ok' ) {
+                    const options = {
+                        method: 'post',
+                        body: JSON.stringify( { 'event': this.currentlyOpenMenu } ),
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'charset': 'utf-8'
+                        }
+                    };
+                    fetch( localStorage.getItem( 'url' ) + '/admin/api/deleteEvent', options ).then( res => {
+                        if ( res.status === 200 ) {
+                            res.text().then( () => {
+                                this.currentlyOpenMenu = '';
+                                this.loadData();
+                            } );
+                        }
+                    } );
                 }
-            },
-        }
-    };
+            }
+        },
+    }
+};
 </script>

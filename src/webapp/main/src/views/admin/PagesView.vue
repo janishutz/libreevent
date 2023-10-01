@@ -71,155 +71,155 @@
 </template>
 
 <script>
-    import PictureInput from 'vue-picture-input';
-    import notifications from '@/components/notifications/notifications.vue';
-    import popups from '@/components/notifications/popups.vue';
+import PictureInput from 'vue-picture-input';
+import notifications from '@/components/notifications/notifications.vue';
+import popups from '@/components/notifications/popups.vue';
 
-    export default {
-        data () {
-            return {
-                startPageTemplates: [],
-                startPageSettings: {},
-                selectedTemplate: '',
-            }
+export default {
+    data () {
+        return {
+            startPageTemplates: [],
+            startPageSettings: {},
+            selectedTemplate: '',
+        };
+    },
+    components: {
+        PictureInput,
+        notifications,
+        popups,
+    },
+    methods: {
+        loadPageSettings() {
+            fetch( '/admin/getAPI/getStartPageSettings?name=' + this.selectedTemplate ).then( res => {
+                if ( res.status === 200 ) {
+                    res.json().then( json => {
+                        this.startPageSettings = json[ 'options' ];
+                        for ( let option in this.startPageSettings ) {
+                            this.startPageSettings[ option ][ 'value' ] = json[ 'conf' ][ option ];
+                        }
+                    } );
+                }
+            } );
         },
-        components: {
-            PictureInput,
-            notifications,
-            popups,
-        },
-        methods: {
-            loadPageSettings() {
-                fetch( '/admin/getAPI/getStartPageSettings?name=' + this.selectedTemplate ).then( res => {
-                    if ( res.status === 200 ) {
-                        res.json().then( json => {
-                            this.startPageSettings = json[ 'options' ];
-                            for ( let option in this.startPageSettings ) {
-                                this.startPageSettings[ option ][ 'value' ] = json[ 'conf' ][ option ];
-                            }
-                        } );
+        save() {
+            let settings = {};
+            for ( let setting in this.startPageSettings ) {
+                if ( this.startPageSettings[ setting ][ 'type' ] === 'image' ) {
+                    if ( this.saveImage( this.startPageSettings[ setting ].id ) ) {
+                        this.$refs.notification.createNotification( 'No image selected!', 5, 'error', 'normal' );
                     }
-                } );
-            },
-            save() {
-                let settings = {};
-                for ( let setting in this.startPageSettings ) {
-                    if ( this.startPageSettings[ setting ][ 'type' ] === 'image' ) {
-                        if ( this.saveImage( this.startPageSettings[ setting ].id ) ) {
-                            this.$refs.notification.createNotification( 'No image selected!', 5, 'error', 'normal' )
-                        }
+                } else {
+                    if ( this.startPageSettings[ setting ][ 'value' ] ) {
+                        settings[ setting ] = this.startPageSettings[ setting ];
                     } else {
-                        if ( this.startPageSettings[ setting ][ 'value' ] ) {
-                            settings[ setting ] = this.startPageSettings[ setting ];
-                        } else {
-                            this.$refs.notification.createNotification( 'Required entries are missing!', 10, 'error', 'normal' );
-                            return;
-                        }
+                        this.$refs.notification.createNotification( 'Required entries are missing!', 10, 'error', 'normal' );
+                        return;
                     }
                 }
-                const options = {
+            }
+            const options = {
+                method: 'post',
+                body: JSON.stringify( { 'preferences': settings, 'page': this.selectedTemplate } ),
+                headers: {
+                    'Content-Type': 'application/json',
+                    'charset': 'utf-8'
+                }
+            };
+            fetch( localStorage.getItem( 'url' ) + '/admin/API/savePageSettings', options ).then( res => {
+                if ( res.status === 200 ) {
+                    this.$refs.notification.createNotification( 'Saved settings successfully!', 5, 'ok', 'normal' );
+                } else {
+                    this.$refs.notification.createNotification( 'An error occurred whilst saving', 10, 'error', 'normal' );
+                }
+            } );
+        },
+        enablePage() {
+            this.$refs.popups.openPopup( 'This operation will build the currently selected start page, enable it for use and overwrite any existing start pages.', {}, 'string' );
+        },
+        handlePopup( data ) {
+            if ( data.status === 'ok' ) {
+                const deploy = this.$refs.notification.createNotification( 'Building & deploying page...', 60, 'progress', 'normal' );
+                fetch( '/admin/getAPI/buildStartPage?page=' + this.selectedTemplate ).then( res => {
+                    if ( res.status === 200 ) {
+                        this.$refs.notification.cancelNotification( deploy );
+                        this.$refs.notification.createNotification( 'Start page has been deployed successfully!', 5, 'ok', 'normal' );
+                    } else if ( res.status === 412 ) {
+                        this.$refs.notification.cancelNotification( deploy );
+                        this.$refs.notification.createNotification( 'Some required fields for the page are missing. Did you hit save before clicking here?', 10, 'error', 'normal' );
+                    } else {
+                        console.error( res );
+                        this.$refs.notification.cancelNotification( deploy );
+                        this.$refs.notification.createNotification( 'An unknown error occurred whilst processing the request. Please try again later.', 5, 'error', 'normal' );
+                    }
+                } );
+            }
+        },
+        saveImage( image ) {
+            if ( this.$refs[ image ][ 0 ].file ) {
+                console.log( 'saving image' );
+                let fd = new FormData();
+                fd.append( 'image', this.$refs[ image ][ 0 ].file );
+                let fetchOptions = {
                     method: 'post',
-                    body: JSON.stringify( { 'preferences': settings, 'page': this.selectedTemplate } ),
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'charset': 'utf-8'
-                    }
+                    body: fd,
                 };
-                fetch( localStorage.getItem( 'url' ) + '/admin/API/savePageSettings', options ).then( res => {
+                fetch( localStorage.getItem( 'url' ) + '/admin/pages/uploadImages?image=' + image + '&template=' + this.selectedTemplate, fetchOptions ).then( res => {
                     if ( res.status === 200 ) {
-                        this.$refs.notification.createNotification( 'Saved settings successfully!', 5, 'ok', 'normal' );
+                        return true;
                     } else {
-                        this.$refs.notification.createNotification( 'An error occurred whilst saving', 10, 'error', 'normal' );
+                        this.$refs.notification.createNotification( 'There was an error uploading the image', 5, 'error', 'normal' );
                     }
+                } ).catch( err => {
+                    console.error( err );
                 } );
-            },
-            enablePage() {
-                this.$refs.popups.openPopup( 'This operation will build the currently selected start page, enable it for use and overwrite any existing start pages.', {}, 'string' );
-            },
-            handlePopup( data ) {
-                if ( data.status === 'ok' ) {
-                    const deploy = this.$refs.notification.createNotification( 'Building & deploying page...', 60, 'progress', 'normal' );
-                    fetch( '/admin/getAPI/buildStartPage?page=' + this.selectedTemplate ).then( res => {
-                        if ( res.status === 200 ) {
-                            this.$refs.notification.cancelNotification( deploy );
-                            this.$refs.notification.createNotification( 'Start page has been deployed successfully!', 5, 'ok', 'normal' );
-                        } else if ( res.status === 412 ) {
-                            this.$refs.notification.cancelNotification( deploy );
-                            this.$refs.notification.createNotification( 'Some required fields for the page are missing. Did you hit save before clicking here?', 10, 'error', 'normal' );
-                        } else {
-                            console.error( res );
-                            this.$refs.notification.cancelNotification( deploy );
-                            this.$refs.notification.createNotification( 'An unknown error occurred whilst processing the request. Please try again later.', 5, 'error', 'normal' );
-                        }
-                    } );
-                }
-            },
-            saveImage( image ) {
-                if ( this.$refs[ image ][ 0 ].file ) {
-                    console.log( 'saving image' );
-                    let fd = new FormData();
-                    fd.append( 'image', this.$refs[ image ][ 0 ].file );
-                    let fetchOptions = {
-                        method: 'post',
-                        body: fd,
-                    };
-                    fetch( localStorage.getItem( 'url' ) + '/admin/pages/uploadImages?image=' + image + '&template=' + this.selectedTemplate, fetchOptions ).then( res => {
-                        if ( res.status === 200 ) {
-                            return true;
-                        } else {
-                            this.$refs.notification.createNotification( 'There was an error uploading the image', 5, 'error', 'normal' );
-                        }
-                    } ).catch( err => {
-                        console.error( err );
-                    } );
-                    return true;
-                } else {
-                    return false;
-                }
-            },
-            saveLogo() {
-                if ( this.$refs.logoUpload.file ) {
-                    let fd = new FormData();
-                    fd.append( 'image', this.$refs.logoUpload.file );
-                    let fetchOptions = {
-                        method: 'post',
-                        body: fd,
-                    };
-                    fetch( localStorage.getItem( 'url' ) + '/admin/logo/upload', fetchOptions ).then( res => {
-                        if ( res.status === 200 ) {
-                            this.$refs.notification.createNotification( 'Logo uploaded successfully', 5, 'ok', 'normal' );
-                        } else {
-                            this.$refs.notification.createNotification( 'There was an error uploading the image', 5, 'error', 'normal' );
-                        }
-                    } ).catch( err => {
-                        console.error( err );
-                    } );
-                } else {
-                    this.$refs.notification.createNotification( 'No logo selected. Please select one and try again!', 10, 'error', 'normal' );
-                }
+                return true;
+            } else {
+                return false;
             }
         },
-        watch: {
-            selectedTemplate( value ) {
-                this.loadPageSettings();
+        saveLogo() {
+            if ( this.$refs.logoUpload.file ) {
+                let fd = new FormData();
+                fd.append( 'image', this.$refs.logoUpload.file );
+                let fetchOptions = {
+                    method: 'post',
+                    body: fd,
+                };
+                fetch( localStorage.getItem( 'url' ) + '/admin/logo/upload', fetchOptions ).then( res => {
+                    if ( res.status === 200 ) {
+                        this.$refs.notification.createNotification( 'Logo uploaded successfully', 5, 'ok', 'normal' );
+                    } else {
+                        this.$refs.notification.createNotification( 'There was an error uploading the image', 5, 'error', 'normal' );
+                    }
+                } ).catch( err => {
+                    console.error( err );
+                } );
+            } else {
+                this.$refs.notification.createNotification( 'No logo selected. Please select one and try again!', 10, 'error', 'normal' );
             }
-        },
-        created () {
-            fetch( '/admin/getAPI/getAllStartPages' ).then( res => {
-                if ( res.status === 200 ) {
-                    res.json().then( json => {
-                        this.startPageTemplates = json;
-                    } );
-                }
-            } );
-
-            fetch( '/admin/getAPI/getSettings' ).then( res => {
-                if ( res.status === 200 ) {
-                    res.json().then( json => {
-                        this.selectedTemplate = json[ 'startPage' ];
-                    } );
-                }
-            } );
         }
-    };
+    },
+    watch: {
+        selectedTemplate( value ) {
+            this.loadPageSettings();
+        }
+    },
+    created () {
+        fetch( '/admin/getAPI/getAllStartPages' ).then( res => {
+            if ( res.status === 200 ) {
+                res.json().then( json => {
+                    this.startPageTemplates = json;
+                } );
+            }
+        } );
+
+        fetch( '/admin/getAPI/getSettings' ).then( res => {
+            if ( res.status === 200 ) {
+                res.json().then( json => {
+                    this.selectedTemplate = json[ 'startPage' ];
+                } );
+            }
+        } );
+    }
+};
 </script>

@@ -93,81 +93,81 @@
 <!-- Options to be passed in: html, settings (for settings component), strings, confirm, dropdowns, selection -->
 
 <script>
-    import settings from '@/components/settings/settings.vue';
-    export default {
-        name: 'popups',
-        components: {
-            settings,
+import settings from '@/components/settings/settings.vue';
+export default {
+    name: 'popups',
+    components: {
+        settings,
+    },
+    props: {
+        size: {
+            type: String,
+            'default': 'normal',
         },
-        props: {
-            size: {
-                type: String,
-                'default': 'normal',
-            },
-        },
-        data () {
-            return {
-                contentType: 'dropdown',
-                data: {},
-                info: '',
-            }
-        },
-        methods: {
-            closePopup( message ) {
-                if ( this.data.options.disallowedCharacters ) {
-                    for ( let letter in this.data.selected ) {
-                        if ( this.data.options.disallowedCharacters.includes( this.data.selected[ letter ] ) ) {
-                            this.info = `Illegal character "${ this.data.selected[ letter ] }"`;
-                            return false;
-                        }
+    },
+    data () {
+        return {
+            contentType: 'dropdown',
+            data: {},
+            info: '',
+        };
+    },
+    methods: {
+        closePopup( message ) {
+            if ( this.data.options.disallowedCharacters ) {
+                for ( let letter in this.data.selected ) {
+                    if ( this.data.options.disallowedCharacters.includes( this.data.selected[ letter ] ) ) {
+                        this.info = `Illegal character "${ this.data.selected[ letter ] }"`;
+                        return false;
                     }
                 }
-                $( '#popup-backdrop' ).fadeOut( 300 );
-                if ( message ) {
-                    this.$emit( 'data', { 'data': this.data.selected, 'status': message } );
-                }
-            },
-            selectTicket ( option ) {
-                let total = 0;
-                for ( let i in this.data.options.count ) {
-                    total += this.data.options.count[ i ];
-                }
+            }
+            $( '#popup-backdrop' ).fadeOut( 300 );
+            if ( message ) {
+                this.$emit( 'data', { 'data': this.data.selected, 'status': message } );
+            }
+        },
+        selectTicket ( option ) {
+            let total = 0;
+            for ( let i in this.data.options.count ) {
+                total += this.data.options.count[ i ];
+            }
 
-                if ( total < this.data.options.max ) {
-                    this.data.options.count[ option ] += 1;
-                }
-            },
-            deselectTicket ( option ) {
-                if ( this.data.options.count[ option ] > 0 ) {
-                    this.data.options.count[ option ] -= 1;
-                }
-            },
-            submitTicket () {
-                $( '#popup-backdrop' ).fadeOut( 300 );
-                this.$emit( 'ticket', { 'data': this.data.options.count, 'component': this.data.options.id } );
-            },
-            closePopupAdvanced ( message, data ) {
-                this.data[ 'selected' ] = data;
-                this.closePopup( message );
-            },
-            submitSettings () {
-                $( '#popup-backdrop' ).fadeOut( 300 );
-                const dat = this.data.options;
-                let ret = {};
-                for ( let setting in dat ) {
-                    if ( dat[ setting ][ 'type' ] !== 'link' ) {
-                        ret[ setting ] = dat[ setting ][ 'value' ];
-                    }
-                }
-                this.$emit( 'data', { 'data': ret, 'status': 'settings' } );
-            },
-            openPopup ( message, options, dataType, selected ) {
-                this.data = { 'message': message ?? 'No message defined on method call!!', 'options': options ?? { '1': { 'value': 'undefined', 'displayName': 'No options specified in call' } }, 'selected': selected ?? '' };
-                this.contentType = dataType ?? 'string';
-                $( '#popup-backdrop' ).fadeIn( 300 );
+            if ( total < this.data.options.max ) {
+                this.data.options.count[ option ] += 1;
             }
         },
-    }
+        deselectTicket ( option ) {
+            if ( this.data.options.count[ option ] > 0 ) {
+                this.data.options.count[ option ] -= 1;
+            }
+        },
+        submitTicket () {
+            $( '#popup-backdrop' ).fadeOut( 300 );
+            this.$emit( 'ticket', { 'data': this.data.options.count, 'component': this.data.options.id } );
+        },
+        closePopupAdvanced ( message, data ) {
+            this.data[ 'selected' ] = data;
+            this.closePopup( message );
+        },
+        submitSettings () {
+            $( '#popup-backdrop' ).fadeOut( 300 );
+            const dat = this.data.options;
+            let ret = {};
+            for ( let setting in dat ) {
+                if ( dat[ setting ][ 'type' ] !== 'link' ) {
+                    ret[ setting ] = dat[ setting ][ 'value' ];
+                }
+            }
+            this.$emit( 'data', { 'data': ret, 'status': 'settings' } );
+        },
+        openPopup ( message, options, dataType, selected ) {
+            this.data = { 'message': message ?? 'No message defined on method call!!', 'options': options ?? { '1': { 'value': 'undefined', 'displayName': 'No options specified in call' } }, 'selected': selected ?? '' };
+            this.contentType = dataType ?? 'string';
+            $( '#popup-backdrop' ).fadeIn( 300 );
+        }
+    },
+};
 </script>
 
 <style scoped>

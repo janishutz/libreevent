@@ -200,34 +200,34 @@ export default {
     props: {
         draggables: {
             type: Object,
-            "default": {}
+            'default': {}
         },
         scaleFactor: {
             type: Number,
-            "default": 1,
+            'default': 1,
         },
         generalSettings: {
             type: Object,
-            "default": {},
+            'default': {},
         },
         zoomFactor: {
             type: Number,
-            "default": 1
+            'default': 1
         },
         active: {
             type: Number,
-            "default": 1,
+            'default': 1,
         },
         historyPos: {
             type: Number,
-            "default": 0,
+            'default': 0,
         }
     },
     data () {
         return {
             internal: {},
-            categories: { '1':{} },
-        }
+            categories: { '1': {} },
+        };
     },
     methods: {
         loadInternal () {
@@ -282,7 +282,7 @@ export default {
     created () {
         this.loadInternal();
     }
-}
+};
 </script>
 
 <style scoped>

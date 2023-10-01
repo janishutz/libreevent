@@ -74,7 +74,7 @@ export default {
     data() {
         return {
             total: 0,
-        }
+        };
     },
     methods: {
         calculateTotal () {
@@ -89,7 +89,7 @@ export default {
     created() {
         this.calculateTotal();
     }
-}
+};
 </script>
 
 <style scoped>

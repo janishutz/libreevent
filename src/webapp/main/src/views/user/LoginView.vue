@@ -26,63 +26,63 @@
 </template>
 
 <script>
-    import { useUserStore } from '@/stores/userStore';
-    import { mapStores } from 'pinia';
-    import notifications from '@/components/notifications/notifications.vue';
+import { useUserStore } from '@/stores/userStore';
+import { mapStores } from 'pinia';
+import notifications from '@/components/notifications/notifications.vue';
 
-    export default {
-        data () {
-            return {
-                formData: {}
+export default {
+    data () {
+        return {
+            formData: {}
+        };
+    },
+    components: {
+        notifications,
+    },
+    computed: {
+        ...mapStores( useUserStore )
+    },
+    methods: {
+        login () {
+            if ( this.formData.mail ) { 
+                if ( this.formData.password ) {
+                    let progress = this.$refs.notification.createNotification( 'Logging you in', 20, 'progress', 'normal' );
+                    let fetchOptions = {
+                        method: 'post',
+                        body: JSON.stringify( this.formData ),
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'charset': 'utf-8'
+                        }
+                    };
+                    fetch( localStorage.getItem( 'url' ) + '/user/login', fetchOptions ).then( res => {
+                        res.json().then( json => {
+                            if ( json.status === 'ok' ) {
+                                this.userStore.setUserAuth( true );
+                                this.$router.push( sessionStorage.getItem( 'redirect' ) ?? '/account' );
+                                sessionStorage.removeItem( 'redirect' );
+                            } else if ( json.status === '2fa' ) {
+                                this.userStore.setUser2fa( true );
+                                this.$router.push( '/twoFactors' );
+                            } else if ( json.status === '2fa+' ) {
+                                this.userStore.setUser2fa( true );
+                                sessionStorage.setItem( '2faCode', json.code );
+                                this.$router.push( '/twoFactors' );
+                            } else {
+                                this.$refs.notification.cancelNotification( progress );
+                                this.$refs.notification.createNotification( 'The credentials you provided do not match our records.', 5, 'error', 'normal' );
+                            }
+                        } );
+                    } );
+                } else {
+                    this.$refs.notification.createNotification( 'A password is required to log in', 5, 'error', 'normal' );
+                }
+            } else {
+                this.$refs.notification.createNotification( 'An email address is required to log in', 5, 'error', 'normal' );
             }
         },
-        components: {
-            notifications,
-        },
-        computed: {
-            ...mapStores( useUserStore )
-        },
-        methods: {
-            login () {
-                if ( this.formData.mail ) { 
-                    if ( this.formData.password ) {
-                        let progress = this.$refs.notification.createNotification( 'Logging you in', 20, 'progress', 'normal' );
-                        let fetchOptions = {
-                            method: 'post',
-                            body: JSON.stringify( this.formData ),
-                            headers: {
-                                'Content-Type': 'application/json',
-                                'charset': 'utf-8'
-                            }
-                        };
-                        fetch( localStorage.getItem( 'url' ) + '/user/login', fetchOptions ).then( res => {
-                            res.json().then( json => {
-                                if ( json.status === 'ok' ) {
-                                    this.userStore.setUserAuth( true );
-                                    this.$router.push( sessionStorage.getItem( 'redirect' ) ?? '/account' );
-                                    sessionStorage.removeItem( 'redirect' );
-                                } else if ( json.status === '2fa' ) {
-                                    this.userStore.setUser2fa( true );
-                                    this.$router.push( '/twoFactors' );
-                                } else if ( json.status === '2fa+' ) {
-                                    this.userStore.setUser2fa( true );
-                                    sessionStorage.setItem( '2faCode', json.code );
-                                    this.$router.push( '/twoFactors' );
-                                } else {
-                                    this.$refs.notification.cancelNotification( progress );
-                                    this.$refs.notification.createNotification( 'The credentials you provided do not match our records.', 5, 'error', 'normal' );
-                                }
-                            } );
-                        } );
-                    } else {
-                        this.$refs.notification.createNotification( 'A password is required to log in', 5, 'error', 'normal' );
-                    }
-                } else {
-                    this.$refs.notification.createNotification( 'An email address is required to log in', 5, 'error', 'normal' );
-                }
-            },
-        },
-    }
+    },
+};
 </script>
 
 <style scoped>

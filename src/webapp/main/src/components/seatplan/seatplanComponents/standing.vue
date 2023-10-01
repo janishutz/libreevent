@@ -66,11 +66,11 @@ export default {
     props: {
         origin: {
             type: Number,
-            "default": 1,
+            'default': 1,
         },
         shape: {
             type: String,
-            "default": "rectangular",
+            'default': 'rectangular',
         },
     },
     data() {
@@ -78,7 +78,7 @@ export default {
             style: 'border-style: none none solid none',
             circularStyle: 'top: 0; left 100%;',
             trapezoidStyle: 'rotate: 45deg',
-        }
+        };
     },
     methods: {
         updateOrigin () {
@@ -109,6 +109,6 @@ export default {
     created() {
         this.updateOrigin();
     }
-}
+};
 </script>
 

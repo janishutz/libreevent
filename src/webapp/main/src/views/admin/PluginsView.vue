@@ -25,29 +25,29 @@
 </template>
 
 <script>
-    export default {
-        data () {
-            return {
-                allPlugins: {}
-            }
-        },
-        methods: {
-            loadData () {
-                fetch( '/admin/getAPI/getAllPlugins' ).then( res => {
-                    if ( res.status === 200 ) {
-                        res.json().then( json => {
-                            this.allPlugins = json;
-                        } ).catch( err => {
-                            console.error( err );
-                        } );
-                    }
-                } );
-            }
-        },
-        created () {
-            this.loadData();
+export default {
+    data () {
+        return {
+            allPlugins: {}
+        };
+    },
+    methods: {
+        loadData () {
+            fetch( '/admin/getAPI/getAllPlugins' ).then( res => {
+                if ( res.status === 200 ) {
+                    res.json().then( json => {
+                        this.allPlugins = json;
+                    } ).catch( err => {
+                        console.error( err );
+                    } );
+                }
+            } );
         }
-    };
+    },
+    created () {
+        this.loadData();
+    }
+};
 </script>
 
 <style scoped>

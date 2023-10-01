@@ -14,16 +14,16 @@
 </template>
 
 <script>
-    export default {
-        data () {
-            return {
-                formData: {}
-            }
-        },
-        methods: {
-            setup () {
+export default {
+    data () {
+        return {
+            formData: {}
+        };
+    },
+    methods: {
+        setup () {
                 
-            }
-        },
-    };
+        }
+    },
+};
 </script>

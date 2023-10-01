@@ -15,29 +15,29 @@
 </template>
 
 <script>
-    import window from '@/components/seatplan/editor/window.vue';
+import window from '@/components/seatplan/editor/window.vue';
 
-    export default {
-        data () {
-            return {
-                location: '',
-            };
-        },
-        components: {
-            window,
-        },
-        methods: {
-            checkLocationSelected () {
-                if ( !sessionStorage.getItem( 'locationID' ) ) {
-                    this.$router.push( '/admin/locations' );
-                }
-                this.location = sessionStorage.getItem( 'locationID' );
+export default {
+    data () {
+        return {
+            location: '',
+        };
+    },
+    components: {
+        window,
+    },
+    methods: {
+        checkLocationSelected () {
+            if ( !sessionStorage.getItem( 'locationID' ) ) {
+                this.$router.push( '/admin/locations' );
             }
-        },
-        created() {
-            this.checkLocationSelected();
+            this.location = sessionStorage.getItem( 'locationID' );
         }
-    };
+    },
+    created() {
+        this.checkLocationSelected();
+    }
+};
 </script>
 
 <style>

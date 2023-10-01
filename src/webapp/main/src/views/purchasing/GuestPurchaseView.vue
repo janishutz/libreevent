@@ -14,15 +14,15 @@
 </template>
 
 <script>
-    export default {
-        methods: {
+export default {
+    methods: {
 
-        },
-        data() {
-            return {}
-        },
-        created() {
+    },
+    data() {
+        return {};
+    },
+    created() {
             
-        }
     }
+};
 </script>

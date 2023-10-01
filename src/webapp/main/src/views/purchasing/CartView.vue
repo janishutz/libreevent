@@ -114,126 +114,126 @@
 </style>
 
 <script>
-    import popups from '@/components/notifications/popups.vue';
+import popups from '@/components/notifications/popups.vue';
     
-    export default {
-        data() {
-            return {
-                cart: {},
-                backend: { 'currency': 'CHF' },
-                ticketToDelete: {},
+export default {
+    data() {
+        return {
+            cart: {},
+            backend: { 'currency': 'CHF' },
+            ticketToDelete: {},
+        };
+    },
+    components: {
+        popups,
+    },
+    methods: {
+        calculateTotal () {
+            this.backend[ 'total' ] = 0;
+            for ( let event in this.cart ) {
+                for ( let ticket in this.cart[ event ][ 'tickets' ] ) {
+                    this.backend[ 'total' ] += parseInt( this.cart[ event ][ 'tickets' ][ ticket ][ 'price' ] ) * parseInt( this.cart[ event ][ 'tickets' ][ ticket ][ 'count' ] ?? 1 );
+                }
             }
         },
-        components: {
-            popups,
+        deleteTicket ( ticketID, event, component ) {
+            this.ticketToDelete[ 'event' ] = event;
+            this.ticketToDelete[ 'id' ] = ticketID;
+            this.ticketToDelete[ 'component' ] = component;
+            this.$refs.popups.openPopup( 'Do you really want to delete this ticket?', {}, 'confirm' );
         },
-        methods: {
-            calculateTotal () {
-                this.backend[ 'total' ] = 0;
-                for ( let event in this.cart ) {
-                    for ( let ticket in this.cart[ event ][ 'tickets' ] ) {
-                        this.backend[ 'total' ] += parseInt( this.cart[ event ][ 'tickets' ][ ticket ][ 'price' ] ) * parseInt( this.cart[ event ][ 'tickets' ][ ticket ][ 'count' ] ?? 1 );
-                    }
+        verifyTicketDelete ( status ) {
+            if ( status === 'ok' ) {
+                if ( Object.keys( this.cart[ this.ticketToDelete.event ][ 'tickets' ] ).length > 1 ) {
+                    delete this.cart[ this.ticketToDelete.event ][ 'tickets' ][ this.ticketToDelete.id ];
+                } else {
+                    delete this.cart[ this.ticketToDelete.event ];
                 }
-            },
-            deleteTicket ( ticketID, event, component ) {
-                this.ticketToDelete[ 'event' ] = event;
-                this.ticketToDelete[ 'id' ] = ticketID;
-                this.ticketToDelete[ 'component' ] = component;
-                this.$refs.popups.openPopup( 'Do you really want to delete this ticket?', {}, 'confirm' );
-            },
-            verifyTicketDelete ( status ) {
-                if ( status === 'ok' ) {
-                    if ( Object.keys( this.cart[ this.ticketToDelete.event ][ 'tickets' ] ).length > 1 ) {
-                        delete this.cart[ this.ticketToDelete.event ][ 'tickets' ][ this.ticketToDelete.id ];
-                    } else {
-                        delete this.cart[ this.ticketToDelete.event ];
+                const options = {
+                    method: 'post',
+                    body: JSON.stringify( { 'id': this.ticketToDelete[ 'id' ], 'eventID': this.ticketToDelete[ 'event' ], 'component': this.ticketToDelete[ 'component' ] } ),
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'charset': 'utf-8'
                     }
-                    const options = {
-                        method: 'post',
-                        body: JSON.stringify( { 'id': this.ticketToDelete[ 'id' ], 'eventID': this.ticketToDelete[ 'event' ], 'component': this.ticketToDelete[ 'component' ] } ),
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'charset': 'utf-8'
+                };
+                fetch( localStorage.getItem( 'url' ) + '/API/deselectTicket', options );
+            }
+            localStorage.setItem( 'cart', JSON.stringify( this.cart ) );
+        },
+        seatChecks ( event ) {
+            let self = this;
+            let allSeatsAvailable = true;
+
+            fetch( localStorage.getItem( 'url' ) + '/getAPI/getReservedSeats?event=' + event ).then( res => {
+                if ( res.status === 200 ) {
+                    let unavailableSeats = {};
+                    res.json().then( data => {
+                        for ( let seat in data.reserved ) {
+                            if ( data.reserved[ seat ] ) {
+                                if ( !unavailableSeats[ data.reserved[ seat ].component ] ) {
+                                    unavailableSeats[ data.reserved[ seat ].component ] = {};
+                                }
+                                unavailableSeats[ data.reserved[ seat ].component ][ data.reserved[ seat ].id ] = 'nav';
+                            }
                         }
-                    };
-                    fetch( localStorage.getItem( 'url' ) + '/API/deselectTicket', options );
+                        for ( let seat in data.user ) {
+                            if ( data.user[ seat ] ) {
+                                if ( !unavailableSeats[ data.user[ seat ].component ] ) {
+                                    unavailableSeats[ data.user[ seat ].component ] = {};
+                                }
+                                unavailableSeats[ data.user[ seat ].component ][ data.user[ seat ].id ] = 'sel';
+                            }
+                        }
+
+                        let tickets = {};
+                        if ( this.cart[ event ] ) {
+                            tickets = this.cart[ event ][ 'tickets' ];
+                        }
+
+                        if ( data.user ) {
+                            for ( let element in tickets ) {
+                                if ( !data.user[ element ] ) {
+                                    allSeatsAvailable = false;
+                                    if ( Object.keys( this.cart[ event ][ 'tickets' ] ).length > 1 ) {
+                                        delete this.cart[ event ][ 'tickets' ][ element ];
+                                    } else {
+                                        delete this.cart[ event ];
+                                    }
+                                }
+                            }
+                        } else {
+                            delete this.cart[ event ];
+                            allSeatsAvailable = false;
+                        }
+
+                        this.unavailableSeats = unavailableSeats;
+
+                        if ( !allSeatsAvailable ) {
+                            setTimeout( () => {
+                                self.$refs.popups.openPopup( 'We are sorry to tell you that since the last time the seat plan was refreshed, one or more of the seats you have selected has/have been taken.', {}, 'string' );
+                            }, 500 );
+                            localStorage.setItem( 'cart', JSON.stringify( this.cart ) );
+                        }
+                    } );
+                } else {
+                    console.error( 'unable to load' );
                 }
-                localStorage.setItem( 'cart', JSON.stringify( this.cart ) );
-            },
-            seatChecks ( event ) {
-                let self = this;
-                let allSeatsAvailable = true;
-
-                fetch( localStorage.getItem( 'url' ) + '/getAPI/getReservedSeats?event=' + event ).then( res => {
-                    if ( res.status === 200 ) {
-                        let unavailableSeats = {};
-                        res.json().then( data => {
-                            for ( let seat in data.reserved ) {
-                                if ( data.reserved[ seat ] ) {
-                                    if ( !unavailableSeats[ data.reserved[ seat ].component ] ) {
-                                        unavailableSeats[ data.reserved[ seat ].component ] = {};
-                                    }
-                                    unavailableSeats[ data.reserved[ seat ].component ][ data.reserved[ seat ].id ] = 'nav';
-                                }
-                            }
-                            for ( let seat in data.user ) {
-                                if ( data.user[ seat ] ) {
-                                    if ( !unavailableSeats[ data.user[ seat ].component ] ) {
-                                        unavailableSeats[ data.user[ seat ].component ] = {};
-                                    }
-                                    unavailableSeats[ data.user[ seat ].component ][ data.user[ seat ].id ] = 'sel';
-                                }
-                            }
-
-                            let tickets = {};
-                            if ( this.cart[ event ] ) {
-                                tickets = this.cart[ event ][ 'tickets' ];
-                            }
-
-                            if ( data.user ) {
-                                for ( let element in tickets ) {
-                                    if ( !data.user[ element ] ) {
-                                        allSeatsAvailable = false;
-                                        if ( Object.keys( this.cart[ event ][ 'tickets' ] ).length > 1 ) {
-                                            delete this.cart[ event ][ 'tickets' ][ element ];
-                                        } else {
-                                            delete this.cart[ event ];
-                                        }
-                                    }
-                                }
-                            } else {
-                                delete this.cart[ event ];
-                                allSeatsAvailable = false;
-                            }
-
-                            this.unavailableSeats = unavailableSeats;
-
-                            if ( !allSeatsAvailable ) {
-                                setTimeout( () => {
-                                    self.$refs.popups.openPopup( 'We are sorry to tell you that since the last time the seat plan was refreshed, one or more of the seats you have selected has/have been taken.', {}, 'string' );
-                                }, 500 );
-                                localStorage.setItem( 'cart', JSON.stringify( this.cart ) );
-                            }
-                        } );
-                    } else {
-                        console.error( 'unable to load' );
-                    }
-                } );
-            },
+            } );
         },
-        created () {
-            window.addEventListener( 'visibilitychange', ( e ) => {
-                this.cart = localStorage.getItem( 'cart' ) ? JSON.parse( localStorage.getItem( 'cart' ) ): {};
-                this.calculateTotal();
-            }, 1 );
+    },
+    created () {
+        window.addEventListener( 'visibilitychange', ( e ) => {
             this.cart = localStorage.getItem( 'cart' ) ? JSON.parse( localStorage.getItem( 'cart' ) ): {};
             this.calculateTotal();
-            for ( let event in this.cart ) {
-                this.seatChecks( event );
-            }
+        }, 1 );
+        this.cart = localStorage.getItem( 'cart' ) ? JSON.parse( localStorage.getItem( 'cart' ) ): {};
+        this.calculateTotal();
+        for ( let event in this.cart ) {
+            this.seatChecks( event );
         }
     }
+};
 </script>
 
 

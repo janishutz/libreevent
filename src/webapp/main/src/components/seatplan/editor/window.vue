@@ -47,47 +47,47 @@
 </template>
 
 <script>
-    import Vue3DraggableResizable from 'vue3-draggable-resizable';
-    import properties from '@/components/seatplan/editor/properties.vue';
-    import circularSeatplanComponent from '@/components/seatplan/seatplanComponents/seats/circular.vue';
-    import rectangularSeatplanComponent from '@/components/seatplan/seatplanComponents/seats/rectangular.vue';
-    import trapezoidSeatplanComponent from '@/components/seatplan/seatplanComponents/seats/trapezoid.vue';
-    import stagesSeatplanComponent from '@/components/seatplan/seatplanComponents/stages.vue';
-    import standingSeatplanComponent from '@/components/seatplan/seatplanComponents/standing.vue';
-    import textFieldSeatplanComponent from '@/components/seatplan/seatplanComponents/textField.vue';
-    import notifications from '@/components/notifications/notifications.vue';
-    import 'vue3-draggable-resizable/dist/Vue3DraggableResizable.css';
+import Vue3DraggableResizable from 'vue3-draggable-resizable';
+import properties from '@/components/seatplan/editor/properties.vue';
+import circularSeatplanComponent from '@/components/seatplan/seatplanComponents/seats/circular.vue';
+import rectangularSeatplanComponent from '@/components/seatplan/seatplanComponents/seats/rectangular.vue';
+import trapezoidSeatplanComponent from '@/components/seatplan/seatplanComponents/seats/trapezoid.vue';
+import stagesSeatplanComponent from '@/components/seatplan/seatplanComponents/stages.vue';
+import standingSeatplanComponent from '@/components/seatplan/seatplanComponents/standing.vue';
+import textFieldSeatplanComponent from '@/components/seatplan/seatplanComponents/textField.vue';
+import notifications from '@/components/notifications/notifications.vue';
+import 'vue3-draggable-resizable/dist/Vue3DraggableResizable.css';
 
-    export default {
-        'name': 'window',
-        components: { 
-            Vue3DraggableResizable,
-            properties,
-            circularSeatplanComponent,
-            rectangularSeatplanComponent,
-            trapezoidSeatplanComponent,
-            stagesSeatplanComponent,
-            standingSeatplanComponent,
-            textFieldSeatplanComponent,
-            notifications,
-        },
-        data() {
-            return {
-                active: 0,
-                draggables: { 1: { 'x': 100, 'y':100, 'h': 100, 'w': 250, 'active': false, 'draggable': true, 'resizable': true, 'id': 1, 'origin': 1, 'shape':'rectangular', 'type': 'seat', 'startingRow': 1, 'seatNumberingPosition': 1, 'sector': 'A', 'text': { 'text': 'TestText', 'textSize': 20, 'colour': '#20FFFF' }, 'numberingDirection': 'left', 'seatNumberingPosition': 1, 'category': '1' } },
-                available: { 'redo': false, 'undo': false },
-                scaleFactor: 1,
-                sizePoll: null,
-                prevSize: { 'h': window.innerHeight, 'w': window.innerWidth },
-                zoomFactor: 1,
-                historyPos: 0,
-                generalSettings: { 'namingScheme': 'numeric' },
-                seatCountInfo: { 'details': {}, 'count': 0 },
-                autoSave: null,
-            }
-        },
-        methods: {
-            /* 
+export default {
+    'name': 'window',
+    components: { 
+        Vue3DraggableResizable,
+        properties,
+        circularSeatplanComponent,
+        rectangularSeatplanComponent,
+        trapezoidSeatplanComponent,
+        stagesSeatplanComponent,
+        standingSeatplanComponent,
+        textFieldSeatplanComponent,
+        notifications,
+    },
+    data() {
+        return {
+            active: 0,
+            draggables: { 1: { 'x': 100, 'y': 100, 'h': 100, 'w': 250, 'active': false, 'draggable': true, 'resizable': true, 'id': 1, 'origin': 1, 'shape': 'rectangular', 'type': 'seat', 'startingRow': 1, 'seatNumberingPosition': 1, 'sector': 'A', 'text': { 'text': 'TestText', 'textSize': 20, 'colour': '#20FFFF' }, 'numberingDirection': 'left', 'seatNumberingPosition': 1, 'category': '1' } },
+            available: { 'redo': false, 'undo': false },
+            scaleFactor: 1,
+            sizePoll: null,
+            prevSize: { 'h': window.innerHeight, 'w': window.innerWidth },
+            zoomFactor: 1,
+            historyPos: 0,
+            generalSettings: { 'namingScheme': 'numeric' },
+            seatCountInfo: { 'details': {}, 'count': 0 },
+            autoSave: null,
+        };
+    },
+    methods: {
+        /* 
                 Coords are from top left corner of box.
                 The below function is executed as the init hook (created hook)
                 of vue.js, so whenever this particular page is loaded.
@@ -96,355 +96,355 @@
                 browser that meets all the requirements for being able to use the editor
                 reliably according to testing done.
             */
-            runHook () {
-                if ( !sessionStorage.getItem( 'locationID' ) ) {
-                    this.$router.push( '/admin/events' );
-                }
-                let self = this;
-                this.zoomFactor = sessionStorage.getItem( 'zoom' ) ? parseFloat( sessionStorage.getItem( 'zoom' ) ) : 1;
+        runHook () {
+            if ( !sessionStorage.getItem( 'locationID' ) ) {
+                this.$router.push( '/admin/events' );
+            }
+            let self = this;
+            this.zoomFactor = sessionStorage.getItem( 'zoom' ) ? parseFloat( sessionStorage.getItem( 'zoom' ) ) : 1;
 
-                /* 
+            /* 
                     Keybinds:
                         - Delete: delete selected object
                         - Ctrl + S: Save
                         - Ctrl + Z: Undo
                         - Ctrl + Y: Redo
                 */
-                document.onkeydown = function ( event ) {
-                    if ( event.key === 'Delete' ) {
-                        event.preventDefault();
-                        self.deleteSelected();
-                    } else if ( event.ctrlKey && event.key === 's' ) {
-                        event.preventDefault();
-                        self.saveDraft();
-                    } else if ( ( event.ctrlKey && event.key === 'y' ) ) {
-                        event.preventDefault();
-                        self.historyOp( 'redo' );
-                    } else if ( event.ctrlKey && event.key === 'z' ) {
-                        event.preventDefault();
-                        self.historyOp( 'undo' );
-                    } else if ( event.ctrlKey && event.key === 'i' ) {
-                        event.preventDefault();
-                        self.addNewElement();
-                    } else if ( event.key === '+' ) {
-                        self.zoom( 0.2 );
-                    } else if ( event.key === '-' ) {
-                        self.zoom( -0.2 );
-                    } else  if ( event.key === '=' ) {
-                        self.zoom( 1 );
+            document.onkeydown = function ( event ) {
+                if ( event.key === 'Delete' ) {
+                    event.preventDefault();
+                    self.deleteSelected();
+                } else if ( event.ctrlKey && event.key === 's' ) {
+                    event.preventDefault();
+                    self.saveDraft();
+                } else if ( ( event.ctrlKey && event.key === 'y' ) ) {
+                    event.preventDefault();
+                    self.historyOp( 'redo' );
+                } else if ( event.ctrlKey && event.key === 'z' ) {
+                    event.preventDefault();
+                    self.historyOp( 'undo' );
+                } else if ( event.ctrlKey && event.key === 'i' ) {
+                    event.preventDefault();
+                    self.addNewElement();
+                } else if ( event.key === '+' ) {
+                    self.zoom( 0.2 );
+                } else if ( event.key === '-' ) {
+                    self.zoom( -0.2 );
+                } else  if ( event.key === '=' ) {
+                    self.zoom( 1 );
+                }
+            };
+
+            // Auto save every 60s (60K ms)
+            this.autoSave = setInterval( () => {
+                const options = {
+                    method: 'post',
+                    body: JSON.stringify( { 'data': { 'seatInfo': this.seatCountInfo, 'data': this.scaleDown( this.draggables ) }, 'location': sessionStorage.getItem( 'locationID' ) } ),
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'charset': 'utf-8'
                     }
                 };
-
-                // Auto save every 60s (60K ms)
-                this.autoSave = setInterval( () => {
-                    const options = {
-                        method: 'post',
-                        body: JSON.stringify( { 'data':{ 'seatInfo': this.seatCountInfo, 'data': this.scaleDown( this.draggables ) }, 'location': sessionStorage.getItem( 'locationID' ) } ),
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'charset': 'utf-8'
-                        }
-                    };
-                    fetch( localStorage.getItem( 'url' ) + '/admin/api/saveSeatplanDraft', options );
-                }, 60000 );
+                fetch( localStorage.getItem( 'url' ) + '/admin/api/saveSeatplanDraft', options );
+            }, 60000 );
                 
-                /* 
+            /* 
                 Calculate scale factor (this adds support for differently sized screens)
                 900px is the "default" height
                 */
                
-                let height = $( document ).height() * 0.8;
-                this.scaleFactor = ( height / 900 ) * this.zoomFactor;
+            let height = $( document ).height() * 0.8;
+            this.scaleFactor = ( height / 900 ) * this.zoomFactor;
                 
-                /* 
+            /* 
                     Load seatplan
                 */
-                fetch( localStorage.getItem( 'url' ) + '/admin/getAPI/getSeatplanDraft?location=' + sessionStorage.getItem( 'locationID' ) ).then( res => { 
-                    if ( res.status === 200 ) {
-                        res.json().then( data => {
-                            this.draggables = this.scaleUp( data.data );
-                            sessionStorage.setItem( 'seatplan', JSON.stringify( data.data ) );
-                            for ( let element in this.draggables ) {
-                                if ( this.draggables[ element ].active ) {
-                                    this.draggables[ element ].active = false;
-                                }
-                            }
-                        } );
-                    } else if ( res.status === 500 ) {
-                        if ( sessionStorage.getItem( 'seatplan' ) ) {
-                            this.draggables = this.scaleUp( JSON.parse( sessionStorage.getItem( 'seatplan' ) ) );
-                        }
+            fetch( localStorage.getItem( 'url' ) + '/admin/getAPI/getSeatplanDraft?location=' + sessionStorage.getItem( 'locationID' ) ).then( res => { 
+                if ( res.status === 200 ) {
+                    res.json().then( data => {
+                        this.draggables = this.scaleUp( data.data );
+                        sessionStorage.setItem( 'seatplan', JSON.stringify( data.data ) );
                         for ( let element in this.draggables ) {
                             if ( this.draggables[ element ].active ) {
                                 this.draggables[ element ].active = false;
                             }
                         }
+                    } );
+                } else if ( res.status === 500 ) {
+                    if ( sessionStorage.getItem( 'seatplan' ) ) {
+                        this.draggables = this.scaleUp( JSON.parse( sessionStorage.getItem( 'seatplan' ) ) );
                     }
-                } );
-
-                if ( !sessionStorage.getItem( 'seatplan-history' ) ) {
-                    sessionStorage.setItem( 'seatplan-history', JSON.stringify( { '1': this.scaleDown( this.draggables ) } ) );
+                    for ( let element in this.draggables ) {
+                        if ( this.draggables[ element ].active ) {
+                            this.draggables[ element ].active = false;
+                        }
+                    }
                 }
+            } );
 
-                let history = sessionStorage.getItem( 'seatplan-history' ) ? JSON.parse( sessionStorage.getItem( 'seatplan-history' ) ) : {};
-                let count = parseInt( Object.keys( history ).length );
+            if ( !sessionStorage.getItem( 'seatplan-history' ) ) {
+                sessionStorage.setItem( 'seatplan-history', JSON.stringify( { '1': this.scaleDown( this.draggables ) } ) );
+            }
 
-                if ( count > parseInt( sessionStorage.getItem( 'historyPos' ) ) ) {
-                    this.available.redo = true;
-                }
+            let history = sessionStorage.getItem( 'seatplan-history' ) ? JSON.parse( sessionStorage.getItem( 'seatplan-history' ) ) : {};
+            let count = parseInt( Object.keys( history ).length );
 
-                if ( parseInt( sessionStorage.getItem( 'historyPos' ) ) > 0 ) {
-                    this.available.undo = true;
-                }
+            if ( count > parseInt( sessionStorage.getItem( 'historyPos' ) ) ) {
+                this.available.redo = true;
+            }
 
-                // if ( window.webpage.engine.trident ) {
-                //     alert( 'Welcome! We have detected that you are still using Internet Explorer or a similar browser. As a modern webapp, libreevent does NOT officially support Internet Explorer. If you run into problems whilst using this webapp, please switch to a modern browser like Firefox.' );
-                // } else if ( window.webpage.engine.presto ) {
-                //     alert( 'Welcome! We have detected that you are a very old version of Opera or related browser. As a modern webapp, libreevent does only support modern browsers. If you run into issues whilst using this webapp, please switch to a modern browser, like Firefox.' );
-                // } else if ( window.webpage.engine.webkit ) {
-                //     alert( 'Hello! Whilst tested with some versions of Webkit (the browser engine of Safari), support for this engine is still unofficial. Therefore we cannot guarantee that all the features of the seatplan editor function as they should. If you run into problems, please contact us through the link provided in the documentation.' );
-                // }
-                this.save();
-            },
-            eventHandler ( e ) {
-                if ( this.prevSize.h != window.innerHeight || this.prevSize.w != window.innerWidth ) {
-                    this.prevSize = { 'h': window.innerHeight, 'w': window.innerWidth };
-                    this.loadSeatplan();
-                }
-            },
-            loadSeatplan () {
-                /* 
+            if ( parseInt( sessionStorage.getItem( 'historyPos' ) ) > 0 ) {
+                this.available.undo = true;
+            }
+
+            // if ( window.webpage.engine.trident ) {
+            //     alert( 'Welcome! We have detected that you are still using Internet Explorer or a similar browser. As a modern webapp, libreevent does NOT officially support Internet Explorer. If you run into problems whilst using this webapp, please switch to a modern browser like Firefox.' );
+            // } else if ( window.webpage.engine.presto ) {
+            //     alert( 'Welcome! We have detected that you are a very old version of Opera or related browser. As a modern webapp, libreevent does only support modern browsers. If you run into issues whilst using this webapp, please switch to a modern browser, like Firefox.' );
+            // } else if ( window.webpage.engine.webkit ) {
+            //     alert( 'Hello! Whilst tested with some versions of Webkit (the browser engine of Safari), support for this engine is still unofficial. Therefore we cannot guarantee that all the features of the seatplan editor function as they should. If you run into problems, please contact us through the link provided in the documentation.' );
+            // }
+            this.save();
+        },
+        eventHandler ( e ) {
+            if ( this.prevSize.h != window.innerHeight || this.prevSize.w != window.innerWidth ) {
+                this.prevSize = { 'h': window.innerHeight, 'w': window.innerWidth };
+                this.loadSeatplan();
+            }
+        },
+        loadSeatplan () {
+            /* 
                     Calculate scale factor (this adds support for differently sized screens)
                     900px is the "default" height
                 */
 
-                let height = $( document ).height() * 0.8;
-                this.scaleFactor = ( height / 900 ) * this.zoomFactor;
+            let height = $( document ).height() * 0.8;
+            this.scaleFactor = ( height / 900 ) * this.zoomFactor;
 
-                if ( sessionStorage.getItem( 'seatplan' ) ) {
-                    this.draggables = this.scaleUp( JSON.parse( sessionStorage.getItem( 'seatplan' ) ) );
-                }
+            if ( sessionStorage.getItem( 'seatplan' ) ) {
+                this.draggables = this.scaleUp( JSON.parse( sessionStorage.getItem( 'seatplan' ) ) );
+            }
 
 
-                for ( let element in this.draggables ) {
-                    if ( this.draggables[ element ].active ) {
-                        this.draggables[ element ].active = false;
-                    }
+            for ( let element in this.draggables ) {
+                if ( this.draggables[ element ].active ) {
+                    this.draggables[ element ].active = false;
                 }
-            },
-            scaleDown ( valueArray ) {
-                const allowedAttributes = [ 'w', 'h', 'x', 'y' ]
-                let returnArray = {};
-                for ( let entry in valueArray ) {
-                    returnArray[ entry ] = {};
-                    for ( let attributes in valueArray[ entry ] ) {
-                        if ( allowedAttributes.includes( attributes ) ) {
-                            returnArray[ entry ][ attributes ] = Math.round( ( valueArray[ entry ][ attributes ] / this.scaleFactor ) * 1000 ) / 1000;
-                        } else {
-                            returnArray[ entry ][ attributes ] = valueArray[ entry ][ attributes ];
-                        }
-                    }
-                }
-                return returnArray;
-            },
-            scaleUp ( valueArray ) {
-                const allowedAttributes = [ 'w', 'h', 'x', 'y' ]
-                let returnArray = {};
-                for ( let entry in valueArray ) {
-                    returnArray[ entry ] = {};
-                    for ( let attributes in valueArray[ entry ] ) {
-                        if ( allowedAttributes.includes( attributes ) ) {
-                            returnArray[ entry ][ attributes ] = Math.round( ( valueArray[ entry ][ attributes ] * this.scaleFactor ) * 1000 ) / 1000;
-                        } else {
-                            returnArray[ entry ][ attributes ] = valueArray[ entry ][ attributes ];
-                        }
-                    }
-                }
-                return returnArray;
-            },
-            activateComponent ( id ) {
-                this.active = id;
-            },
-            saveHistory () {
-                let history = sessionStorage.getItem( 'seatplan-history' ) ? JSON.parse( sessionStorage.getItem( 'seatplan-history' ) ) : {};
-                let count = parseInt( Object.keys( history ).length + 1 );
-                this.historyPos = count;
-                if ( count - 1 > parseInt( sessionStorage.getItem( 'historyPos' ) ) ) {
-                    for ( let i = parseInt( sessionStorage.getItem( 'historyPos' ) ) + 1; i < count; i++ ) {
-                        delete history[ i ];
-                        this.available.redo = false;
-                    }
-                }
-                
-                count = parseInt( Object.keys( history ).length + 1 );
-                sessionStorage.setItem( 'historyPos', count );
-                history[ count ] = this.scaleDown( this.draggables );
-                sessionStorage.setItem( 'seatplan-history',  JSON.stringify( history ) );
-
-                if ( parseInt( sessionStorage.getItem( 'historyPos' ) ) > 1 ) {
-                    this.available.undo = true;
-                }
-
-                this.save();
-            },
-            historyOp ( action ) {
-                if ( action === 'undo' ) {
-                    if ( parseInt( sessionStorage.getItem( 'historyPos' ) ) > 1 ) {
-                        sessionStorage.setItem( 'historyPos', parseInt( sessionStorage.getItem( 'historyPos' ) ) - 1 );
-                        this.draggables = this.scaleUp( JSON.parse( sessionStorage.getItem( 'seatplan-history' ) )[ sessionStorage.getItem( 'historyPos' ) ] );
-                        this.available.redo = true;
-                        if ( parseInt( sessionStorage.getItem( 'historyPos' ) ) < 2 ) {
-                            this.available.undo = false;
-                        }
+            }
+        },
+        scaleDown ( valueArray ) {
+            const allowedAttributes = [ 'w', 'h', 'x', 'y' ];
+            let returnArray = {};
+            for ( let entry in valueArray ) {
+                returnArray[ entry ] = {};
+                for ( let attributes in valueArray[ entry ] ) {
+                    if ( allowedAttributes.includes( attributes ) ) {
+                        returnArray[ entry ][ attributes ] = Math.round( ( valueArray[ entry ][ attributes ] / this.scaleFactor ) * 1000 ) / 1000;
                     } else {
+                        returnArray[ entry ][ attributes ] = valueArray[ entry ][ attributes ];
+                    }
+                }
+            }
+            return returnArray;
+        },
+        scaleUp ( valueArray ) {
+            const allowedAttributes = [ 'w', 'h', 'x', 'y' ];
+            let returnArray = {};
+            for ( let entry in valueArray ) {
+                returnArray[ entry ] = {};
+                for ( let attributes in valueArray[ entry ] ) {
+                    if ( allowedAttributes.includes( attributes ) ) {
+                        returnArray[ entry ][ attributes ] = Math.round( ( valueArray[ entry ][ attributes ] * this.scaleFactor ) * 1000 ) / 1000;
+                    } else {
+                        returnArray[ entry ][ attributes ] = valueArray[ entry ][ attributes ];
+                    }
+                }
+            }
+            return returnArray;
+        },
+        activateComponent ( id ) {
+            this.active = id;
+        },
+        saveHistory () {
+            let history = sessionStorage.getItem( 'seatplan-history' ) ? JSON.parse( sessionStorage.getItem( 'seatplan-history' ) ) : {};
+            let count = parseInt( Object.keys( history ).length + 1 );
+            this.historyPos = count;
+            if ( count - 1 > parseInt( sessionStorage.getItem( 'historyPos' ) ) ) {
+                for ( let i = parseInt( sessionStorage.getItem( 'historyPos' ) ) + 1; i < count; i++ ) {
+                    delete history[ i ];
+                    this.available.redo = false;
+                }
+            }
+                
+            count = parseInt( Object.keys( history ).length + 1 );
+            sessionStorage.setItem( 'historyPos', count );
+            history[ count ] = this.scaleDown( this.draggables );
+            sessionStorage.setItem( 'seatplan-history',  JSON.stringify( history ) );
+
+            if ( parseInt( sessionStorage.getItem( 'historyPos' ) ) > 1 ) {
+                this.available.undo = true;
+            }
+
+            this.save();
+        },
+        historyOp ( action ) {
+            if ( action === 'undo' ) {
+                if ( parseInt( sessionStorage.getItem( 'historyPos' ) ) > 1 ) {
+                    sessionStorage.setItem( 'historyPos', parseInt( sessionStorage.getItem( 'historyPos' ) ) - 1 );
+                    this.draggables = this.scaleUp( JSON.parse( sessionStorage.getItem( 'seatplan-history' ) )[ sessionStorage.getItem( 'historyPos' ) ] );
+                    this.available.redo = true;
+                    if ( parseInt( sessionStorage.getItem( 'historyPos' ) ) < 2 ) {
                         this.available.undo = false;
                     }
-                } else if ( action === 'redo' ) {
-                    if ( parseInt( Object.keys( JSON.parse( sessionStorage.getItem( 'seatplan-history' ) ) ).length ) > parseInt( sessionStorage.getItem( 'historyPos' ) ) ) {
-                        sessionStorage.setItem( 'historyPos', parseInt( sessionStorage.getItem( 'historyPos' ) ) + 1 );
-                        this.draggables = this.scaleUp( JSON.parse( sessionStorage.getItem( 'seatplan-history' ) )[ sessionStorage.getItem( 'historyPos' ) ] );
-                        this.available.undo = true;
-                        if ( parseInt( Object.keys( JSON.parse( sessionStorage.getItem( 'seatplan-history' ) ) ).length ) < parseInt( sessionStorage.getItem( 'historyPos' ) ) + 1 ) {
-                            this.available.redo = false;
-                        }
-                    } else {
+                } else {
+                    this.available.undo = false;
+                }
+            } else if ( action === 'redo' ) {
+                if ( parseInt( Object.keys( JSON.parse( sessionStorage.getItem( 'seatplan-history' ) ) ).length ) > parseInt( sessionStorage.getItem( 'historyPos' ) ) ) {
+                    sessionStorage.setItem( 'historyPos', parseInt( sessionStorage.getItem( 'historyPos' ) ) + 1 );
+                    this.draggables = this.scaleUp( JSON.parse( sessionStorage.getItem( 'seatplan-history' ) )[ sessionStorage.getItem( 'historyPos' ) ] );
+                    this.available.undo = true;
+                    if ( parseInt( Object.keys( JSON.parse( sessionStorage.getItem( 'seatplan-history' ) ) ).length ) < parseInt( sessionStorage.getItem( 'historyPos' ) ) + 1 ) {
                         this.available.redo = false;
                     }
+                } else {
+                    this.available.redo = false;
                 }
-                this.historyPos = sessionStorage.getItem( 'historyPos' );
-            },
-            save () {
-                sessionStorage.setItem( 'seatplan', JSON.stringify( this.scaleDown( this.draggables ) ) );
-            },
-            saveDraft () {
-                if ( !this.getSeatCount() ) {
-                    this.$refs.notification.createNotification( 'Collision of seat count!', 10, 'error', 'normal' );
-                    return;
+            }
+            this.historyPos = sessionStorage.getItem( 'historyPos' );
+        },
+        save () {
+            sessionStorage.setItem( 'seatplan', JSON.stringify( this.scaleDown( this.draggables ) ) );
+        },
+        saveDraft () {
+            if ( !this.getSeatCount() ) {
+                this.$refs.notification.createNotification( 'Collision of seat count!', 10, 'error', 'normal' );
+                return;
+            }
+            let progressNotification = this.$refs.notification.createNotification( 'Saving as draft', 5, 'progress', 'normal' );
+            sessionStorage.setItem( 'seatplan', JSON.stringify( this.scaleDown( this.draggables ) ) );
+            const options = {
+                method: 'post',
+                body: JSON.stringify( { 'data': { 'seatInfo': this.seatCountInfo, 'data': this.scaleDown( this.draggables ) }, 'location': sessionStorage.getItem( 'locationID' ) } ),
+                headers: {
+                    'Content-Type': 'application/json',
+                    'charset': 'utf-8'
                 }
-                let progressNotification = this.$refs.notification.createNotification( 'Saving as draft', 5, 'progress', 'normal' );
-                sessionStorage.setItem( 'seatplan', JSON.stringify( this.scaleDown( this.draggables ) ) );
-                const options = {
-                    method: 'post',
-                    body: JSON.stringify( { 'data':{ 'seatInfo': this.seatCountInfo, 'data': this.scaleDown( this.draggables ) }, 'location': sessionStorage.getItem( 'locationID' ) } ),
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'charset': 'utf-8'
-                    }
-                };
-                fetch( localStorage.getItem( 'url' ) + '/admin/api/saveSeatplanDraft', options ).then( res => {
-                    if ( res.status === 200 ) {
-                        res.text().then( () => {
-                            this.$refs.notification.cancelNotification( progressNotification );
-                            this.$refs.notification.createNotification( 'Saved as draft', 5, 'ok', 'normal' );
-                        } );
-                    } else if ( res.status === 403 ) {
+            };
+            fetch( localStorage.getItem( 'url' ) + '/admin/api/saveSeatplanDraft', options ).then( res => {
+                if ( res.status === 200 ) {
+                    res.text().then( () => {
                         this.$refs.notification.cancelNotification( progressNotification );
-                        this.$refs.notification.createNotification( 'Unauthenticated', 5, 'ok', 'error' );
-                    }
-                } );
-            },
-            deploy () {
-                if ( !this.getSeatCount() ) {
-                    this.$refs.notification.createNotification( 'Collision of seat count!', 10, 'error', 'normal' );
-                    return;
+                        this.$refs.notification.createNotification( 'Saved as draft', 5, 'ok', 'normal' );
+                    } );
+                } else if ( res.status === 403 ) {
+                    this.$refs.notification.cancelNotification( progressNotification );
+                    this.$refs.notification.createNotification( 'Unauthenticated', 5, 'ok', 'error' );
                 }
-                let deployNotification = this.$refs.notification.createNotification( 'Deploying...', 5, 'progress', 'normal' );
-                const options = {
-                    method: 'post',
-                    body: JSON.stringify( { 'data':{ 'seatInfo': this.seatCountInfo, 'data': this.scaleDown( this.draggables ) }, 'location': sessionStorage.getItem( 'locationID' ) } ),
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'charset': 'utf-8'
-                    }
-                };
-                fetch( localStorage.getItem( 'url' ) + '/admin/api/saveSeatplan', options ).then( res => {
-                    if ( res.status === 200 ) {
-                        res.text().then( () => {
-                            this.$refs.notification.cancelNotification( deployNotification );
-                            this.$refs.notification.createNotification( 'Deployed successfully', 5, 'ok', 'normal' );
-                        } );
-                    } else if ( res.status === 403 ) {
+            } );
+        },
+        deploy () {
+            if ( !this.getSeatCount() ) {
+                this.$refs.notification.createNotification( 'Collision of seat count!', 10, 'error', 'normal' );
+                return;
+            }
+            let deployNotification = this.$refs.notification.createNotification( 'Deploying...', 5, 'progress', 'normal' );
+            const options = {
+                method: 'post',
+                body: JSON.stringify( { 'data': { 'seatInfo': this.seatCountInfo, 'data': this.scaleDown( this.draggables ) }, 'location': sessionStorage.getItem( 'locationID' ) } ),
+                headers: {
+                    'Content-Type': 'application/json',
+                    'charset': 'utf-8'
+                }
+            };
+            fetch( localStorage.getItem( 'url' ) + '/admin/api/saveSeatplan', options ).then( res => {
+                if ( res.status === 200 ) {
+                    res.text().then( () => {
                         this.$refs.notification.cancelNotification( deployNotification );
-                        this.$refs.notification.createNotification( 'Unauthenticated', 5, 'ok', 'error' );
-                    }
-                } );
-            },
-            addNewElement () {
-                this.draggables[ Object.keys( this.draggables ).length + 1 ] = { 'x': 100, 'y':100, 'h': 100, 'w': 250, 'active': false, 'draggable': true, 'resizable': true, 'id': ( Object.keys( this.draggables ).length + 1 ), 'origin': 1, 'shape':'rectangular', 'type': 'seat', 'startingRow': 1, 'seatNumberingPosition': Object.keys( this.draggables ).length, 'sector': 'A', 'text': { 'text': 'TestText', 'textSize': 20, 'colour': '#20FFFF' }, 'ticketCount': 1, 'numberingDirection': 'left', 'category': '1' };
-                this.saveHistory();
-                document.getElementById( 'parent' ).scrollTop = 0;
-                document.getElementById( 'parent' ).scrollLeft = 0;
-                this.$refs.notification.createNotification( 'New component added successfully', 5, 'ok', 'normal' );
-            },
-            deleteSelected () {
-                if ( this.active ) {
-                    this.draggables[ this.active ].active = true;
-                    if ( confirm( 'Do you really want to delete the selected item?' ) ) {
-                        delete this.draggables[ this.active ];
-                        this.saveHistory();
-                        this.active = 0;
-                        this.$refs.notification.createNotification( 'Successfully deleted component', 5, 'ok', 'normal' );
-                    }
-                } else {
-                    this.$refs.notification.createNotification( 'Please select a seat first!', 5, 'error', 'normal' );
+                        this.$refs.notification.createNotification( 'Deployed successfully', 5, 'ok', 'normal' );
+                    } );
+                } else if ( res.status === 403 ) {
+                    this.$refs.notification.cancelNotification( deployNotification );
+                    this.$refs.notification.createNotification( 'Unauthenticated', 5, 'ok', 'error' );
                 }
-            },
-            handleUpdate ( value ) {
-                this.draggables = value;
-                this.selectedObject = value;
-                this.saveHistory();
-            },
-            zoom ( scale ) {
-                if ( scale == 1 ) {
-                    this.zoomFactor = 1;
-                    sessionStorage.setItem( 'zoom', this.zoomFactor );
-                    this.loadSeatplan();
-                } else {
-                    if ( ( this.zoomFactor < 0.3 && scale < 0 ) || ( this.zoomFactor > 2.9 && scale > 0 ) ) {
-                        if ( this.zoomFactor < 0.3 ) {
-                            this.$refs.notification.createNotification( 'Minimum zoom factor reached', 5, 'warning', 'normal' );
-                        } else {
-                            this.$refs.notification.createNotification( 'Maximum zoom factor reached', 5, 'warning', 'normal' );
-                        }
+            } );
+        },
+        addNewElement () {
+            this.draggables[ Object.keys( this.draggables ).length + 1 ] = { 'x': 100, 'y': 100, 'h': 100, 'w': 250, 'active': false, 'draggable': true, 'resizable': true, 'id': ( Object.keys( this.draggables ).length + 1 ), 'origin': 1, 'shape': 'rectangular', 'type': 'seat', 'startingRow': 1, 'seatNumberingPosition': Object.keys( this.draggables ).length, 'sector': 'A', 'text': { 'text': 'TestText', 'textSize': 20, 'colour': '#20FFFF' }, 'ticketCount': 1, 'numberingDirection': 'left', 'category': '1' };
+            this.saveHistory();
+            document.getElementById( 'parent' ).scrollTop = 0;
+            document.getElementById( 'parent' ).scrollLeft = 0;
+            this.$refs.notification.createNotification( 'New component added successfully', 5, 'ok', 'normal' );
+        },
+        deleteSelected () {
+            if ( this.active ) {
+                this.draggables[ this.active ].active = true;
+                if ( confirm( 'Do you really want to delete the selected item?' ) ) {
+                    delete this.draggables[ this.active ];
+                    this.saveHistory();
+                    this.active = 0;
+                    this.$refs.notification.createNotification( 'Successfully deleted component', 5, 'ok', 'normal' );
+                }
+            } else {
+                this.$refs.notification.createNotification( 'Please select a seat first!', 5, 'error', 'normal' );
+            }
+        },
+        handleUpdate ( value ) {
+            this.draggables = value;
+            this.selectedObject = value;
+            this.saveHistory();
+        },
+        zoom ( scale ) {
+            if ( scale == 1 ) {
+                this.zoomFactor = 1;
+                sessionStorage.setItem( 'zoom', this.zoomFactor );
+                this.loadSeatplan();
+            } else {
+                if ( ( this.zoomFactor < 0.3 && scale < 0 ) || ( this.zoomFactor > 2.9 && scale > 0 ) ) {
+                    if ( this.zoomFactor < 0.3 ) {
+                        this.$refs.notification.createNotification( 'Minimum zoom factor reached', 5, 'warning', 'normal' );
                     } else {
-                        this.zoomFactor += scale;
+                        this.$refs.notification.createNotification( 'Maximum zoom factor reached', 5, 'warning', 'normal' );
                     }
-                    sessionStorage.setItem( 'zoom', this.zoomFactor );
-                    this.loadSeatplan();
+                } else {
+                    this.zoomFactor += scale;
                 }
-            },
-            handleSeatCountInfo ( info ) {
-                this.seatCountInfo[ 'details' ][ info.id ] = info.data;
-                this.seatCountInfo[ 'details' ][ info.id ][ 'startingRow' ] = this.draggables[ info.id ].startingRow;
-            },
-            getSeatCount () {
-                this.seatCountInfo[ 'count' ] = document.getElementsByClassName( 'seats' ).length;
-                for ( let draggable in this.draggables ) {
-                    if ( this.draggables[ draggable ][ 'ticketCount' ] ) {
-                        this.seatCountInfo[ 'count' ] += this.draggables[ draggable ][ 'ticketCount' ];
-                    }
+                sessionStorage.setItem( 'zoom', this.zoomFactor );
+                this.loadSeatplan();
+            }
+        },
+        handleSeatCountInfo ( info ) {
+            this.seatCountInfo[ 'details' ][ info.id ] = info.data;
+            this.seatCountInfo[ 'details' ][ info.id ][ 'startingRow' ] = this.draggables[ info.id ].startingRow;
+        },
+        getSeatCount () {
+            this.seatCountInfo[ 'count' ] = document.getElementsByClassName( 'seats' ).length;
+            for ( let draggable in this.draggables ) {
+                if ( this.draggables[ draggable ][ 'ticketCount' ] ) {
+                    this.seatCountInfo[ 'count' ] += this.draggables[ draggable ][ 'ticketCount' ];
                 }
-                // Remap seat count info
-                this.seatCountInfo[ 'data' ] = {};
-                for ( let element in this.seatCountInfo[ 'details' ] ) {
-                    if ( !this.seatCountInfo[ 'data' ][ this.draggables[ 1 ].sector ] ) {
-                        this.seatCountInfo[ 'data' ][ this.draggables[ 1 ].sector ] = {};
-                    }
-                    if ( this.seatCountInfo[ 'data' ][ this.draggables[ 1 ].sector ][ this.draggables[ element ].seatNumberingPosition ] ) return false;
-                    this.seatCountInfo[ 'data' ][ this.draggables[ 1 ].sector ][ this.draggables[ element ].seatNumberingPosition ] = this.seatCountInfo[ 'details' ][ element ];
+            }
+            // Remap seat count info
+            this.seatCountInfo[ 'data' ] = {};
+            for ( let element in this.seatCountInfo[ 'details' ] ) {
+                if ( !this.seatCountInfo[ 'data' ][ this.draggables[ 1 ].sector ] ) {
+                    this.seatCountInfo[ 'data' ][ this.draggables[ 1 ].sector ] = {};
                 }
-                return true;
-            },
+                if ( this.seatCountInfo[ 'data' ][ this.draggables[ 1 ].sector ][ this.draggables[ element ].seatNumberingPosition ] ) return false;
+                this.seatCountInfo[ 'data' ][ this.draggables[ 1 ].sector ][ this.draggables[ element ].seatNumberingPosition ] = this.seatCountInfo[ 'details' ][ element ];
+            }
+            return true;
         },
-        created () {
-            this.runHook();
-            this.sizePoll = setInterval( this.eventHandler, 250 );
-        },
-        unmounted() {
-            clearInterval( this.sizePoll );
-            clearInterval( this.autoSave );
-        },
-    }
+    },
+    created () {
+        this.runHook();
+        this.sizePoll = setInterval( this.eventHandler, 250 );
+    },
+    unmounted() {
+        clearInterval( this.sizePoll );
+        clearInterval( this.autoSave );
+    },
+};
 </script>
 
 <style scoped>

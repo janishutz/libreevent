@@ -7,9 +7,9 @@
 *
 */
 
-import { defineStore } from "pinia";
+import { defineStore } from 'pinia';
 
-export const useUserStore = defineStore ( 'user', {
+export const useUserStore = defineStore( 'user', {
     state: () => ( { 'isUserAuth': false, 'isAdminAuth': false, 'userData': {}, 'isTwoFACompliantUser': false, 'isTwoFACompliantAdmin': false, 'pageName': 'libreevent' } ),
     getters: {
         getUserAuthenticated: ( state ) => state.isUserAuth,

@@ -169,7 +169,7 @@ export default {
     data () {
         return {
             theme: '',
-        }
+        };
     },
     methods: {
         changeTheme () {
@@ -211,5 +211,5 @@ solution. Your help is greatly appreciated by the team as well as all its users!
 => https://libreevent.janishutz.com/
         ` );
     }
-}
+};
 </script>

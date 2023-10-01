@@ -210,45 +210,45 @@
 </style>
 
 <script>
-    import { useUserStore } from '@/stores/userStore';
-    import { mapStores } from 'pinia';
+import { useUserStore } from '@/stores/userStore';
+import { mapStores } from 'pinia';
 
-    export default {
-        data () {
-            return {
-                formData: {}
+export default {
+    data () {
+        return {
+            formData: {}
+        };
+    },
+    computed: {
+        ...mapStores( useUserStore )
+    },
+    methods: {
+        logout () {
+            if ( confirm( 'Do you really want to log out?' ) ) {
+                fetch( '/admin/logout' ).then( _ => {
+                    this.userStore.setAdminAuth( false );
+                    this.$router.push( '/admin/login' );
+                } );
             }
         },
-        computed: {
-            ...mapStores( useUserStore )
-        },
-        methods: {
-            logout () {
-                if ( confirm( 'Do you really want to log out?' ) ) {
-                    fetch( '/admin/logout' ).then( _ => {
-                        this.userStore.setAdminAuth( false );
-                        this.$router.push( '/admin/login' );
-                    } );
-                }
-            },
-            navMenu ( action ) {
-                if ( screen.width < 1300 ) {
-                    if ( action === 'toggle' ) {
-                        $( '.side-nav' ).toggle( 300 );
-                        $( '.hideNav' ).toggleClass( 'navHidden' );
-                        $( '.backdrop' ).toggle( 300 );
-                    } else if ( action === 'show' ) {
-                        $( '.backdrop' ).show( 300 );
-                        $( '.side-nav' ).show( 300 );
-                        $( '.hideNav' ).removeClass( 'navHidden' );
-                    } else {
-                        $( '.side-nav' ).hide( 300 );
-                        $( '.backdrop' ).hide( 300 );
-                        $( '.hideNav' ).addClass( 'navHidden' );
-                    }
+        navMenu ( action ) {
+            if ( screen.width < 1300 ) {
+                if ( action === 'toggle' ) {
+                    $( '.side-nav' ).toggle( 300 );
+                    $( '.hideNav' ).toggleClass( 'navHidden' );
+                    $( '.backdrop' ).toggle( 300 );
+                } else if ( action === 'show' ) {
+                    $( '.backdrop' ).show( 300 );
+                    $( '.side-nav' ).show( 300 );
+                    $( '.hideNav' ).removeClass( 'navHidden' );
+                } else {
+                    $( '.side-nav' ).hide( 300 );
+                    $( '.backdrop' ).hide( 300 );
+                    $( '.hideNav' ).addClass( 'navHidden' );
                 }
             }
         }
-    };
+    }
+};
 </script>
 

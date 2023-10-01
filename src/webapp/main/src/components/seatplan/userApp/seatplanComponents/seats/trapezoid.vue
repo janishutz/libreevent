@@ -34,37 +34,37 @@ export default {
     props: {
         h: {
             type: Number,
-            "default": 100,
+            'default': 100,
         },
         w: {
             type: Number,
-            "default": 200,
+            'default': 200,
         },
         scaleFactor: {
             type: Number,
-            "default": 1,
+            'default': 1,
         },
         origin: {
             type: Number,
-            "default": 1,
+            'default': 1,
         },
         startingRow: {
             type: Number,
-            "default": 1,
+            'default': 1,
         },
         data: {
             type: Object,
-            "default": { 'sector': 'A', 'sectorCount': 1, 'unavailableSeats': { 'secAr0s0': 'nav' }, 'categoryInfo': { 'pricing': { '1': { 'displayName': 'Adults - CHF 20.-', 'value': '1', 'price': 20 }, '2': { 'displayName': 'Child (0 - 15.99y) - CHF 15.-', 'value': '2', 'price': 15 } } } }
+            'default': { 'sector': 'A', 'sectorCount': 1, 'unavailableSeats': { 'secAr0s0': 'nav' }, 'categoryInfo': { 'pricing': { '1': { 'displayName': 'Adults - CHF 20.-', 'value': '1', 'price': 20 }, '2': { 'displayName': 'Child (0 - 15.99y) - CHF 15.-', 'value': '2', 'price': 15 } } } }
         },
         id: {
             type: Number,
-            "default": 1,
+            'default': 1,
         }
     },
     data () {
         return {
             seats: {},
-        }
+        };
     },
     methods: {
         calculateChairs () {
@@ -87,7 +87,7 @@ export default {
             let h = Math.round( this.h / this.scaleFactor );
             const size = 33;
             let side = Math.min( w, h ) + 20;
-            let heightTriangle = Math.floor( Math.sqrt( side ** 2 - ( Math.sqrt( side ** 2 * 2 ) / 2 ) ) )
+            let heightTriangle = Math.floor( Math.sqrt( side ** 2 - ( Math.sqrt( side ** 2 * 2 ) / 2 ) ) );
             let sideOffset = size / Math.sqrt( 2 );
             let count = Math.floor( heightTriangle / ( sideOffset * 2 ) );
             const angle = Math.PI / 4;
@@ -178,6 +178,6 @@ export default {
     created() {
         this.calculateChairs();
     }
-}
+};
 </script>
 

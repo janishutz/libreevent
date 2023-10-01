@@ -24,7 +24,7 @@ export default {
     data() {
         return {
             options: {},
-        }
+        };
     },
     methods: {
         openRightClickMenu( event, options ) {
@@ -45,7 +45,7 @@ export default {
             this.$emit( 'command', command );
         }
     }
-}
+};
 </script>
 
 <style scoped>

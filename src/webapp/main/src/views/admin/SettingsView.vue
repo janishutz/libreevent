@@ -54,400 +54,400 @@
 </template>
 
 <script>
-    import settings from '@/components/settings/settings.vue';
-    import popups from '@/components/notifications/popups.vue';
-    import rightClickMenu from '@/components/settings/rightClickMenu.vue';
-    import notifications from '@/components/notifications/notifications.vue';
+import settings from '@/components/settings/settings.vue';
+import popups from '@/components/notifications/popups.vue';
+import rightClickMenu from '@/components/settings/rightClickMenu.vue';
+import notifications from '@/components/notifications/notifications.vue';
 
-    export default {
-        name: 'adminSettingsView',
-        components: {
-            settings,
-            popups,
-            rightClickMenu,
-            notifications,
+export default {
+    name: 'adminSettingsView',
+    components: {
+        settings,
+        popups,
+        rightClickMenu,
+        notifications,
+    },
+    data () {
+        return {
+            adminAccounts: { 'janis': { 'username': 'janis', 'email': 'info@janishutz.com', 'permissions': [  ] }, 'admin': { 'username': 'admin', 'email': 'development@janishutz.com', 'permissions': [  ] } },
+            currentlyOpenMenu: '',
+            currentPopup: '',
+            settings: { 
+                '2fa': { 
+                    'display': 'Require Two-Factor-Authentication of user', 
+                    'id': '2fa', 
+                    'tooltip': 'Control whether or not users are required to use Two-Factor-Authentication. Defaults to "User can decide", which is recommended', 
+                    'value': 'enforce',
+                    'type': 'select',
+                    'restrictions': {
+                        'enforce': { 
+                            'displayName': 'Always require',
+                            'value': 'enforce'
+                        },
+                        'allow': { 
+                            'displayName': 'User can decide',
+                            'value': 'allow'
+                        },
+                        'disable': { 
+                            'displayName': 'Disable',
+                            'value': 'disable'
+                        },
+                    }
+                },
+                'currency': { 
+                    'display': 'Currency', 
+                    'id': 'currency', 
+                    'tooltip': 'Specify a currency in which the prices are displayed to the customer. Defaults to USD. Please use valid currency codes.', 
+                    'value': 'USD',
+                    'type': 'text',
+                },
+                'ticketTimeout': { 
+                    'display': 'Ticket Timeout (s)', 
+                    'id': 'ticketTimeout', 
+                    'tooltip': 'Specify how long the user has to be inactive for their order to be canceled. Time is to be specified in seconds', 
+                    'value': 900,
+                    'type': 'number',
+                    'restrictions': {
+                        'min': 0,
+                        'max': 10000,
+                    }
+                },
+                'paymentGateway': { 
+                    'display': 'Select the payment gateway to use', 
+                    'id': 'paymentGateway', 
+                    'tooltip': 'With this setting you may change which payment gateway you want to use. You will need to provide details below! If you are not sure what this setting means, please click the link below.', 
+                    'value': 'stripe',
+                    'type': 'select',
+                    'restrictions': {
+                        'payrexx': { 
+                            'displayName': 'Payrexx',
+                            'value': 'payrexx'
+                        },
+                        'stripe': { 
+                            'displayName': 'Stripe',
+                            'value': 'stripe'
+                        },
+                    }
+                },
+                // 'addressRequired': { 
+                //     'display': 'Require user to provide address?', 
+                //     'id': 'addressRequired', 
+                //     'tooltip':'With this toggle you may specify whether or not a user has to provide their address when purchasing something. (Keep GDPR in mind when processing data!)', 
+                //     'value': false,
+                //     'type': 'toggle',
+                // },
+                // 'phoneNumberRequired': { 
+                //     'display': 'Require user to provide phone number?', 
+                //     'id': 'phoneNumberRequired', 
+                //     'tooltip':'With this toggle you may specify whether or not a user has to provide their phone number when purchasing something. (Keep GDPR in mind when processing data!)', 
+                //     'value': false,
+                //     'type': 'toggle',
+                // },
+                // 'dobRequired': { 
+                //     'display': 'Require user to provide their birth date?', 
+                //     'id': 'dobRequired', 
+                //     'tooltip':'With this toggle you may specify whether or not a user has to provide their date of birth when purchasing something. (Keep GDPR in mind when processing data!)', 
+                //     'value': false,
+                //     'type': 'toggle',
+                // },
+            }
+        };
+    },
+    methods: {
+        showAccountSettings ( account ) {
+            this.currentPopup = 'permissions';
+            this.$refs.popup.openPopup( 'Edit user permissions for ' + this.adminAccounts[ account ][ 'username' ], {
+                'pagesSettings': { 
+                    'display': 'Modify pages', 
+                    'id': 'pagesSettings', 
+                    'tooltip': 'Change this setting to allow or disallow the selected user to access and change any settings of pages like the start page.', 
+                    'value': false,
+                    'type': 'toggle',
+                },
+                'locationsSettings': { 
+                    'display': 'Location settings and seat plans', 
+                    'id': 'locationsSettings', 
+                    'tooltip': 'Change this setting to allow or disallow the selected user to modify, delete or create locations with their corresponding seat plans.', 
+                    'value': false,
+                    'type': 'toggle',
+                },
+                'plugins': { 
+                    'display': 'Plugin management', 
+                    'id': 'plugins', 
+                    'tooltip': 'Change this setting to allow or disallow the selected user to install or uninstall plugins. Some plugins might allow you to set extra permissions inside of their settings panels', 
+                    'value': false,
+                    'type': 'toggle',
+                },
+                'events': { 
+                    'display': 'Event management', 
+                    'id': 'events', 
+                    'tooltip': 'Change this setting to allow or disallow the selected user to install or uninstall plugins. Some plugins might allow you to set extra permissions inside of their settings panels', 
+                    'value': false,
+                    'type': 'toggle',
+                },
+            }
+            , 'settings' );
         },
-        data () {
-            return {
-                adminAccounts: { 'janis': { 'username': 'janis', 'email': 'info@janishutz.com', 'permissions': [  ] }, 'admin': { 'username': 'admin', 'email': 'development@janishutz.com', 'permissions': [  ] } },
-                currentlyOpenMenu: '',
-                currentPopup: '',
-                settings: { 
-                    '2fa': { 
-                        'display': 'Require Two-Factor-Authentication of user', 
-                        'id': '2fa', 
-                        'tooltip':'Control whether or not users are required to use Two-Factor-Authentication. Defaults to "User can decide", which is recommended', 
-                        'value': 'enforce',
-                        'type': 'select',
-                        'restrictions': {
-                            'enforce': { 
-                                'displayName':'Always require',
-                                'value': 'enforce'
-                            },
-                            'allow': { 
-                                'displayName':'User can decide',
-                                'value': 'allow'
-                            },
-                            'disable': { 
-                                'displayName':'Disable',
-                                'value': 'disable'
-                            },
-                        }
-                    },
-                    'currency': { 
-                        'display': 'Currency', 
-                        'id': 'currency', 
-                        'tooltip':'Specify a currency in which the prices are displayed to the customer. Defaults to USD. Please use valid currency codes.', 
-                        'value': 'USD',
-                        'type': 'text',
-                    },
-                    'ticketTimeout': { 
-                        'display': 'Ticket Timeout (s)', 
-                        'id': 'ticketTimeout', 
-                        'tooltip': 'Specify how long the user has to be inactive for their order to be canceled. Time is to be specified in seconds', 
-                        'value': 900,
-                        'type': 'number',
-                        'restrictions': {
-                            'min': 0,
-                            'max': 10000,
-                        }
-                    },
-                    'paymentGateway': { 
-                        'display': 'Select the payment gateway to use', 
-                        'id': 'paymentGateway', 
-                        'tooltip':'With this setting you may change which payment gateway you want to use. You will need to provide details below! If you are not sure what this setting means, please click the link below.', 
-                        'value': 'stripe',
-                        'type': 'select',
-                        'restrictions': {
-                            'payrexx': { 
-                                'displayName':'Payrexx',
-                                'value': 'payrexx'
-                            },
-                            'stripe': { 
-                                'displayName':'Stripe',
-                                'value': 'stripe'
-                            },
-                        }
-                    },
-                    // 'addressRequired': { 
-                    //     'display': 'Require user to provide address?', 
-                    //     'id': 'addressRequired', 
-                    //     'tooltip':'With this toggle you may specify whether or not a user has to provide their address when purchasing something. (Keep GDPR in mind when processing data!)', 
-                    //     'value': false,
-                    //     'type': 'toggle',
-                    // },
-                    // 'phoneNumberRequired': { 
-                    //     'display': 'Require user to provide phone number?', 
-                    //     'id': 'phoneNumberRequired', 
-                    //     'tooltip':'With this toggle you may specify whether or not a user has to provide their phone number when purchasing something. (Keep GDPR in mind when processing data!)', 
-                    //     'value': false,
-                    //     'type': 'toggle',
-                    // },
-                    // 'dobRequired': { 
-                    //     'display': 'Require user to provide their birth date?', 
-                    //     'id': 'dobRequired', 
-                    //     'tooltip':'With this toggle you may specify whether or not a user has to provide their date of birth when purchasing something. (Keep GDPR in mind when processing data!)', 
-                    //     'value': false,
-                    //     'type': 'toggle',
-                    // },
+        showPasswordSettings ( account ) {
+            this.currentlyOpenMenu = account;
+            this.currentPopup = 'account';
+            this.$refs.popup.openPopup( 'Edit user settings for ' + this.adminAccounts[ account ][ 'username' ], {
+                'username': { 
+                    'display': 'Username', 
+                    'id': 'username', 
+                    'tooltip': 'Change the username for this user.', 
+                    'value': this.adminAccounts[ account ][ 'username' ],
+                    'type': 'text',
+                },
+                'pass': { 
+                    'display': 'Password', 
+                    'id': 'pass', 
+                    'tooltip': 'Change the password for this user.', 
+                    'value': '',
+                    'type': 'password',
+                },
+            }, 'settings' );
+        },
+        showPaymentSettings () {
+            this.currentPopup = 'payments';
+            fetch( '/admin/getAPI/getPaymentGatewaySettings' ).then( res => {
+                if ( res.status === 200 ) {
+                    res.json().then( json => {
+                        this.$refs.popup.openPopup( 'Payment gateway settings for ' + json.gateway, json.data, 'settings' );
+                    } );
+                } else if ( res.status === 500 ) {
+                    this.$refs.notification.createNotification( 'This payment gateway does not appear to have settings', 10, 'error', 'normal' );
                 }
+            } );
+        },
+        createAccount() {
+            this.currentPopup = 'createAccount';
+            this.$refs.popup.openPopup( 'Create new admin user', {
+                // 'role': { 
+                //     'display': 'User role',
+                //     'id': 'role',
+                //     'tooltip':'With this setting you can choose one of the preset permissions for users. Account management is only allowed for the root user.', 
+                //     'value': 'eventManager',
+                //     'type': 'select',
+                //     'restrictions': {
+                //         'fullAccess': { 
+                //             'value': 'fullAccess',
+                //             'displayName': 'Full Access'
+                //         },
+                //         'eventManager': { 
+                //             'value': 'eventManager',
+                //             'displayName': 'Event Manager'
+                //         },
+                //         'entryControl': { 
+                //             'value': 'entryControl',
+                //             'displayName': 'Entry Control'
+                //         }
+                //     }
+                // },
+                'username': { 
+                    'display': 'Username', 
+                    'id': 'username', 
+                    'tooltip': 'Add a username for this user', 
+                    'value': '',
+                    'type': 'text',
+                },
+                'email': { 
+                    'display': 'Email', 
+                    'id': 'email', 
+                    'tooltip': 'Add an email-address for this user', 
+                    'value': '',
+                    'type': 'text',
+                },
+                'pass': { 
+                    'display': 'Password', 
+                    'id': 'pass', 
+                    'tooltip': 'Create a password for this user.', 
+                    'value': '',
+                    'type': 'password',
+                },
+                'two_fa': { 
+                    'display': 'Two Factor Authentication',
+                    'id': 'two_fa',
+                    'tooltip': 'With this setting you may change the 2FA Authentication should work for this user. Enhanced requires the user to enter a code, simple solely to click a link', 
+                    'value': 'enhanced',
+                    'type': 'select',
+                    'restrictions': {
+                        'enhanced': { 
+                            'value': 'enhanced',
+                            'displayName': 'Enhanced'
+                        },
+                        'eventManager': { 
+                            'value': 'simple',
+                            'displayName': 'Simple'
+                        },
+                        'disabled': { 
+                            'value': 'disabled',
+                            'displayName': 'Disabled'
+                        }
+                    }
+                },
+            }
+            , 'settings' );
+        },
+        executeCommand( command ) {
+            // if ( command === 'openPermissions' ) {
+            //     this.currentPopup = 'account';
+            //     this.showAccountSettings( this.currentlyOpenMenu );
+            // } else 
+            if ( command === 'deleteUser' ) {
+                this.currentPopup = 'deleteUser';
+                this.$refs.popup.openPopup( 'Do you really want to delete the user ' + this.currentlyOpenMenu + '?', {}, 'confirm' );
+            } else if ( command === 'updatePassword' ) {
+                this.currentPopup = 'deleteUser';
+                this.showPasswordSettings( this.currentlyOpenMenu );
             }
         },
-        methods: {
-            showAccountSettings ( account ) {
-                this.currentPopup = 'permissions';
-                this.$refs.popup.openPopup( 'Edit user permissions for ' + this.adminAccounts[ account ][ 'username' ], {
-                    'pagesSettings': { 
-                        'display': 'Modify pages', 
-                        'id': 'pagesSettings', 
-                        'tooltip':'Change this setting to allow or disallow the selected user to access and change any settings of pages like the start page.', 
-                        'value': false,
-                        'type': 'toggle',
-                    },
-                    'locationsSettings': { 
-                        'display': 'Location settings and seat plans', 
-                        'id': 'locationsSettings', 
-                        'tooltip':'Change this setting to allow or disallow the selected user to modify, delete or create locations with their corresponding seat plans.', 
-                        'value': false,
-                        'type': 'toggle',
-                    },
-                    'plugins': { 
-                        'display': 'Plugin management', 
-                        'id': 'plugins', 
-                        'tooltip':'Change this setting to allow or disallow the selected user to install or uninstall plugins. Some plugins might allow you to set extra permissions inside of their settings panels', 
-                        'value': false,
-                        'type': 'toggle',
-                    },
-                    'events': { 
-                        'display': 'Event management', 
-                        'id': 'events', 
-                        'tooltip':'Change this setting to allow or disallow the selected user to install or uninstall plugins. Some plugins might allow you to set extra permissions inside of their settings panels', 
-                        'value': false,
-                        'type': 'toggle',
-                    },
-                }
-            , 'settings' );
-            },
-            showPasswordSettings ( account ) {
-                this.currentlyOpenMenu = account;
-                this.currentPopup = 'account';
-                this.$refs.popup.openPopup( 'Edit user settings for ' + this.adminAccounts[ account ][ 'username' ], {
-                    'username': { 
-                        'display': 'Username', 
-                        'id': 'username', 
-                        'tooltip':'Change the username for this user.', 
-                        'value': this.adminAccounts[ account ][ 'username' ],
-                        'type': 'text',
-                    },
-                    'pass': { 
-                        'display': 'Password', 
-                        'id': 'pass', 
-                        'tooltip':'Change the password for this user.', 
-                        'value': '',
-                        'type': 'password',
-                    },
-                }, 'settings' );
-            },
-            showPaymentSettings () {
-                this.currentPopup = 'payments';
-                fetch( '/admin/getAPI/getPaymentGatewaySettings' ).then( res => {
-                    if ( res.status === 200 ) {
-                        res.json().then( json => {
-                            this.$refs.popup.openPopup( 'Payment gateway settings for ' + json.gateway, json.data, 'settings' );
-                        } );
-                    } else if ( res.status === 500 ) {
-                        this.$refs.notification.createNotification( 'This payment gateway does not appear to have settings', 10, 'error', 'normal' );
-                    }
-                } );
-            },
-            createAccount() {
-                this.currentPopup = 'createAccount';
-                this.$refs.popup.openPopup( 'Create new admin user', {
-                    // 'role': { 
-                    //     'display': 'User role',
-                    //     'id': 'role',
-                    //     'tooltip':'With this setting you can choose one of the preset permissions for users. Account management is only allowed for the root user.', 
-                    //     'value': 'eventManager',
-                    //     'type': 'select',
-                    //     'restrictions': {
-                    //         'fullAccess': { 
-                    //             'value': 'fullAccess',
-                    //             'displayName': 'Full Access'
-                    //         },
-                    //         'eventManager': { 
-                    //             'value': 'eventManager',
-                    //             'displayName': 'Event Manager'
-                    //         },
-                    //         'entryControl': { 
-                    //             'value': 'entryControl',
-                    //             'displayName': 'Entry Control'
-                    //         }
-                    //     }
-                    // },
-                    'username': { 
-                        'display': 'Username', 
-                        'id': 'username', 
-                        'tooltip':'Add a username for this user', 
-                        'value': '',
-                        'type': 'text',
-                    },
-                    'email': { 
-                        'display': 'Email', 
-                        'id': 'email', 
-                        'tooltip':'Add an email-address for this user', 
-                        'value': '',
-                        'type': 'text',
-                    },
-                    'pass': { 
-                        'display': 'Password', 
-                        'id': 'pass', 
-                        'tooltip':'Create a password for this user.', 
-                        'value': '',
-                        'type': 'password',
-                    },
-                    'two_fa': { 
-                        'display': 'Two Factor Authentication',
-                        'id': 'two_fa',
-                        'tooltip':'With this setting you may change the 2FA Authentication should work for this user. Enhanced requires the user to enter a code, simple solely to click a link', 
-                        'value': 'enhanced',
-                        'type': 'select',
-                        'restrictions': {
-                            'enhanced': { 
-                                'value': 'enhanced',
-                                'displayName': 'Enhanced'
-                            },
-                            'eventManager': { 
-                                'value': 'simple',
-                                'displayName': 'Simple'
-                            },
-                            'disabled': { 
-                                'value': 'disabled',
-                                'displayName': 'Disabled'
-                            }
+        handlePopupReturns( data ) {
+            if ( data.status === 'cancel' ) {
+                return;
+            } else if ( data.status === 'settings' ) {
+                if ( this.currentPopup === 'account' ) { 
+                    if ( data.data.username != '' ) {
+                        let updatedData = data.data;
+                        if ( updatedData.pass == '' ) {
+                            delete updatedData[ 'pass' ];
                         }
-                    },
-                }
-            , 'settings' );
-            },
-            executeCommand( command ) {
-                // if ( command === 'openPermissions' ) {
-                //     this.currentPopup = 'account';
-                //     this.showAccountSettings( this.currentlyOpenMenu );
-                // } else 
-                if ( command === 'deleteUser' ) {
-                    this.currentPopup = 'deleteUser';
-                    this.$refs.popup.openPopup( 'Do you really want to delete the user ' + this.currentlyOpenMenu + '?', {}, 'confirm' );
-                } else if ( command === 'updatePassword' ) {
-                    this.currentPopup = 'deleteUser';
-                    this.showPasswordSettings( this.currentlyOpenMenu );
-                }
-            },
-            handlePopupReturns( data ) {
-                if ( data.status === 'cancel' ) {
-                    return;
-                } else if ( data.status === 'settings' ) {
-                    if ( this.currentPopup === 'account' ) { 
-                        if ( data.data.username != '' ) {
-                            let updatedData = data.data;
-                            if ( updatedData.pass == '' ) {
-                                delete updatedData[ 'pass' ];
-                            }
-                            updatedData[ 'email' ] = this.currentlyOpenMenu;
-                            let fetchOptions = {
-                                method: 'post',
-                                body: JSON.stringify( updatedData ),
-                                headers: {
-                                    'Content-Type': 'application/json',
-                                    'charset': 'utf-8'
-                                }
-                            };
-                            fetch( '/admin/API/updateAdminAccount', fetchOptions ).then( res => {
-                                if ( res.status === 200 ) {
-                                    this.$refs.notification.createNotification( 'Updated settings for admin account successfully', 5, 'ok', 'normal' );
-                                    this.loadAdminAccounts();
-                                }
-                            } );
-                        }
-                    } else if ( this.currentPopup === 'payments' ) {
-                        for ( let setting in data.data ) {
-                            if ( !data.data[ setting ] ) {
-                                this.$refs.notification.createNotification( 'Settings for the payment gateway are missing!', 10, 'error', 'normal' );
-                                this.showPaymentSettings();
-                                return;
-                            }
-                        }
+                        updatedData[ 'email' ] = this.currentlyOpenMenu;
                         let fetchOptions = {
                             method: 'post',
-                            body: JSON.stringify( data.data ),
+                            body: JSON.stringify( updatedData ),
                             headers: {
                                 'Content-Type': 'application/json',
                                 'charset': 'utf-8'
                             }
                         };
-                        fetch( '/admin/API/updatePaymentGatewaySettings', fetchOptions ).then( res => {
+                        fetch( '/admin/API/updateAdminAccount', fetchOptions ).then( res => {
                             if ( res.status === 200 ) {
-                                this.$refs.notification.createNotification( 'Payment gateway settings saved!', 5, 'ok', 'normal' );
-                            }
-                        } )
-                    } else if ( this.currentPopup === 'createAccount' ) {
-                        let fetchOptions = {
-                            method: 'post',
-                            body: JSON.stringify( data.data ),
-                            headers: {
-                                'Content-Type': 'application/json',
-                                'charset': 'utf-8'
-                            }
-                        };
-                        fetch( '/admin/API/createAdminAccount', fetchOptions ).then( res => {
-                            if ( res.status === 200 ) {
-                                this.$refs.notification.createNotification( 'Created new admin account successfully', 5, 'ok', 'normal' );
+                                this.$refs.notification.createNotification( 'Updated settings for admin account successfully', 5, 'ok', 'normal' );
                                 this.loadAdminAccounts();
                             }
                         } );
                     }
-                } else if ( data.status === 'ok' ) {
-                    if ( this.currentPopup === 'deleteUser' ) {
-                        let fetchOptions = {
-                            method: 'post',
-                            body: JSON.stringify( { 'email': this.currentlyOpenMenu } ),
-                            headers: {
-                                'Content-Type': 'application/json',
-                                'charset': 'utf-8'
-                            }
-                        };
-                        fetch( '/admin/API/deleteAdminAccount', fetchOptions ).then( res => {
-                            if ( res.status === 200 ) {
-                                this.$refs.notification.createNotification( 'Admin account deleted successfully', 5, 'ok', 'normal' );
-                                this.loadAdminAccounts();
-                            }
-                        } );
+                } else if ( this.currentPopup === 'payments' ) {
+                    for ( let setting in data.data ) {
+                        if ( !data.data[ setting ] ) {
+                            this.$refs.notification.createNotification( 'Settings for the payment gateway are missing!', 10, 'error', 'normal' );
+                            this.showPaymentSettings();
+                            return;
+                        }
                     }
-                } else {
-                    console.log( 'hi' );
+                    let fetchOptions = {
+                        method: 'post',
+                        body: JSON.stringify( data.data ),
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'charset': 'utf-8'
+                        }
+                    };
+                    fetch( '/admin/API/updatePaymentGatewaySettings', fetchOptions ).then( res => {
+                        if ( res.status === 200 ) {
+                            this.$refs.notification.createNotification( 'Payment gateway settings saved!', 5, 'ok', 'normal' );
+                        }
+                    } );
+                } else if ( this.currentPopup === 'createAccount' ) {
+                    let fetchOptions = {
+                        method: 'post',
+                        body: JSON.stringify( data.data ),
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'charset': 'utf-8'
+                        }
+                    };
+                    fetch( '/admin/API/createAdminAccount', fetchOptions ).then( res => {
+                        if ( res.status === 200 ) {
+                            this.$refs.notification.createNotification( 'Created new admin account successfully', 5, 'ok', 'normal' );
+                            this.loadAdminAccounts();
+                        }
+                    } );
                 }
-            },
-            openRightClickMenu( id, event ) {
-                this.$refs.rclk.openRightClickMenu( event, { 
-                    // 'permissions': { 'command': 'openPermissions', 'symbol': 'edit', 'display': 'Edit permissions' }, 
-                    'password': { 'command': 'updatePassword', 'symbol': 'password', 'display': 'Edit account settings' }, 
-                    'delete': { 'command': 'deleteUser', 'symbol': 'delete', 'display': 'Delete User' } } )
-                this.currentlyOpenMenu = id;
-            },
-            loadData() {
-                fetch( '/admin/getAPI/getSettings' ).then( res => {
-                    if ( res.status === 200 ) {
-                        res.json().then( json => {
-                            this.settings[ '2fa' ].value = json.twoFA;
-                            this.settings.currency.value = json.currency;
-                            this.settings.paymentGateway.value = json.payments;
-                            this.settings.ticketTimeout.value = json.ticketTimeout;
-                        } );
-                    }
-                } );
-            },
-            loadAdminAccounts () {
-                fetch( '/admin/getAPI/getAdminAccounts' ).then( res => {
-                    if ( res.status === 200 ) {
-                        res.json().then( json => {
-                            if ( json.status === 'ok' ) {
-                                this.adminAccounts = {};
-                                for ( let account in json.data ) {
-                                    this.adminAccounts[ json.data[ account ][ 'email' ] ] = json.data[ account ];
-                                }
-                            } else {
-                                this.adminAccounts = {};
-                            }
-                        } );
-                    }
-                } );
-            },
-            save() {
-                let fetchOptions = {
-                    method: 'post',
-                    body: JSON.stringify( { 
-                        'twoFA': this.settings[ '2fa' ].value, 
-                        'currency': this.settings.currency.value, 
-                        'payments': this.settings.paymentGateway.value,
-                        'ticketTimeout': this.settings.ticketTimeout.value,
-                    } ),
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'charset': 'utf-8'
-                    }
-                };
-                fetch( localStorage.getItem( 'url' ) + '/admin/API/updateSettings', fetchOptions ).then( res => {
-                    if ( res.status === 200 ) {
-                        this.$refs.notification.createNotification( 'Saved settings successfully. Restart libreevent to apply changes', 20, 'ok', 'normal' );
-                        this.loadData();
-                    }
-                } );
+            } else if ( data.status === 'ok' ) {
+                if ( this.currentPopup === 'deleteUser' ) {
+                    let fetchOptions = {
+                        method: 'post',
+                        body: JSON.stringify( { 'email': this.currentlyOpenMenu } ),
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'charset': 'utf-8'
+                        }
+                    };
+                    fetch( '/admin/API/deleteAdminAccount', fetchOptions ).then( res => {
+                        if ( res.status === 200 ) {
+                            this.$refs.notification.createNotification( 'Admin account deleted successfully', 5, 'ok', 'normal' );
+                            this.loadAdminAccounts();
+                        }
+                    } );
+                }
+            } else {
+                console.log( 'hi' );
             }
         },
-        created () {
-            this.loadData();
-            this.loadAdminAccounts();
+        openRightClickMenu( id, event ) {
+            this.$refs.rclk.openRightClickMenu( event, { 
+                // 'permissions': { 'command': 'openPermissions', 'symbol': 'edit', 'display': 'Edit permissions' }, 
+                'password': { 'command': 'updatePassword', 'symbol': 'password', 'display': 'Edit account settings' }, 
+                'delete': { 'command': 'deleteUser', 'symbol': 'delete', 'display': 'Delete User' } } );
+            this.currentlyOpenMenu = id;
+        },
+        loadData() {
+            fetch( '/admin/getAPI/getSettings' ).then( res => {
+                if ( res.status === 200 ) {
+                    res.json().then( json => {
+                        this.settings[ '2fa' ].value = json.twoFA;
+                        this.settings.currency.value = json.currency;
+                        this.settings.paymentGateway.value = json.payments;
+                        this.settings.ticketTimeout.value = json.ticketTimeout;
+                    } );
+                }
+            } );
+        },
+        loadAdminAccounts () {
+            fetch( '/admin/getAPI/getAdminAccounts' ).then( res => {
+                if ( res.status === 200 ) {
+                    res.json().then( json => {
+                        if ( json.status === 'ok' ) {
+                            this.adminAccounts = {};
+                            for ( let account in json.data ) {
+                                this.adminAccounts[ json.data[ account ][ 'email' ] ] = json.data[ account ];
+                            }
+                        } else {
+                            this.adminAccounts = {};
+                        }
+                    } );
+                }
+            } );
+        },
+        save() {
+            let fetchOptions = {
+                method: 'post',
+                body: JSON.stringify( { 
+                    'twoFA': this.settings[ '2fa' ].value, 
+                    'currency': this.settings.currency.value, 
+                    'payments': this.settings.paymentGateway.value,
+                    'ticketTimeout': this.settings.ticketTimeout.value,
+                } ),
+                headers: {
+                    'Content-Type': 'application/json',
+                    'charset': 'utf-8'
+                }
+            };
+            fetch( localStorage.getItem( 'url' ) + '/admin/API/updateSettings', fetchOptions ).then( res => {
+                if ( res.status === 200 ) {
+                    this.$refs.notification.createNotification( 'Saved settings successfully. Restart libreevent to apply changes', 20, 'ok', 'normal' );
+                    this.loadData();
+                }
+            } );
         }
-    };
+    },
+    created () {
+        this.loadData();
+        this.loadAdminAccounts();
+    }
+};
 </script>
 
 

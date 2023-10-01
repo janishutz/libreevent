@@ -19,29 +19,29 @@ export default {
     props: {
         origin: {
             type: Number,
-            "default": 1,
+            'default': 1,
         },
         text: {
             type: String,
-            "default": "Untitled",
+            'default': 'Untitled',
         },
         textSize: {
             type: Number,
-            "default": 20,
+            'default': 20,
         },
         scaleFactor: {
             type: Number,
-            "default": 1,
+            'default': 1,
         },
         colour: {
             type: String,
-            "default": '#000000',
+            'default': '#000000',
         }
     },
     data() {
         return {
             style: 'font-size: 20pt; rotate: 0deg; color: #000000',
-        }
+        };
     },
     methods: {
         updateStyle () {
@@ -65,5 +65,5 @@ export default {
     created() {
         this.updateStyle();
     }
-}
+};
 </script>

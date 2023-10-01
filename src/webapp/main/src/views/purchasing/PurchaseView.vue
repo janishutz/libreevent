@@ -171,7 +171,7 @@ export default {
             backend: { 'currency': 'CHF' },
             cartNotEmpty: false,
             userData: {},
-        }
+        };
     },
     components: {
         notifications,
@@ -189,7 +189,7 @@ export default {
             for ( let event in cart ) {
                 if ( Object.keys( cart[ event ][ 'tickets' ] ).length  ) {
                     this.cartNotEmpty = true;
-                };
+                }
             }
             
             if ( this.cartNotEmpty ) {

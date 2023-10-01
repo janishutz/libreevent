@@ -170,4 +170,4 @@ export default [
             transition: 'scale',
         }
     },
-]
+];

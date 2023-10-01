@@ -63,29 +63,29 @@
 </template>
 
 <script>
-    export default {
-        data () {
-            return {
-                showsPW: false,
-            };
+export default {
+    data () {
+        return {
+            showsPW: false,
+        };
+    },
+    props: {
+        settings: Object,
+    },
+    methods: {
+        togglePasswordVisibility () {
+            this.showsPW = !this.showsPW;
         },
-        props: {
-            settings: Object,
+        showInfo ( box ) {
+            $( '#' + box ).stop();
+            $( '#' + box ).fadeIn( 300 );
         },
-        methods: {
-            togglePasswordVisibility () {
-                this.showsPW = !this.showsPW;
-            },
-            showInfo ( box ) {
-                $( '#' + box ).stop();
-                $( '#' + box ).fadeIn( 300 );
-            },
-            hideInfo ( box ) {
-                $( '#' + box ).stop();
-                $( '#' + box ).fadeOut( 300 );
-            }
+        hideInfo ( box ) {
+            $( '#' + box ).stop();
+            $( '#' + box ).fadeOut( 300 );
         }
-    };
+    }
+};
 </script>
 
 <style scoped>

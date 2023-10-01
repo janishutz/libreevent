@@ -53,136 +53,136 @@
 </template>
 
 <script>
-    import { useUserStore } from '@/stores/userStore';
-    import { mapStores } from 'pinia';
-    import notifications from '@/components/notifications/notifications.vue';
+import { useUserStore } from '@/stores/userStore';
+import { mapStores } from 'pinia';
+import notifications from '@/components/notifications/notifications.vue';
 
-    export default {
-        data () {
-            return {
-                formData: {},
-                emailStatus: '',
-            }
+export default {
+    data () {
+        return {
+            formData: {},
+            emailStatus: '',
+        };
+    },
+    components: {
+        notifications,
+    },
+    computed: {
+        ...mapStores( useUserStore )
+    },
+    methods: {
+        emailLiveChecker () {
+            setTimeout( () => {
+                if ( this.checkEmail() ) {
+                    this.emailStatus = '';
+                } else {
+                    this.emailStatus = 'Invalid email address';
+                }
+            }, 100 );
         },
-        components: {
-            notifications,
-        },
-        computed: {
-            ...mapStores( useUserStore )
-        },
-        methods: {
-            emailLiveChecker () {
-                setTimeout( () => {
-                    if ( this.checkEmail() ) {
-                        this.emailStatus = '';
-                    } else {
-                        this.emailStatus = 'Invalid email address';
-                    }
-                }, 100 );
-            },
-            checkEmail () {
-                const mail = this.formData.mail ?? '';
-                let stat = { 'atPos': 0, 'topLevelPos': 0 };
-                for ( let l in mail ) {
-                    if ( stat[ 'atPos' ] > 0 ) {
-                        if ( mail[ l ] === '@' ) {
-                            return false;
-                        } else if ( mail[ l ] === '.' ) {
-                            if ( stat[ 'topLevelPos' ] > 0 ) {
-                                if ( l > stat[ 'topLevelPos' ] + 2 ) {
-                                    stat[ 'topLevelPos' ] = parseInt( l );
-                                } else { 
-                                    return false;
-                                }
-                            } else {
-                                if ( l > stat[ 'atPos' ] + 2 ) {
-                                    stat[ 'topLevelPos' ] = parseInt( l );
-                                } else {
-                                    return false;
-                                }
+        checkEmail () {
+            const mail = this.formData.mail ?? '';
+            let stat = { 'atPos': 0, 'topLevelPos': 0 };
+            for ( let l in mail ) {
+                if ( stat[ 'atPos' ] > 0 ) {
+                    if ( mail[ l ] === '@' ) {
+                        return false;
+                    } else if ( mail[ l ] === '.' ) {
+                        if ( stat[ 'topLevelPos' ] > 0 ) {
+                            if ( l > stat[ 'topLevelPos' ] + 2 ) {
+                                stat[ 'topLevelPos' ] = parseInt( l );
+                            } else { 
+                                return false;
                             }
-                        } else if ( !( /[a-z]/.test( mail[ l ] ) || /[A-Z]/.test( mail[ l ] ) || /[1-9]/.test( mail[ l ] ) || mail[ l ] === '-' || mail[ l ] === '_' ) ) { 
-                            return false 
-                        }
-                    } else {
-                        if ( mail[ l ] === '@' ) {
-                            if ( l > 2 ) {
-                                stat[ 'atPos' ] = parseInt( l );
+                        } else {
+                            if ( l > stat[ 'atPos' ] + 2 ) {
+                                stat[ 'topLevelPos' ] = parseInt( l );
                             } else {
                                 return false;
                             }
-                        } else if ( !( /[a-z]/.test( mail[ l ] ) || /[A-Z]/.test( mail[ l ] ) || /[1-9]/.test( mail[ l ] ) || mail[ l ] === '.' || mail[ l ] === '-' || mail[ l ] == '_' ) ) {
+                        }
+                    } else if ( !( /[a-z]/.test( mail[ l ] ) || /[A-Z]/.test( mail[ l ] ) || /[1-9]/.test( mail[ l ] ) || mail[ l ] === '-' || mail[ l ] === '_' ) ) { 
+                        return false; 
+                    }
+                } else {
+                    if ( mail[ l ] === '@' ) {
+                        if ( l > 2 ) {
+                            stat[ 'atPos' ] = parseInt( l );
+                        } else {
                             return false;
                         }
+                    } else if ( !( /[a-z]/.test( mail[ l ] ) || /[A-Z]/.test( mail[ l ] ) || /[1-9]/.test( mail[ l ] ) || mail[ l ] === '.' || mail[ l ] === '-' || mail[ l ] == '_' ) ) {
+                        return false;
                     }
                 }
-                if ( mail.length > stat[ 'topLevelPos' ] + 2 && stat[ 'topLevelPos' ] > 0 && stat[ 'atPos' ] > 0 ) {
-                    return true;
-                } else {
-                    return false;
-                }
-            },
-            signup () {
-                if ( !this.formData.mail ) {
-                    this.$refs.notification.createNotification( 'An email address is required to sign up', 5, 'error', 'normal' );
-                    return;
-                }
-                if ( !this.formData.password ) {
-                    this.$refs.notification.createNotification( 'A password is required to sign up', 5, 'error', 'normal' );
-                    return;
-                }
-                if ( !this.formData.password2 ) {
-                    this.$refs.notification.createNotification( 'Please confirm your password using the "Confirm password field"', 5, 'error', 'normal' );
-                    return;
-                }
-                if ( this.formData.password !== this.formData.password2 ) {
-                    this.$refs.notification.createNotification( 'The passwords provided do not match. Please ensure they are the same', 5, 'error', 'normal' );
-                    return;
-                }
-                if ( !this.formData.country ) {
-                    this.$refs.notification.createNotification( 'Please provide the country you live in.', 5, 'error', 'normal' );
-                    return;
-                }
-                if ( !this.formData.name && !this.formData.firstName ) {
-                    this.$refs.notification.createNotification( 'Please provide your first and last name!', 5, 'error', 'normal' );
-                    return;
-                }
-
-                if ( !this.checkEmail() ) {
-                    this.$refs.notification.createNotification( 'This email address is not an email address', 5, 'error', 'normal' );
-                    return;
-                }
-                let progress = this.$refs.notification.createNotification( 'Signing up...', 20, 'progress', 'normal' );
-                let fetchOptions = {
-                    method: 'post',
-                    body: JSON.stringify( this.formData ),
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'charset': 'utf-8'
-                    }
-                };
-                fetch( localStorage.getItem( 'url' ) + '/user/signup', fetchOptions ).then( res => {
-                    res.text().then( status => {
-                        if ( status === 'ok' ) {
-                            this.$refs.notification.cancelNotification( progress );
-                            this.$refs.notification.createNotification( 'Signed up successfully. We have sent you an email. Please confirm it to finish sign-up', 5, 'ok', 'normal' );
-                            setTimeout( () => {
-                                this.userStore.setUserAuth( true );
-                                this.$router.push( sessionStorage.getItem( 'redirect' ) ?? '/account' );
-                                sessionStorage.removeItem( 'redirect' );
-                            }, 5000 );
-                        } else if ( status === 'exists' ) {
-                            this.$refs.notification.cancelNotification( progress );
-                            this.$refs.notification.createNotification( 'An account with this email address already exists. Please log in using it.', 5, 'error', 'normal' );
-                            this.$refs.notification.createNotification( 'If you do not remember your password, reset it!', 5, 'error', 'normal' );
-                        } else {
-                            console.log( status );
-                        }
-                    } );
-                } );
+            }
+            if ( mail.length > stat[ 'topLevelPos' ] + 2 && stat[ 'topLevelPos' ] > 0 && stat[ 'atPos' ] > 0 ) {
+                return true;
+            } else {
+                return false;
             }
         },
-    }
+        signup () {
+            if ( !this.formData.mail ) {
+                this.$refs.notification.createNotification( 'An email address is required to sign up', 5, 'error', 'normal' );
+                return;
+            }
+            if ( !this.formData.password ) {
+                this.$refs.notification.createNotification( 'A password is required to sign up', 5, 'error', 'normal' );
+                return;
+            }
+            if ( !this.formData.password2 ) {
+                this.$refs.notification.createNotification( 'Please confirm your password using the "Confirm password field"', 5, 'error', 'normal' );
+                return;
+            }
+            if ( this.formData.password !== this.formData.password2 ) {
+                this.$refs.notification.createNotification( 'The passwords provided do not match. Please ensure they are the same', 5, 'error', 'normal' );
+                return;
+            }
+            if ( !this.formData.country ) {
+                this.$refs.notification.createNotification( 'Please provide the country you live in.', 5, 'error', 'normal' );
+                return;
+            }
+            if ( !this.formData.name && !this.formData.firstName ) {
+                this.$refs.notification.createNotification( 'Please provide your first and last name!', 5, 'error', 'normal' );
+                return;
+            }
+
+            if ( !this.checkEmail() ) {
+                this.$refs.notification.createNotification( 'This email address is not an email address', 5, 'error', 'normal' );
+                return;
+            }
+            let progress = this.$refs.notification.createNotification( 'Signing up...', 20, 'progress', 'normal' );
+            let fetchOptions = {
+                method: 'post',
+                body: JSON.stringify( this.formData ),
+                headers: {
+                    'Content-Type': 'application/json',
+                    'charset': 'utf-8'
+                }
+            };
+            fetch( localStorage.getItem( 'url' ) + '/user/signup', fetchOptions ).then( res => {
+                res.text().then( status => {
+                    if ( status === 'ok' ) {
+                        this.$refs.notification.cancelNotification( progress );
+                        this.$refs.notification.createNotification( 'Signed up successfully. We have sent you an email. Please confirm it to finish sign-up', 5, 'ok', 'normal' );
+                        setTimeout( () => {
+                            this.userStore.setUserAuth( true );
+                            this.$router.push( sessionStorage.getItem( 'redirect' ) ?? '/account' );
+                            sessionStorage.removeItem( 'redirect' );
+                        }, 5000 );
+                    } else if ( status === 'exists' ) {
+                        this.$refs.notification.cancelNotification( progress );
+                        this.$refs.notification.createNotification( 'An account with this email address already exists. Please log in using it.', 5, 'error', 'normal' );
+                        this.$refs.notification.createNotification( 'If you do not remember your password, reset it!', 5, 'error', 'normal' );
+                    } else {
+                        console.log( status );
+                    }
+                } );
+            } );
+        }
+    },
+};
 </script>
 
 <style scoped>

@@ -22,88 +22,88 @@
 </template>
 
 <script>
-    import notifications from '@/components/notifications/notifications.vue';
+import notifications from '@/components/notifications/notifications.vue';
 
-    export default {
-        name: 'PaymentSuccessView',
-        components: {
-            notifications
-        },
-        methods: {
+export default {
+    name: 'PaymentSuccessView',
+    components: {
+        notifications
+    },
+    methods: {
 
-        },
-        data() {
-            return {}
-        },
-        created() {
-            if ( !!window.EventSource ) {
-                setTimeout( () => {
-                    let startNotification = this.$refs.notification.createNotification( 'Connecting to status service...', 20, 'progress', 'normal' );
-                    let source = new EventSource( localStorage.getItem( 'url' ) + '/payments/status', { withCredentials: true } );
+    },
+    data() {
+        return {};
+    },
+    created() {
+        if ( window.EventSource ) {
+            setTimeout( () => {
+                let startNotification = this.$refs.notification.createNotification( 'Connecting to status service...', 20, 'progress', 'normal' );
+                let source = new EventSource( localStorage.getItem( 'url' ) + '/payments/status', { withCredentials: true } );
                     
-                    let self = this;
+                let self = this;
 
-                    source.onmessage = ( e ) => {
-                        if ( e.data === 'ready' ) {
-                            self.$refs.notification.cancelNotification( startNotification );
-                            self.$refs.notification.createNotification( 'Your tickets are ready! Starting download...', 10, 'progress', 'normal' );
-                            localStorage.removeItem( 'cart' );
-                            fetch( '/getAPI/reloadData' ).catch( () => {} );
-                            setTimeout( () => {
-                                open( '/tickets/tickets.pdf' );
-                                source.close();
-                            }, 500 );
-                            setTimeout( () => {
-                                $( '#manual-download' ).slideDown( 500 );
-                            }, 2000 );
-                        } else if ( e.data === 'paymentOk' ) {
-                            self.$refs.notification.createNotification( 'Your payment has been marked as completed!', 5, 'ok', 'normal' );
-                        }
-                    }
-
-                    source.onopen = e => {
-                        self.$refs.notification.createNotification( 'Connected to status service', 5, 'ok', 'normal' );
+                source.onmessage = ( e ) => {
+                    if ( e.data === 'ready' ) {
                         self.$refs.notification.cancelNotification( startNotification );
-                    };
-                    
-                    source.addEventListener( 'error', function( e ) {
-                        if ( e.eventPhase == EventSource.CLOSED ) source.close();
+                        self.$refs.notification.createNotification( 'Your tickets are ready! Starting download...', 10, 'progress', 'normal' );
+                        localStorage.removeItem( 'cart' );
+                        fetch( '/getAPI/reloadData' ).catch( () => {} );
+                        setTimeout( () => {
+                            open( '/tickets/tickets.pdf' );
+                            source.close();
+                        }, 500 );
+                        setTimeout( () => {
+                            $( '#manual-download' ).slideDown( 500 );
+                        }, 2000 );
+                    } else if ( e.data === 'paymentOk' ) {
+                        self.$refs.notification.createNotification( 'Your payment has been marked as completed!', 5, 'ok', 'normal' );
+                    }
+                };
 
-                        if ( e.target.readyState == EventSource.CLOSED ) {
-                            self.$refs.notification.cancelNotification( startNotification );
-                            self.$refs.notification.createNotification( 'Disconnected from status service', 20, 'info', 'normal' );
-                        }
-                    }, false );
-                }, 300 );
-            } else {
-                setTimeout( () => {
-                    this.$refs.notification.createNotification( 'Unsupported browser detected. Ticket generation might take longer!', 20, 'warning', 'normal' );
-                }, 300 );
-                // ping server every 5s to check if ticket ready
-                this.serverPing = setInterval( () => {
-                    fetch( '/payments/status/ping' ).then( res => {
-                        if ( res.status === 200 ) {
-                            res.json().then( data => {
-                                if ( data ) {
-                                    if ( data.status === 'ready' ) {
-                                        open( '/tickets/get' );
-                                    } else if ( data.status === 'paymentOk' ) {
-                                        this.$refs.notification.createNotification( 'Your payment has been marked as completed!', 5, 'ok', 'normal' );
-                                    }
+                source.onopen = e => {
+                    self.$refs.notification.createNotification( 'Connected to status service', 5, 'ok', 'normal' );
+                    self.$refs.notification.cancelNotification( startNotification );
+                };
+                    
+                source.addEventListener( 'error', function( e ) {
+                    if ( e.eventPhase == EventSource.CLOSED ) source.close();
+
+                    if ( e.target.readyState == EventSource.CLOSED ) {
+                        self.$refs.notification.cancelNotification( startNotification );
+                        self.$refs.notification.createNotification( 'Disconnected from status service', 20, 'info', 'normal' );
+                    }
+                }, false );
+            }, 300 );
+        } else {
+            setTimeout( () => {
+                this.$refs.notification.createNotification( 'Unsupported browser detected. Ticket generation might take longer!', 20, 'warning', 'normal' );
+            }, 300 );
+            // ping server every 5s to check if ticket ready
+            this.serverPing = setInterval( () => {
+                fetch( '/payments/status/ping' ).then( res => {
+                    if ( res.status === 200 ) {
+                        res.json().then( data => {
+                            if ( data ) {
+                                if ( data.status === 'ready' ) {
+                                    open( '/tickets/get' );
+                                } else if ( data.status === 'paymentOk' ) {
+                                    this.$refs.notification.createNotification( 'Your payment has been marked as completed!', 5, 'ok', 'normal' );
                                 }
-                            } );
-                        } else {
-                            console.error( 'Request failed' );
-                            this.$refs.notification.createNotification( 'We are sorry, but an error occurred. You will not be redirected automatically', 300, 'error', 'normal' );
-                        }
-                    } ).catch( error => {
-                        console.error( error );
+                            }
+                        } );
+                    } else {
+                        console.error( 'Request failed' );
                         this.$refs.notification.createNotification( 'We are sorry, but an error occurred. You will not be redirected automatically', 300, 'error', 'normal' );
-                    } );
-                }, 5000 );
-            }
+                    }
+                } ).catch( error => {
+                    console.error( error );
+                    this.$refs.notification.createNotification( 'We are sorry, but an error occurred. You will not be redirected automatically', 300, 'error', 'normal' );
+                } );
+            }, 5000 );
         }
     }
+};
 </script>
 
 <style>

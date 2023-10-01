@@ -158,26 +158,26 @@
 </style>
 
 <script>
-    export default {
-        name: 'TicketsDetailsView',
-        created () {
-            if ( !sessionStorage.getItem( 'selectedTicket' ) ) {
-                this.$router.push( '/tickets' );
-            }
-            this.eventID = sessionStorage.getItem( 'selectedTicket' );
-            this.event[ 'banner' ] = localStorage.getItem( 'url' ) + '/eventAssets/' + this.eventID + 'Banner.jpg';
-            this.event[ 'logo' ] = localStorage.getItem( 'url' ) + '/eventAssets/' + this.eventID + 'Logo.jpg';
-            const eventData = JSON.parse( sessionStorage.getItem( 'ticketData' ) );
-            this.event.name = eventData[ 'name' ];
-            this.event.date = eventData[ 'date' ];
-            this.event.description = eventData[ 'description' ];
-            this.event.location = eventData[ 'locationName' ];
-        },
-        data() {
-            return {
-                event: {},
-            }
+export default {
+    name: 'TicketsDetailsView',
+    created () {
+        if ( !sessionStorage.getItem( 'selectedTicket' ) ) {
+            this.$router.push( '/tickets' );
         }
-    };
+        this.eventID = sessionStorage.getItem( 'selectedTicket' );
+        this.event[ 'banner' ] = localStorage.getItem( 'url' ) + '/eventAssets/' + this.eventID + 'Banner.jpg';
+        this.event[ 'logo' ] = localStorage.getItem( 'url' ) + '/eventAssets/' + this.eventID + 'Logo.jpg';
+        const eventData = JSON.parse( sessionStorage.getItem( 'ticketData' ) );
+        this.event.name = eventData[ 'name' ];
+        this.event.date = eventData[ 'date' ];
+        this.event.description = eventData[ 'description' ];
+        this.event.location = eventData[ 'locationName' ];
+    },
+    data() {
+        return {
+            event: {},
+        };
+    }
+};
 </script>
 

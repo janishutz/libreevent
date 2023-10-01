@@ -47,32 +47,32 @@
 </style>
 
 <script>
-    import seatplan from '@/components/seatplan/userApp/userWindow.vue';
-    import noseatplan from '@/components/noseatplan.vue';
+import seatplan from '@/components/seatplan/userApp/userWindow.vue';
+import noseatplan from '@/components/noseatplan.vue';
 
-    export default {
-        name: 'TicketsDetailsView',
-        components: {
-            seatplan,
-            noseatplan
-        },
-        data() {
-            return {
-                hasSeatplan: false,
-                eventID: '',
-            }
-        },
-        created () {
-            if ( !sessionStorage.getItem( 'selectedTicket' ) ) {
-                this.$router.push( '/tickets' );
-            }
-            this.eventID = sessionStorage.getItem( 'selectedTicket' );
-            if ( sessionStorage.getItem( 'hasSeatplan' ) === 'false' ) {
-                this.hasSeatplan = false;
-            } else {
-                this.hasSeatplan = true;
-            }
+export default {
+    name: 'TicketsDetailsView',
+    components: {
+        seatplan,
+        noseatplan
+    },
+    data() {
+        return {
+            hasSeatplan: false,
+            eventID: '',
+        };
+    },
+    created () {
+        if ( !sessionStorage.getItem( 'selectedTicket' ) ) {
+            this.$router.push( '/tickets' );
         }
-    };
+        this.eventID = sessionStorage.getItem( 'selectedTicket' );
+        if ( sessionStorage.getItem( 'hasSeatplan' ) === 'false' ) {
+            this.hasSeatplan = false;
+        } else {
+            this.hasSeatplan = true;
+        }
+    }
+};
 </script>
 
