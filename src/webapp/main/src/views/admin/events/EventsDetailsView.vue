@@ -492,6 +492,7 @@ export default {
                             'charset': 'utf-8'
                         }
                     };
+                    // TODO: fix url
                     fetch( url, options ).then( res => {
                         if ( res.status === 200 ) {
                             this.hasLiveVersion = false;
