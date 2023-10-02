@@ -12,7 +12,7 @@
         <div class="top-bar">
             <h1>Admin panel</h1>
         </div>
-        <button class="hideNav navHidden" @click="navMenu( 'toggle' );">&#9776</button>
+        <button class="hideNav navHidden" @click="navMenu( 'toggle' );">&#9776;</button>
         <nav class="side-nav">
             <div class="side-nav-wrapper">
                 <img src="@/assets/logo.png" alt="libreevent logo" style="width: 80%; margin-left: 10%; margin-bottom: 5%;">
