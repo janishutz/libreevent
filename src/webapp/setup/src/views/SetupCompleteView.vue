@@ -43,18 +43,18 @@
 </style>
 
 <script>
-     export default {
-        data () {
-            return {
-                windowURL: location.protocol + '//' + location.host +'/admin/login',
-            }
-        },
-        methods: {
-            cleanup() {
-                sessionStorage.removeItem( 'basics' );
-                sessionStorage.removeItem( 'root' );
-                this.$router.push( '/admin/login' );
-            }
+export default {
+    data () {
+        return {
+            windowURL: location.protocol + '//' + location.host +'/admin/login',
+        };
+    },
+    methods: {
+        cleanup() {
+            sessionStorage.removeItem( 'basics' );
+            sessionStorage.removeItem( 'root' );
+            this.$router.push( '/admin/login' );
         }
-    };
+    }
+};
 </script>
