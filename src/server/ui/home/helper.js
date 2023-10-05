@@ -1,4 +1,4 @@
-var theme = localStorage.getItem( 'theme' ) ?? '';
+let theme = localStorage.getItem( 'theme' ) ?? '';
 if ( window.matchMedia( '(prefers-color-scheme: dark)' ).matches || theme === '&#9788;' ) {
     document.documentElement.classList.add( 'dark' );
     document.getElementById( 'themeSelector' ).innerHTML = '&#9788;';
@@ -9,6 +9,7 @@ if ( window.matchMedia( '(prefers-color-scheme: dark)' ).matches || theme === '&
     theme = '&#9789;';
 }
 
+// eslint-disable-next-line no-unused-vars
 function changeTheme () {
     if ( theme === '&#9788;' ) {
         document.documentElement.classList.remove( 'dark' );

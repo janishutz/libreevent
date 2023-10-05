@@ -63,7 +63,7 @@
     "vue": "^3.3.4"
   },
   "scripts": {
-    "test": "test.js"
+    "lint": "eslint . --ext .js,.jsx,.cjs,.mjs --fix --ignore-path .gitignore"
   },
   "repository": {
     "type": "git",

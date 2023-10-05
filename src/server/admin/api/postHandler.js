@@ -31,7 +31,7 @@ class POSTHandler {
                     db.writeJSONDataSimple( 'seatplan', data.location, dat ).then( resp => { 
                         db.getJSONDataSimple( 'locations', data.location ).then( dat => { 
                             let s = dat;
-                            s[ 'totalSeats' ] = data.data.seatInfo.count
+                            s[ 'totalSeats' ] = data.data.seatInfo.count;
                             db.writeJSONDataSimple( 'locations', data.location, s ).then( () => {
                                 resolve( resp );
                             } );
@@ -44,7 +44,7 @@ class POSTHandler {
                 db.writeJSONDataSimple( 'seatplan', data.location, { 'draft': {}, 'save': data.data } ).then( resp => { 
                     db.getJSONDataSimple( 'locations', data.location ).then( dat => { 
                         let s = dat;
-                        s[ 'totalSeats' ] = data.data.seatInfo.count
+                        s[ 'totalSeats' ] = data.data.seatInfo.count;
                         db.writeJSONDataSimple( 'locations', data.location, s ).then( () => {
                             resolve( resp );
                         } );

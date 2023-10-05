@@ -12,7 +12,7 @@ const fs = require( 'fs' );
 // const ph = require( './paymentHandler.js' );
 // const paymentHandler = new ph();
 
-module.exports = ( app, settings ) => {
+module.exports = ( app ) => {
     app.get( '/payments/canceled', ( req, res ) => {
         res.sendFile( path.join( __dirname + '/../../ui/en/payments/canceled.html' ) );
     } );
