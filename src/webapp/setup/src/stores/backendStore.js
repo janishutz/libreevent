@@ -7,9 +7,9 @@
 *
 */
 
-import { defineStore } from "pinia";
+import { defineStore } from 'pinia';
 
-export const useBackendStore = defineStore ( 'backend', {
+export const useBackendStore = defineStore( 'backend', {
     state: () => ( { 'visitedSetupPages': {} } ),
     getters: {
         getVisitedSetupPages: ( state ) => state.visitedSetupPages,

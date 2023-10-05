@@ -20,14 +20,14 @@ let routes = [
             title: 'Admin login - Restart required! :: libreevent'
         }
     },
-]
+];
 
 routes.push( setupRoutes );
 
-const router = createRouter({
-    history: createWebHistory(import.meta.env.BASE_URL),
+const router = createRouter( {
+    history: createWebHistory( import.meta.env.BASE_URL ),
     routes: routes
-} )
+} );
 
 router.beforeEach( ( to ) => {
     let backendStore = useBackendStore();
@@ -41,4 +41,4 @@ router.afterEach( ( to ) => {
     document.title = to.meta.title ? to.meta.title : 'libreevent';
 } );
 
-export default router
+export default router;

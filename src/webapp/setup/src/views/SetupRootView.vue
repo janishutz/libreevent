@@ -45,156 +45,156 @@
 </template>
 
 <script>
-    import { useBackendStore } from '@/stores/backendStore.js';
-    import { mapStores } from 'pinia';
-    import notifications from '../components/notifications.vue';
+import { useBackendStore } from '@/stores/backendStore.js';
+import { mapStores } from 'pinia';
+import notifications from '../components/notifications.vue';
 
-    const lookup = [ '@', '!', '.', ',', '?', '%', '&', '-', '_', ':', ';', '*', '§', '<', '>', '{', '}', '[', ']', '(', ')', '/', '#' ];
-    export default {
-        data () {
-            return {
-                formData: {},
-                passwordCheck: true,
-                emailStatus: '',
-            }
+const lookup = [ '@', '!', '.', ',', '?', '%', '&', '-', '_', ':', ';', '*', '§', '<', '>', '{', '}', '[', ']', '(', ')', '/', '#' ];
+export default {
+    data () {
+        return {
+            formData: {},
+            passwordCheck: true,
+            emailStatus: '',
+        };
+    },
+    components: {
+        notifications,
+    },
+    computed: {
+        ...mapStores( useBackendStore )
+    },
+    methods: {
+        emailLiveChecker () {
+            setTimeout( () => {
+                if ( this.checkEmail() ) {
+                    this.emailStatus = '';
+                } else {
+                    this.emailStatus = 'Invalid email address';
+                }
+            }, 100 );
         },
-        components: {
-            notifications,
-        },
-        computed: {
-            ...mapStores( useBackendStore )
-        },
-        methods: {
-            emailLiveChecker () {
-                setTimeout( () => {
-                    if ( this.checkEmail() ) {
-                        this.emailStatus = '';
-                    } else {
-                        this.emailStatus = 'Invalid email address';
-                    }
-                }, 100 );
-            },
-            checkEmail () {
-                const mail = this.formData.mail ?? '';
-                let stat = { 'atPos': 0, 'topLevelPos': 0 };
-                for ( let l in mail ) {
-                    if ( stat[ 'atPos' ] > 0 ) {
-                        if ( mail[ l ] === '@' ) {
-                            return false;
-                        } else if ( mail[ l ] === '.' ) {
-                            if ( stat[ 'topLevelPos' ] > 0 ) {
-                                if ( l > stat[ 'topLevelPos' ] + 2 ) {
-                                    stat[ 'topLevelPos' ] = parseInt( l );
-                                } else { 
-                                    return false;
-                                }
-                            } else {
-                                if ( l > stat[ 'atPos' ] + 2 ) {
-                                    stat[ 'topLevelPos' ] = parseInt( l );
-                                } else {
-                                    return false;
-                                }
+        checkEmail () {
+            const mail = this.formData.mail ?? '';
+            let stat = { 'atPos': 0, 'topLevelPos': 0 };
+            for ( let l in mail ) {
+                if ( stat[ 'atPos' ] > 0 ) {
+                    if ( mail[ l ] === '@' ) {
+                        return false;
+                    } else if ( mail[ l ] === '.' ) {
+                        if ( stat[ 'topLevelPos' ] > 0 ) {
+                            if ( l > stat[ 'topLevelPos' ] + 2 ) {
+                                stat[ 'topLevelPos' ] = parseInt( l );
+                            } else { 
+                                return false;
                             }
-                        } else if ( !( /[a-z]/.test( mail[ l ] ) || /[A-Z]/.test( mail[ l ] ) || /[1-9]/.test( mail[ l ] ) || mail[ l ] === '-' || mail[ l ] === '_' ) ) { 
-                            return false 
-                        }
-                    } else {
-                        if ( mail[ l ] === '@' ) {
-                            if ( l > 2 ) {
-                                stat[ 'atPos' ] = parseInt( l );
+                        } else {
+                            if ( l > stat[ 'atPos' ] + 2 ) {
+                                stat[ 'topLevelPos' ] = parseInt( l );
                             } else {
                                 return false;
                             }
-                        } else if ( !( /[a-z]/.test( mail[ l ] ) || /[A-Z]/.test( mail[ l ] ) || /[1-9]/.test( mail[ l ] ) || mail[ l ] === '.' || mail[ l ] === '-' || mail[ l ] == '_' ) ) {
+                        }
+                    } else if ( !( /[a-z]/.test( mail[ l ] ) || /[A-Z]/.test( mail[ l ] ) || /[1-9]/.test( mail[ l ] ) || mail[ l ] === '-' || mail[ l ] === '_' ) ) { 
+                        return false; 
+                    }
+                } else {
+                    if ( mail[ l ] === '@' ) {
+                        if ( l > 2 ) {
+                            stat[ 'atPos' ] = parseInt( l );
+                        } else {
                             return false;
                         }
+                    } else if ( !( /[a-z]/.test( mail[ l ] ) || /[A-Z]/.test( mail[ l ] ) || /[1-9]/.test( mail[ l ] ) || mail[ l ] === '.' || mail[ l ] === '-' || mail[ l ] == '_' ) ) {
+                        return false;
                     }
                 }
-                if ( mail.length > stat[ 'topLevelPos' ] + 2 && stat[ 'topLevelPos' ] > 0 && stat[ 'atPos' ] > 0 ) {
-                    return true;
-                } else {
-                    return false;
-                }
-            },
-            submit () {
-                if ( this.formData.mail && this.formData.password && this.formData.password2 ) {
-                    if ( this.checkEmail() ) {
-                        if ( this.formData.password == this.formData.password2 ) {
-                            if ( this.passwordCheck ) {
-                                let requirementsCount = { 'special': 0, 'numbers': 0, 'lower': 0, 'upper': 0, 'incorrect': '' };
-                                const pw = this.formData.password;
-                                for ( let l in pw ) {
-                                    console.log( pw[ l ] );
-                                    if ( /[a-z]/.test( pw[ l ] ) ) {
-                                        requirementsCount[ 'lower' ] += 1;
-                                    } else if ( /[A-Z]/.test( pw[ l ] ) ) {
-                                        requirementsCount[ 'upper' ] += 1;
-                                    } else if ( lookup.includes( pw[ l ] ) ) {
-                                        requirementsCount[ 'special' ] += 1;
-                                    } else if ( !isNaN( pw[ l ] * 1 ) ) {
-                                        requirementsCount[ 'number' ] += 1;
-                                    } else {
-                                        console.log( 'incorrect letter' );
-                                        requirementsCount[ 'incorrect' ] = pw[ l ];
-                                        break;
-                                    }
-                                }
-                                if ( requirementsCount[ 'incorrect' ] ) {
-                                    this.$refs.notification.createNotification( `Character "${ requirementsCount[ 'incorrect' ] }" cannot be used for passwords`, 5, 'error', 'normal' );
+            }
+            if ( mail.length > stat[ 'topLevelPos' ] + 2 && stat[ 'topLevelPos' ] > 0 && stat[ 'atPos' ] > 0 ) {
+                return true;
+            } else {
+                return false;
+            }
+        },
+        submit () {
+            if ( this.formData.mail && this.formData.password && this.formData.password2 ) {
+                if ( this.checkEmail() ) {
+                    if ( this.formData.password == this.formData.password2 ) {
+                        if ( this.passwordCheck ) {
+                            let requirementsCount = { 'special': 0, 'numbers': 0, 'lower': 0, 'upper': 0, 'incorrect': '' };
+                            const pw = this.formData.password;
+                            for ( let l in pw ) {
+                                console.log( pw[ l ] );
+                                if ( /[a-z]/.test( pw[ l ] ) ) {
+                                    requirementsCount[ 'lower' ] += 1;
+                                } else if ( /[A-Z]/.test( pw[ l ] ) ) {
+                                    requirementsCount[ 'upper' ] += 1;
+                                } else if ( lookup.includes( pw[ l ] ) ) {
+                                    requirementsCount[ 'special' ] += 1;
+                                } else if ( !isNaN( pw[ l ] * 1 ) ) {
+                                    requirementsCount[ 'number' ] += 1;
                                 } else {
-                                    if ( pw.length > 14 ) {
-                                        if ( requirementsCount[ 'lower' ] > 1 && requirementsCount[ 'upper' ] > 1 && requirementsCount[ 'special' ] > 1 && requirementsCount[ 'numbers' ] > 1 ) {
-                                            this.proceed();
-                                        } else {
-                                            this.$refs.notification.createNotification( 'Your password does not fulfill the requirements', 5, 'error', 'normal' );
-                                        }
-                                    } else {
-                                        this.$refs.notification.createNotification( 'Your password is not long enough', 5, 'error', 'normal' );
-                                    }
+                                    console.log( 'incorrect letter' );
+                                    requirementsCount[ 'incorrect' ] = pw[ l ];
+                                    break;
                                 }
+                            }
+                            if ( requirementsCount[ 'incorrect' ] ) {
+                                this.$refs.notification.createNotification( `Character "${ requirementsCount[ 'incorrect' ] }" cannot be used for passwords`, 5, 'error', 'normal' );
                             } else {
-                                if ( confirm( 'Do you really want to proceed without having your password checked? This is strongly discouraged as it essentially removes the first factor (the password) of the authentication making it much less secure.' ) ) {
-                                    if ( confirm( 'Are you really sure?' ) ) {
+                                if ( pw.length > 14 ) {
+                                    if ( requirementsCount[ 'lower' ] > 1 && requirementsCount[ 'upper' ] > 1 && requirementsCount[ 'special' ] > 1 && requirementsCount[ 'numbers' ] > 1 ) {
                                         this.proceed();
+                                    } else {
+                                        this.$refs.notification.createNotification( 'Your password does not fulfill the requirements', 5, 'error', 'normal' );
                                     }
+                                } else {
+                                    this.$refs.notification.createNotification( 'Your password is not long enough', 5, 'error', 'normal' );
                                 }
                             }
                         } else {
-                            this.$refs.notification.createNotification( 'Passwords do not match', 10, 'error', 'normal' );
+                            if ( confirm( 'Do you really want to proceed without having your password checked? This is strongly discouraged as it essentially removes the first factor (the password) of the authentication making it much less secure.' ) ) {
+                                if ( confirm( 'Are you really sure?' ) ) {
+                                    this.proceed();
+                                }
+                            }
                         }
                     } else {
-                        this.$refs.notification.createNotification( 'The email address you entered is not an email address', 10, 'error', 'normal' );
+                        this.$refs.notification.createNotification( 'Passwords do not match', 10, 'error', 'normal' );
                     }
                 } else {
-                    this.$refs.notification.createNotification( 'One or more fields missing!', 10, 'error', 'normal' );
+                    this.$refs.notification.createNotification( 'The email address you entered is not an email address', 10, 'error', 'normal' );
                 }
-            },
-            proceed () {
-                const options = {
-                    method: 'post',
-                    body: JSON.stringify( this.formData ),
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'charset': 'utf-8'
-                    }
-                };
-                fetch( '/setup/saveRootAccount', options ).then( res => {
-                    if ( res.status === 200 ) {
-                        sessionStorage.setItem( 'basics', JSON.stringify( this.formData ) );
-                        this.backendStore.addVisitedSetupPages( 'complete', true );
-                        this.$router.push( 'complete' );
-                    } else {
-                        this.$refs.notification.createNotification( 'Setup key incorrect!', 5, 'error', 'normal' );
-                    }
-                } );
-            },
-        },
-        created () {
-            if ( sessionStorage.getItem( 'root' ) ) {
-                this.formData = JSON.parse( sessionStorage.getItem( 'root' ) );
+            } else {
+                this.$refs.notification.createNotification( 'One or more fields missing!', 10, 'error', 'normal' );
             }
+        },
+        proceed () {
+            const options = {
+                method: 'post',
+                body: JSON.stringify( this.formData ),
+                headers: {
+                    'Content-Type': 'application/json',
+                    'charset': 'utf-8'
+                }
+            };
+            fetch( '/setup/saveRootAccount', options ).then( res => {
+                if ( res.status === 200 ) {
+                    sessionStorage.setItem( 'basics', JSON.stringify( this.formData ) );
+                    this.backendStore.addVisitedSetupPages( 'complete', true );
+                    this.$router.push( 'complete' );
+                } else {
+                    this.$refs.notification.createNotification( 'Setup key incorrect!', 5, 'error', 'normal' );
+                }
+            } );
+        },
+    },
+    created () {
+        if ( sessionStorage.getItem( 'root' ) ) {
+            this.formData = JSON.parse( sessionStorage.getItem( 'root' ) );
         }
-    };
+    }
+};
 </script>
 
 

@@ -29,33 +29,33 @@
 </template>
 
 <script>
-    import { useBackendStore } from '@/stores/backendStore.js';
-    import { mapStores } from 'pinia';
+import { useBackendStore } from '@/stores/backendStore.js';
+import { mapStores } from 'pinia';
 
-    export default {
-        data () {
-            return {
-                formData: {}
+export default {
+    data () {
+        return {
+            formData: {}
+        };
+    },
+    computed: {
+        ...mapStores( useBackendStore )
+    },
+    created () {
+        this.backendStore.loadVisitedSetupPages();
+        fetch( '/setup/getKeyStatus' ).then( res => {
+            if ( res.status === 200 ) {
+                res.text().then( text => {
+                    if ( text != 'ok' ) {
+                        this.$router.push( '/' );
+                    }
+                } );
+            } else {
+                this.$router.push( '/' );
             }
-        },
-        computed: {
-            ...mapStores( useBackendStore )
-        },
-        created () {
-            this.backendStore.loadVisitedSetupPages();
-            fetch( '/setup/getKeyStatus' ).then( res => {
-                if ( res.status === 200 ) {
-                    res.text().then( text => {
-                        if ( text != 'ok' ) {
-                            this.$router.push( '/' );
-                        }
-                    } );
-                } else {
-                    this.$router.push( '/' );
-                }
-            } );
-        },
-    };
+        } );
+    },
+};
 </script>
 
 

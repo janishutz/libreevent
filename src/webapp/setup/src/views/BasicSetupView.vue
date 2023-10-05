@@ -81,77 +81,77 @@
 </style>
 
 <script>
-    import { useBackendStore } from '@/stores/backendStore.js';
-    import { mapStores } from 'pinia';
-    import notifications from '../components/notifications.vue';
+import { useBackendStore } from '@/stores/backendStore.js';
+import { mapStores } from 'pinia';
+import notifications from '../components/notifications.vue';
 
-    export default {
-        components: {
-            notifications,
-        },
-        data () {
-            return {
-                formData: {
-                    'dbType': 'mysql',
-                    'db': {
-                        'port': 3306,
-                    },
-                    'email': {
-                        'port': 587
-                    },
-                    'websiteName': 'libreevent',
+export default {
+    components: {
+        notifications,
+    },
+    data () {
+        return {
+            formData: {
+                'dbType': 'mysql',
+                'db': {
+                    'port': 3306,
                 },
-            }
-        },
-        computed: {
-            ...mapStores( useBackendStore )
-        },
-        methods: {
-            submit() {
-                this.collectUrl();
-                if ( this.formData.dbType === 'mysql' ) {
-                    if ( !this.formData.db.port || !this.formData.db.host || !this.formData.db.database || !this.formData.db.user || !this.formData.db.password ) {
-                        this.$refs.notification.createNotification( 'Database settings are not complete!', 5, 'error', 'normal' );
-                        return;
-                    }
-                }
-                if( this.formData.email.port && this.formData.email.host && this.formData.email.user && this.formData.email.pass
-                && this.formData.dpEmail && this.formData.display && this.formData.websiteName ) {
-                    this.formData.mailDisplay = this.formData.display + ' <' + this.formData.dpEmail + '>';
-                    const options = {
-                        method: 'post',
-                        body: JSON.stringify( this.formData ),
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'charset': 'utf-8'
-                        }
-                    };
-                    fetch( '/setup/saveBasicSettings', options ).then( res => {
-                        if ( res.status === 200 ) {
-                            this.continue();
-                        } else {
-                            this.$refs.notification.createNotification( 'Setup key incorrect!', 5, 'error', 'normal' );
-                        }
-                    } );
-                } else {
-                    this.$refs.notification.createNotification( 'Missing entries', 5, 'error', 'normal' );
+                'email': {
+                    'port': 587
+                },
+                'websiteName': 'libreevent',
+            },
+        };
+    },
+    computed: {
+        ...mapStores( useBackendStore )
+    },
+    methods: {
+        submit() {
+            this.collectUrl();
+            if ( this.formData.dbType === 'mysql' ) {
+                if ( !this.formData.db.port || !this.formData.db.host || !this.formData.db.database || !this.formData.db.user || !this.formData.db.password ) {
+                    this.$refs.notification.createNotification( 'Database settings are not complete!', 5, 'error', 'normal' );
                     return;
                 }
-            },
-            continue () {
-                sessionStorage.setItem( 'basics', JSON.stringify( this.formData ) );
-                this.backendStore.addVisitedSetupPages( 'root', true );
-                this.$router.push( '/setup/root' );
-            },
-            collectUrl() {
-                this.formData.yourDomain = location.protocol + '//' + location.host;
-                this.formData.db.host = location.hostname;
+            }
+            if ( this.formData.email.port && this.formData.email.host && this.formData.email.user && this.formData.email.pass
+                && this.formData.dpEmail && this.formData.display && this.formData.websiteName ) {
+                this.formData.mailDisplay = this.formData.display + ' <' + this.formData.dpEmail + '>';
+                const options = {
+                    method: 'post',
+                    body: JSON.stringify( this.formData ),
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'charset': 'utf-8'
+                    }
+                };
+                fetch( '/setup/saveBasicSettings', options ).then( res => {
+                    if ( res.status === 200 ) {
+                        this.continue();
+                    } else {
+                        this.$refs.notification.createNotification( 'Setup key incorrect!', 5, 'error', 'normal' );
+                    }
+                } );
+            } else {
+                this.$refs.notification.createNotification( 'Missing entries', 5, 'error', 'normal' );
+                return;
             }
         },
-        created () {
-            if ( sessionStorage.getItem( 'basics' ) ) {
-                this.formData = JSON.parse( sessionStorage.getItem( 'basics' ) );
-            }
+        continue () {
+            sessionStorage.setItem( 'basics', JSON.stringify( this.formData ) );
+            this.backendStore.addVisitedSetupPages( 'root', true );
+            this.$router.push( '/setup/root' );
+        },
+        collectUrl() {
+            this.formData.yourDomain = location.protocol + '//' + location.host;
+            this.formData.db.host = location.hostname;
         }
-    };
+    },
+    created () {
+        if ( sessionStorage.getItem( 'basics' ) ) {
+            this.formData = JSON.parse( sessionStorage.getItem( 'basics' ) );
+        }
+    }
+};
 </script>

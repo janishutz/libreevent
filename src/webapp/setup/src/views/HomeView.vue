@@ -22,48 +22,48 @@
 </template>
 
 <script>
-    import notifications from '../components/notifications.vue';
+import notifications from '../components/notifications.vue';
 
-    export default {
-        data() {
-            return {
-                formData: {},
-            }
-        },
-        components: {
-            notifications,
-        },
-        methods: {
-            setup () {
-                const options = {
-                    method: 'post',
-                    body: JSON.stringify( this.formData ),
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'charset': 'utf-8'
-                    }
-                };
-                fetch( '/setup/start', options ).then( res => {
-                    if ( res.status === 200 ) {
-                        this.$router.push( '/setup' );
-                    } else {
-                        this.$refs.notification.createNotification( 'Setup key incorrect!', 5, 'error', 'normal' );
-                    }
-                } );
-            }
-        },
-        created() {
-            fetch( '/setup/getKeyStatus' ).then( res => {
+export default {
+    data() {
+        return {
+            formData: {},
+        };
+    },
+    components: {
+        notifications,
+    },
+    methods: {
+        setup () {
+            const options = {
+                method: 'post',
+                body: JSON.stringify( this.formData ),
+                headers: {
+                    'Content-Type': 'application/json',
+                    'charset': 'utf-8'
+                }
+            };
+            fetch( '/setup/start', options ).then( res => {
                 if ( res.status === 200 ) {
-                    res.text().then( text => {
-                        if ( text === 'ok' ) {
-                            this.$router.push( '/setup' );
-                        }
-                    } );
+                    this.$router.push( '/setup' );
+                } else {
+                    this.$refs.notification.createNotification( 'Setup key incorrect!', 5, 'error', 'normal' );
                 }
             } );
         }
+    },
+    created() {
+        fetch( '/setup/getKeyStatus' ).then( res => {
+            if ( res.status === 200 ) {
+                res.text().then( text => {
+                    if ( text === 'ok' ) {
+                        this.$router.push( '/setup' );
+                    }
+                } );
+            }
+        } );
     }
+};
 </script>
 
 <style scoped>

@@ -176,5 +176,5 @@ export default {
             this.theme = '&#9789;';
         }
     }
-}
+};
 </script>
