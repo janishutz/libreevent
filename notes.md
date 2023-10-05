@@ -1,15 +1,9 @@
-- Seat numbering!!
-
-
 - Website: Add ids to titles
 
-- Website: Remove comments
 
 
 - Update files to import when deploying for included json files instead of secret.json files
 - Also remove /test/ routes
-
-- Fix diagonal stand component
 
 
 - FUTURE: Implement Permission system
