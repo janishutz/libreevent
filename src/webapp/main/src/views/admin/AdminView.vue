@@ -1,3 +1,4 @@
+<!-- eslint-disable no-undef -->
 <!--
 *				libreevent - AdminView.vue
 *
@@ -225,7 +226,7 @@ export default {
     methods: {
         logout () {
             if ( confirm( 'Do you really want to log out?' ) ) {
-                fetch( '/admin/logout' ).then( _ => {
+                fetch( '/admin/logout' ).then( () => {
                     this.userStore.setAdminAuth( false );
                     this.$router.push( '/admin/login' );
                 } );

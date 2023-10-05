@@ -1,3 +1,4 @@
+<!-- eslint-disable no-undef -->
 <template>
     <div id="popup-backdrop">
         <div class="popup-container">

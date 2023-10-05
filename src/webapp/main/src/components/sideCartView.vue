@@ -51,7 +51,7 @@ export default {
     props: {
         'cart': {
             type: Object,
-            default: {},
+            default: {}
             // EXAMPLE: { 'TestEvent2': { 'displayName': 'TestEvent2', 'tickets': { 'secAr1s1': { 'displayName': 'Row 1, Seat 1', 'price': 20 } } } }
         },
         'width': {

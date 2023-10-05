@@ -492,8 +492,7 @@ export default {
                             'charset': 'utf-8'
                         }
                     };
-                    // TODO: fix url
-                    fetch( url, options ).then( res => {
+                    fetch( '/admin/api/undeployEvent', options ).then( res => {
                         if ( res.status === 200 ) {
                             this.hasLiveVersion = false;
                             this.$refs.notification.createNotification( 'Your event is no longer publicly visible!', 5, 'ok', 'normal' );
@@ -510,7 +509,7 @@ export default {
                             'charset': 'utf-8'
                         }
                     };
-                    fetch( url, options ).then( res => {
+                    fetch( '/admin/api/deleteEvent', options ).then( res => {
                         if ( res.status === 200 ) {
                             this.$refs.notification.createNotification( 'Your event has been deleted successfully!', 5, 'ok', 'normal' );
                             setTimeout( () => {
@@ -534,7 +533,7 @@ export default {
             } else if ( action === 'undeploy' ) {
                 this.$refs.popups.openPopup( 'Do you really want to remove this event from the event listings?', {}, 'confirm' );
                 this.command = 'undeployEvent';
-            } else if ( type === 'delete' ) {
+            } else if ( action === 'delete' ) {
                 this.$refs.popups.openPopup( 'Do you really want to delete this event? This action cannot be undone', {}, 'confirm' );
                 this.command = 'deleteEvent';
             }

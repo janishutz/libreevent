@@ -1,3 +1,4 @@
+<!-- eslint-disable no-undef -->
 <!--
 *				libreevent - GuestPurchaseView.vue
 *
@@ -61,7 +62,7 @@ export default {
                     }
                 };
 
-                source.onopen = e => {
+                source.onopen = () => {
                     self.$refs.notification.createNotification( 'Connected to status service', 5, 'ok', 'normal' );
                     self.$refs.notification.cancelNotification( startNotification );
                 };

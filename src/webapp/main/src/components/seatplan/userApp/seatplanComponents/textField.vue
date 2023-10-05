@@ -49,16 +49,16 @@ export default {
         }
     },
     watch: {
-        origin ( value ) {
+        origin () {
             this.updateStyle();
         },
-        scaleFactor ( value ) {
+        scaleFactor () {
             this.updateStyle();
         },
-        colour ( value ) {
+        colour () {
             this.updateStyle();
         },
-        textSize ( value ) {
+        textSize () {
             this.updateStyle();
         }
     },

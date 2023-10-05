@@ -187,7 +187,9 @@ export default {
                             if ( Object.keys( this.cart[ this.event.eventID ][ 'tickets' ] ).length < 1 ) {
                                 try {
                                     delete this.cart[ this.event.eventID ];
-                                } catch {}
+                                } catch {
+                                    console.log( 'element nonexistent' );
+                                }
                             } else {
                                 delete this.cart[ this.event.eventID ][ 'tickets' ][ ticket ];
                             }
@@ -238,7 +240,7 @@ export default {
         }
     },
     created () {
-        window.addEventListener( 'visibilitychange', ( e ) => {
+        window.addEventListener( 'visibilitychange', () => {
             this.cart = localStorage.getItem( 'cart' ) ? JSON.parse( localStorage.getItem( 'cart' ) ): {};
         }, 1 );
         this.cart = localStorage.getItem( 'cart' ) ? JSON.parse( localStorage.getItem( 'cart' ) ): {};

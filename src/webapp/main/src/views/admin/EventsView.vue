@@ -23,7 +23,7 @@
                         </div>
                         <!-- <img :src="event.logo" alt="event logo" class="ticket-logo"> -->
                     </router-link>
-                    <router-link to="/admin/events/analytics" class="ticket" @click="setActiveTicket( event.eventID );" v-else="new Date( event.date ).getTime() > currentDate">
+                    <router-link to="/admin/events/analytics" class="ticket" @click="setActiveTicket( event.eventID );" v-else>
                         <div class="ticket-name">
                             <h3>{{ event.name }}</h3>
                             <p>{{ event.description }}</p>

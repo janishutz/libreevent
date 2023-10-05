@@ -1,3 +1,4 @@
+<!-- eslint-disable no-undef -->
 <!--
 *				libreevent - rightClickMenu.vue
 *

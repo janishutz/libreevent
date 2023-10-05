@@ -1,3 +1,4 @@
+<!-- eslint-disable no-undef -->
 <!--
 *				libreevent - window.vue
 *
@@ -74,7 +75,7 @@ export default {
     data() {
         return {
             active: 0,
-            draggables: { 1: { 'x': 100, 'y': 100, 'h': 100, 'w': 250, 'active': false, 'draggable': true, 'resizable': true, 'id': 1, 'origin': 1, 'shape': 'rectangular', 'type': 'seat', 'startingRow': 1, 'seatNumberingPosition': 1, 'sector': 'A', 'text': { 'text': 'TestText', 'textSize': 20, 'colour': '#20FFFF' }, 'numberingDirection': 'left', 'seatNumberingPosition': 1, 'category': '1' } },
+            draggables: { 1: { 'x': 100, 'y': 100, 'h': 100, 'w': 250, 'active': false, 'draggable': true, 'resizable': true, 'id': 1, 'origin': 1, 'shape': 'rectangular', 'type': 'seat', 'startingRow': 1, 'sector': 'A', 'text': { 'text': 'TestText', 'textSize': 20, 'colour': '#20FFFF' }, 'numberingDirection': 'left', 'seatNumberingPosition': 1, 'category': '1' } },
             available: { 'redo': false, 'undo': false },
             scaleFactor: 1,
             sizePoll: null,
@@ -206,7 +207,7 @@ export default {
             // }
             this.save();
         },
-        eventHandler ( e ) {
+        eventHandler () {
             if ( this.prevSize.h != window.innerHeight || this.prevSize.w != window.innerWidth ) {
                 this.prevSize = { 'h': window.innerHeight, 'w': window.innerWidth };
                 this.loadSeatplan();

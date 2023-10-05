@@ -1,3 +1,4 @@
+<!-- eslint-disable no-undef -->
 <template>
     <div id="notifications" @click="handleNotifications();">
         <div class="message-box" :class="[ location, size ]">
@@ -80,7 +81,9 @@ export default {
             }
             try {
                 this.queue.splice( this.queue.indexOf( id ), 1 );
-            } catch {}
+            } catch {
+                console.debug( 'queue empty' );
+            }
             if ( this.currentlyDisplayedNotificationID == id ) {
                 this.handleNotifications();
             }

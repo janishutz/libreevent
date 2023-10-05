@@ -9,7 +9,6 @@
 
 import { createRouter, createWebHistory } from 'vue-router';
 import { useUserStore } from '@/stores/userStore';
-import { useBackendStore } from '@/stores/backendStore';
 import adminRoutes from '@/router/adminRoutes';
 import mainRoutes from '@/router/mainRoutes';
 
@@ -27,7 +26,7 @@ const router = createRouter( {
     routes,
 } );
 
-router.afterEach( ( to, from ) => {
+router.afterEach( ( to ) => {
     let userStore = useUserStore();
     document.title = to.meta.title ? to.meta.title + userStore.getPageName : 'libreevent';
 } );

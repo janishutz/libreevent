@@ -223,7 +223,7 @@ export default {
         },
     },
     created () {
-        window.addEventListener( 'visibilitychange', ( e ) => {
+        window.addEventListener( 'visibilitychange', () => {
             this.cart = localStorage.getItem( 'cart' ) ? JSON.parse( localStorage.getItem( 'cart' ) ): {};
             this.calculateTotal();
         }, 1 );

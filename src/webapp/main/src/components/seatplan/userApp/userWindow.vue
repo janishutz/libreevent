@@ -1,3 +1,4 @@
+<!-- eslint-disable no-undef -->
 <!--
 *				libreevent - window.vue
 *
@@ -173,7 +174,7 @@ export default {
             this.seatChecks();
             // TODO: FUTURE Trim scroll box to about 200px more than seatplan size
             sessionStorage.setItem( 'seatplan', JSON.stringify( this.scaleDown( this.draggables ) ) );
-            window.addEventListener( 'visibilitychange', ( e ) => {
+            window.addEventListener( 'visibilitychange', () => {
                 this.seatPlanInit();
             }, 1 );
         },
@@ -237,7 +238,7 @@ export default {
                 }
             } );
         },
-        eventHandler ( e ) {
+        eventHandler () {
             if ( this.prevSize.h != window.innerHeight || this.prevSize.w != window.innerWidth ) {
                 this.prevSize = { 'h': window.innerHeight, 'w': window.innerWidth };
                 this.loadSeatplan();
@@ -330,7 +331,7 @@ export default {
                 this.loadSeatplan();
             } else {
                 if ( ( this.zoomFactor < 0.3 && scale < 0 ) || ( this.zoomFactor > 2.9 && scale > 0 ) ) {
-                        
+                    console.log( 'maxZoomLevelReached' );
                 } else {
                     this.zoomFactor += scale;
                 }

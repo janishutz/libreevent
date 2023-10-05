@@ -102,7 +102,7 @@ export default {
         }
     },
     watch: {
-        origin ( value ) {
+        origin () {
             this.updateOrigin();
         }
     },

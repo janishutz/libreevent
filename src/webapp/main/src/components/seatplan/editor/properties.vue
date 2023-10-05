@@ -1,3 +1,4 @@
+<!-- eslint-disable no-undef -->
 <!--
 *				libreevent - properties.vue
 *
@@ -266,16 +267,16 @@ export default {
         }
     },
     watch: {
-        draggables ( value ) {
+        draggables () {
             this.loadInternal();
         },
-        active ( value ) {
+        active () {
             this.loadInternal();
         },
-        scaleFactor ( value ) {
+        scaleFactor () {
             this.loadInternal();
         },
-        historyPos ( value ) {
+        historyPos () {
             this.loadInternal();
         }
     },

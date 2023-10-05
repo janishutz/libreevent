@@ -200,7 +200,7 @@ export default {
         }
     },
     watch: {
-        selectedTemplate( value ) {
+        selectedTemplate() {
             this.loadPageSettings();
         }
     },
