@@ -24,7 +24,7 @@
 
 A fully featured, free and open source event management solution you can host yourself, to manage your event and sell tickets. All you need is a webserver that can run node.js!
 
-Visit our [website](https://libreevent.janishutz.com)
+Visit the project's [website](https://libreevent.janishutz.com)
 
 ## Development ongoing
 libreǝvent currently is in a late beta state, with a fully functional version expected by mid-october. 
