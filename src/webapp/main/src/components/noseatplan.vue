@@ -2,10 +2,10 @@
     <div class="seatingWrapper">
         <div class="noseatplan">
             <h2>Available tickets</h2>
-            <button @click="cartHandling()">Add selected tickets to cart</button>
+            <button @click="cartHandling()" class="button">Add selected tickets to cart</button>
             <div class="wrapper">
-                <div v-for="ticket in event.categories">
-                    {{ event[ 'categories' ][ ticket.id ][ 'name' ] }}
+                <div v-for="ticket in event.categories" style="margin-bottom: 1.5%;">
+                    <h4 style="margin: 0.5%;">{{ event[ 'categories' ][ ticket.id ][ 'name' ] }}</h4>
                     <table>
                         <tr v-for="ticketOption in event[ 'ageGroups' ]">
                             <td>
@@ -264,6 +264,23 @@ export default {
         'main main main sidebar'
         'main main main sidebar';
         height: 100%;
+    }
+
+    .button {
+        transition: all 1s;
+        padding: 1%;
+        border-radius: 50px;
+        border: none;
+        background-color: var( --accent-background-hover );
+        cursor: pointer;
+        color: var( --secondary-color );
+        margin-bottom: 3%;
+        text-decoration: none;
+    }
+
+    .button:hover {
+        background-color: var( --accent-background );
+        border-radius: 10px;
     }
 
     .noseatplan {

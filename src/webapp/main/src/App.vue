@@ -43,7 +43,7 @@
         --popup-color: rgb(224, 224, 224);
         --accent-color: #42b983;
         --hover-color: rgb(165, 165, 165);
-        --accent-background-hover: rgb(124, 140, 236);
+        --accent-background-hover: #648cab;
         --overlay-color: rgba(0, 0, 0, 0.7);
         --inactive-color: rgb(100, 100, 100);
         --hint-color: rgb(174, 210, 221);
@@ -58,7 +58,7 @@
         --popup-color: rgb(58, 58, 58);
         --accent-color: #42b983;
         --hover-color: rgb(83, 83, 83);
-        --accent-background-hover: rgb(124, 140, 236);
+        --accent-background-hover: #648cab;
         --overlay-color: rgba(104, 104, 104, 0.575);
         --inactive-color: rgb(190, 190, 190);
         --hint-color: rgb(88, 91, 110);

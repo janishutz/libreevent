@@ -168,30 +168,28 @@ class POSTHandler {
                             if ( this.events[ data.eventID ].maxTickets == 0 || ticketCount < this.events[ data.eventID ].maxTickets ) {
 
                                 // check if enough tickets are still available
-                                if ( ticketCount < this.ticketTotals[ data.eventID ] - this.temporarilySelectedTotals[ session.id ][ data.eventID ][ id ] ) {
-                                    if ( data.count < this.ticketTotals[ data.eventID ] ) {
+                                if ( ticketCount < parseInt( this.ticketTotals[ data.eventID ] ) - parseInt( this.temporarilySelectedTotals[ session.id ][ data.eventID ][ id ] ) ) {
+                                    if ( data.count > this.ticketTotals[ data.eventID ] ) {
                                         ticketCount = this.ticketTotals[ data.eventID ];
-
-                                        // Create details
-                                        let info = {};
-                                        info[ data.eventID ] = {};
-                                        info[ data.eventID ][ id ] = data;
-                                        if ( !this.temporarilySelected[ data.eventID ] ) {
-                                            this.temporarilySelected[ data.eventID ] = {};
-                                        }
-                                        if ( !this.temporaryTotals[ data.eventID ] ) {
-                                            this.temporaryTotals[ data.eventID ] = 0;
-                                        }
-                                        db.writeDataSimple( 'temp', 'user_id', session.id, { 'user_id': session.id, 'timestamp': new Date().toString(), 'data': JSON.stringify( info ) } );
-                                        this.temporarilySelected[ data.eventID ][ id ] = info;
-                                        this.temporaryTotals[ data.eventID ] -= this.temporarilySelectedTotals[ session.id ][ data.eventID ][ id ];
-                                        this.temporaryTotals[ data.eventID ] += ticketCount;
-                                        this.temporarilySelectedTotals[ session.id ][ data.eventID ][ id ] = ticketCount;
-                                        this.countFreeSeats();
-                                        resolve( 'ok' );
-                                    } else {
-                                        reject( { 'code': 409, 'message': 'ERR_ALL_OCCUPIED' } );
                                     }
+
+                                    // Create details
+                                    let info = {};
+                                    info[ data.eventID ] = {};
+                                    info[ data.eventID ][ id ] = data;
+                                    if ( !this.temporarilySelected[ data.eventID ] ) {
+                                        this.temporarilySelected[ data.eventID ] = {};
+                                    }
+                                    if ( !this.temporaryTotals[ data.eventID ] ) {
+                                        this.temporaryTotals[ data.eventID ] = 0;
+                                    }
+                                    db.writeDataSimple( 'temp', 'user_id', session.id, { 'user_id': session.id, 'timestamp': new Date().toString(), 'data': JSON.stringify( info ) } );
+                                    this.temporarilySelected[ data.eventID ][ id ] = info;
+                                    this.temporaryTotals[ data.eventID ] -= this.temporarilySelectedTotals[ session.id ][ data.eventID ][ id ];
+                                    this.temporaryTotals[ data.eventID ] += ticketCount;
+                                    this.temporarilySelectedTotals[ session.id ][ data.eventID ][ id ] = ticketCount;
+                                    this.countFreeSeats();
+                                    resolve( 'ok' );
                                 } else {
                                     reject( { 'code': 409, 'message': 'ERR_ALL_OCCUPIED' } );
                                 }

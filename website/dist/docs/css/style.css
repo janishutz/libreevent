@@ -19,7 +19,7 @@ html, body {
 body {
     height: 100vh;
     display: grid;
-    background-color: #7c8cec;
+    background-color: #648cab;
     grid-template-areas:
     'header header header header header'
     'menu main main main main'
