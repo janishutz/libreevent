@@ -1,7 +1,7 @@
 <!DOCTYPE html>
     <html lang="en">
         <head>
-            <title>Design Guidelines :: docs - libreevent</title>
+            <title>Packaging :: docs - libreevent</title>
             <link rel="stylesheet" href="/docs/css/style.css">
             <meta http-equiv="X-UA-Compatible" content="IE=edge">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -17,9 +17,12 @@
             <div id="backToTop" onclick="backToTop();"></div>
             <div id="docPage">
                 <div id="doc-container">
-                <h1>Design Guidelines</h1>
-<p>Everything in libreevent should be designed in a way that puts legibility and ease of use as its priority, instead of opting for special effects that are, undeniably, nice, but do not contribute to improved usability and, as every effect needs some lines of code, also wastes bandwidth that is very limited if a lot of people access the sites simultaneously.</p>
-<p>All color used in libreevent should be a color variable that is defined in the App.vue files which means those colors can be changed easily in the future or as part of switching to dark mode. When designing something, please avoid adding more colors whenever possible.</p>
+                <h1>Packaging</h1>
+<p>To be able to work on libreevent, you need to have node.js and npm installed on your computer.</p>
+<p>Then, to set up the development environment, run</p>
+<pre><code>npm i
+</code></pre>
+<p>in the <em>src/server</em>, <em>src/webapp/main</em> and <em>src/webapp/setup</em> directories. This creates the <em>node_modules</em> folder in each of those directories. This is also what you need to do, if you want to upload the development version of libreevent.</p>
 </div>
             </div>
             <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
