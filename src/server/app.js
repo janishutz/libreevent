@@ -61,6 +61,7 @@ if ( settings.setupDone ) {
 
 if ( !settings.init ) {
     db.initDB();
+    db.reset();
     let mutSettings = settings;
     mutSettings[ 'init' ] = true;
     db.saveSettings( mutSettings );

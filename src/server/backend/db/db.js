@@ -36,6 +36,19 @@ module.exports.initDB = () => {
     } )();
 };
 
+module.exports.reset = () => {
+    console.log( '[ DB ] Resetting...' );
+    this.writeJSONData( 'booked', '{}' );
+    this.writeJSONData( 'eventDrafts', '{}' );
+    this.writeJSONData( 'events', '{}' );
+    this.writeJSONData( 'locations', '{}' );
+    this.writeJSONData( 'events', '{}' );
+    this.writeJSONData( 'rootAccount', '{}' );
+    this.writeJSONData( 'seatplan', '{}' );
+    this.writeJSONData( 'tickets', '{}' );
+    console.log( '[ DB ] Reset complete!' );
+};
+
 module.exports.getDataSimple = ( db, column, searchQuery ) => {
     return new Promise( ( resolve, reject ) => {
         dbh.query( { 'command': 'getFilteredData', 'property': column, 'searchQuery': searchQuery }, dbRef[ db ] ).then( data => {
