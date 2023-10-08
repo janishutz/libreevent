@@ -31,10 +31,15 @@ module.exports = ( app ) => {
         pwHandler.checkpassword( req.body.email, req.body.password ).then( status => {
             if ( status ) {
                 if ( status.status ) {
-                    db.getDataSimple( 'orders', 'order_name', req.body.ticketID.slice( 0, req.body.ticketID.lastIndexOf( '_' ) ) ).then( dat => {
+                    // extract order name
+                    let indexOfOrderNameEnd = req.body.ticketID.lastIndexOf( '_' );
+                    if ( indexOfOrderNameEnd > req.body.ticketID.length - 5 ) {
+                        indexOfOrderNameEnd = req.body.ticketID.slice( 0, req.body.ticketID.length - 5 ).lastIndexOf( '_' );
+                    }
+                    db.getDataSimple( 'orders', 'order_name', req.body.ticketID.slice( 0, indexOfOrderNameEnd ) ).then( dat => {
                         if ( dat[ 0 ] ) {
                             const tickets = JSON.parse( dat[ 0 ][ 'tickets' ] );
-                            const event = req.body.ticketID.slice( req.body.ticketID.lastIndexOf( '_' ) + 1, req.body.ticketID.lastIndexOf( '-' ) );
+                            const event = req.body.ticketID.slice( indexOfOrderNameEnd + 1, req.body.ticketID.lastIndexOf( '-' ) );
                             const ticket = req.body.ticketID.slice( req.body.ticketID.lastIndexOf( '-' ) + 1, req.body.ticketID.length );
                             if ( tickets[ event ] ) {
                                 if ( tickets[ event ][ ticket ] ) {
