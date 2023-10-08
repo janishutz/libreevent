@@ -26,7 +26,7 @@ class ApiClient {
             connection.doOutput = true
 
             // Create the JSON request body
-            val jsonRequest = "{\"username\":\"$username\",\"password\":\"$password\"}"
+            val jsonRequest = "{\"email\":\"$username\",\"password\":\"$password\"}"
 
             // Write the JSON data to the output stream
             val outputStream = DataOutputStream(connection.outputStream)
@@ -50,8 +50,7 @@ class ApiClient {
                 // Return the response as a String
                 return response.toString()
             } else {
-                // Handle the error (e.g., authentication failed)
-                // You can also throw an exception here if needed
+                println(responseCode)
                 return "status-code-non-ok"
             }
         } catch (e: Exception) {
@@ -61,7 +60,7 @@ class ApiClient {
     }
 
     fun checkTicket(apiUrl: String, username: String, password: String, ticket: String): String {
-        val url = URL("$apiUrl/app/ticketLookup")
+        val url = URL("https://$apiUrl/app/ticketLookup")
         val connection = url.openConnection() as HttpURLConnection
 
         // Set the request method to POST
@@ -76,7 +75,7 @@ class ApiClient {
         connection.doOutput = true
 
         // Create the JSON request body
-        val jsonRequest = "{\"username\":\"$username\",\"password\":\"$password\",\"ticketID\":$ticket}"
+        val jsonRequest = "{\"email\":\"$username\",\"password\":\"$password\",\"ticketID\":$ticket}"
 
         // Write the JSON data to the output stream
         val outputStream = DataOutputStream(connection.outputStream)

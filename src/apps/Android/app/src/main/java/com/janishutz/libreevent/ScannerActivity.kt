@@ -1,9 +1,12 @@
 package com.janishutz.libreevent
 
 import android.Manifest
+import android.app.AlertDialog
+import android.content.Intent
 import android.content.pm.PackageManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.widget.Button
 import androidx.core.app.ActivityCompat
 import com.journeyapps.barcodescanner.BarcodeCallback
 import com.journeyapps.barcodescanner.BarcodeResult
@@ -22,6 +25,19 @@ class ScannerActivity : CaptureActivity() {
         setContentView(R.layout.activity_scanner)
 
         barcodeView = findViewById(R.id.barcodeScannerView)
+
+        val logoutButton = findViewById<Button>(R.id.logoutButton)
+        logoutButton.setOnClickListener {
+            val sharedPref = getPreferences( MODE_PRIVATE )
+            val editor = sharedPref.edit()
+            editor.remove( "loginOk" )
+            editor.remove( "username" )
+            editor.remove( "url" )
+            editor.apply()
+            val switchIntent = Intent(this, MainActivity::class.java)
+            switchIntent.putExtra("hasSwitched", true)
+            startActivity(switchIntent)
+        }
 
         // Check for camera permission and request if not granted
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
@@ -43,16 +59,17 @@ class ScannerActivity : CaptureActivity() {
                     handleScanResult(scannedData)
                 }
             }
-
-            override fun possibleResultPoints(resultPoints: List<com.google.zxing.ResultPoint>?) {
-                // Optional: Handle possible result points
-            }
         })
     }
 
     private fun handleScanResult(result: String) {
         if ( lastScanned != result ) {
             println(result)
+            val sharedPref = getPreferences( MODE_PRIVATE )
+
+            ApiClient().checkTicket( sharedPref.getString( "url", null ).toString(),
+                sharedPref.getString( "username", null ).toString(),
+                sharedPref.getString( "password", null ).toString(), result )
             lastScanned = result
         }
     }
@@ -79,7 +96,15 @@ class ScannerActivity : CaptureActivity() {
             if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 setupScanner()
             } else {
-                // Handle permission denied
+                val alertDialogBuilder = AlertDialog.Builder(this)
+                alertDialogBuilder.setTitle("Camera access required!")
+                alertDialogBuilder.setMessage("Please ensure that camera access is enabled in settings")
+                alertDialogBuilder.setIcon(android.R.drawable.ic_dialog_alert)
+
+                alertDialogBuilder.setPositiveButton("OK") { dialog, _ ->
+                    dialog.dismiss()
+                }
+                alertDialogBuilder.show()
             }
         }
     }

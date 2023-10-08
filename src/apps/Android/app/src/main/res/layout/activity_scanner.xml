@@ -10,6 +10,13 @@
     <com.journeyapps.barcodescanner.DecoratedBarcodeView
         android:id="@+id/barcodeScannerView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent" >
+
+        <Button
+            android:id="@+id/logoutButton"
+            android:layout_width="122dp"
+            android:layout_height="wrap_content"
+            android:text="Log out" />
+    </com.journeyapps.barcodescanner.DecoratedBarcodeView>
 
 </FrameLayout>
