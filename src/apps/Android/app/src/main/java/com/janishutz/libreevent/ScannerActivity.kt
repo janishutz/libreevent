@@ -27,11 +27,10 @@ class ScannerActivity : CaptureActivity() {
 
         val logoutButton = findViewById<Button>(R.id.logoutButton)
         logoutButton.setOnClickListener {
-            val sharedPref = getSharedPreferences( "login", MODE_PRIVATE )
+            val sharedPref = applicationContext.getSharedPreferences( "login", MODE_PRIVATE )
             val editor = sharedPref.edit()
+            editor.remove( "password" )
             editor.remove( "loginOk" )
-            editor.remove( "username" )
-            editor.remove( "url" )
             editor.apply()
             val switchIntent = Intent(this, MainActivity::class.java)
             switchIntent.putExtra("hasSwitched", true)
@@ -63,12 +62,29 @@ class ScannerActivity : CaptureActivity() {
 
     private fun handleScanResult(result: String) {
         if ( lastScanned != result ) {
-            val sharedPref = getSharedPreferences( "login", MODE_PRIVATE )
+            val sharedPref = applicationContext.getSharedPreferences( "login", MODE_PRIVATE )
 
-            ApiClient().checkTicket( sharedPref.getString( "url", null ).toString(),
+            val status = ApiClient().checkTicket( sharedPref.getString( "url", null ).toString(),
                 sharedPref.getString( "username", null ).toString(),
                 sharedPref.getString( "password", null ).toString(), result )
             lastScanned = result
+            val alertDialogBuilder = AlertDialog.Builder(this)
+
+            if ( status == "ticketValid" ) {
+                alertDialogBuilder.setTitle("Ticket is valid")
+            } else if ( status == "ticketInvalid" ) {
+                alertDialogBuilder.setTitle("Ticket is invalid")
+            } else if ( status == "Error" ) {
+                alertDialogBuilder.setTitle("There was an error connecting")
+                alertDialogBuilder.setMessage("Please log out and log in again")
+            }
+
+            alertDialogBuilder.setIcon(android.R.drawable.ic_dialog_alert)
+
+            alertDialogBuilder.setPositiveButton("OK") { dialog, _ ->
+                dialog.dismiss()
+            }
+            alertDialogBuilder.show()
         }
     }
 

@@ -19,7 +19,6 @@ class ApiClient {
 
             // Set request headers (if needed)
             connection.setRequestProperty("Content-Type", "application/json")
-            // Add other headers as needed
 
             // Enable input and output streams for the connection
             connection.doInput = true
@@ -60,7 +59,11 @@ class ApiClient {
     }
 
     fun checkTicket(apiUrl: String, username: String, password: String, ticket: String): String {
-        val url = URL("https://$apiUrl/app/ticketLookup")
+        var url = URL("$apiUrl/app/ticketLookup")
+        if ( !apiUrl.contains( "https://" )) {
+            url = URL("https://$apiUrl/app/ticketLookup")
+        }
+
         val connection = url.openConnection() as HttpURLConnection
 
         // Set the request method to POST
@@ -68,14 +71,13 @@ class ApiClient {
 
         // Set request headers (if needed)
         connection.setRequestProperty("Content-Type", "application/json")
-        // Add other headers as needed
 
         // Enable input and output streams for the connection
         connection.doInput = true
         connection.doOutput = true
 
         // Create the JSON request body
-        val jsonRequest = "{\"email\":\"$username\",\"password\":\"$password\",\"ticketID\":$ticket}"
+        val jsonRequest = "{\"email\":\"$username\",\"password\":\"$password\",\"ticketID\":\"$ticket\"}"
 
         // Write the JSON data to the output stream
         val outputStream = DataOutputStream(connection.outputStream)
@@ -99,9 +101,16 @@ class ApiClient {
             // Return the response as a String
             return response.toString()
         } else {
-            // Handle the error (e.g., authentication failed)
-            // You can also throw an exception here if needed
-            return ""
+            val r = BufferedReader(InputStreamReader(connection.errorStream))
+            val res = StringBuilder()
+            var line: String?
+            while (r.readLine().also { line = it } != null) {
+                res.append(line)
+            }
+            r.close()
+            println(res.toString())
+
+            return "Error"
         }
     }
 }
