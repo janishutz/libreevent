@@ -29,6 +29,7 @@ class GETHandler {
             } else if ( call === 'getReservedSeats' ) {
                 if ( query.event ) {
                     db.getDataSimple( 'temp', 'user_id', session.id ).then( dat => {
+                        // console.log( dat[ 0 ] ? JSON.parse( dat[ 0 ].data )[ query.event ] ?? {} : {} );
                         resolve( { 'user': dat[ 0 ] ? JSON.parse( dat[ 0 ].data )[ query.event ] ?? {} : {} } );
                     } ).catch( () => {
                         reject( { 'code': 500, 'message': 'ERR_DB' } );

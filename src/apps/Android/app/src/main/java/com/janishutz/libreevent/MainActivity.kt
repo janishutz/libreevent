@@ -18,7 +18,7 @@ class MainActivity : AppCompatActivity() {
         val policy = ThreadPolicy.Builder().permitAll().build()
         StrictMode.setThreadPolicy(policy)
 
-        val sharedPref = getPreferences( MODE_PRIVATE )
+        val sharedPref = getSharedPreferences( "login", MODE_PRIVATE )
 
         val hasSwitched = intent.hasExtra("hasSwitched")
 
@@ -50,7 +50,7 @@ class MainActivity : AppCompatActivity() {
         val res = ApiClient().authenticateUser( url, username, password )
         println( res )
         if ( res == "authOk" ) {
-            val sharedPref = getPreferences( MODE_PRIVATE )
+            val sharedPref = getSharedPreferences( "login", MODE_PRIVATE )
             val editor = sharedPref.edit()
             editor.putString( "username", username )
             editor.putString( "password", password )

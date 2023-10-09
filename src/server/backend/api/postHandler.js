@@ -208,25 +208,33 @@ class POSTHandler {
                     if ( this.allSelectedSeats[ data.eventID ][ data.id ] || this.temporarilySelected[ data.eventID ][ data.id ] ) {
                         reject( { 'code': 409, 'message': 'ERR_ALREADY_SELECTED' } );
                     } else {
-                        let info = {};
-                        info[ data.eventID ] = {};
-                        info[ data.eventID ][ data.id ] = data;
-                        db.writeDataSimple( 'temp', 'user_id', session.id, { 'user_id': session.id, 'timestamp': new Date().toString(), 'data': JSON.stringify( info ) } ).then( () => {
-                            if ( !this.temporarilySelectedTotals[ session.id ] ) {
-                                this.temporarilySelectedTotals[ session.id ] = {};
-                                this.temporarilySelectedTotals[ session.id ][ data.eventID ] = {};
+                        db.getDataSimple( 'temp', 'user_id', session.id ).then( dat => {
+                            let info = {};
+                            if ( dat[ 0 ] ) {
+                                info = JSON.parse( dat[ 0 ].data );
                             }
-                            if ( !this.temporaryTotals[ data.eventID ] ) {
-                                this.temporaryTotals[ data.eventID ] = 0;
+                            if ( !info[ data.eventID ] ) {
+                                info[ data.eventID ] = {};
                             }
-                            this.temporarilySelected[ data.eventID ] = info[ data.eventID ];
-                            this.temporaryTotals[ data.eventID ] += 1;
-                            this.temporarilySelectedTotals[ session.id ][ data.eventID ][ data.id ] = 1;
-                            this.countFreeSeats();
-                            resolve( 'ok' );
-                        } ).catch( err => {
-                            console.error( err );
+                            info[ data.eventID ][ data.id ] = data;
+                            db.writeDataSimple( 'temp', 'user_id', session.id, { 'user_id': session.id, 'timestamp': new Date().toString(), 'data': JSON.stringify( info ) } ).then( () => {
+                                if ( !this.temporarilySelectedTotals[ session.id ] ) {
+                                    this.temporarilySelectedTotals[ session.id ] = {};
+                                    this.temporarilySelectedTotals[ session.id ][ data.eventID ] = {};
+                                }
+                                if ( !this.temporaryTotals[ data.eventID ] ) {
+                                    this.temporaryTotals[ data.eventID ] = 0;
+                                }
+                                this.temporarilySelected[ data.eventID ] = info[ data.eventID ];
+                                this.temporaryTotals[ data.eventID ] += 1;
+                                this.temporarilySelectedTotals[ session.id ][ data.eventID ][ data.id ] = 1;
+                                this.countFreeSeats();
+                                resolve( 'ok' );
+                            } ).catch( err => {
+                                console.error( err );
+                            } );
                         } );
+                        // TODO: Add catch block
                     }
                 }
             } else if ( call === 'deselectTicket' ) {

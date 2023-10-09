@@ -4,7 +4,6 @@ import android.Manifest
 import android.app.AlertDialog
 import android.content.Intent
 import android.content.pm.PackageManager
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
 import androidx.core.app.ActivityCompat
@@ -28,7 +27,7 @@ class ScannerActivity : CaptureActivity() {
 
         val logoutButton = findViewById<Button>(R.id.logoutButton)
         logoutButton.setOnClickListener {
-            val sharedPref = getPreferences( MODE_PRIVATE )
+            val sharedPref = getSharedPreferences( "login", MODE_PRIVATE )
             val editor = sharedPref.edit()
             editor.remove( "loginOk" )
             editor.remove( "username" )
@@ -64,8 +63,7 @@ class ScannerActivity : CaptureActivity() {
 
     private fun handleScanResult(result: String) {
         if ( lastScanned != result ) {
-            println(result)
-            val sharedPref = getPreferences( MODE_PRIVATE )
+            val sharedPref = getSharedPreferences( "login", MODE_PRIVATE )
 
             ApiClient().checkTicket( sharedPref.getString( "url", null ).toString(),
                 sharedPref.getString( "username", null ).toString(),
