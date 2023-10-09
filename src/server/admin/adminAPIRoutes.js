@@ -12,6 +12,7 @@ const geth = require( './api/getHandler.js' );
 const path = require( 'path' );
 const bodyParser = require( 'body-parser' );
 const mlt = require( 'multer' );
+const pngToIco = require( 'png-to-ico' );
 const multer = mlt();
 const fs = require( 'fs' );
 const settings = JSON.parse( fs.readFileSync( path.join( __dirname + '/../config/settings.config.json' ) ) );
@@ -83,6 +84,12 @@ module.exports = ( app ) => {
     app.post( '/admin/logo/upload', multer.array( 'image', 1 ), ( req, res ) => {
         if ( req.session.loggedInAdmin ) {
             fs.writeFileSync( path.join( __dirname + '/../assets/logo.png' ), req.files[ 0 ].buffer );
+
+            pngToIco( path.join( __dirname + '/../assets/logo.png' ) ).then( buf => {
+                fs.writeFileSync( path.join( __dirname + '/../webapp/main/dist/favicon.ico' ), buf );
+            } ).catch( () => {
+                console.error( '[ ICON CONVERTER ] Failed to convert png to ico file' );
+            } );
             res.send( 'ok' );
         } else {
             res.status( 403 ).send( 'unauthorized' );
