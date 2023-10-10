@@ -87,9 +87,10 @@ export default {
 
 <style scoped>
 
-    /* TODO: Update colour to image */
     .login {
-        background-color: green;
+        background-image: url( '/otherAssets/background-login.webp' );
+        background-size: cover;
+        background-position: center;
         width: 100%;
         height: 100%;
         flex-grow: 1;

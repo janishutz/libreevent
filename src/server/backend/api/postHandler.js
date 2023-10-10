@@ -233,8 +233,9 @@ class POSTHandler {
                             } ).catch( err => {
                                 console.error( err );
                             } );
+                        } ).catch( () => {
+                            console.log( '[ Ticketing ] An error occurred loading data form temp database' );
                         } );
-                        // TODO: Add catch block
                     }
                 }
             } else if ( call === 'deselectTicket' ) {

@@ -40,8 +40,7 @@ exports.init = function () {
         },
         createGateway: function ( params ) {
             if ( !params.amount ) {
-                // TODO: Think if we really have to throw here
-                throw new Error( 'Amount required!' );
+                return false;
             }
 
             const defaultParams = {
