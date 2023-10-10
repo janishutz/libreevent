@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="/css/style.css">
+        <link rel="stylesheet" href="/css/home.css">
+        <title>About :: libreǝvent</title>
+        <meta name="description" content="Looking for a free and open source event management solution you can host yourself? libreevent is a project that does exactly that.">
+    </head>
+    <body>
+        <div id="nav"></div>
+        <div id="backToTop" onclick="backToTop();"></div>
+        <div class="title-wrapper">
+            <h1>iOS app</h1>
+            <footer>Check the validity of tickets easily</footer>
+        </div>
+        <div class="content">
+            <p>libreǝvent features an iOS app to allow you to check the validity of the tickets. Just download the app from the AppStore using the link below.</p>
+            <p>You may then log into the app using the URL to your fully set up libreevent instance, the email address of an admin account and its password.</p>
+            <!-- TODO: Link to app -->
+        </div>
+        <div id="footer"></div>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.3/jquery-ui.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+        <script>
+            let btn = document.getElementById( 'backToTop' );
+            $( document ).ready( function () {
+                $( '#nav' ).load( '/nav.html' );
+                $( '#footer' ).load( '/footer.html' );
+            } );
+
+            function backToTop () {
+                if ( document.body.scrollTop > 500 || document.documentElement.scrollTop > 500 ) {
+                    window.scrollTo( { top: 0, behavior: 'smooth' } );
+                }
+            }
+
+            window.onscroll = function () {
+                if ( document.body.scrollTop > 500 || document.documentElement.scrollTop > 500 ) {
+                    btn.style.opacity = '1';
+                    btn.style.cursor = 'pointer';
+                } else {
+                    btn.style.opacity = '0';
+                    btn.style.cursor = 'default';
+                }
+            };
+        </script>
+    </body>
+</html>

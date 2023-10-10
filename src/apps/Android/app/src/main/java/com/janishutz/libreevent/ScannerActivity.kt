@@ -12,6 +12,7 @@ import com.journeyapps.barcodescanner.BarcodeResult
 import com.journeyapps.barcodescanner.CaptureActivity
 import com.journeyapps.barcodescanner.CaptureManager
 import com.journeyapps.barcodescanner.DecoratedBarcodeView
+import java.util.Date
 
 class ScannerActivity : CaptureActivity() {
 
@@ -19,6 +20,7 @@ class ScannerActivity : CaptureActivity() {
     private lateinit var captureManager: CaptureManager
 
     private var lastScanned: String = ""
+    private var lastScanTimestamp: Long = 0
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_scanner)
@@ -61,7 +63,8 @@ class ScannerActivity : CaptureActivity() {
     }
 
     private fun handleScanResult(result: String) {
-        if ( lastScanned != result ) {
+        if ( lastScanned != result || lastScanTimestamp + 2000 < System.currentTimeMillis()) {
+            lastScanTimestamp = System.currentTimeMillis()
             val sharedPref = applicationContext.getSharedPreferences( "login", MODE_PRIVATE )
 
             val status = ApiClient().checkTicket( sharedPref.getString( "url", null ).toString(),

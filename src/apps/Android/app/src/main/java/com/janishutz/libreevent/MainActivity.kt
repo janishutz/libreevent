@@ -1,5 +1,7 @@
 package com.janishutz.libreevent
 
+import android.Manifest
+import android.content.pm.PackageManager
 import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
@@ -8,6 +10,7 @@ import android.os.StrictMode.ThreadPolicy
 import android.widget.Button
 import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
 
 
 class MainActivity : AppCompatActivity() {
@@ -27,6 +30,10 @@ class MainActivity : AppCompatActivity() {
         val usernameEditText = findViewById<EditText>(R.id.username)
         val passwordEditText = findViewById<EditText>(R.id.password)
 
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.CAMERA), CAMERA_PERMISSION_REQUEST)
+        }
+
         if (sharedPref.getString( "url", null ).toString() != "null" && sharedPref.getString( "username", null ).toString() != "null" ) {
             urlEditText.setText(sharedPref.getString( "url", null ).toString())
             usernameEditText.setText(sharedPref.getString( "username", null ).toString())
@@ -37,6 +44,8 @@ class MainActivity : AppCompatActivity() {
             val switchIntent = Intent(this, ScannerActivity::class.java)
             startActivity(switchIntent)
         }
+
+
 
         loginButton.setOnClickListener {
             val url = urlEditText.text.toString()
@@ -90,5 +99,9 @@ class MainActivity : AppCompatActivity() {
             }
             alertDialogBuilder.show()
         }
+    }
+
+    companion object {
+        private const val CAMERA_PERMISSION_REQUEST = 1
     }
 }

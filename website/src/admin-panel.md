@@ -1,5 +1,5 @@
 # Home
-The admin panel is where you can change basically everything about libreevent. 
+The admin panel is where you can change basically everything about libreevent. It can be reached by visiting your libreevent instance and at the end type '/admin'. Example: 'https://libreevent.janishutz.com/admin' (note that this is not a valid URL!)
 <!-- In a future update, depending on your account's privileges, you may find more or less settings. Only the root account has access to the admin accounts page. Currently though, all pages are unlocked for all users. -->
 
 Here's a list of the pages available when logged in as the root user. <!-- All other users have fewer pages enabled.-->
