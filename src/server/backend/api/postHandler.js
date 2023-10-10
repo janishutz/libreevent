@@ -176,7 +176,7 @@ class POSTHandler {
                                     // Create details
                                     let info = {};
                                     info[ data.eventID ] = {};
-                                    info[ data.eventID ][ id ] = data;
+                                    info[ data.eventID ][ data.id ] = data;
                                     if ( !this.temporarilySelected[ data.eventID ] ) {
                                         this.temporarilySelected[ data.eventID ] = {};
                                     }
