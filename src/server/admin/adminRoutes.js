@@ -112,10 +112,10 @@ module.exports = ( app, settings ) => {
         }
     } );
 
-    app.get( '/test/login', ( request, response ) => {
-        request.session.loggedInAdmin = true;
-        response.send( 'Logged in' );
-    } );
+    // app.get( '/test/login', ( request, response ) => {
+    //     request.session.loggedInAdmin = true;
+    //     response.send( 'Logged in' );
+    // } );
     
     app.get( '/admin/logout', ( request, response ) => {
         request.session.loggedInAdmin = false;

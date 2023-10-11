@@ -45,11 +45,11 @@ module.exports = ( app, settings ) => {
         }
     } );
 
-    app.get( '/test/user', ( req, res ) => {
-        req.session.loggedInUser = true;
-        req.session.username = 'info@janishutz.com';
-        res.send( 'ok' );
-    } );
+    // app.get( '/test/user', ( req, res ) => {
+    //     req.session.loggedInUser = true;
+    //     req.session.username = 'info@janishutz.com';
+    //     res.send( 'ok' );
+    // } );
 
     app.post( '/user/login', bodyParser.json(), ( request, response ) => {
         if ( request.body.mail && request.body.password ) {

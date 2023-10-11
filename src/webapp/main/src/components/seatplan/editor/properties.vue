@@ -19,7 +19,7 @@
                     {{ Math.round( zoomFactor * 1000 ) / 1000 }}x
                 </td>
             </tr>
-            <tr>
+            <!-- <tr>
                 <td>Row naming scheme</td>
                 <td>
                     <select v-model="generalSettings[ 'namingScheme' ]">
@@ -28,7 +28,7 @@
                         <option value="roman">Roman numerals</option>
                     </select>
                 </td>
-            </tr>
+            </tr> -->
         </table>
         <h3>Component settings</h3>
         <table v-if="active">
