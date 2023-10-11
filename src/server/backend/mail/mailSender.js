@@ -12,7 +12,7 @@ const html2text = require( 'html-to-text' );
 
 const db = require( '../db/db.js' );
 
-let transporter = mailer.createTransport( db.getJSONDataSync( '/config/mail.config.secret.json' ) );
+let transporter = mailer.createTransport( db.getJSONDataSync( '/config/mail.config.json' ) );
 
 
 class MailManager {

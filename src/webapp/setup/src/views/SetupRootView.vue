@@ -170,6 +170,7 @@ export default {
             }
         },
         proceed () {
+            let progressNot = this.$refs.notification.createNotification( 'Saving...', 20, 'progress', 'normal' );
             const options = {
                 method: 'post',
                 body: JSON.stringify( this.formData ),
@@ -180,9 +181,13 @@ export default {
             };
             fetch( '/setup/saveRootAccount', options ).then( res => {
                 if ( res.status === 200 ) {
-                    sessionStorage.setItem( 'basics', JSON.stringify( this.formData ) );
-                    this.backendStore.addVisitedSetupPages( 'complete', true );
-                    this.$router.push( 'complete' );
+                    this.$refs.notification.cancelNotification( progressNot );
+                    this.$refs.notification.createNotification( 'Saved!', 5, 'ok', 'normal' );
+                    setTimeout( () => {
+                        sessionStorage.setItem( 'basics', JSON.stringify( this.formData ) );
+                        this.backendStore.addVisitedSetupPages( 'complete', true );
+                        this.$router.push( 'complete' );
+                    }, 2000 );
                 } else {
                     this.$refs.notification.createNotification( 'Setup key incorrect!', 5, 'error', 'normal' );
                 }

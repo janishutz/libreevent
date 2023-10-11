@@ -11,7 +11,7 @@ const fs = require( 'fs' );
 const path = require( 'path' );
 const db = require( '../../../db/db.js' );
 // TODO: update config files to non-secret version for final version
-const stripeConfig = JSON.parse( fs.readFileSync( path.join( __dirname + '/config.payments.secret.json' ) ) );
+const stripeConfig = JSON.parse( fs.readFileSync( path.join( __dirname + '/config.payments.json' ) ) );
 const stripe = require( 'stripe' )( stripeConfig[ 'APIKey' ] );
 const bodyParser = require( 'body-parser' );
 const ticket = require( '../../../tickets/ticketGenerator.js' );

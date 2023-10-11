@@ -16,7 +16,7 @@ const path = require( 'path' );
 
 class SQLDB {
     constructor ( ) {
-        this.sqlConnection = mysql.createConnection( JSON.parse( fs.readFileSync( path.join( __dirname + '/../../config/db.config.secret.json' ) ) ) );
+        this.sqlConnection = mysql.createConnection( JSON.parse( fs.readFileSync( path.join( __dirname + '/../../config/db.config.json' ) ) ) );
     }
 
     connect ( ) {

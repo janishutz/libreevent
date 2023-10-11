@@ -118,6 +118,7 @@ export default {
             if ( this.formData.email.port && this.formData.email.host && this.formData.email.user && this.formData.email.pass
                 && this.formData.dpEmail && this.formData.display && this.formData.websiteName ) {
                 this.formData.mailDisplay = this.formData.display + ' <' + this.formData.dpEmail + '>';
+                let progressNot = this.$refs.notification.createNotification( 'Setting up...', 20, 'progress', 'normal' );
                 const options = {
                     method: 'post',
                     body: JSON.stringify( this.formData ),
@@ -128,7 +129,11 @@ export default {
                 };
                 fetch( '/setup/saveBasicSettings', options ).then( res => {
                     if ( res.status === 200 ) {
-                        this.continue();
+                        this.$refs.notification.cancelNotification( progressNot );
+                        this.$refs.notification.createNotification( 'Saved!', 5, 'ok', 'normal' );
+                        setTimeout( () => {
+                            this.continue();
+                        }, 2000 );
                     } else {
                         this.$refs.notification.createNotification( 'Setup key incorrect!', 5, 'error', 'normal' );
                     }

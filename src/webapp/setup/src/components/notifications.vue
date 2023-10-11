@@ -1,3 +1,4 @@
+<!-- eslint-disable no-undef -->
 <template>
     <div id="notifications" @click="handleNotifications();">
         <div class="message-box" :class="[ location, size ]">
@@ -16,7 +17,7 @@
 
 <script>
 export default {
-    name: 'notificationsAPI',
+    name: 'notifications',
     props: {
         location: {
             type: String,
@@ -75,9 +76,13 @@ export default {
                 */
             try { 
                 delete this.notifications[ id ];
-                delete this.queue[ this.queue.findIndex( id ) ];
             } catch ( error ) {
                 console.log( 'notification to be deleted is nonexistent or currently being displayed' );
+            }
+            try {
+                this.queue.splice( this.queue.indexOf( id ), 1 );
+            } catch {
+                console.debug( 'queue empty' );
             }
             if ( this.currentlyDisplayedNotificationID == id ) {
                 this.handleNotifications();
@@ -97,10 +102,13 @@ export default {
                 this.priority = this.notifications[ this.queue[ 0 ] ][ 'priority' ];
                 this.currentlyDisplayedNotificationID = this.notifications[ this.queue[ 0 ] ][ 'id' ];
                 this.notificationDisplayTime = this.notifications[ this.queue[ 0 ] ][ 'showDuration' ];
+                delete this.notifications[ this.queue[ 0 ] ];
                 this.queue.reverse();
                 this.queue.pop();
+                $( '.message-box' ).css( 'z-index', 20 );
             } else {
                 this.messageType = 'hide';
+                $( '.message-box' ).css( 'z-index', -1 );
             }
         }
     },
@@ -122,56 +130,16 @@ export default {
 <style scoped>
     .message-box {
         position: fixed;
-        z-index: 10;
+        z-index: -1;
         color: white;
         transition: all 0.5s;
-    }
-
-    .default {
+        width: 95vw;
+        right: 2.5vw;
+        top: 1vh;
         height: 10vh;
-        width: 15vw;
     }
 
-    .small {
-        height: 7vh;
-        width: 11vw;
-    }
-
-    .big {
-        height: 12vh;
-        width: 17vw;
-    }
-
-    .bigger {
-        height: 15vh;
-        width: 20vw;
-    }
-
-    .huge {
-        height: 20vh;
-        width: 25vw;
-    }
-
-    .topleft {
-        top: 3vh;
-        left: 0.5vw;
-    }
-
-    .topright {
-        top: 3vh;
-        right: 0.5vw;
-    }
-
-    .bottomright {
-        bottom: 3vh;
-        right: 0.5vw;
-    }
-
-    .bottomleft {
-        top: 3vh;
-        right: 0.5vw;
-    }
-
+    
     .message-container {
         display: flex;
         justify-content: center;
@@ -182,7 +150,7 @@ export default {
         transition: all 0.5s;
         cursor: default;
     }
-
+    
     .types {
         color: white;
         border-radius: 100%;
@@ -191,46 +159,123 @@ export default {
         padding: 1.5%;
         font-size: 200%;
     }
-
+    
     .message {
         margin-right: 5%;
         text-align: end;
     }
-
+    
     .ok {
         background-color: rgb(1, 71, 1);
     }
-
+    
     .error {
         background-color: rgb(114, 1, 1);
     }
-
+    
     .info {
         background-color: rgb(44, 112, 151);
     }
-
+    
     .warning {
         background-color: orange;
     }
-
+    
     .hide {
         opacity: 0;
     }
-
+    
     .progress {
+        z-index: 20;
         background-color: rgb(0, 0, 99);
     }
-
+    
     .progress-spinner {
         animation: spin 2s infinite linear;
     }
-
+    
     @keyframes spin {
         from {
             transform: rotate( 0deg );
         }
         to {
             transform: rotate( 720deg );
+        }
+    }
+
+    @media only screen and (min-width: 750px) {
+
+        .default {
+            height: 10vh;
+            width: 32vw;
+        }
+
+        .small {
+            height: 7vh;
+            width: 27vw;
+        }
+
+        .big {
+            height: 12vh;
+            width: 38vw;
+        }
+
+        .bigger {
+            height: 15vh;
+            width: 43vw;
+        }
+
+        .huge {
+            height: 20vh;
+            width: 50vw;
+        }
+
+        .topleft {
+            top: 3vh;
+            left: 0.5vw;
+        }
+
+        .topright {
+            top: 3vh;
+            right: 0.5vw;
+        }
+
+        .bottomright {
+            bottom: 3vh;
+            right: 0.5vw;
+        }
+
+        .bottomleft {
+            top: 3vh;
+            right: 0.5vw;
+        }
+    }
+
+
+    @media only screen and (min-width: 1500px) {
+        .default {
+            height: 10vh;
+            width: 15vw;
+        }
+
+        .small {
+            height: 7vh;
+            width: 11vw;
+        }
+
+        .big {
+            height: 12vh;
+            width: 17vw;
+        }
+
+        .bigger {
+            height: 15vh;
+            width: 20vw;
+        }
+
+        .huge {
+            height: 20vh;
+            width: 25vw;
         }
     }
 </style>

@@ -15,7 +15,6 @@ const cookieParser = require( 'cookie-parser' );
 const http = require( 'http' );
 const fs = require( 'fs' );
 const token = require( './backend/token.js' );
-const db = require( './backend/db/db.js' );
 
 console.log( `
 
@@ -59,14 +58,6 @@ if ( settings.setupDone ) {
     } );
 }
 
-if ( !settings.init ) {
-    db.initDB();
-    db.reset();
-    let mutSettings = settings;
-    mutSettings[ 'init' ] = true;
-    db.saveSettings( mutSettings );
-}
-
 
 // Set up static routes for static file serving (performance wise not
 // that good, but way easier to set up)
@@ -94,8 +85,8 @@ app.use( cookieParser() );
 
 let file = path.join( __dirname + '/webapp/main/dist/index.html' );
 
-console.log( '[ Server ] loading backend components' );
 if ( settings.setupDone ) {
+    console.log( '[ Server ] loading backend components' );
     require( './backend/helperRoutes.js' )( app, settings ); // Helper routes
     require( './admin/adminRoutes.js' )( app, settings ); // admin routes
     require( './admin/adminAPIRoutes.js' )( app, settings ); // admin api routes

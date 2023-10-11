@@ -7,15 +7,15 @@
 *
 */
 
-// let db = null;
-let db = require( '../backend/db/db.js' );
-const pwm = require( '../admin/pwdmanager.js' );
+let db = null;
+let pwm = null;
 const fs = require( 'fs' );
 const path = require( 'path' );
 const bodyParser = require( 'body-parser' );
-// const db = require( '../backend/db/db.js' );
+
 
 module.exports = ( app, settings ) => {
+    let isSetupComplete = settings.setupDone;
     /* 
         Setup start route that checks if setup key was correct
     */
@@ -40,9 +40,17 @@ module.exports = ( app, settings ) => {
     app.post( '/setup/saveBasicSettings', bodyParser.json(), ( req, res ) => {
         if ( req.session.setupKeyOk ) {
             fs.writeFileSync( path.join( __dirname + '/../config/db.config.json' ), JSON.stringify( req.body.db ) );
-            fs.writeFileSync( path.join( __dirname + '/../config/mail.config.json' ), JSON.stringify( req.body.email ) );
+            let emailSettings = {};
+            emailSettings[ 'host' ] = req.body.email.host;
+            emailSettings[ 'port' ] = req.body.email.port;
+            emailSettings[ 'secure' ] = false;
+            emailSettings[ 'auth' ] = { 'user': req.body.email.user, 'pass': req.body.email.pass };
+            let hostSplit = req.body.email.host.split( '.' );
+            emailSettings[ 'tls' ] = { 'servername': ( hostSplit[ hostSplit.length - 2 ] + '.' + hostSplit[ hostSplit.length - 1 ] ) };
+            fs.writeFileSync( path.join( __dirname + '/../config/mail.config.json' ), JSON.stringify( emailSettings ) );
             if ( db === null ) {
                 db = require( '../backend/db/db.js' );
+                pwm = require( '../admin/pwdmanager.js' );
             }
             let updatedSettings = settings;
             updatedSettings[ 'name' ] = req.body.websiteName;
@@ -56,20 +64,29 @@ module.exports = ( app, settings ) => {
 
     app.post( '/setup/saveRootAccount', bodyParser.json(), ( req, res ) => {
         if ( req.session.setupKeyOk ) {
+            if ( db === null ) {
+                db = require( '../backend/db/db.js' );
+                pwm = require( '../admin/pwdmanager.js' );
+            }
             pwm.hashPassword( req.body.password ).then( hash => {
                 db.writeJSONData( 'rootAccount', { 'pass': hash, 'email': req.body.mail } );
                 let updatedSettings = settings;
                 updatedSettings[ 'setupDone' ] = true;
+                updatedSettings[ 'init' ] = true;
                 db.saveSettings( updatedSettings );
-                res.send( 'ok' );
+                isSetupComplete = true;
+                ( async () => {
+                    await db.initDB();
+                    db.reset();
+                    res.send( 'ok' );
+                } )();
             } );
         } else {
             res.status( 403 ).send( 'unauthorized' );
         }
     } );
 
-    app.get( '/test/login', ( req, res ) => {
-        req.session.setupKeyOk = true;
-        res.send( 'ok' );
+    app.get( '/getSetupStatus', ( req, res ) => {
+        res.send( isSetupComplete );
     } );
 };

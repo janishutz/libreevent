@@ -368,6 +368,7 @@ export default {
         reserveTicket ( option ) {
             if ( option.status == 'ok' && option.data ) {
                 // Make call to server to reserve ticket to have server also keep track of reserved tickets
+                let progressNot = this.$refs.notification.createNotification( 'Reserving ticket...', 20, 'progress', 'normal' );
                 const options = {
                     method: 'post',
                     body: JSON.stringify( { 'id': this.selectedSeat[ 'id' ], 'component': this.selectedSeat[ 'componentID' ], 'ticketOption': option.data, 'eventID': this.event.eventID, 'category': this.draggables[ this.selectedSeat[ 'componentID' ] ].category, 'name': this.selectedSeat.displayName } ),
@@ -378,6 +379,7 @@ export default {
                 };
                 fetch( localStorage.getItem( 'url' ) + '/API/reserveTicket', options ).then( res => {
                     if ( res.status === 200 ) {
+                        this.$refs.notification.cancelNotification( progressNot );
                         this.$refs[ 'component' + this.selectedSeat.componentID ][ 0 ].validateSeatSelection( this.selectedSeat, option.data );
                         this.cartHandling( 'select', option.data );
                     } else if ( res.status === 409 ) {

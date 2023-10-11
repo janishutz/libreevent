@@ -20,3 +20,19 @@
         font-size: 400%;
     }
 </style>
+
+<script>
+export default {
+    created() {
+        fetch( '/getSetupStatus' ).then( res => {
+            if ( res.status === 200 ) {
+                res.text().then( text => {
+                    if ( text !== 'true' ) {
+                        this.$router.push( '/' );
+                    }
+                } );
+            }
+        } );
+    }
+};
+</script>

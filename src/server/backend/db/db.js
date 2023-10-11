@@ -31,21 +31,23 @@ if ( settings.db === 'mysql' ) {
 module.exports.initDB = () => {
     ( async() =>  {
         console.log( '[ DB ] Setting up...' );
-        await dbh.setupDB();
+        await dbh.resetDB();
+        setTimeout( () => {
+            dbh.setupDB();
+        }, 2000 );
         console.log( '[ DB ] Setting up complete!' );
     } )();
 };
 
 module.exports.reset = () => {
     console.log( '[ DB ] Resetting...' );
-    this.writeJSONData( 'booked', '{}' );
-    this.writeJSONData( 'eventDrafts', '{}' );
-    this.writeJSONData( 'events', '{}' );
-    this.writeJSONData( 'locations', '{}' );
-    this.writeJSONData( 'events', '{}' );
-    this.writeJSONData( 'rootAccount', '{}' );
-    this.writeJSONData( 'seatplan', '{}' );
-    this.writeJSONData( 'tickets', '{}' );
+    this.writeJSONData( 'booked', {} );
+    this.writeJSONData( 'eventDrafts', {} );
+    this.writeJSONData( 'events', {} );
+    this.writeJSONData( 'locations', {} );
+    this.writeJSONData( 'events', {} );
+    this.writeJSONData( 'seatplan', {} );
+    this.writeJSONData( 'tickets', {} );
     console.log( '[ DB ] Reset complete!' );
 };
 
