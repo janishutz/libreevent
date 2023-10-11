@@ -1,5 +1,13 @@
-- Website: Add ids to titles
+# DEPLOY
+For deployment create the following items:
+- libreevent-[VERSION HERE]-npm.zip (contains the node_modules folder from src/server)
+- libreevent-[VERSION HERE]-prebuilt.zip (contains a ready-to-use compiled version of libreevent (main download))
+- libreevent-[VERSION HERE]-full-icu.zip (contains the package.json file which can be used if full-icu is not enabled in Node.js)
 
+
+
+# PLANS
+- Website: Add ids to titles
 
 
 - Update files to import when deploying for included json files instead of secret.json files

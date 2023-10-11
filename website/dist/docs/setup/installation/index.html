@@ -61,7 +61,7 @@ https://www.digitalocean.com/go/affiliates</p>
 <h3>ERR_ENCODING_NOT_SUPPORTED</h3>
 <p>If this error occurs, most likely, the Node.js build of your hosting provider is set to small-icu mode, meaning some localizations are missing, one of which is ascii, which is required by the pdf generator that libreevent uses. To resolve this, you will need to download a special package.json file and add two (more) environment variables:</p>
 <ul>
-<li>For the package.json file, download it from <a href="https://libreevent.janishutz.com/downloads/full-icu/package.json">here</a> TODO: Add download!</li>
+<li>For the package.json file, download it from <a href="https://api.janishutz.com/download/libreevent?v=latest&amp;type=icu">here</a> </li>
 <li>For the environment variables, add the following:</li>
 </ul>
 <pre><code>NODE_ICU_DATA=./node_modules/full-icu

@@ -67,7 +67,7 @@ The MySQL database you are using is not supported by libreevent or is incorrectl
 
 ### ERR_ENCODING_NOT_SUPPORTED
 If this error occurs, most likely, the Node.js build of your hosting provider is set to small-icu mode, meaning some localizations are missing, one of which is ascii, which is required by the pdf generator that libreevent uses. To resolve this, you will need to download a special package.json file and add two (more) environment variables:
-- For the package.json file, download it from [here](https://libreevent.janishutz.com/downloads/full-icu/package.json) TODO: Add download!
+- For the package.json file, download it from [here](https://api.janishutz.com/download/libreevent?v=latest&type=icu) <!-- TODO: Add download -->
 - For the environment variables, add the following: 
 ```
 NODE_ICU_DATA=./node_modules/full-icu
