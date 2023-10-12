@@ -88,10 +88,14 @@ mkdir webapp
 mkdir webapp/main
 mkdir webapp/setup
 
-pwd
-
 cp -rv ../src/webapp/main/dist ./webapp/main/dist
 cp -rv ../src/webapp/setup/dist ./webapp/setup/dist
+rm .gitignore
+rm prepareDB.js
+rm test.js
+rm config/*.secret.json
+rm backend/plugins/payments/*/*.secret.json
+echo "sdfgkhl" >> setupkey.txt
 
 echo " 
 
