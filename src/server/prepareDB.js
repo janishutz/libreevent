@@ -1,24 +1,49 @@
-const sql = require( './backend/db/mysqldb.js' );
-const sqlDB = new sql();
-
 const db = require( './backend/db/db.js' );
 
-sqlDB.connect();
+console.log( `
 
-sqlDB.resetDB();
+ _ _ _                                   _   
+| (_) |                                 | |  
+| |_| |__  _ __ ___  _____   _____ _ __ | |_ 
+| | | '_ \\| '__/ _ \\/ _ \\ \\ / / _ \\ '_ \\| __|
+| | | |_) | | |  __/  __/\\ V /  __/ | | | |_ 
+|_|_|_.__/|_|  \\___|\\___| \\_/ \\___|_| |_|\\__|
+                                             
+                                             
 
-setTimeout( () => {
-    sqlDB.setupDB();
+
+    -------------------------------
     
-    setTimeout( () => {
-        db.writeDataSimple( 'admin', 'email', 'info@janishutz.com', { 'email': 'info@janishutz.com', 'pass': '$2b$05$ElMYWoMjk7567lXkIkee.e.6cxCrWU4gkfuNLB8gmGYLQQPm7gT3O', 'username': 'jhutz' } );
-    }, 1000 );
+    ==> Resetting DBs to prepare for build
 
-    setTimeout( () => {
-        db.writeDataSimple( 'user', 'email', 'info@janishutz.com', { 'email': 'info@janishutz.com', 'pass': '$2b$05$ElMYWoMjk7567lXkIkee.e.6cxCrWU4gkfuNLB8gmGYLQQPm7gT3O', 'name': 'Hutz', 'first_name': 'Janis', 'two_fa': 'enhanced' } );
-    }, 1000 );
+` );
 
-    setTimeout( () => {
-        db.writeDataSimple( 'admin', 'email', 'info@janishutz.com', { 'email': 'info@janishutz.com', 'pass': '$2b$05$ElMYWoMjk7567lXkIkee.e.6cxCrWU4gkfuNLB8gmGYLQQPm7gT3O', 'username': 'jhutz', 'permissions': JSON.stringify( { 'test': true } ), 'two_fa': true } );
-    }, 2000 );
-}, 1000 );
+db.writeJSONData( 'booked', {} );
+db.writeJSONData( 'eventDrafts', {} );
+db.writeJSONData( 'events', {} );
+db.writeJSONData( 'locations', {} );
+db.writeJSONData( 'events', {} );
+db.writeJSONData( 'seatplan', {} );
+db.writeJSONData( 'tickets', {} );
+db.writeJSONData( 'rootAccount', {} );
+db.writeJSONData( 'db', {} );
+
+db.saveSettings( {
+    'init': false,
+    'setupDone': false,
+    'twoFA': 'allow',
+    'twoFAMode': 'simple',
+    'db': 'mysql',
+    'payments': 'stripe',
+    'name': 'libreevent',
+    'yourDomain': '',
+    'mailSender': '',
+    'maxTickets': 10,
+    'currency': 'USD',
+    'gcInterval': 300,
+    'ticketTimeout': 900,
+    'startPage': 'default',
+    'version': '1.0.0'
+} );
+
+console.log( '  ==> Done!\n\n' );
