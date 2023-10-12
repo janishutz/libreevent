@@ -1,4 +1,34 @@
-const db = require( './backend/db/db.js' );
+const fs = require( 'fs' );
+const path = require( 'path' );
+
+const letters = [ ',', '{' ];
+
+const writeJSONData = ( db, data ) => {
+    return new Promise( ( resolve, reject ) => {
+        fs.writeFile( path.join( __dirname + '/data/' + db + '.json' ), JSON.stringify( data ), ( error ) => {
+            if ( error ) {
+                reject( 'Error occurred: Error trace: ' + error );
+            } else {
+                resolve( true );
+            }
+        } );
+    } );
+};
+
+const saveSettings = ( settings ) => {
+    const settingsString = JSON.stringify( settings );
+    let settingsToSave = '';
+    for ( let letter in settingsString ) {
+        if ( letters.includes( settingsString[ letter ] ) ) {
+            settingsToSave += settingsString[ letter ] + '\n\t';
+        } else if ( settingsString[ letter ] === '}' ) {
+            settingsToSave += '\n' + settingsString[ letter ];
+        } else {
+            settingsToSave += settingsString[ letter ];
+        }
+    }
+    fs.writeFileSync( path.join( __dirname + '/config/settings.config.json' ), settingsToSave );
+};
 
 console.log( `
 
@@ -18,17 +48,17 @@ console.log( `
 
 ` );
 
-db.writeJSONData( 'booked', {} );
-db.writeJSONData( 'eventDrafts', {} );
-db.writeJSONData( 'events', {} );
-db.writeJSONData( 'locations', {} );
-db.writeJSONData( 'events', {} );
-db.writeJSONData( 'seatplan', {} );
-db.writeJSONData( 'tickets', {} );
-db.writeJSONData( 'rootAccount', {} );
-db.writeJSONData( 'db', {} );
+writeJSONData( 'booked', {} );
+writeJSONData( 'eventDrafts', {} );
+writeJSONData( 'events', {} );
+writeJSONData( 'locations', {} );
+writeJSONData( 'events', {} );
+writeJSONData( 'seatplan', {} );
+writeJSONData( 'tickets', {} );
+writeJSONData( 'rootAccount', {} );
+writeJSONData( 'db', {} );
 
-db.saveSettings( {
+saveSettings( {
     'init': false,
     'setupDone': false,
     'twoFA': 'allow',
