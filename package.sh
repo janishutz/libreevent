@@ -137,6 +137,9 @@ zip -9r libreevent-$v-full-icu.zip src/server/package.json src/server/package-lo
 cd src/server
 npm uninstall full-icu
 
+cd ../../
+rm -rf dist
+
 echo " 
 
  _ _ _                                   _   
