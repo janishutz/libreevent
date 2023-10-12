@@ -57,9 +57,9 @@ If you like this project and it helped you save money, please consider donating 
 - [website/](/website/): contains all of the website files:
     - [website/dist/](/website/dist/): contains all the ready to distribute website files
     - [website/src/](/website/src/): contains all of the source files (markdown format) for the website. These files are converted into HTML by the build script.
-- [package.js](/package.js): collects all of the files of the project and copies them into the [dist/](/dist/) folder. It also minifies the files in the process to reduce package size.
-- [.eslintrc.js](/.eslintrc.js): ESlint config, the linter used for the project
-- [.gitignore](/.gitignore): ignored files, currently is node_modules & log files.
+- [package.sh](/package.sh): collects all of the files of the project and copies them into the [dist/](/dist/) folder. It also automatically compiles the webapps and removes unnecessary files as well as resetting the databases and settings to the defaults. 
+- [.eslintrc.js](/.eslintrc.js): ESlint config, the linter used for the project. Before starting a PR, make sure the linter is happy!
+- [notes.md](./notes.md): Project notes, including future plans for it.
 
 You may notice some additional folders appearing after running 
 ```
