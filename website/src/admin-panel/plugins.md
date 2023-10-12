@@ -4,4 +4,4 @@ libreevent can be extended easily with plugins. Plugins add additional features 
 
 **Please only install plugins from sources you trust!**
 
-You may read on about plugins [here](&/plugins/) and you can find an installation guide [here](&/plugins/installation).
+You may read on about plugins and how to install them [here](&/plugins/).

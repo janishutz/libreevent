@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="/css/style.css">
+        <link rel="stylesheet" href="/css/home.css">
+        <title>About :: libreǝvent</title>
+        <meta name="description" content="Looking for a free and open source event management solution you can host yourself? libreevent is a project that does exactly that.">
+    </head>
+    <body>
+        <div id="nav"></div>
+        <div id="backToTop" onclick="backToTop();"></div>
+        <div class="title-wrapper">
+            <h1>Plugins for <i>libre</i>ǝvent</h1>
+            <footer>Add more functionality!</footer>
+        </div>
+        <div class="content">
+            Currently, libreevent has two plugins that come with it by default, newsletters and polls.
+            Here is a list of all available plugins:
+            <ul>
+                <li>Newsletter: A plugin to send newsletters to signed up users, read more <a href="/plugins/newsletter">here</a></li>
+                <li>Polls: A plugin to conduct polls, read more <a href="/plugins/polls">here</a></li>
+            </ul>
+        </div>
+        <div id="footer"></div>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.3/jquery-ui.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+        <script>
+            let btn = document.getElementById( 'backToTop' );
+            $( document ).ready( function () {
+                $( '#nav' ).load( '/nav.html' );
+                $( '#footer' ).load( '/footer.html' );
+            } );
+
+            function backToTop () {
+                if ( document.body.scrollTop > 500 || document.documentElement.scrollTop > 500 ) {
+                    window.scrollTo( { top: 0, behavior: 'smooth' } );
+                }
+            }
+
+            window.onscroll = function () {
+                if ( document.body.scrollTop > 500 || document.documentElement.scrollTop > 500 ) {
+                    btn.style.opacity = '1';
+                    btn.style.cursor = 'pointer';
+                } else {
+                    btn.style.opacity = '0';
+                    btn.style.cursor = 'default';
+                }
+            };
+        </script>
+    </body>
+</html>
