@@ -112,6 +112,7 @@ export default {
     #sideCartView {
         background-color: var( --accent-background );
         color: var( --secondary-color );
+        height: 50vh;
     }
 
     .seatplan {
