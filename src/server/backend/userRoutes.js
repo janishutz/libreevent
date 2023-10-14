@@ -178,7 +178,7 @@ module.exports = ( app, settings ) => {
                             'name': request.body.name, 
                             'two_fa': 'disabled', 
                             'user_data': JSON.stringify( { 'country': request.body.country } ), 
-                            'marketing': request.body.newsletter ? generator.generateToken( 60 ) : null 
+                            'marketing': request.body.newsletter ?? null 
                         } ).then( () => {
                             request.session.loggedInUser = true;
                             request.session.username = request.body.mail;
@@ -215,6 +215,8 @@ module.exports = ( app, settings ) => {
             if ( call === '2fa' ) {
                 db.writeDataSimple( 'users', 'email', request.session.username, { 'two_fa': request.body.twoFA } );
                 response.send( 'ok' );
+            } else {
+                response.status( 404 ).send( 'Not found' );
             }
         } else {
             response.status( 403 ).send( 'unauthorised' );

@@ -89,11 +89,10 @@
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
         <script>
             function submitFunction () {
-                let code = document.getElementById( '2fa' ).value;
-                let data = '';
+                let mode = document.getElementById( '2fa' ).value;
                 let fetchOptions = {
                     method: 'post',
-                    body: JSON.stringify( { 'twoFA': data } ),
+                    body: JSON.stringify( { 'twoFA': mode } ),
                     headers: {
                         'Content-Type': 'application/json',
                         'charset': 'utf-8'

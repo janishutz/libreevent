@@ -13,6 +13,7 @@ const ticket = require( '../../../tickets/ticketGenerator.js' );
 const payrexxModule = require( './module.payrexx.js' );
 const payrexx = payrexxModule.init();
 const TicketGenerator = new ticket();
+const generator = require( '../../../token.js' );
 
 let sessionReference = {};
 let waitingClients = {};
@@ -101,6 +102,7 @@ module.exports = ( app, settings ) => {
                         response.write( 'data: ready\n\n' );
                         response.end();
                         delete waitingClients[ request.session.id ];
+                        request.session.id = generator.generateToken( 30 );
                     }, 2000 );
                 } else if ( stat === 'noTicket' ) {
                     clearInterval( ping );
@@ -120,6 +122,7 @@ module.exports = ( app, settings ) => {
             if ( !pendingPayments[ request.session.id ] ) {
                 const stat = TicketGenerator.getGenerationStatus( request.session.id );
                 if ( stat === 'done' ) {
+                    request.session.id = generator.generateToken( 30 );
                     response.send( { 'status': 'ticketOk' } );
                 } else if ( stat === 'noTicket' ) {
                     response.send( { 'status': 'noTicket' } );
