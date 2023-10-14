@@ -440,62 +440,91 @@ export default {
             if ( !this.cart[ this.event.eventID ] ) {
                 this.cart[ this.event.eventID ] = { 'displayName': this.event.name, 'tickets': {}, 'eventID': this.event.eventID };
             }
-                
-            for ( let group in data.data ) {
-                if ( data.data[ group ] > 0 ) {
-                    const options = {
-                        method: 'post',
-                        body: JSON.stringify( { 'id': 'ticket' + data.component + '_' + group, 'component': data.component, 'ticketOption': group, 'eventID': this.event.eventID, 'count': data.data[ group ], 'category': this.draggables[ data.component ].category, 'name': 'Ticket ' + data.component + ' (' + this.event.ageGroups[ group ].name + ')' } ),
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'charset': 'utf-8'
-                        }
-                    };
-                    fetch( localStorage.getItem( 'url' ) + '/API/reserveTicket', options ).then( res => {
-                        if ( res.status === 200 ) {
-                            this.cart[ this.event.eventID ][ 'tickets' ][ 'ticket' + data.component + '_' + group ] = { 'displayName': 'Ticket ' + data.component + ' (' + this.event.ageGroups[ group ].name + ')', 'price': this.event.categories[ this.draggables[ data.component ].category ].price[ group ], 'id': 'ticket' + data.component + '_' + group, 'count': data.data[ group ], 'comp': data.component };
-                        } else if ( res.status === 409 ) {
-                            res.json().then( dat => {
-                                this.cart[ this.event.eventID ][ 'tickets' ][ 'ticket' + data.component + '_' + group ] = { 'displayName': 'Ticket ' + data.component + ' (' + this.event.ageGroups[ group ].name + ')', 'price': this.event.categories[ this.draggables[ data.component ].category ].price[ group ], 'id': 'ticket' + data.component + '_' + group, 'count': dat.count, 'comp': data.component };
-                            } );
-                            setTimeout( () => {
-                                this.$refs.popups.openPopup( 'Unfortunately, you have selected more tickets than were still available. The maximum amount of tickets that are available have been selected for you automatically. We are sorry for the inconvenience.', {}, 'string' );
-                            }, 300 );
-                        } else if ( res.status === 418 ) {
-                            setTimeout( () => {
-                                this.$refs.popups.openPopup( 'We are sorry, but you have already selected the maximum amount of tickets you can buy at once.', {}, 'string' );
-                            }, 300 );
-                        }
-                        if ( Object.keys( this.cart[ this.event.eventID ][ 'tickets' ] ).length < 1 ) {
-                            delete this.cart[ this.event.eventID ];
-                        }
-
-                        this.$refs.cart.calculateTotal();
-                        localStorage.setItem( 'cart', JSON.stringify( this.cart ) );
-                    } );
-                } else {
-                    if ( this.cart[ this.event.eventID ] ) {
-                        if ( this.cart[ this.event.eventID ][ 'tickets' ][ 'ticket' + data.component + '_' + group ] ) {
-                            delete this.cart[ this.event.eventID ][ 'tickets' ][ 'ticket' + data.component + '_' + group ];
-                            if ( this.cart[ this.event.eventID ] ) {
-                                if ( Object.keys( this.cart[ this.event.eventID ][ 'tickets' ] ).length < 1 ) {
-                                    delete this.cart[ this.event.eventID ];
-                                }
-                            }
+            
+            let groups = Object.keys( data.data );
+            let group, ready = true;
+            let postInterval = setInterval( () => {
+                if ( ready ) {
+                    ready = false;
+                    if ( groups.length > 0 ) {
+                        group = groups.pop();
+                        if ( data.data[ group ] > 0 ) {
                             const options = {
                                 method: 'post',
-                                body: JSON.stringify( { 'id': 'ticket' + data.component + '_' + group, 'eventID': this.event.eventID, 'component': data.component } ),
+                                body: JSON.stringify( { 'id': 'ticket' + data.component + '_' + group, 'component': data.component, 'ticketOption': group, 'eventID': this.event.eventID, 'count': data.data[ group ], 'category': this.draggables[ data.component ].category, 'name': 'Ticket ' + data.component + ' (' + this.event.ageGroups[ group ].name + ')' } ),
                                 headers: {
                                     'Content-Type': 'application/json',
                                     'charset': 'utf-8'
                                 }
                             };
-                            fetch( localStorage.getItem( 'url' ) + '/API/deselectTicket', options );
-                            localStorage.setItem( 'cart', JSON.stringify( this.cart ) );
+                            fetch( localStorage.getItem( 'url' ) + '/API/reserveTicket', options ).then( res => {
+                                ready = true;
+                                if ( res.status === 200 ) {
+                                    this.cart[ this.event.eventID ][ 'tickets' ][ 'ticket' + data.component + '_' + group ] = { 'displayName': 'Ticket ' + data.component + ' (' + this.event.ageGroups[ group ].name + ')', 'price': this.event.categories[ this.draggables[ data.component ].category ].price[ group ], 'id': 'ticket' + data.component + '_' + group, 'count': data.data[ group ], 'comp': data.component };
+                                } else if ( res.status === 409 ) {
+                                    res.json().then( dat => {
+                                        if ( dat.count < 1 ) {
+                                            if ( Object.keys( this.cart[ this.event.eventID ][ 'tickets' ] ).length <= 1 ) {
+                                                try {
+                                                    delete this.cart[ this.event.eventID ];
+                                                } catch {
+                                                    console.log( 'element nonexistent' );
+                                                }
+                                            } else {
+                                                delete this.cart[ this.event.eventID ][ 'tickets' ][ 'ticket' + data.component + '_' + group ];
+                                            }
+                                        }
+                                        
+                                        this.cart[ this.event.eventID ][ 'tickets' ][ 'ticket' + data.component + '_' + group ] = { 'displayName': 'Ticket ' + data.component + ' (' + this.event.ageGroups[ group ].name + ')', 'price': this.event.categories[ this.draggables[ data.component ].category ].price[ group ], 'id': 'ticket' + data.component + '_' + group, 'count': dat.count, 'comp': data.component };
+                                    } );
+                                    setTimeout( () => {
+                                        this.$refs.popups.openPopup( 'Unfortunately, you have selected more tickets than were still available. The maximum amount of tickets that are available have been selected for you automatically. We are sorry for the inconvenience.', {}, 'string' );
+                                    }, 300 );
+                                } else if ( res.status === 418 ) {
+                                    setTimeout( () => {
+                                        this.$refs.popups.openPopup( 'We are sorry, but you have already selected the maximum amount of tickets you can buy at once.', {}, 'string' );
+                                    }, 300 );
+                                }
+                                if ( Object.keys( this.cart[ this.event.eventID ][ 'tickets' ] ).length < 1 ) {
+                                    delete this.cart[ this.event.eventID ];
+                                }
+
+                                this.$refs.cart.calculateTotal();
+                                localStorage.setItem( 'cart', JSON.stringify( this.cart ) );
+                            } );
+                        } else {
+                            if ( this.cart[ this.event.eventID ] ) {
+                                if ( this.cart[ this.event.eventID ][ 'tickets' ][ 'ticket' + data.component + '_' + group ] ) {
+                                    delete this.cart[ this.event.eventID ][ 'tickets' ][ 'ticket' + data.component + '_' + group ];
+                                    if ( this.cart[ this.event.eventID ] ) {
+                                        if ( Object.keys( this.cart[ this.event.eventID ][ 'tickets' ] ).length < 1 ) {
+                                            delete this.cart[ this.event.eventID ];
+                                        }
+                                    }
+                                    const options = {
+                                        method: 'post',
+                                        body: JSON.stringify( { 'id': 'ticket' + data.component + '_' + group, 'eventID': this.event.eventID, 'component': data.component } ),
+                                        headers: {
+                                            'Content-Type': 'application/json',
+                                            'charset': 'utf-8'
+                                        }
+                                    };
+                                    fetch( localStorage.getItem( 'url' ) + '/API/deselectTicket', options ).then( res => {
+                                        ready = true;
+                                    } );
+                                    localStorage.setItem( 'cart', JSON.stringify( this.cart ) );
+                                } else {
+                                    ready = true;
+                                }
+                            } else {
+                                ready = true;
+                            }
                         }
+                    } else {
+                        clearInterval( postInterval );
                     }
                 }
-            }
+            }, 250 );
         }
     },
     created () {

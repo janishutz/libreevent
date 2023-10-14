@@ -100,6 +100,7 @@ export default {
                 if ( res.status === 200 ) {
                     let unavailableSeats = {};
                     res.json().then( data => {
+                        console.log( data );
                         for ( let seat in data.reserved ) {
                             if ( data.reserved[ seat ] ) {
                                 if ( !unavailableSeats[ data.reserved[ seat ].component ] ) {
@@ -138,6 +139,17 @@ export default {
                             allSeatsAvailable = false;
                         }
 
+                        // Create selectedTickets object
+                        if ( this.cart[ this.event.eventID ] ) {
+                            for ( let ticket in this.cart[ this.event.eventID ][ 'tickets' ] ) {
+                                if ( this.cart[ this.event.eventID ][ 'tickets' ][ ticket ][ 'count' ] ) {
+                                    this.selectedTickets[ this.cart[ this.event.eventID ][ 'tickets' ][ ticket ][ 'id' ] ] = this.cart[ this.event.eventID ][ 'tickets' ][ ticket ][ 'count' ];
+                                } else {
+                                    this.selectedTickets[ this.cart[ this.event.eventID ][ 'tickets' ][ ticket ][ 'id' ] ] = 0;
+                                }
+                            }
+                        }
+
                         this.unavailableSeats = unavailableSeats;
 
                         if ( !allSeatsAvailable ) {
@@ -153,87 +165,118 @@ export default {
             } );
         },
         cartHandling () {
-            for ( let ticket in this.selectedTickets ) {
-                let category = '';
-                const ticketSlice = ticket.slice( 0, ticket.indexOf( '_' ) );
-                for ( let letter in ticketSlice ) {
-                    if ( !isNaN( ticketSlice[ letter ] ) ) {
-                        category += parseInt( ticketSlice[ letter ] );
+            let tickets = Object.keys( this.selectedTickets );
+            let ticket, ready = true;
+            let postInterval = setInterval( () => {
+                if ( ready ) {
+                    ready = false;
+                    if ( tickets.length > 0 ) {
+                        ticket = tickets.pop();
+                        let category = '';
+                        const ticketSlice = ticket.slice( 0, ticket.indexOf( '_' ) );
+                        for ( let letter in ticketSlice ) {
+                            if ( !isNaN( ticketSlice[ letter ] ) ) {
+                                category += parseInt( ticketSlice[ letter ] );
+                            }
+                        }
+                        const options = {
+                            method: 'post',
+                            body: JSON.stringify( { 
+                                'id': ticket, 
+                                'component': 1, 
+                                'ticketOption': ticket.substring( ticket.indexOf( '_' ) + 1 ), 
+                                'eventID': this.event.eventID, 
+                                'count': this.selectedTickets[ ticket ], 
+                                'category': category,
+                                'name': this.event.categories[ category ].name + ' (' + this.event.ageGroups[ ticket.substring( ticket.indexOf( '_' ) + 1 ) ].name + ')',
+                            } ),
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'charset': 'utf-8'
+                            }
+                        };
+                        fetch( localStorage.getItem( 'url' ) + '/API/reserveTicket', options ).then( res => {
+                            ready = true;
+                            if ( !this.cart[ this.event.eventID ] ) {
+                                this.cart[ this.event.eventID ] = { 'displayName': this.event.name, 'tickets': {}, 'eventID': this.event.eventID };
+                            }
+                            if ( res.status === 200 ) {
+                                // add item to cart
+                                if ( this.selectedTickets[ ticket ] < 1 ) {
+                                    if ( Object.keys( this.cart[ this.event.eventID ][ 'tickets' ] ).length <= 1 ) {
+                                        try {
+                                            delete this.cart[ this.event.eventID ];
+                                        } catch {
+                                            console.log( 'element nonexistent' );
+                                        }
+                                    } else {
+                                        delete this.cart[ this.event.eventID ][ 'tickets' ][ ticket ];
+                                    }
+                                } else {
+                                    this.cart[ this.event.eventID ][ 'tickets' ][ ticket ] = { 
+                                        'displayName': this.event.categories[ ticket.slice( ticket.indexOf( '_' ) - 1, ticket.indexOf( '_' ) ) ].name + ' (' + this.event.ageGroups[ ticket.substring( ticket.indexOf( '_' ) + 1 ) ].name + ')', 
+                                        'price': this.event.categories[ ticket.slice( ticket.indexOf( '_' ) - 1, ticket.indexOf( '_' ) ) ].price[ ticket.substring( ticket.indexOf( '_' ) + 1 ) ], 
+                                        'id': ticket, 
+                                        'count': this.selectedTickets[ ticket ], 
+                                        'comp': 1,
+                                    };
+                                }
+                            } else if ( res.status === 409 ) {
+                                res.json().then( dat => {
+                                    if ( !this.cart[ this.event.eventID ] ) {
+                                        this.cart[ this.event.eventID ] = { 'displayName': this.event.name, 'tickets': {}, 'eventID': this.event.eventID };
+                                    }
+                                    if ( dat.count < 1 ) {
+                                        if ( Object.keys( this.cart[ this.event.eventID ][ 'tickets' ] ).length <= 1 ) {
+                                            try {
+                                                delete this.cart[ this.event.eventID ];
+                                            } catch {
+                                                console.log( 'element nonexistent' );
+                                            }
+                                        } else {
+                                            delete this.cart[ this.event.eventID ][ 'tickets' ][ ticket ];
+                                        }
+                                    } else {
+                                        this.cart[ this.event.eventID ][ 'tickets' ][ ticket ] = { 
+                                            'displayName': this.event.categories[ ticket.slice( ticket.indexOf( '_' ) - 1, ticket.indexOf( '_' ) ) ].name + ' (' + this.event.ageGroups[ ticket.substring( ticket.indexOf( '_' ) + 1 ) ].name + ')', 
+                                            'price': this.event.categories[ ticket.slice( ticket.indexOf( '_' ) - 1, ticket.indexOf( '_' ) ) ].price[ ticket.substring( ticket.indexOf( '_' ) + 1 ) ], 
+                                            'id': ticket,
+                                            'count': dat.count, 
+                                            'comp': 1,
+                                        };
+                                    }
+                                    this.selectedTickets[ ticket ] = dat.count;
+                                } );
+                                setTimeout( () => {
+                                    this.$refs.popups.openPopup( 'Unfortunately, you have selected more tickets than were still available. The maximum amount of tickets that are available have been selected for you automatically. We are sorry for the inconvenience.', {}, 'string' );
+                                }, 300 );
+                            } else if ( res.status === 418 ) {
+                                res.json().then( dat => {
+                                    this.selectedTickets[ ticket ] = dat.count;
+                                } );
+                                setTimeout( () => {
+                                    this.$refs.popups.openPopup( 'We are sorry, but you have already selected the maximum amount of tickets you can buy at once.', {}, 'string' );
+                                }, 300 );
+                            }
+                            if ( Object.keys( this.cart[ this.event.eventID ][ 'tickets' ] ).length < 1 ) {
+                                delete this.cart[ this.event.eventID ];
+                            }
+
+                            this.$refs.cart.calculateTotal();
+                            localStorage.setItem( 'cart', JSON.stringify( this.cart ) );
+                        } );
+                    } else {
+                        clearInterval( postInterval );
                     }
                 }
-                const options = {
-                    method: 'post',
-                    body: JSON.stringify( { 
-                        'id': ticket, 
-                        'component': 1, 
-                        'ticketOption': ticket.substring( ticket.indexOf( '_' ) + 1 ), 
-                        'eventID': this.event.eventID, 
-                        'count': this.selectedTickets[ ticket ], 
-                        'category': category,
-                        'name': this.event.categories[ category ].name + ' (' + this.event.ageGroups[ ticket.substring( ticket.indexOf( '_' ) + 1 ) ].name + ')',
-                    } ),
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'charset': 'utf-8'
-                    }
-                };
-                fetch( localStorage.getItem( 'url' ) + '/API/reserveTicket', options ).then( res => {
-                    if ( !this.cart[ this.event.eventID ] ) {
-                        this.cart[ this.event.eventID ] = { 'displayName': this.event.name, 'tickets': {}, 'eventID': this.event.eventID };
-                    }
-                    if ( res.status === 200 ) {
-                        // add item to cart
-                        if ( this.selectedTickets[ ticket ] < 1 ) {
-                            if ( Object.keys( this.cart[ this.event.eventID ][ 'tickets' ] ).length < 1 ) {
-                                try {
-                                    delete this.cart[ this.event.eventID ];
-                                } catch {
-                                    console.log( 'element nonexistent' );
-                                }
-                            } else {
-                                delete this.cart[ this.event.eventID ][ 'tickets' ][ ticket ];
-                            }
-                        } else {
-                            this.cart[ this.event.eventID ][ 'tickets' ][ ticket ] = { 
-                                'displayName': this.event.categories[ ticket.slice( ticket.indexOf( '_' ) - 1, ticket.indexOf( '_' ) ) ].name + ' (' + this.event.ageGroups[ ticket.substring( ticket.indexOf( '_' ) + 1 ) ].name + ')', 
-                                'price': this.event.categories[ ticket.slice( ticket.indexOf( '_' ) - 1, ticket.indexOf( '_' ) ) ].price[ ticket.substring( ticket.indexOf( '_' ) + 1 ) ], 
-                                'id': ticket, 
-                                'count': this.selectedTickets[ ticket ], 
-                                'comp': 1,
-                            };
-                        }
-                    } else if ( res.status === 409 ) {
-                        res.json().then( dat => {
-                            this.cart[ this.event.eventID ][ 'tickets' ][ ticket ] = { 
-                                'displayName': this.event.categories[ ticket.slice( ticket.indexOf( '_' ) - 1, ticket.indexOf( '_' ) ) ].name + ' (' + this.event.ageGroups[ ticket.substring( ticket.indexOf( '_' ) + 1 ) ].name + ')', 
-                                'price': this.event.categories[ ticket.slice( ticket.indexOf( '_' ) - 1, ticket.indexOf( '_' ) ) ].price[ ticket.substring( ticket.indexOf( '_' ) + 1 ) ], 
-                                'id': ticket,
-                                'count': dat.count, 
-                                'comp': 1,
-                            };
-                        } );
-                        setTimeout( () => {
-                            this.$refs.popups.openPopup( 'Unfortunately, you have selected more tickets than were still available. The maximum amount of tickets that are available have been selected for you automatically. We are sorry for the inconvenience.', {}, 'string' );
-                        }, 300 );
-                    } else if ( res.status === 418 ) {
-                        setTimeout( () => {
-                            this.$refs.popups.openPopup( 'We are sorry, but you have already selected the maximum amount of tickets you can buy at once.', {}, 'string' );
-                        }, 300 );
-                    }
-                    if ( Object.keys( this.cart[ this.event.eventID ][ 'tickets' ] ).length < 1 ) {
-                        delete this.cart[ this.event.eventID ];
-                    }
-
-                    this.$refs.cart.calculateTotal();
-                    localStorage.setItem( 'cart', JSON.stringify( this.cart ) );
-                } );
-            }
+            } );
         },
         loadTickets () {
             fetch( '/getAPI/getEvent?event=' + sessionStorage.getItem( 'selectedTicket' ) ).then( res => {
                 if ( res.status === 200 ) {
                     res.json().then( json => {
                         this.event = json ?? {};
+                        this.seatChecks();
                     } );
                 }
             } );
@@ -245,7 +288,6 @@ export default {
         }, 1 );
         this.cart = localStorage.getItem( 'cart' ) ? JSON.parse( localStorage.getItem( 'cart' ) ): {};
         this.loadTickets();
-        this.seatChecks();
     }
 };
 </script>
