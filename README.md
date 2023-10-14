@@ -27,7 +27,7 @@ A fully featured, free and open source event management solution you can host yo
 Visit the project's [website](https://libreevent.janishutz.com)
 
 ## Development ongoing
-libreǝvent currently is in a late beta state, with a fully functional version expected by mid-october. 
+libreǝvent is almost fully functional now, no more bugs are known, but testing isn't finished yet. I'd be grateful for any help on that front. You may visit my [test website](https://testing.libreevent.janishutz.com) to help me out 
 
 libreǝvent IS FREE SOFTWARE. IT IS PROVIDED "AS IS" AND AS SUCH COMES WITH ABSOLUTELY NO WARRANTY TO THE EXTENT PERMITTED BY APPLICABLE LAW. If anything does not work, please report it back, but do not expect it to be fixed immediately, as this software is developed by volunteers in their free time.
 
