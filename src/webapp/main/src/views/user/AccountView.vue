@@ -55,12 +55,12 @@
                     <td>
                         <div v-if="!isEditingAccount">
                             <div v-if="accountData.two_fa == 'enhanced'">Enhanced</div>
-                            <div v-else-if="accountData.two_fa == 'standard'">Standard</div>
+                            <div v-else-if="accountData.two_fa == 'simple'">Simple</div>
                             <div v-else>Disabled</div>
                         </div>
                         <select name="two_fa" id="two_fa" v-model="accountData.two_fa" v-else>
                             <option value="enhanced">Enhanced</option>
-                            <option value="standard">Standard</option>
+                            <option value="simple">Simple</option>
                             <option value="disabled" v-if="twoFASetting === 'allow'">Disabled</option>
                         </select>
                     </td>
