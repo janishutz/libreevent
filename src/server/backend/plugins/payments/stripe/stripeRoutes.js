@@ -163,7 +163,7 @@ module.exports = ( app, settings ) => {
             }, 1000 );
             db.getDataSimple( 'processingOrders', 'user_id', sessionReference[ event.data.object.id ][ 'tok' ] ).then( dat => {
                 db.getDataSimple( 'users', 'email', sessionReference[ event.data.object.id ][ 'email' ] ).then( user => {
-                    if ( user[ 0 ] ) {
+                    if ( user[ 0 ] && dat[ 0 ] ) {
                         const tickets = JSON.parse( dat[ 0 ].data );
                         db.writeDataSimple( 'orders', 'account_id', user[ 0 ].account_id, { 'account_id': user[ 0 ].account_id, 'tickets': dat[ 0 ].data, 'order_name': sessionReference[ event.data.object.id ][ 'tok' ] } ).then( () => {
                             TicketGenerator.generateTickets( sessionReference[ event.data.object.id ] );
@@ -193,7 +193,7 @@ module.exports = ( app, settings ) => {
                             } );
                         } );
                     } else {
-                        console.error( 'user not found' );
+                        TicketGenerator.sendErrorMail( sessionReference[ event.data.object.id ][ 'tok' ], sessionReference[ event.data.object.id ][ 'email' ] );
                     }
                 } );
             } ).catch( err => {

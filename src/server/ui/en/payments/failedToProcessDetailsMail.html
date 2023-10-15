@@ -8,7 +8,6 @@
             body {
                 font-family: sans-serif;
                 width: 100%;
-                height: 800px;
                 margin: 0;
                 display: flex;
                 justify-content: center;
@@ -18,7 +17,7 @@
 
             .content {
                 width: 80%;
-                height: 90%;
+                height: 800px;
                 display: flex;
                 justify-content: center;
                 align-items: center;
@@ -61,10 +60,10 @@
     <body>
         <div class="content">
             <img :src="host + '/otherAssets/logo.png'" alt="Logo" class="logo">
-            <h1>Welcome back!</h1>
-            <p>It looks like someone is trying to sign in to your admin account at {{ pageName }}. If it was you, please click the button below to confirm the login. If not, please <a :href="host + '/admin/settings'">change</a> your password immediately or have it changed by the root account!</p>
-            <p class="ip">Logging in from IP {{ ip }}.</p>
-            <a :href="host + '/admin/2fa?token=' + token" class="verify">Verify</a>
+            <h1>There was an error whilst processing an order</h1>
+            <p>This order will have to be processed manually!</p>
+            <p>{{ order_id }}</p>
+            <p>{{ email }}</p>
         </div>
     </body>
 </html>

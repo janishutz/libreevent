@@ -46,6 +46,37 @@ class TicketGenerator {
         } );
     }
 
+    sendErrorMail( order, email ) {
+        db.getJSONData( 'rootAccount' ).then( res => {
+            ( async() => {
+                const app = createSSRApp( {
+                    data() {
+                        return {
+                            host: settings.yourDomain,
+                            pageName: settings.name,
+                        };
+                    },
+                    template: '' + fs.readFileSync( path.join( __dirname + '/../../ui/en/payments/failedToProcessMail.html' ) )
+                } );
+                
+                mailManager.sendMail( email, await renderToString( app ), 'Your order failed to process', settings.mailSender );
+
+                const adminNot = createSSRApp( {
+                    data() {
+                        return {
+                            host: settings.yourDomain,
+                            email: email,
+                            order_id: order,
+                        };
+                    },
+                    template: '' + fs.readFileSync( path.join( __dirname + '/../../ui/en/payments/failedToProcessDetailsMail.html' ) )
+                } );
+
+                mailManager.sendMail( res.email, await renderToString( adminNot ), 'Your order failed to process', settings.mailSender );
+            } )();
+        } );
+    }
+
     generateTickets ( order ) {
         this.ticketQueue[ this.jobId ] = { 'order': order };
         this.runningTickets[ order.tok ] = 'processing';
