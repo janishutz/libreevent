@@ -12,7 +12,15 @@ const fs = require( 'fs' );
 
 const settings = JSON.parse( fs.readFileSync( path.join( __dirname + '/../../config/settings.config.json' ) ) );
 
-const dbRef = { 'user': 'libreevent_users', 'admin': 'libreevent_admin', 'order': 'libreevent_orders', 'users': 'libreevent_users', 'orders': 'libreevent_orders', 'temp': 'libreevent_temp' };
+const dbRef = { 
+    'user': 'libreevent_users', 
+    'admin': 'libreevent_admin', 
+    'order': 'libreevent_orders', 
+    'users': 'libreevent_users', 
+    'orders': 'libreevent_orders', 
+    'temp': 'libreevent_temp',
+    'processingOrders': 'libreevent_processing_orders'
+};
 
 const letters = [ ',', '{' ];
 

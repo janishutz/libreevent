@@ -51,7 +51,10 @@ class SQLDB {
                     if ( error ) if ( error.code !== 'ER_BAD_TABLE_ERROR' ) throw error;
                     this.sqlConnection.query( 'DROP TABLE libreevent_temp;', ( error ) => {
                         if ( error ) if ( error.code !== 'ER_BAD_TABLE_ERROR' ) throw error;
-                        return 'done';
+                        this.sqlConnection.query( 'DROP TABLE libreevent_processing_orders;', ( error ) => {
+                            if ( error ) if ( error.code !== 'ER_BAD_TABLE_ERROR' ) throw error;
+                            return 'done';
+                        } );
                     } );
                 } );
             } );
@@ -71,7 +74,10 @@ class SQLDB {
                     if ( error ) if ( error.code !== 'ER_TABLE_EXISTS_ERROR' ) throw error;
                     this.sqlConnection.query( 'CREATE TABLE libreevent_temp ( entry_id INT NOT NULL AUTO_INCREMENT, user_id TINYTEXT, data VARCHAR( 60000 ), timestamp TINYTEXT, PRIMARY KEY ( entry_id ) );', ( error ) => {
                         if ( error ) if ( error.code !== 'ER_TABLE_EXISTS_ERROR' ) throw error;
-                        return 'DONE';
+                        this.sqlConnection.query( 'CREATE TABLE libreevent_processing_orders ( entry_id INT NOT NULL AUTO_INCREMENT, user_id TINYTEXT, data VARCHAR( 60000 ), timestamp TINYTEXT, PRIMARY KEY ( entry_id ) );', ( error ) => {
+                            if ( error ) if ( error.code !== 'ER_TABLE_EXISTS_ERROR' ) throw error;
+                            return 'DONE';
+                        } );
                     } );
                 } );
             } );

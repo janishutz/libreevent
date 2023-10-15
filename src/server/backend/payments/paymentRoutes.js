@@ -22,8 +22,8 @@ module.exports = ( app ) => {
     } );
 
     app.get( '/tickets/tickets.pdf', ( req, res ) => {
-        if ( req.session.id ) {
-            fs.readFile( path.join( __dirname + '/../tickets/store/' + req.session.id + '.pdf' ), ( error, data ) => {
+        if ( req.session.lastOrderID ) {
+            fs.readFile( path.join( __dirname + '/../tickets/store/' + req.session.lastOrderID + '.pdf' ), ( error, data ) => {
                 if ( error ) res.sendFile( path.join( __dirname + '/../../ui/en/errors/404.html' ) );
                 else res.send( data );
             } );

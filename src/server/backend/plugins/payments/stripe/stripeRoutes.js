@@ -63,7 +63,9 @@ module.exports = ( app, settings ) => {
                                         const session = await stripe.checkout.sessions.create( purchase );
                                         sessionReference[ session.id ] = { 'tok': req.session.id, 'email': req.session.username };
                                         pendingPayments[ req.session.id ] = true;
-                                        res.send( session.url );
+                                        db.writeDataSimple( 'processingOrders', 'user_id', req.session.id, dat[ 0 ] ).then( () => {
+                                            res.send( session.url );
+                                        } );
                                     } )();
                                 } );
                             } else {
@@ -102,9 +104,10 @@ module.exports = ( app, settings ) => {
                     clearInterval( ping );
                     setTimeout( () => {
                         response.write( 'data: ready\n\n' );
-                        response.end();
                         delete waitingClients[ request.session.id ];
+                        request.session.lastOrderID = request.session.id;
                         request.session.id = generator.generateToken( 30 );
+                        response.end();
                     }, 2000 );
                 } else if ( stat === 'noTicket' ) {
                     clearInterval( ping );
@@ -124,6 +127,7 @@ module.exports = ( app, settings ) => {
             if ( !pendingPayments[ request.session.id ] ) {
                 const stat = TicketGenerator.getGenerationStatus( request.session.id );
                 if ( stat === 'done' ) {
+                    request.session.lastOrderID = request.session.id;
                     request.session.id = generator.generateToken( 30 );
                     response.send( { 'status': 'ticketOk' } );
                 } else if ( stat === 'noTicket' ) {
@@ -157,7 +161,7 @@ module.exports = ( app, settings ) => {
                     waitingClients[ sessionReference[ event.data.object.id ][ 'tok' ] ].write( 'data: paymentOk\n\n' );
                 }
             }, 1000 );
-            db.getDataSimple( 'temp', 'user_id', sessionReference[ event.data.object.id ][ 'tok' ] ).then( dat => {
+            db.getDataSimple( 'processingOrders', 'user_id', sessionReference[ event.data.object.id ][ 'tok' ] ).then( dat => {
                 db.getDataSimple( 'users', 'email', sessionReference[ event.data.object.id ][ 'email' ] ).then( user => {
                     if ( user[ 0 ] ) {
                         const tickets = JSON.parse( dat[ 0 ].data );
@@ -175,12 +179,16 @@ module.exports = ( app, settings ) => {
                                 }
                                 db.writeJSONData( 'booked', booked ).then( () => {
                                     db.deleteDataSimple( 'temp', 'user_id', sessionReference[ event.data.object.id ][ 'tok' ] ).then( () => {
-                                        delete pendingPayments[ sessionReference[ event.data.object.id ][ 'tok' ] ];
+                                        db.deleteDataSimple( 'processingOrders', 'user_id', sessionReference[ event.data.object.id ][ 'tok' ] ).then( () => {
+                                            delete pendingPayments[ sessionReference[ event.data.object.id ][ 'tok' ] ];
+                                        } ).catch( error => {
+                                            console.error( '[ STRIPE ] ERROR whilst deleting data from DB: ' + error );
+                                        } );
                                     } ).catch( error => {
                                         console.error( '[ STRIPE ] ERROR whilst deleting data from DB: ' + error );
                                     } );
-                                } ).catch( () => {
-
+                                } ).catch( error => {
+                                    console.error( '[ STRIPE ] ERROR whilst getting data from DB: ' + error );
                                 } );
                             } );
                         } );

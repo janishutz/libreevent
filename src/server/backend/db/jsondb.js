@@ -13,7 +13,7 @@ const path = require( 'path' );
 class JSONDB {
     constructor () {
         this.db = {};
-        this.dbIndex = { 'libreevent_temp': 0, 'libreevent_admin': 0, 'libreevent_orders': 0, 'libreevent_users': 0 };
+        this.dbIndex = { 'libreevent_temp': 0, 'libreevent_admin': 0, 'libreevent_orders': 0, 'libreevent_users': 0, 'libreevent_processing_orders': 0 };
         this.isSaving = false;
         this.awaitingSaving = true;
     }
@@ -26,8 +26,8 @@ class JSONDB {
             console.error( '[ JSON-DB ] CRITICAL INITIALIZATION FAILURE!' + err );
             throw ( 'JSONDB failed to start!' );
         }
-        this.db = data[ 'db' ] ?? { 'libreevent_temp': {}, 'libreevent_admin': {}, 'libreevent_orders': {}, 'libreevent_users': {} };
-        this.dbIndex = data[ 'index' ] ?? { 'libreevent_temp': 0, 'libreevent_admin': 0, 'libreevent_orders': 0, 'libreevent_users': 0 };
+        this.db = data[ 'db' ] ?? { 'libreevent_temp': {}, 'libreevent_admin': {}, 'libreevent_orders': {}, 'libreevent_users': {}, 'libreevent_processing_orders': {} };
+        this.dbIndex = data[ 'index' ] ?? { 'libreevent_temp': 0, 'libreevent_admin': 0, 'libreevent_orders': 0, 'libreevent_users': 0, 'libreevent_processing_orders': 0 };
         this.db[ 'libreevent_temp' ] = {};
         this.saveToDisk();
         console.log( '[ JSON-DB ] Database initialized successfully' );
@@ -54,14 +54,14 @@ class JSONDB {
     }
 
     async resetDB () {
-        this.db = { 'libreevent_temp': {}, 'libreevent_admin': {}, 'libreevent_orders': {}, 'libreevent_users': {} };
-        this.dbIndex = { 'libreevent_temp': 0, 'libreevent_admin': 0, 'libreevent_orders': 0, 'libreevent_users': 0 };
+        this.db = { 'libreevent_temp': {}, 'libreevent_admin': {}, 'libreevent_orders': {}, 'libreevent_users': {}, 'libreevent_processing_orders': {} };
+        this.dbIndex = { 'libreevent_temp': 0, 'libreevent_admin': 0, 'libreevent_orders': 0, 'libreevent_users': 0, 'libreevent_processing_orders': 0 };
         fs.writeFile( path.join( __dirname + '/../../data/db.json' ), JSON.stringify( { 'db': this.db, 'index': this.dbIndex } ) );
     }
 
     async setupDB () {
-        this.db = { 'libreevent_temp': {}, 'libreevent_admin': {}, 'libreevent_orders': {}, 'libreevent_users': {} };
-        this.dbIndex = { 'libreevent_temp': 0, 'libreevent_admin': 0, 'libreevent_orders': 0, 'libreevent_users': 0 };
+        this.db = { 'libreevent_temp': {}, 'libreevent_admin': {}, 'libreevent_orders': {}, 'libreevent_users': {}, 'libreevent_processing_orders': {} };
+        this.dbIndex = { 'libreevent_temp': 0, 'libreevent_admin': 0, 'libreevent_orders': 0, 'libreevent_users': 0, 'libreevent_processing_orders': 0 };
         fs.writeFile( path.join( __dirname + '/../../data/db.json' ), JSON.stringify( { 'db': this.db, 'index': this.dbIndex } ) );
     }
 
