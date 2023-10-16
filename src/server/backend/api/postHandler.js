@@ -324,7 +324,6 @@ class POSTHandler {
         for ( let el in this.temporaryTotals ) {
             this.freeSeats[ el ] -= this.temporaryTotals[ el ];
         }
-        this.ticketTotals[ 'test3' ] = 2;
     }
 
     getFreeSeatsCount() {
