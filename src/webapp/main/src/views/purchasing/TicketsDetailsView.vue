@@ -38,7 +38,7 @@
         justify-content: center;
         align-items: center;
         flex-direction: column;
-        font-size: 200%;
+        font-size: 150%;
         margin-bottom: 2.5%;
     }
 
