@@ -233,7 +233,7 @@ export default {
             }
         },
         navMenu ( action ) {
-            if ( screen.width < 1300 ) {
+            if ( window.screen.width < 1300 ) {
                 if ( action === 'toggle' ) {
                     $( '.side-nav' ).toggle( 300 );
                     $( '.hideNav' ).toggleClass( 'navHidden' );
