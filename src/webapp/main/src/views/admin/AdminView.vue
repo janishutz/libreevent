@@ -74,7 +74,7 @@
         display: none;
         height: 100vh;
         top: 0;
-        width: 70vw;
+        width: 100vw;
         padding: 0;
         margin: 0;
         background-color: var( --accent-background );
@@ -129,7 +129,25 @@
         color: var( --primary-color );
     }
 
-    @media only screen and (min-width: 1299px) {
+    @media only screen and (min-width: 400px) {
+        .side-nav {
+            width: 70vw;
+        }
+    }
+
+    @media only screen and (min-width: 750px) {
+        .side-nav {
+            width: 45vw;
+        }
+    }
+
+    @media only screen and (min-width: 1050px) {
+        .side-nav {
+            width: 32vw;
+        }
+    }
+
+    @media only screen and (min-width: 1300px) {
         .hideNav, .backdrop {
             display: none;
         }
