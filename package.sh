@@ -95,7 +95,7 @@ rm prepareDB.js
 rm test.js
 rm config/*.secret.json
 rm backend/plugins/payments/*/*.secret.json
-echo "sdfgkhl" >> setupkey.txt
+echo "agdhgasjlgagaldusaglueagelwadgl" >> setupkey.txt
 
 echo " 
 
