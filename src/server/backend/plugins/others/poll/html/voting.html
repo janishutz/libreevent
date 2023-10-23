@@ -91,7 +91,7 @@
     <body>
         <div class="content" id="app">
             <div class="wrapper" v-if="hasLoadedBasics && hasLoadedVotes">
-                <div v-if="votingDetails.display">
+                <div v-if="votingDetails.display" class="wrapper">
                     <h1>Voting on {{ votingDetails.display ?? 'untitled' }}</h1>
                     <p v-if="votingDetails.description" class="comment">{{ votingDetails.description }}</p>
                     <div style="margin-bottom: 1%;" v-if="votingDetails.allowAdding">
