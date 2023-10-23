@@ -81,40 +81,45 @@
     </head>
     <body>
         <div class="content" id="app">
-            <div v-if="votingDetails.display">
-                <h1>Voting on {{ votingDetails.display ?? 'untitled' }}</h1>
-                <p v-if="votingDetails.description" class="comment">{{ votingDetails.description }}</p>
-                <div style="margin-bottom: 1%;" v-if="votingDetails.allowAdding">
-                    <button onclick="location.href = '/'">Back to website</button>
-                    <button @click="addSuggestion();">Add suggestion</button>
-                </div>
-                <div v-for="entry in entries" class="entry">
-                    <h3>{{ entry.title }}</h3>
-                    <p>{{ entry.comment }}</p>
-                    <div class="voting-wrapper">
-                        <span class="material-symbols-outlined voting" @click="vote( 'up', entry.id )" :class="votedOn[ entry.id ] === 'up' ? 'selected' : ''">arrow_upward</span>
-                        <p class="voting-counter">{{ entry.count ?? 0 }}</p>
-                        <span class="material-symbols-outlined voting" @click="vote( 'down', entry.id )" :class="votedOn[ entry.id ] === 'down' ? 'selected' : ''">arrow_downward</span>
+            <div class="wrapper" v-if="hasLoadedBasics && hasLoadedVotes">
+                <div v-if="votingDetails.display">
+                    <h1>Voting on {{ votingDetails.display ?? 'untitled' }}</h1>
+                    <p v-if="votingDetails.description" class="comment">{{ votingDetails.description }}</p>
+                    <div style="margin-bottom: 1%;" v-if="votingDetails.allowAdding">
+                        <button onclick="location.href = '/'">Back to website</button>
+                        <button @click="addSuggestion();">Add suggestion</button>
                     </div>
-                </div>
-                <div id="popup">
-                    <div class="popup-positioning">
-                        <div class="popup-main">
-                            <form id="popup-message">
-                                <h2 style="font-size: 200%;">Add new suggestion</h2>
-                                <label for="title">Suggestion title</label><br>
-                                <input type="text" v-model="newSuggestion.title" name="title" id="title" class="input"><br>
-                                <label for="title">Comments</label><br>
-                                <textarea type="text" v-model="newSuggestion.comment" name="comment" id="comment" class="input" rows="5"></textarea><br>
-                            </form>
-                            <button @click="save()" class="submit">Add</button>
-                            <button @click="closePopup()" class="submit">Cancel</button>
+                    <div v-for="entry in entries" class="entry">
+                        <h3>{{ entry.title }}</h3>
+                        <p>{{ entry.comment }}</p>
+                        <div class="voting-wrapper">
+                            <span class="material-symbols-outlined voting" @click="vote( 'up', entry.id )" :class="votedOn[ entry.id ] === 'up' ? 'selected' : ''">arrow_upward</span>
+                            <p class="voting-counter">{{ entry.count ?? 0 }}</p>
+                            <span class="material-symbols-outlined voting" @click="vote( 'down', entry.id )" :class="votedOn[ entry.id ] === 'down' ? 'selected' : ''">arrow_downward</span>
+                        </div>
+                    </div>
+                    <div id="popup">
+                        <div class="popup-positioning">
+                            <div class="popup-main">
+                                <form id="popup-message">
+                                    <h2 style="font-size: 200%;">Add new suggestion</h2>
+                                    <label for="title">Suggestion title</label><br>
+                                    <input type="text" v-model="newSuggestion.title" name="title" id="title" class="input"><br>
+                                    <label for="title">Comments</label><br>
+                                    <textarea type="text" v-model="newSuggestion.comment" name="comment" id="comment" class="input" rows="5"></textarea><br>
+                                </form>
+                                <button @click="save()" class="submit">Add</button>
+                                <button @click="closePopup()" class="submit">Cancel</button>
+                            </div>
                         </div>
                     </div>
                 </div>
+                <div v-else style="display: flex; justify-content: center; align-items: center; height: 100vh; font-size: 110%;">
+                    <h1>This poll does not exist!</h1>
+                </div>
             </div>
-            <div v-else style="display: flex; justify-content: center; align-items: center; height: 100vh; font-size: 110%;">
-                <h1>This poll does not exist!</h1>
+            <div v-else>
+                <h1>Loading...</h1>
             </div>
         </div>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>

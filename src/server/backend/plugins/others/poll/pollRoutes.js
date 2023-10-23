@@ -11,6 +11,35 @@ const path = require( 'path' );
 const fs = require( 'fs' );
 const bodyParser = require( 'body-parser' );
 
+// Memory caching system to prevent downtime
+// This is basically the same system as can be found in the JSON db's saving system
+let votingMemCache = JSON.parse( fs.readFileSync( path.join( __dirname + '/data/voting.json' ) ) );
+let hasToSave = false;
+let isReadyToSave = true;
+
+const saveVotingData = () => {
+    if ( isReadyToSave ) {
+        isReadyToSave = false;
+        hasToSave = false;
+        runSave();
+    } else {
+        hasToSave = true;
+    }
+};
+
+const runSave = () => {
+    fs.writeFile( path.join( __dirname + '/data/voting.json' ), JSON.stringify( votingMemCache ), ( err ) => {
+        if ( err ) { 
+            console.error( err ); 
+        } else {
+            isReadyToSave = true;
+            if ( hasToSave ) {
+                runSave();
+            }
+        }
+    } );
+};
+
 module.exports = ( app ) => {
     app.get( '/polls/:vote', ( req, res ) => {
         res.sendFile( path.join( __dirname + '/html/voting.html' ) );
@@ -31,48 +60,39 @@ module.exports = ( app ) => {
     } );
     
     app.get( '/polls/get/:vote', ( req, res ) => {
-        fs.readFile( path.join( __dirname + '/data/voting.json' ), ( error, filedata ) => {
-            res.send( JSON.parse( filedata )[ req.params.vote ] ?? {} );
-        } );
+        res.send( votingMemCache[ req.params.vote ] );
     } );
     
     app.post( '/polls/vote/:vote/', bodyParser.json(), ( req, res ) => {
         // up / down-voting
-        fs.readFile( path.join( __dirname + '/data/voting.json' ), ( error, filedata ) => {
-            let json = JSON.parse( filedata );
-            if ( json[ req.params.vote ] ) {
+        if ( votingMemCache[ req.params.vote ] ) {
+            if ( votingMemCache[ req.params.vote ][ req.body.id ] ) {
                 if ( req.body.voteType === 'up' ) {
-                    json[ req.params.vote ][ req.body.id ].count += 1;
+                    votingMemCache[ req.params.vote ][ req.body.id ].count += 1;
                 } else if ( req.body.voteType === 'down' ) {
-                    json[ req.params.vote ][ req.body.id ].count -= 1;
+                    votingMemCache[ req.params.vote ][ req.body.id ].count -= 1;
                 }
-                fs.writeFile( path.join( __dirname + '/data/voting.json' ), JSON.stringify( json ), ( err ) => {
-                    if ( err ) res.status( 500 ).send( 'ERR_VOTING' );
-                    res.send( 'ok' );
-                } );
+                saveVotingData();
+                res.send( 'ok' );
             } else {
-                res.status( 404 ).send( 'ok' );
+                res.status( 404 ).send( 'No Entry on this vote with' );
             }
-        } );
+        } else {
+            res.status( 404 ).send( 'No Vote with this ID' );
+        }
     } );
     
     app.post( '/polls/add/:vote', bodyParser.json(), ( req, res ) => {
         let data = req.body;
         if ( data.title && data.comment ) {
-            fs.readFile( path.join( __dirname + '/data/voting.json' ), ( error, filedata ) => {
-                let file = JSON.parse( filedata );
-                if ( !file[ req.params.vote ] ) {
-                    file[ req.params.vote ] = {};
-                }
-                const id = parseInt( Object.keys( file[ req.params.vote ] )[ Object.keys( file[ req.params.vote ] ).length - 1 ] ?? 0 ) + 1;
-                file[ req.params.vote ][ id ] = data;
-                file[ req.params.vote ][ id ][ 'id' ] = id;
-                file[ req.params.vote ][ id ][ 'count' ] = 1;
-                fs.writeFile( path.join( __dirname + '/data/voting.json' ), JSON.stringify( file ), ( error ) => {
-                    if ( error ) console.error( 'failed to write data', file );
-                    res.send( 'ok' );
-                } );
-            } );
+            if ( !votingMemCache[ req.params.vote ] ) {
+                votingMemCache[ req.params.vote ] = {};
+            }
+            const id = parseInt( Object.keys( votingMemCache[ req.params.vote ] )[ Object.keys( votingMemCache[ req.params.vote ] ).length - 1 ] ?? 0 ) + 1;
+            votingMemCache[ req.params.vote ][ id ] = data;
+            votingMemCache[ req.params.vote ][ id ][ 'id' ] = id;
+            votingMemCache[ req.params.vote ][ id ][ 'count' ] = 1;
+            res.send( 'ok' );
         } else {
             res.status( 400 ).send( 'incomplete' );
         }

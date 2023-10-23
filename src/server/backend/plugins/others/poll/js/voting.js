@@ -8,6 +8,8 @@ createApp( {
             newSuggestion: {},
             votingDetails: {},
             votedOn: {},
+            hasLoadedBasics: false,
+            hasLoadedVotes: false,
         };
     },
     methods: {
@@ -15,11 +17,13 @@ createApp( {
             fetch( '/polls/get/' + location.pathname.substring( 7 ) ).then( response => {
                 response.json().then( data => {
                     this.entries = data;
+                    this.hasLoadedVotes = true;
                 } );
             } );
             fetch( '/polls/getDetails/' + location.pathname.substring( 7 ) ).then( response => {
                 response.json().then( data => {
                     this.votingDetails = data;
+                    this.hasLoadedBasics = true;
                 } );
             } );
             this.votedOn = JSON.parse( localStorage.getItem( 'itemsVotedOn' ) ?? '{}' );
