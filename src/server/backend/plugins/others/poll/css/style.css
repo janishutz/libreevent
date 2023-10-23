@@ -6,7 +6,7 @@ body {
     font-family: monospace;
     height: 100%;
     width: 100%;
-    background-color: lightgray;
+    background-color: rgb(114, 164, 173);
 }
 
 .title-area {

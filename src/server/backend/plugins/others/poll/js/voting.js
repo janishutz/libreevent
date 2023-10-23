@@ -26,21 +26,38 @@ createApp( {
         },
         save() {
             if ( this.newSuggestion.comment && this.newSuggestion.title ) {
-                let fetchOptions = {
-                    method: 'post',
-                    body: JSON.stringify( this.newSuggestion ),
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'charset': 'utf-8'
-                    },
-                };
-                fetch( '/polls/add/' + location.pathname.substring( 7 ), fetchOptions ).then( response => {
-                    if ( response.status !== 200 ) {
-                        alert( 'there was an error updating' );
+                let alreadyExists = false;
+                for ( let el in this.entries ) {
+                    if ( this.entries[ el ][ 'title' ] === this.newSuggestion.title ) {
+                        alreadyExists = true;
+                    } 
+                }
+                if ( alreadyExists ) {
+                    if ( confirm( 'An element with the same title exists already. Do you really want to add another one?' ) ) {
+                        if ( confirm( 'Are you really sure?' ) ) {
+                            alreadyExists = true;
+                        }  else {
+                            alreadyExists = false;
+                        }
                     }
-                } );
-                this.closePopup();
-                this.getData();
+                }
+                if ( !alreadyExists ) {
+                    let fetchOptions = {
+                        method: 'post',
+                        body: JSON.stringify( this.newSuggestion ),
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'charset': 'utf-8'
+                        },
+                    };
+                    fetch( '/voting/add/' + location.pathname.substring( 8 ), fetchOptions ).then( response => {
+                        if ( response.status !== 200 ) {
+                            alert( 'there was an error updating' );
+                        }
+                    } );
+                    this.closePopup();
+                    this.getData();
+                }
             } else {
                 alert( 'Not all required fields are filled out!' );
             }
