@@ -10,7 +10,40 @@ createApp( {
             votedOn: {},
             hasLoadedBasics: false,
             hasLoadedVotes: false,
+            sorting: 'newest',
         };
+    },
+    computed: {
+        orderedVotes() {
+            if ( this.sorting === 'oldest' ) {
+                return Object.values( this.entries );
+            } else if ( this.sorting === 'newest' ) {
+                const ent = Object.keys( this.entries ).reverse();
+                let ret = [];
+                for ( let entry in ent ) {
+                    ret.push( this.entries[ ent[ entry ] ] );
+                }
+                return ret;
+            } else {
+                let ent = Object.keys( this.entries ).sort( ( a, b ) => {
+                    if ( this.sorting === 'nameUp' ) {
+                        return this.entries[ a ].title.localeCompare( this.entries[ b ].title );
+                    } else if ( this.sorting === 'nameDown' ) {
+                        return this.entries[ b ].title.localeCompare( this.entries[ a ].title );
+                    } else if ( this.sorting === 'mostVoted' ) {
+                        return this.entries[ b ].count - this.entries[ a ].count;
+                    } else if ( this.sorting === 'leastVoted' ) {
+                        return this.entries[ a ].count - this.entries[ b ].count;
+                    }
+                } );
+                console.log( ent );
+                let ret = [];
+                for ( let entry in ent ) {
+                    ret.push( this.entries[ ent[ entry ] ] );
+                }
+                return ret;
+            }
+        }
     },
     methods: {
         getData() {

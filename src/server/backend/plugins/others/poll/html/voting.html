@@ -94,11 +94,19 @@
                 <div v-if="votingDetails.display" class="wrapper">
                     <h1>Voting on {{ votingDetails.display ?? 'untitled' }}</h1>
                     <p v-if="votingDetails.description" class="comment">{{ votingDetails.description }}</p>
-                    <div style="margin-bottom: 1%;" v-if="votingDetails.allowAdding">
+                    <div style="margin-bottom: 0.5%;" v-if="votingDetails.allowAdding">
                         <button onclick="location.href = '/'">Back to website</button>
                         <button @click="addSuggestion();">Add suggestion</button>
                     </div>
-                    <div v-for="entry in entries" class="entry">
+                    <select v-model="sorting" style="margin-bottom: 1%;">
+                        <option value="newest">Newest</option>
+                        <option value="oldest">Oldest</option>
+                        <option value="nameUp">Alphabetically (A-Z)</option>
+                        <option value="nameDown">Alphabetically (Z-A)</option>
+                        <option value="mostVoted">Most popular</option>
+                        <option value="leastVoted">Least popular</option>
+                    </select>
+                    <div v-for="entry in orderedVotes" class="entry">
                         <h3>{{ entry.title }}</h3>
                         <p>{{ entry.comment }}</p>
                         <div class="voting-wrapper">
