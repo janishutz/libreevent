@@ -36,7 +36,6 @@ createApp( {
                         return this.entries[ a ].count - this.entries[ b ].count;
                     }
                 } );
-                console.log( ent );
                 let ret = [];
                 for ( let entry in ent ) {
                     ret.push( this.entries[ ent[ entry ] ] );
