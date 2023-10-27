@@ -4,6 +4,9 @@ For deployment create the following items:
 - libreevent-[VERSION HERE]-prebuilt.zip (contains a ready-to-use compiled version of libreevent (main download))
 - libreevent-[VERSION HERE]-full-icu.zip (contains the package.json file which can be used if full-icu is not enabled in Node.js)
 
+# Links to apps
+- https://play.google.com/store/apps/details?id=com.janishutz.libreevent
+- https://apps.apple.com/ch/app/libreevent-entry-control/id6464594870?l=en-GB
 
 
 # PLANS
