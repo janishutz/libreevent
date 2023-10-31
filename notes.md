@@ -14,11 +14,6 @@ For deployment create the following items:
 # PLANS
 - Website: Add ids to titles
 
-
-- Update files to import when deploying for included json files instead of secret.json files
-- Also remove /test/ routes
-
-
 - FUTURE: Implement Permission system
 - FUTURE: Add Admin profile (page to change account settings per person like changing pwd)
 - FUTURE: add multi-language support
