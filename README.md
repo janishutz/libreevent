@@ -60,6 +60,6 @@ If you like this project and it helped you save money, please consider donating 
 
 You may notice some additional folders appearing after running 
 ```
-npm run package
+./package.sh
 ```
 This is to shrink the repository size. Distribution ready files can be found in the releases or on our [website](https://libreevent.janishutz.com/download).
