@@ -1,6 +1,6 @@
 {
   "name": "libreevent",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A free and open source event management solution",
   "main": "/dist/app.js",
   "scripts": {

@@ -73,7 +73,7 @@ saveSettings( {
     'gcInterval': 300,
     'ticketTimeout': 900,
     'startPage': 'default',
-    'version': '1.0.0'
+    'version': '1.0.1'
 } );
 
 console.log( '  ==> Done!\n\n' );
