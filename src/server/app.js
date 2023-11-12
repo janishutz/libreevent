@@ -76,7 +76,7 @@ app.use( expressSession( {
     saveUninitialized: true,
     cookie: {
         sameSite: 'none',
-        httpOnly: false,
+        httpOnly: true,
         secure: false,
     }
 } ) );
