@@ -124,15 +124,14 @@ export default {
                             let requirementsCount = { 'special': 0, 'numbers': 0, 'lower': 0, 'upper': 0, 'incorrect': '' };
                             const pw = this.formData.password;
                             for ( let l in pw ) {
-                                console.log( pw[ l ] );
                                 if ( /[a-z]/.test( pw[ l ] ) ) {
                                     requirementsCount[ 'lower' ] += 1;
                                 } else if ( /[A-Z]/.test( pw[ l ] ) ) {
                                     requirementsCount[ 'upper' ] += 1;
                                 } else if ( lookup.includes( pw[ l ] ) ) {
                                     requirementsCount[ 'special' ] += 1;
-                                } else if ( !isNaN( pw[ l ] * 1 ) ) {
-                                    requirementsCount[ 'number' ] += 1;
+                                } else if ( !isNaN( pw[ l ] ) ) {
+                                    requirementsCount[ 'numbers' ] += 1;
                                 } else {
                                     console.log( 'incorrect letter' );
                                     requirementsCount[ 'incorrect' ] = pw[ l ];

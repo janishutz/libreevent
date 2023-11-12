@@ -54,6 +54,7 @@ module.exports = ( app, settings ) => {
             }
             let updatedSettings = settings;
             updatedSettings[ 'name' ] = req.body.websiteName;
+            updatedSettings[ 'yourDomain' ] = req.body.yourDomain;
             updatedSettings[ 'mailSender' ] = req.body.mailDisplay;
             db.saveSettings( updatedSettings );
             res.send( 'ok' );

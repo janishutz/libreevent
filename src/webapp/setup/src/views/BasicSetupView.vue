@@ -17,6 +17,8 @@
             <h2>General information</h2>
             <label for="name">Name of the website</label><br>
             <input type="text" name="name" id="name" v-model="formData.websiteName"><br>
+            <label for="name">URL of the website</label><br>
+            <input type="text" name="domain" id="domain" v-model="formData.yourDomain"><br>
             
 
             <h2>Database</h2>
@@ -108,7 +110,6 @@ export default {
     },
     methods: {
         submit() {
-            this.collectUrl();
             if ( this.formData.dbType === 'mysql' ) {
                 if ( !this.formData.db.port || !this.formData.db.host || !this.formData.db.database || !this.formData.db.user || !this.formData.db.password ) {
                     this.$refs.notification.createNotification( 'Database settings are not complete!', 5, 'error', 'normal' );
@@ -149,7 +150,7 @@ export default {
             this.$router.push( '/setup/root' );
         },
         collectUrl() {
-            this.formData.yourDomain = location.protocol + '//' + location.host;
+            this.formData.yourDomain = location.protocol + '//' + location.host + ( location.port ? ':' + location.port : '' );
             this.formData.db.host = location.hostname;
         }
     },
@@ -157,6 +158,7 @@ export default {
         if ( sessionStorage.getItem( 'basics' ) ) {
             this.formData = JSON.parse( sessionStorage.getItem( 'basics' ) );
         }
+        this.collectUrl();
     }
 };
 </script>
