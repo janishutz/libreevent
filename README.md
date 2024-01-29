@@ -40,7 +40,7 @@ Alternatively, you may download the project directly from GitHub (by cloning it 
 - Any operating system that can run node.js
 
 # Roadmap
-There are a few features planned for libreevent. Please discuss other ideas in the issue I opened specifically for this.
+There are a few features planned for libreevent. Please discuss other ideas in the issue I opened specifically for this. (see #12)
 
 # Contributing
 If you want to contribute to this project, please read more [here](https://libreevent.janishutz.com/docs/contributing). Until the end of October 2023, no contributions can be accepted into master. 
