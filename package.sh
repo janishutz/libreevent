@@ -6,7 +6,7 @@
 #
 #
 
-v="V1.0.2"
+v="V1.0.3"
 
 echo "
  _ _ _                                   _   
@@ -36,6 +36,10 @@ sleep 0.5
 
 cd src/webapp/setup
 npm i
+npm audit fix
+
+sleep 1
+
 npm run build
 
 echo " 
@@ -50,6 +54,10 @@ cd ../main
 
 
 npm i
+npm audit fix
+
+sleep 1
+
 npm run build
 
 echo " 
@@ -120,6 +128,11 @@ sleep 1
 
 cd src/server
 npm i
+
+npm audit fix
+
+sleep 1
+
 cd ../../
 zip -9r libreevent-$v-npm.zip src/server/node_modules
 
