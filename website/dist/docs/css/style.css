@@ -17,20 +17,22 @@ html, body {
 }
 
 body {
-    height: 100vh;
-    display: grid;
+    display: block;
     background-color: #648cab;
-    grid-template-areas:
-    'header header header header header'
-    'menu main main main main'
-    'menu main main main main'
-    'menu main main main main'
-    'menu main main main main'
-    'menu main main main main'
-    'menu main main main main'
-    'menu main main main main'
-    'menu main main main main'
-    'footer footer footer footer footer';
+}
+
+.doc-main {
+    display: flex;
+}
+
+@media only screen and (min-width: 1000px) {
+    body {
+        height: 100vh;
+    }
+    .doc-main {
+        display: flex;
+        height: 85vh;
+    }
 }
 
 .title-wrapper {
