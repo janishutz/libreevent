@@ -179,11 +179,13 @@ function storeHTML( html, filepath ) {
         </head>
         <body>
             <div id="nav"></div>
-            <div id="side-bar"></div>
-            <div id="backToTop" onclick="backToTop();"></div>
-            <div id="docPage">
-                <div id="doc-container">
-                ${ html }</div>
+            <div class="doc-main">
+                <div id="side-bar"></div>
+                <div id="backToTop" onclick="backToTop();"></div>
+                <div id="docPage">
+                    <div id="doc-container">
+                    ${ html }</div>
+                </div>
             </div>
             <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
             <script src="/docs/js/index.js"></script>

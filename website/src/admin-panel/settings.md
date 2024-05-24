@@ -15,7 +15,7 @@ disable         | Disable Two-Factor-Authentication entirely (only for users, ro
 This setting allows you to change the currency in which you want your customers to pay. The code has to be a valid ISO 4217 currency code. See more [here](https://en.wikipedia.org/wiki/ISO_4217#List_of_ISO_4217_currency_codes) (Wikipedia). This setting defaults to USD.
 
 ## Ticket Timeout
-The ticket timeout setting allows you to specify for how much time of inactivity the ticket is reserved for a user. The value is to be entered in seconds. The database is parsed every five minutes by default (can be changed in the config file) and, if the threshold set here is exceeded, the session is garbage collected and all tickets selected are returned to the available tickets pool.
+The ticket timeout setting allows you to specify for how much time of inactivity the ticket is reserved for a user. The value is to be entered in seconds. The database is parsed every five minutes by default (can be changed in the config file) and, if the threshold set here is exceeded, the session is garbage-collected and all tickets selected are returned to the available tickets pool.
 
 
 ## Payment gateway
@@ -67,4 +67,4 @@ You can update the username and the password of any admin account by clicking on
 
 
 ## Removing an account
-You can delete an admin account by right clicking on it (yes, right click) and hit delete. Confirm again that you want to delete the account and then it's gone. 
+You can delete an admin account by right-clicking on it (yes, right click) and hit delete. Confirm again that you want to delete the account, and then it's gone. 

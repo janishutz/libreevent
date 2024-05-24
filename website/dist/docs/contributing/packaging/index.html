@@ -13,11 +13,12 @@
         </head>
         <body>
             <div id="nav"></div>
-            <div id="side-bar"></div>
-            <div id="backToTop" onclick="backToTop();"></div>
-            <div id="docPage">
-                <div id="doc-container">
-                <h1>Packaging</h1>
+            <div class="doc-main">
+                <div id="side-bar"></div>
+                <div id="backToTop" onclick="backToTop();"></div>
+                <div id="docPage">
+                    <div id="doc-container">
+                    <h1>Packaging</h1>
 <p>libreevent has a very simple packaging script built in, it's called package.sh and can be run on any bash-compatible shell. This is another thing that should be improved: Add a batch script for the same purpose, it makes Windows user's life so much easier!</p>
 <p>You can just run the script in a terminal by typing</p>
 <pre><code>./package.sh
@@ -30,6 +31,7 @@
 </code></pre>
 <p>in the <em>src/server</em>, <em>src/webapp/main</em> and <em>src/webapp/setup</em> directories. This creates the <em>node_modules</em> folder in each of those directories. This is also what you need to do, if you want to upload the development version of libreevent.</p>
 </div>
+                </div>
             </div>
             <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
             <script src="/docs/js/index.js"></script>

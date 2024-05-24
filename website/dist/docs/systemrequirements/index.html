@@ -1,7 +1,7 @@
 <!DOCTYPE html>
     <html lang="en">
         <head>
-            <title>Systemrequirements :: docs - libreevent</title>
+            <title>System requirements :: docs - libreevent</title>
             <link rel="stylesheet" href="/docs/css/style.css">
             <meta http-equiv="X-UA-Compatible" content="IE=edge">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -13,17 +13,19 @@
         </head>
         <body>
             <div id="nav"></div>
-            <div id="side-bar"></div>
-            <div id="backToTop" onclick="backToTop();"></div>
-            <div id="docPage">
-                <div id="doc-container">
-                <h1>Systemrequirements</h1>
+            <div class="doc-main">
+                <div id="side-bar"></div>
+                <div id="backToTop" onclick="backToTop();"></div>
+                <div id="docPage">
+                    <div id="doc-container">
+                    <h1>System requirements</h1>
 <p>libreevent's system requirements are low, you only need a PC or Server that can run node.js and is able to install npm packages. If the system you are trying to use is unable to download npm packages, you may download the packages on your own system and upload them together with the rest of the server files. How to do that is described in greater detail in the <a href="/docs/setup/installation">Getting Started guide</a>.</p>
 <h2>node.js</h2>
 <p>Your system needs to be able to run node.js V &gt; 16.0 and must have access to either npm or the downloaded npm packages.</p>
 <h2>Hardware requirements</h2>
 <p>Hardware requirements solely depend on the amount of usage it is going to get. A cheap hosting plan should be able to handle about 100 simultaneous people. Failing to meet the CPU recommendation may lead to slow response times when a lot of people try to connect to the server at once. A good way to mitigate this problem is to use cloudflare's DDOS protection or rate limiting feature. Follow their official guide <a href="https://developers.cloudflare.com/waf/rate-limiting-rules/best-practices/">here</a> on how to set it up. Many hosting providers already use Cloudflare and you may have settings for cloudflare already enabled. Otherwise, <a href="https://dash.cloudflare.com/sign-up?lang=en-US">create a cloudflare account</a> and update your website's DNS records to instead of directly pointing to your webserver to point to Cloudflare's DNS where you can re-add the DNS records that were previously configured in your hosting provider's DNS. For more information see <a href="/docs/setup/security">Security best practices</a>.</p>
 </div>
+                </div>
             </div>
             <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
             <script src="/docs/js/index.js"></script>

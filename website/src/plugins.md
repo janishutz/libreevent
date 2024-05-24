@@ -1,6 +1,6 @@
 # Plugins
 
-libreevent features exensive plugin support, with all internal libreevent libraries also working together with plugins. This though poses a potential risk if the user is installing harmful plugins. This is why there is a curated list of secure plugins that the users might use [here](/plugins)
+libreevent features extensive plugin support, with all internal libreevent libraries also working together with plugins. This though poses a potential risk if the user is installing harmful plugins. This is why there is a curated list of secure plugins that the users might use [here](/plugins). Note that with one of the next major versions, libreevent's plugin API will change and break all plugins in their current form.
 
 # Plugin installation
 

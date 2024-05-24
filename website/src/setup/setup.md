@@ -1,5 +1,5 @@
 # Setup of libreevent
-At this point we assume you've completed the initial install of libreevent. If not, you may find a guide on how to do it [here](&/setup/installation). Let's get started setting up your event management system!
+At this point we assume you've completed the initial installation of libreevent. If not, you may find a guide on how to do it [here](&/setup/installation). Let's get started setting up your event management system!
 
 ## Connecting to the server
 As discussed in the previous part where we installed the system, you can connect to your server simply by opening a web browser and typing your domain name into the address field. After that you should be greeted by the libreevent post-install landing page. Once there, you'll need the setup key you defined during the installation. Type (or copy) it into the field and hit "Start setup". You will now land on the setup start page. You may hit "Start setup" below to start the setup.
@@ -11,15 +11,15 @@ This page prepares libreevent for use, covering all the basics, the name of the 
 The first setting you may change here is the name of the website. Choose wisely, as changing the name at a later point is hard, not explained in the documentation and also doesn't make for a good image.
 
 ### Database
-In the database, all the userdata is stored. libreevent currently supports two different databases, MySQL and a custom database based on JSON. Which one to choose?
+In the database, all the user data is stored. libreevent currently supports two different databases, MySQL and a custom database based on JSON. Which one to choose?
 
 Generally MySQL, except:
-- If your organisation is small and does only sell a few tickets at a time, the JSON based database can be an easy to set up alternative. 
-- Your web hosting plan does not includes MySQL and you've got no access to MySQL in any other way. *NOTE: Free MySQL services should NEVER be used in such an application, as most hosting plans include MySQL (or MariaDB, which works similarly) which is much more reliable and if you lose access to the database, you can only access the root account and all other user data (and therefore all user accounts) is lost. The event data is always stored in JSON format as it is more efficient this way.*
+- If your organization is small and does only sell a few tickets at a time, the JSON based database can be an easy to set up alternative. 
+- Your web hosting plan does not include MySQL, and you've got no access to MySQL in any other way. *NOTE: Free MySQL services should NEVER be used in such an application, as most hosting plans include MySQL (or MariaDB, which works similarly) which is much more reliable and if you lose access to the database, you can only access the root account and all other user data (and therefore all user accounts) is lost. The event data is always stored in JSON format as it is more efficient this way.*
 
-**NOTE: The JSON database is really slow and should only be used if you have a small event where you expect to sell less than 5 ticket per minute at any time! The amount of tickets sold per minute that the system can handle really depends on the speed of the server the website runs on.**
+**NOTE: The JSON database is really slow and should only be used if you have a small event where you expect to sell less than 10 tickets per minute at any time! The amount of tickets sold per minute that the system can handle really depends on the speed of the server the website runs on.**
 
-MySQL generally is more time consuming to set up (taking about ten minutes compared to zero), but we'll run you through the process here to make the process easier for you. 
+MySQL generally is more time-consuming to set up (taking about ten minutes compared to zero), but we'll run you through the process here to make the process easier for you. 
 
 If you are really sure that you want to use the JSON-based database, skip the next section.
 
@@ -41,13 +41,13 @@ In the "display" section, you can customize how the email address shows up for c
 With the main part of setup complete, hit continue, to advance to root account setup.
 
 ## Root account
-This is the most powerful account in this system. From it you can control EVERY aspect of your system. 
+This is the most powerful account in this system. From it, you can control EVERY aspect of your system. 
 
-**Remark: You may (and definitely should) add other accounts with less privileges after completing setup and only use the root account when it is actually necessary**
+<!-- **Remark: You may (and definitely should) add other accounts with less privileges after completing setup and only use the root account when it is actually necessary** -->
 
 Please choose an email address to which you want to link the root account. Two-Factor-Authentication is ALWAYS required when logging into an account that has root privileges to ensure a higher degree of security, so please ensure you have access to that email address at all times.
 
-When choosing a password, please ensure it meets the minimum requirements of the system or let the system generate one for you by clicking the 'generate password' button, which will generate a password that fulfills all requirements and exceeds the minimum requirements for password length. In the table below, you may see all the password requirements:
+When choosing a password, please ensure it meets the minimum requirements of the system or let the system generate one for you by clicking the 'generate password' button, which will generate a password that fulfils all requirements and exceeds the minimum requirements for password length. In the table below, you may see all the password requirements:
 
 Factor              | Requirement
 --------------------|--------------------------------------------------
@@ -56,12 +56,12 @@ Special characters  | At least 2 required
 Numbers             | At least 2 required
 Upper / Lower case  | At least 2 upper & 2 lower case letters required
 
-Please avoid using easy to guess combinations like names & birth dates of you or your relatives, zip codes & cities and obvious words like 'password', 'libreevent', 'admin', 'root' and your organisation / event's name.
+Please avoid using easy to guess combinations like names & birthdates of you or your relatives, postcodes & cities and obvious words like 'password', 'libreevent', 'admin', 'root' and your organization / event's name.
 
 After this, the system will email you an email confirmation link using the email you've previously configured in the config.json file during installation.
 
 ## Setup complete
-With this, you've completed the setup of the event. We now ask you to restart the node application. You may do this by stopping the process (if logged in via SSH, press Ctrl + C, if you've got a graphical user interface for setting up the node app, it should be self explanatory) and restarting it.
+With this, you've completed the setup of the event. We now ask you to restart the node application. You may do this by stopping the process (if logged in via SSH, press Ctrl + C, if you've got a graphical user interface for setting up the node app, it should be self-explanatory) and restarting it.
 
 libreevent already gives you the link to the admin panel, which you can click, but if you already closed the page, here's how to reach it:
 

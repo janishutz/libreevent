@@ -13,40 +13,38 @@
         </head>
         <body>
             <div id="nav"></div>
-            <div id="side-bar"></div>
-            <div id="backToTop" onclick="backToTop();"></div>
-            <div id="docPage">
-                <div id="doc-container">
-                <h1>Installation</h1>
-<p>Let's begin with setting up libreevent! If you are not technically savvy or want somebody else to set it up for you, please contact me <a href="https://api.janishutz.com/contact/setup?origin=libreevent&amp;campaign=installation-docs">here</a>. If you want to set it up yourself, read on below! Soon, there will also be a video tutorial available.</p>
+            <div class="doc-main">
+                <div id="side-bar"></div>
+                <div id="backToTop" onclick="backToTop();"></div>
+                <div id="docPage">
+                    <div id="doc-container">
+                    <h1>Installation</h1>
+<p>Let's begin with setting up libreevent! If you are not technically savvy or want somebody else to set it up for you, please contact me <a href="https://support.janishutz.com/index.php?a=add&amp;category=8">here</a>. If you want to set it up yourself, read on below!</p>
 <h1>Selecting a webhosting company</h1>
-<p>Choosing the right hosting provider is not easy, especially since libreevent requires node.js. Therefore, we've listed a few really good options. Whatever hosting provider you end up going with, it is important that they explicitly list Node.js as a feature of that hosting account. All hosting providers below also include MySQL which is beneficial to have and a must-have when you are expecting to sell a lot of tickets simultaneously. This website here is hosted by asurahosting. <em>Note: I may receive a small commission when you buy webhosting using one of the links provided below. This won't affect the price you pay.</em></p>
+<p>Choosing the right hosting provider is not easy, especially since libreevent requires node.js. Therefore, we've listed a few excellent options. Whatever hosting provider you end up going with, it is important that they explicitly list Node.js as a feature of that hosting account. All hosting providers below also include MySQL which is beneficial to have and a must-have when you are expecting to sell a lot of tickets simultaneously. This website here is hosted by asurahosting. <em>Note: I may receive a small commission when you buy webhosting using one of the links provided below. This won't affect the price you pay.</em></p>
 <ul>
 <li><a href="https://clients.asurahosting.com/aff.php?aff=1997">asurahosting</a></li>
 <li><a href="https://www.novatrend.ch/en/">novatrend</a></li>
 <li><a href="https://www.hetzner.com/">hetzner</a> (though make sure that you have a sufficiently high-end account!)</li>
 </ul>
-<p><em>Affiliate programs: TODO: Sign up</em>
-https://affiliates.hostinger.com/users/signup/
-https://www.a2hosting.com/about/affiliate-program/
-https://www.digitalocean.com/go/affiliates</p>
+<p></p>
 <h1>Downloading libreevent</h1>
-<p>We are going to start off by downloading libreevent. On this website, open the navigation menu and head to &quot;Downloads&quot;. (We would strongly suggest that you open the link in a new tab by right clicking on the link and hitting &quot;Open in new tab&quot;). Below, hit the download button. This will download a production ready build of libreevent as a zip file. Save it to any convenient location. Head there and extract the zip-Archive (On windows, right click, extract; On MacOS, just double click; on Linux, there is either a zip utility installed or otherwise use the unzip utility in the terminal).</p>
+<p>We are going to start off by downloading libreevent. On this website, open the navigation menu and head to &quot;Downloads&quot;. (We would strongly suggest that you open the link in a new tab by right-clicking on the link and hitting &quot;Open in new tab&quot;). Below, hit the download button. This will download a production ready build of libreevent as a zip file. Save it to any convenient location. Head there and extract the zip-Archive (On Windows, right click, extract; On MacOS, just double click; on Linux, there is either a zip utility installed or otherwise use the <code>unzip</code> utility in the terminal).</p>
 <h1>Defining a setup key</h1>
 <p>libreevent uses what we call a setup key. You need to set this manually, as it needs to be different for every install because otherwise the whole point of this setup key is to prevent unauthorized access to the setup program. The setup will be disabled once you have first completed it.</p>
 <p>To set the setup key, navigate to the extracted libreevent folder and open it. In there you should find a file called &quot;setupkey.txt&quot;. Open it up and add any random assortment of characters and numbers in there. What we recommend is that you just roll your hand over your keyboard in any way you like as this generates a very much unpredictable assortment of characters. Then, hit Ctrl + S (or Command + S on MacOS) to save the file. We would recommend leaving this file open, as you will need the setup key at a later point.</p>
 <h1>Uploading libreevent</h1>
 <p>It is now time to upload libreevent to your webhosting account. The recommended way of doing this is to download an FTP client like &quot;FileZilla&quot; and to connect to the hosting account in that way using the credentials provided by the hosting provider. In this guide we assume you use this way.</p>
-<p>Download and install FileZilla <a href="https://filezilla-project.org/download.php?platform=win64">for Windows (64-bit)</a>, <a href="https://filezilla-project.org/download.php?platform=osx">for MacOS</a> or for Linux (available in all major distro repos). It is a free and open source FTP client. Open it and you will see a few empty fields towards the top of the app. There you will need to fill in the information given by your hosting provider. Usually, the Host is ftp.yourDomain.com, the username and password are usually your admin account credentials and the port is usually 25552 or can be left empty. Then hit quick connect. At this point, a SSL warning might appear, as the certificate might not (yet) be configured correctly to also include FTP. Accept the certificate and you should be connected.</p>
-<p>Now create a new folder called &quot;libreevent&quot; by right clicking onto the empty space on the right pane (where it says &quot;remote site&quot;) and selecting &quot;create directory&quot;. Then on the left side (where it says &quot;local side&quot; navigate to the extracted libreevent folder and upload its contents by selecting it and right clicking to hitting &quot;Upload&quot;). Once that process is completed, you should be set to go to the next session.</p>
-<p><strong>IMPORTANT:</strong> Never upload libreevent into any public_html folders ever! This poses a SEVERE security risk and, if a JSON database is used, exposes ALL userdata to the internet! Always upload to a non-publicly accessible folder!</p>
+<p>Download and install FileZilla <a href="https://filezilla-project.org/download.php?platform=win64">for Windows (64-bit)</a>, <a href="https://filezilla-project.org/download.php?platform=osx">for MacOS</a> or for Linux (available in all major distro repos). It is a free and open source FTP client. Open it, and you will see a few empty fields towards the top of the app. There you will need to fill in the information given by your hosting provider. Usually, the Host is ftp.yourDomain.com, the username and password are usually your admin account credentials and the port is usually 25552 or can be left empty. Then hit quick connect. At this point, an SSL warning might appear, as the certificate might not (yet) be configured correctly to also include FTP. Accept the certificate and you should be connected.</p>
+<p>Now create a new folder called &quot;libreevent&quot; by right-clicking onto the empty space on the right pane (where it says &quot;remote site&quot;) and selecting &quot;create directory&quot;. Then on the left side (where it says &quot;local side&quot; navigate to the extracted libreevent folder and upload its contents by selecting it and right-clicking to hitting &quot;Upload&quot;). Once that process is completed, you should be set to go to the next session.</p>
+<p><strong>IMPORTANT:</strong> Never upload libreevent into any public_html folders ever! This poses a SEVERE security risk and, if a JSON database is used, exposes ALL user data to the internet! Always upload to a non-publicly accessible folder!</p>
 <h2>npm install</h2>
 <p>This project relies on a variety of different node.js modules that need to be installed on the server. Most webhosting providers give you an easy way to run <em>npm install</em>. If not, you might be required to upload the <em>node_modules</em> folder yourself. You can create such a folder either by downloading the <em>node_modules.zip</em> folder from the Download page or by installing npm on your local machine and then by running <em>npm i</em> in the terminal.</p>
 <p>To set up the node application in most hosting providers, head to the admin panel of your hosting account once again. Navigate to the main page and scroll down until you find something that says &quot;Setup Node.js App&quot;. Click it and wait for it to load. Click &quot;Create Application&quot; and select the newest available Node.js version and set the Application mode to &quot;Production&quot;. For the application root insert the directory name which you have created just before when uploading.</p>
 <p>For the Application URL field, click onto &quot;Choose any value&quot; and select an appropriate domain.</p>
 <p>For the Application startup file type &quot;app.js&quot;.</p>
 <p>In the section &quot;Environment variables&quot; hit &quot;Add Variable&quot; and in the appearing fields type beneath &quot;Name&quot; the following: &quot;PORT&quot; (without the quotes!) and under &quot;Value&quot; &quot;8080&quot; (again without quotes). Then hit done and at the top &quot;create&quot;. If you end up on the start page again, hit the little pencil icon to get to the application editor. Scroll down to the &quot;Detected configuration files&quot; section and click &quot;Run NPM Install&quot;. Once it shows a success message (at the top!), hit &quot;Restart&quot;.</p>
-<p>CONGRATULATIONS! You are all set with the installation of libreevent! Now open a new tab in your webbrowser and type your domain name. If you can connect to your domain and libreevent is accessible, you are all set!</p>
+<p>CONGRATULATIONS! You are all set with the installation of libreevent! Now open a new tab in your web browser and type your domain name. If you can connect to your domain and libreevent is accessible, you are all set!</p>
 <p>You may now continue reading the <a href="/docs/setup/setup">Setup guide</a></p>
 <h1>Troubleshooting</h1>
 <p>Here are some tips for the most common problems that might arise from the installation</p>
@@ -61,7 +59,7 @@ https://www.digitalocean.com/go/affiliates</p>
 <h3>ERR_ENCODING_NOT_SUPPORTED</h3>
 <p>If this error occurs, most likely, the Node.js build of your hosting provider is set to small-icu mode, meaning some localizations are missing, one of which is ascii, which is required by the pdf generator that libreevent uses. To resolve this, you will need to download a special package.json file and add two (more) environment variables:</p>
 <ul>
-<li>For the package.json file, download it from <a href="https://api.janishutz.com/download/libreevent?v=latest&amp;type=icu">here</a> </li>
+<li>For the package.json file, download it from <a href="https://api.janishutz.com/download/libreevent?v=latest&amp;type=icu">here</a></li>
 <li>For the environment variables, add the following:</li>
 </ul>
 <pre><code>NODE_ICU_DATA=./node_modules/full-icu
@@ -69,8 +67,9 @@ FULL_ICU_PREFER_NPM=true
 </code></pre>
 <p><img src="/assets/environmentVariables.png" alt="EnvVars"></p>
 <h3>Any other error</h3>
-<p>Please click <a href="https://github.com/simplePCBuilding/libreevent/issues/new">here</a> to head to GitHub and open a new issue. You will need to have a GitHub Account to open an issue. If you don't have a GitHub account, you may also contact me using my <a href="https://api.janishutz.com/contact/report?origin=libreevent?error=unkown?lang=en">Bug reporting tool</a>.</p>
+<p>Please click <a href="https://github.com/simplePCBuilding/libreevent/issues/new">here</a> to head to GitHub and open a new issue. You will need to have a GitHub Account to open an issue. If you don't have a GitHub account, you may also contact me using my <a href="https://support.janishutz.com/index.php?a=add&amp;category=9">Bug reporting tool</a>.</p>
 </div>
+                </div>
             </div>
             <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
             <script src="/docs/js/index.js"></script>

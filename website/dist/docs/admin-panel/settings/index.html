@@ -13,11 +13,12 @@
         </head>
         <body>
             <div id="nav"></div>
-            <div id="side-bar"></div>
-            <div id="backToTop" onclick="backToTop();"></div>
-            <div id="docPage">
-                <div id="doc-container">
-                <h1>Settings</h1>
+            <div class="doc-main">
+                <div id="side-bar"></div>
+                <div id="backToTop" onclick="backToTop();"></div>
+                <div id="docPage">
+                    <div id="doc-container">
+                    <h1>Settings</h1>
 <h2>2FA</h2>
 <p>You can require the users to enable Two-Factor Authentication when confirming their email.
 The following settings are available:</p>
@@ -46,7 +47,7 @@ The following settings are available:</p>
 <h2>Currency</h2>
 <p>This setting allows you to change the currency in which you want your customers to pay. The code has to be a valid ISO 4217 currency code. See more <a href="https://en.wikipedia.org/wiki/ISO_4217#List_of_ISO_4217_currency_codes">here</a> (Wikipedia). This setting defaults to USD.</p>
 <h2>Ticket Timeout</h2>
-<p>The ticket timeout setting allows you to specify for how much time of inactivity the ticket is reserved for a user. The value is to be entered in seconds. The database is parsed every five minutes by default (can be changed in the config file) and, if the threshold set here is exceeded, the session is garbage collected and all tickets selected are returned to the available tickets pool.</p>
+<p>The ticket timeout setting allows you to specify for how much time of inactivity the ticket is reserved for a user. The value is to be entered in seconds. The database is parsed every five minutes by default (can be changed in the config file) and, if the threshold set here is exceeded, the session is garbage-collected and all tickets selected are returned to the available tickets pool.</p>
 <h2>Payment gateway</h2>
 <h3>Select a gateway</h3>
 <p>With this setting, you can select the payment gateway to use. You may follow the link <a href="https://libreevent.janishutz.com/docs/payments">here</a> to get more information on the payment gateway. You need to hit save to enable editing for the gateway settings.</p>
@@ -96,8 +97,9 @@ The following settings are available:</p>
 <h2>Modifying an account</h2>
 <p>You can update the username and the password of any admin account by clicking onto it.</p>
 <h2>Removing an account</h2>
-<p>You can delete an admin account by right clicking on it (yes, right click) and hit delete. Confirm again that you want to delete the account and then it's gone.</p>
+<p>You can delete an admin account by right-clicking on it (yes, right click) and hit delete. Confirm again that you want to delete the account, and then it's gone.</p>
 </div>
+                </div>
             </div>
             <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
             <script src="/docs/js/index.js"></script>
