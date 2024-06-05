@@ -1,5 +1,5 @@
 # Installation
-Let's begin with setting up libreevent! If you are not technically savvy or want somebody else to set it up for you, please contact me [here](https://support.janishutz.com/index.php?a=add&category=8). If you want to set it up yourself, read on below!
+Let's begin with setting up libreevent! If you are not technically savvy or want somebody else to set it up for you, you can pay for the setup [here](https://store.janishutz.com/product/com.janishutz.libreeventSetup). If you want to set it up yourself, read on below!
 
 
 # Selecting a webhosting company
