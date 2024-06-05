@@ -23,7 +23,7 @@
 </div>
 
 <div id="donate" align="center">
-    <img src="https://store-cdn.janishutz.com/static/support-me.jpg" width="150px">
+    <a href="https://store.janishutz.com/donate"><img src="https://store-cdn.janishutz.com/static/support-me.jpg" width="150px"></a>
 </div>
 
 A fully featured, free and open source event management solution you can host yourself, to manage your event and sell tickets. All you need is a webserver that can run node.js!
