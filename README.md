@@ -22,6 +22,10 @@
     <img alt="App Version" src="https://img.shields.io/github/package-json/v/simplePCBuilding/libreevent.svg?label=Development Version">
 </div>
 
+<div id="donate" align="center">
+    <img src="https://store-cdn.janishutz.com/static/support-me.jpg" width="150px">
+</div>
+
 A fully featured, free and open source event management solution you can host yourself, to manage your event and sell tickets. All you need is a webserver that can run node.js!
 
 Visit the project's [website](https://libreevent.janishutz.com)
@@ -66,3 +70,7 @@ You may notice some additional folders appearing after running
 ./package.sh
 ```
 This is to shrink the repository size. Distribution ready files can be found in the releases or on our [website](https://libreevent.janishutz.com/download).
+
+<div id="donate" align="center">
+    <img src="https://store-cdn.janishutz.com/static/support-me.jpg" width="150px">
+</div>
