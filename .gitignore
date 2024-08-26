@@ -24,5 +24,6 @@ node_modules
 *.synctex.gz
 *.fdb_latexmk
 ._wordcount_selection.tex
+/*.zip
 
 AppMarketing

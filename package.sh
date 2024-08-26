@@ -6,7 +6,7 @@
 #
 #
 
-v="V1.0.7"
+v="V1.1.0"
 
 echo "
  _ _ _                                   _   
@@ -154,8 +154,12 @@ zip -9r libreevent-$v-full-icu.zip src/server/package.json src/server/package-lo
 cd src/server
 npm uninstall full-icu
 
-cd ../../
-rm -rf dist
+cd ../../dist
+cp ../README.md .
+
+ls
+
+# rm -rf dist
 
 echo " 
 
@@ -177,5 +181,7 @@ echo "
     Next steps: 
         - Check that everything was packaged correctly
         - Create a release on GitHub
+        - Run 'cd dist && npm publish'
+        - Delete all newly spawned files
 
 "
