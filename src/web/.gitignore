@@ -1,3 +1,2 @@
 # ignore node_modules folder for eslint
 node_modules
-webapp

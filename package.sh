@@ -34,7 +34,7 @@ echo "
 
 sleep 0.5
 
-cd src/webapp/setup
+cd src/web/webapp/setup
 npm i
 npm audit fix
 
@@ -68,39 +68,12 @@ echo "
 
 sleep 1
 
-cd ../../server
+cd ../../
 node prepareDB.js
 
 sleep 1
 
-echo " 
-
-==> Collecting files to archive <==
-
-"
-
-sleep 1
-
-cd ../../
-
-rm -rf dist/
-mkdir dist/
-
-cd dist
-
-shopt -s extglob
-cp -r ../src/server/!(node_modules) .
-
-rm webapp
-mkdir webapp
-mkdir webapp/main
-mkdir webapp/setup
-
-cp -rv ../src/webapp/main/dist ./webapp/main/dist
-cp -rv ../src/webapp/setup/dist ./webapp/setup/dist
-rm .gitignore
-rm prepareDB.js
-rm test.js
+rm -rf ./node_modules
 rm config/*.secret.json
 rm backend/plugins/payments/*/*.secret.json
 echo "agdhgasjlgagaldusaglueagelwadgl" >> setupkey.txt
@@ -115,7 +88,7 @@ echo "
 sleep 1
 
 cd ..
-zip -9r libreevent-$v-prebuilt.zip dist
+zip -9r libreevent-$v-prebuilt.zip web
 
 echo " 
 
@@ -126,7 +99,7 @@ echo "
 
 sleep 1
 
-cd src/server
+cd src/web
 npm i
 
 npm audit fix
@@ -134,7 +107,7 @@ npm audit fix
 sleep 1
 
 cd ../../
-zip -9r libreevent-$v-npm.zip src/server/node_modules
+zip -9r libreevent-$v-npm.zip src/web/node_modules
 
 echo " 
 
@@ -145,13 +118,13 @@ echo "
 
 sleep 1
 
-cd src/server
+cd src/web
 npm i full-icu
 cd ../../
 
-zip -9r libreevent-$v-full-icu.zip src/server/package.json src/server/package-lock.json
+zip -9r libreevent-$v-full-icu.zip src/web/package.json src/web/package-lock.json
 
-cd src/server
+cd src/web
 npm uninstall full-icu
 
 cd ../../
@@ -177,5 +150,6 @@ echo "
     Next steps: 
         - Check that everything was packaged correctly
         - Create a release on GitHub
+        - Publish to npm
 
 "
