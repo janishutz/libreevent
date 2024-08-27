@@ -13,4 +13,4 @@
 
 const libreevent = require( 'libreevent' );
 
-libreevent.run();
+libreevent.run( __dirname );

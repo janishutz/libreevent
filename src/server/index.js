@@ -16,7 +16,8 @@ const http = require( 'http' );
 const fs = require( 'fs' );
 const token = require( './backend/token.js' );
 
-module.exports.run = () => {
+module.exports.run = ( rootDir ) => {
+    global.__starterDir = rootDir ?? __dirname;
     console.log( `
 
     _ _ _                                   _   
@@ -46,7 +47,7 @@ module.exports.run = () => {
     ` );
 
     console.log( '[ Server ] loading settings' );
-    const settings = JSON.parse( fs.readFileSync( path.join( __dirname + '/config/settings.config.json' ) ) );
+    const settings = JSON.parse( fs.readFileSync( path.join( __starterDir + '/config/settings.config.json' ) ) );
 
 
     // Route for static html file for start page (page is compiled using
@@ -64,9 +65,10 @@ module.exports.run = () => {
     // that good, but way easier to set up)
     console.log( '[ Server ] Setting up static routes' );
     if ( settings.setupDone ) {
-        app.use( express.static( 'webapp/main/dist' ) );
+        app.use( express.static( __dirname + '/webapp/main/dist' ) );
     } else {
-        app.use( express.static( 'webapp/setup/dist' ) );
+        console.log( '[ Server ] Booting into setup' );
+        app.use( express.static( __dirname + '/webapp/setup/dist' ) );
     }
 
     // initialise express with middlewares

@@ -15,7 +15,7 @@ const mlt = require( 'multer' );
 const pngToIco = require( 'png-to-ico' );
 const multer = mlt();
 const fs = require( 'fs' );
-const settings = JSON.parse( fs.readFileSync( path.join( __dirname + '/../config/settings.config.json' ) ) );
+const settings = JSON.parse( fs.readFileSync( path.join( __starterDir + '/config/settings.config.json' ) ) );
 const getHandler = new geth( settings );
 const postHandler = new posth( settings );
 

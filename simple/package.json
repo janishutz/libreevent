@@ -19,5 +19,8 @@
   "bugs": {
     "url": "https://github.com/janishutz/libreevent/issues"
   },
-  "homepage": "https://libreevent.janishutz.com"
+  "homepage": "https://libreevent.janishutz.com",
+  "dependencies": {
+    "libreevent": "^1.1.3"
+  }
 }

@@ -18,7 +18,7 @@ const mailManager = new mm();
 let createSSRApp = require( 'vue' ).createSSRApp;
 let renderToString = require( 'vue/server-renderer' ).renderToString;
 
-const settings = JSON.parse( fs.readFileSync( path.join( __dirname + '/../../config/settings.config.json' ) ) );
+const settings = JSON.parse( fs.readFileSync( path.join( __starterDir + '/config/settings.config.json' ) ) );
 
 class TicketGenerator {
     constructor () {

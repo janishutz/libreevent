@@ -10,7 +10,7 @@
 const path = require( 'path' );
 const fs = require( 'fs' );
 
-const settings = JSON.parse( fs.readFileSync( path.join( __dirname + '/../../config/settings.config.json' ) ) );
+const settings = JSON.parse( fs.readFileSync( path.join( __starterDir + '/config/settings.config.json' ) ) );
 
 const dbRef = { 
     'user': 'libreevent_users', 
@@ -230,5 +230,5 @@ module.exports.saveSettings = ( settings ) => {
             settingsToSave += settingsString[ letter ];
         }
     }
-    fs.writeFileSync( path.join( __dirname + '/../../config/settings.config.json' ), settingsToSave );
+    fs.writeFileSync( path.join( __starterDir + '/config/settings.config.json' ), settingsToSave );
 };

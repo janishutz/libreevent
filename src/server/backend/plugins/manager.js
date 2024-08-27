@@ -32,7 +32,7 @@ class PluginManager {
 
     loadPaymentGatewaySettings () {
         return new Promise( ( resolve, reject ) => {
-            this.paymentGateway = JSON.parse( fs.readFileSync( path.join( __dirname + '/../../config/settings.config.json' ) ) ).payments;
+            this.paymentGateway = JSON.parse( fs.readFileSync( path.join( __starterDir + '/config/settings.config.json' ) ) ).payments;
             fs.readFile( path.join( __dirname + '/payments/' + this.paymentGateway + '/configOptions.json' ), ( err, optionsBuffer ) => {
                 if ( err ) reject( err );
                 fs.readFile( path.join( __dirname + '/payments/' + this.paymentGateway + '/config.payments.json' ), ( err, configBuffer ) => {

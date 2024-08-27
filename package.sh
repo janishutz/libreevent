@@ -6,7 +6,7 @@
 #
 #
 
-v="V1.1.0"
+v="V1.1.3"
 
 echo "
  _ _ _                                   _   
@@ -115,11 +115,11 @@ echo "
 sleep 1
 
 cd ..
-zip -9r libreevent-$v-prebuilt.zip dist
+zip -9r libreevent-$v-custom.zip dist
 
 echo " 
 
-==> Created prebuilt archive <==
+==> Created custom archive <==
 ==> Creating archive for node_modules <==
 
 "
@@ -154,12 +154,22 @@ zip -9r libreevent-$v-full-icu.zip src/server/package.json src/server/package-lo
 cd src/server
 npm uninstall full-icu
 
+echo " 
+
+==> Archived full-icu config <==
+==> Creating archive for prebuilt install <==
+
+"
+
 cd ../../dist
 cp ../README.md .
 
-ls
+cd ..
+rm -rf ./simple/node_modules
+rm ./simple/package-lock.json
+rm ./simple/yarn.lock
 
-# rm -rf dist
+zip -9r libreevent-$v-prebuilt.zip simple
 
 echo " 
 

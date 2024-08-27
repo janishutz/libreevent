@@ -20,7 +20,7 @@ class POSTHandler {
         this.temporarilySelectedTotals = {};
         this.temporaryTotals = {};
         this.freeSeats = {};
-        this.settings = JSON.parse( fs.readFileSync( path.join( __dirname + '/../../config/settings.config.json' ) ) );
+        this.settings = JSON.parse( fs.readFileSync( path.join( __starterDir + '/config/settings.config.json' ) ) );
 
         /*
             Here, GC-Duty is scheduled to run every so often (defined in settings.config.json file, no GUI setting available.

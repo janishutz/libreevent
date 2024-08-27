@@ -21,7 +21,7 @@ module.exports = ( app, settings ) => {
     */
    
     app.post( '/setup/start', bodyParser.json(), ( request, response ) => {
-        if ( request.body.token === '' + fs.readFileSync( path.join( __dirname + '/../setupkey.txt' ) ) ) {
+        if ( request.body.token === '' + fs.readFileSync( path.join( __starterDir + '/setupkey.txt' ) ) ) {
             request.session.setupKeyOk = true;
             response.send( 'ok' );
         } else {
@@ -39,7 +39,7 @@ module.exports = ( app, settings ) => {
 
     app.post( '/setup/saveBasicSettings', bodyParser.json(), ( req, res ) => {
         if ( req.session.setupKeyOk ) {
-            fs.writeFileSync( path.join( __dirname + '/../config/db.config.json' ), JSON.stringify( req.body.db ) );
+            fs.writeFileSync( path.join( __starterDir + '/config/db.config.json' ), JSON.stringify( req.body.db ) );
             let emailSettings = {};
             emailSettings[ 'host' ] = req.body.email.host;
             emailSettings[ 'port' ] = req.body.email.port;
@@ -47,7 +47,7 @@ module.exports = ( app, settings ) => {
             emailSettings[ 'auth' ] = { 'user': req.body.email.user, 'pass': req.body.email.pass };
             let hostSplit = req.body.email.host.split( '.' );
             emailSettings[ 'tls' ] = { 'servername': ( hostSplit[ hostSplit.length - 2 ] + '.' + hostSplit[ hostSplit.length - 1 ] ) };
-            fs.writeFileSync( path.join( __dirname + '/../config/mail.config.json' ), JSON.stringify( emailSettings ) );
+            fs.writeFileSync( path.join( __starterDir + '/config/mail.config.json' ), JSON.stringify( emailSettings ) );
             if ( db === null ) {
                 db = require( '../backend/db/db.js' );
                 pwm = require( '../admin/pwdmanager.js' );
