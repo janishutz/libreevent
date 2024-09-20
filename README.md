@@ -47,10 +47,13 @@ Alternatively, you may download the project directly from GitHub (by cloning it 
 There are a few features planned for libreevent. Please discuss other ideas in the issue I opened specifically for this. (see #12)
 
 # Contributing
-If you want to contribute to this project, please read more [here](https://libreevent.janishutz.com/docs/contributing). Until the end of October 2023, no contributions can be accepted into master. 
+If you want to contribute to this project, please read more [here](https://libreevent.janishutz.com/docs/contributing).
 
 # Supporting the project
 If you like this project and it helped you save money, please consider donating to help fund the continuous development. If you are a company, please contact me [here](https://libreevent.janishutz.com/docs/sponsoring) if you want to sponsor the project and become an official partner.
+<div id="donate" align="center">
+    <img src="https://store-cdn.janishutz.com/static/support-me.jpg" width="150px">
+</div>
 
 # Repository structure
 - [assets/](/assets/): contains the logo (as png and GIMP file), also iOS and Android marketing materials, just global assets (images / videos)
