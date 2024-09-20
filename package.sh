@@ -6,7 +6,7 @@
 #
 #
 
-v="V1.1.3"
+v="V1.1.4"
 
 echo "
  _ _ _                                   _   
@@ -36,7 +36,7 @@ sleep 0.5
 
 cd src/webapp/setup
 npm i
-npm audit fix
+npm audit fix --force
 
 sleep 1
 
@@ -54,7 +54,7 @@ cd ../main
 
 
 npm i
-npm audit fix
+npm audit fix --force
 
 sleep 1
 
@@ -129,7 +129,7 @@ sleep 1
 cd src/server
 npm i
 
-npm audit fix
+npm audit fix --force
 
 sleep 1
 
