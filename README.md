@@ -52,7 +52,9 @@ If you want to contribute to this project, please read more [here](https://libre
 # Supporting the project
 If you like this project and it helped you save money, please consider donating to help fund the continuous development. If you are a company, please contact me [here](https://libreevent.janishutz.com/docs/sponsoring) if you want to sponsor the project and become an official partner.
 <div id="donate" align="center">
-    <img src="https://store-cdn.janishutz.com/static/support-me.jpg" width="150px">
+    <a href="https://store.janishutz.com/donate">
+        <img src="https://store-cdn.janishutz.com/static/support-me.jpg" width="150px">
+    </a>
 </div>
 
 # Repository structure
@@ -75,5 +77,7 @@ You may notice some additional folders appearing after running
 This is to shrink the repository size. Distribution ready files can be found in the releases or on our [website](https://libreevent.janishutz.com/download).
 
 <div id="donate" align="center">
-    <img src="https://store-cdn.janishutz.com/static/support-me.jpg" width="150px">
+    <a href="https://store.janishutz.com/donate">
+        <img src="https://store-cdn.janishutz.com/static/support-me.jpg" width="150px">
+    </a>
 </div>
