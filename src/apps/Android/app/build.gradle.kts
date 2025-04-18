@@ -5,14 +5,14 @@ plugins {
 
 android {
     namespace = "com.janishutz.libreevent"
-    compileSdk = 33
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.janishutz.libreevent"
         minSdk = 24
-        targetSdk = 33
-        versionCode = 2
-        versionName = "1.0"
+        targetSdk = 35
+        versionCode = 5
+        versionName = "1.0.1"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
