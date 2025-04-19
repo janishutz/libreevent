@@ -11,7 +11,6 @@ const express = require( 'express' );
 let app = express();
 const path = require( 'path' );
 const expressSession = require( 'express-session' );
-const cookieParser = require( 'cookie-parser' );
 const http = require( 'http' );
 const fs = require( 'fs' );
 const token = require( './backend/token.js' );
@@ -83,8 +82,6 @@ module.exports.run = ( rootDir ) => {
             secure: false,
         }
     } ) );
-
-    app.use( cookieParser() );
 
     let file = path.join( __dirname + '/webapp/main/dist/index.html' );
 

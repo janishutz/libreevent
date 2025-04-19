@@ -1,84 +1,45 @@
 {
-  "name": "libreevent",
-  "version": "1.1.9",
-  "description": "Free & Open source event management solution",
-  "main": "index.js",
-  "directories": {
-    "doc": "docs"
-  },
-  "devDependencies": {
-    "acorn": "^8.8.2",
-    "buffer-from": "^1.1.2",
-    "camel-case": "^4.1.2",
-    "clean-css": "^5.3.2",
-    "commander": "^9.5.0",
-    "css-b64-images": "^0.2.5",
-    "debug": "^4.3.4",
-    "dot-case": "^3.0.4",
-    "entities": "^4.4.0",
-    "find-up": "^6.3.0",
-    "html-minifier-terser": "^7.1.0",
-    "jju": "^1.4.0",
-    "locate-path": "^7.2.0",
-    "lower-case": "^2.0.2",
-    "minify": "^9.2.0",
-    "ms": "^2.1.2",
-    "no-case": "^3.0.4",
-    "p-limit": "^4.0.0",
-    "p-locate": "^6.0.0",
-    "param-case": "^3.0.4",
-    "pascal-case": "^3.1.2",
-    "path-exists": "^5.0.0",
-    "readjson": "^2.2.2",
-    "relateurl": "^0.2.7",
-    "response-time": "^2.3.2",
-    "simport": "^1.2.0",
-    "source-map": "^0.6.1",
-    "source-map-support": "^0.5.21",
-    "terser": "^5.16.5",
-    "try-catch": "^3.0.1",
-    "try-to-catch": "^3.0.1",
-    "tslib": "^2.5.0",
-    "yocto-queue": "^1.0.0"
-  },
-  "dependencies": {
-    "@pdfme/generator": "^1.2.6",
-    "@seald-io/nedb": "^4.1.1",
-    "axios": "^1.8.4",
-    "bcrypt": "^5.1.1",
-    "body-parser": "^1.20.3",
-    "cookie-parser": "^1.4.7",
-    "crypto-js": "^4.2.0",
-    "express": "^4.21.2",
-    "express-session": "^1.18.1",
-    "html-to-text": "^9.0.5",
-    "multer": "^1.4.5-lts.1",
-    "mysql": "^2.18.1",
-    "nodemailer": "^6.10.1",
-    "pdf-lib": "^1.17.1",
-    "png-to-ico": "^2.1.8",
-    "qs": "^6.14.0",
-    "serve-favicon": "^2.5.0",
-    "serve-static": "^1.16.2",
-    "stripe": "^12.18.0",
-    "vue": "^3.5.13"
-  },
-  "scripts": {
-    "lint": "eslint . --ext .js,.jsx,.cjs,.mjs --fix --ignore-path .gitignore"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/simplePCBuilding/libreevent.git"
-  },
-  "keywords": [
-    "event",
-    "management",
-    "solution"
-  ],
-  "author": "Janis Hutz",
-  "license": "GPL-3.0-or-later",
-  "bugs": {
-    "url": "https://github.com/simplePCBuilding/libreevent/issues"
-  },
-  "homepage": "https://libreevent.janishutz.com"
+    "name": "libreevent",
+    "version": "1.1.9",
+    "description": "Free & Open source event management solution",
+    "main": "index.js",
+    "directories": {
+        "doc": "docs"
+    },
+    "dependencies": {
+        "@pdfme/generator": "^5.3.15",
+        "axios": "^1.8.4",
+        "bcrypt": "^5.1.1",
+        "body-parser": "^1.20.3",
+        "crypto-js": "^4.2.0",
+        "express": "^4.21.2",
+        "express-session": "^1.18.1",
+        "html-to-text": "^9.0.5",
+        "multer": "^1.4.5-lts.1",
+        "mysql": "^2.18.1",
+        "nodemailer": "^6.10.1",
+        "pdf-lib": "^1.17.1",
+        "png-to-ico": "^2.1.8",
+        "qs": "^6.14.0",
+        "stripe": "^12.18.0",
+        "vue": "^3.5.13"
+    },
+    "scripts": {
+        "lint": "eslint . --ext .js,.jsx,.cjs,.mjs --fix --ignore-path .gitignore"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/simplePCBuilding/libreevent.git"
+    },
+    "keywords": [
+        "event",
+        "management",
+        "solution"
+    ],
+    "author": "Janis Hutz",
+    "license": "GPL-3.0-or-later",
+    "bugs": {
+        "url": "https://github.com/simplePCBuilding/libreevent/issues"
+    },
+    "homepage": "https://libreevent.janishutz.com"
 }
