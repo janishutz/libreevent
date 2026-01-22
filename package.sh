@@ -6,7 +6,7 @@
 #
 #
 
-v="V1.1.15"
+v="V1.1.16"
 
 echo "
  _ _ _                                   _   
@@ -71,6 +71,15 @@ sleep 1
 cd ../../server
 node prepareDB.js
 
+sleep 1
+
+echo "
+
+==> Updating dependencies of backend <==
+
+"
+
+npm audit fix --force
 sleep 1
 
 echo " 
