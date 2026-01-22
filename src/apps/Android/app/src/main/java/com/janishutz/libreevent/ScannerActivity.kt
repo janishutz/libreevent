@@ -13,6 +13,7 @@ import com.journeyapps.barcodescanner.CaptureActivity
 import com.journeyapps.barcodescanner.CaptureManager
 import com.journeyapps.barcodescanner.DecoratedBarcodeView
 import java.util.Date
+import androidx.core.content.edit
 
 class ScannerActivity : CaptureActivity() {
 
@@ -30,10 +31,10 @@ class ScannerActivity : CaptureActivity() {
         val logoutButton = findViewById<Button>(R.id.logoutButton)
         logoutButton.setOnClickListener {
             val sharedPref = applicationContext.getSharedPreferences( "login", MODE_PRIVATE )
-            val editor = sharedPref.edit()
-            editor.remove( "password" )
-            editor.remove( "loginOk" )
-            editor.apply()
+            sharedPref.edit {
+                remove("password")
+                remove("loginOk")
+            }
             val switchIntent = Intent(this, MainActivity::class.java)
             switchIntent.putExtra("hasSwitched", true)
             startActivity(switchIntent)
@@ -52,14 +53,12 @@ class ScannerActivity : CaptureActivity() {
 
         captureManager.initializeFromIntent(intent, null)
         captureManager.decode()
-        barcodeView.decodeContinuous(object : BarcodeCallback {
-            override fun barcodeResult(result: BarcodeResult?) {
-                if (result != null) {
-                    val scannedData = result.text // This is the scanned data (e.g., QR code content)
-                    handleScanResult(scannedData)
-                }
+        barcodeView.decodeContinuous { result ->
+            if (result != null) {
+                val scannedData = result.text // This is the scanned data (e.g., QR code content)
+                handleScanResult(scannedData)
             }
-        })
+        }
     }
 
     private fun handleScanResult(result: String) {
@@ -73,13 +72,17 @@ class ScannerActivity : CaptureActivity() {
             lastScanned = result
             val alertDialogBuilder = AlertDialog.Builder(this)
 
-            if ( status == "ticketValid" ) {
-                alertDialogBuilder.setTitle("Ticket is valid")
-            } else if ( status == "ticketInvalid" ) {
-                alertDialogBuilder.setTitle("Ticket is invalid")
-            } else if ( status == "Error" ) {
-                alertDialogBuilder.setTitle("There was an error connecting")
-                alertDialogBuilder.setMessage("Please log out and log in again")
+            when (status) {
+                "ticketValid" -> {
+                    alertDialogBuilder.setTitle("Ticket is valid")
+                }
+                "ticketInvalid" -> {
+                    alertDialogBuilder.setTitle("Ticket is invalid")
+                }
+                "Error" -> {
+                    alertDialogBuilder.setTitle("There was an error connecting")
+                    alertDialogBuilder.setMessage("Please log out and log in again")
+                }
             }
 
             alertDialogBuilder.setIcon(android.R.drawable.ic_dialog_alert)
