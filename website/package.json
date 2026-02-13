@@ -17,6 +17,6 @@
   },
   "homepage": "https://libreevent.janishutz.com",
   "dependencies": {
-    "markdown-it": "^13.0.1"
+    "markdown-it": "^14.1.1"
   }
 }
